@@ -9,6 +9,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import com.shade.base.Level;
 import com.shade.crash.CrashLevel;
 import com.shade.crash.Grid;
+import com.shade.entities.Block;
 import com.shade.entities.Mushroom;
 import com.shade.entities.Player;
 
@@ -37,6 +38,15 @@ public class InGameState extends BasicGameState {
         
         for (int i = 0; i < m.length; i++) {
             level.add(m[i]);
+        }
+        
+        Block[] b = new Block[3];
+        b[0] = new Block(200, 150);
+        b[1] = new Block(400, 200);
+        b[2] = new Block(450, 500);
+        
+        for (int i = 0; i < b.length; i++) {
+            level.add(b[i]);
         }
     }
 

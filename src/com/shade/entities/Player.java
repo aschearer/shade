@@ -66,6 +66,9 @@ public class Player extends Body {
             head.next = m;
             m.prev = head;
         }
+        if (obstacle.getRole() == Role.OBSTACLE) {
+            move(-SPEED, heading);
+        }
     }
 
     public void render(Graphics g) {
