@@ -9,6 +9,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import com.shade.base.Level;
 import com.shade.crash.CrashLevel;
 import com.shade.crash.Grid;
+import com.shade.entities.Basket;
 import com.shade.entities.Block;
 import com.shade.entities.Mushroom;
 import com.shade.entities.Player;
@@ -27,6 +28,10 @@ public class InGameState extends BasicGameState {
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException {
         level = new CrashLevel(new Grid(8, 6, 100));
+        
+        /* TODO there's a rendering priority problem involved here... */
+        Basket bt = new Basket(380, 340);
+        level.add(bt);
         
         Player player = new Player(400, 350);
         level.add(player);

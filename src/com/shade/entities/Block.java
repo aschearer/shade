@@ -15,6 +15,8 @@ public class Block extends Body {
     private static final float WIDTH = 80;
     private static final float H_HEIGHT = 40;
     private static final float HEIGHT = 80;
+    
+    private float heading;
 
     public Block(float x, float y) {
         initShape(x, y);
@@ -23,6 +25,7 @@ public class Block extends Body {
     public Block(float x, float y, float r) {
         initShape(x, y);
         rotate(r);
+        heading = r;
     }
     
     private void rotate(float r) {
@@ -53,6 +56,10 @@ public class Block extends Body {
     public void removeFromLevel(Level l) {
         // TODO Auto-generated method stub
         
+    }
+    
+    public float getHeading() {
+        return heading;
     }
 
     public void render(Graphics g) {

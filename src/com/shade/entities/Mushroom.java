@@ -18,7 +18,7 @@ public class Mushroom extends Body {
         IDLE, PICKED
     };
 
-    private static final float H_RADIUS = 3f;
+    private static final float RADIUS = 3f;
     private static final float SCALE_INCREMENT = .1f;
     private static final float MAX_SCALE = 5f;
     private static final int MAX_DISTANCE = 2500;
@@ -44,7 +44,7 @@ public class Mushroom extends Body {
     }
 
     private void initShape(float x, float y) {
-        shape = new Circle(x - H_RADIUS, y - H_RADIUS, H_RADIUS);
+        shape = new Circle(x - RADIUS, y - RADIUS, RADIUS);
     }
 
     public Role getRole() {
@@ -94,7 +94,7 @@ public class Mushroom extends Body {
     }
 
     private void grow() {
-        ((Circle) shape).setRadius(H_RADIUS * scale);
+        ((Circle) shape).setRadius(RADIUS * scale);
     }
 
 }

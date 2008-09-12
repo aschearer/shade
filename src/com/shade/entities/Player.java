@@ -20,6 +20,7 @@ public class Player extends Body {
 
     private float heading;
     
+    private Level level;
     private Mushroom shroomie;
 
     public Player(float x, float y) {
@@ -40,7 +41,7 @@ public class Player extends Body {
     }
 
     public void addToLevel(Level l) {
-        // TODO Auto-generated method stub
+        level = l;
     }
 
     public void removeFromLevel(Level l) {
@@ -66,7 +67,25 @@ public class Player extends Body {
             head.next = m;
             m.prev = head;
         }
+        
+
+        if (obstacle.getRole() == Role.BASKET && shroomie != null) {
+            Mushroom head = shroomie;
+            while (head.next != null) {
+                Mushroom m = head;
+                head = (Mushroom) head.next;
+                m.prev = null; /* Kill the node. */
+                m.next = null;
+                level.remove(m);
+            }
+            /* Kill the last damn mushroom. */
+            shroomie = null;
+            head.prev = null;
+            level.remove(head);
+        }
+        
         if (obstacle.getRole() == Role.OBSTACLE) {
+            // TODO improve this shitty approach.
             move(-SPEED, heading);
         }
     }
