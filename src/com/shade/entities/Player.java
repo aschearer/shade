@@ -19,6 +19,8 @@ public class Player extends Body {
     private static final float TORQUE = .05f;
 
     private float heading;
+    
+    private Mushroom shroomie;
 
     public Player(float x, float y) {
         initShape(x, y);
@@ -46,7 +48,24 @@ public class Player extends Body {
     }
     
     public void onCollision(Entity obstacle) {
-        // TODO Auto-generated method stub
+        if (obstacle.getRole() == Role.MUSHROOM) {
+            Mushroom m = (Mushroom) obstacle;
+            if (shroomie == null) { /* First shroom picked. */
+                shroomie = m;
+                shroomie.prev = this;
+                return; /* Exit, we're finished. */
+            }
+            Mushroom head = shroomie;
+            /* Cycle through list and add to end, watch out for duplicates. */
+            while (!head.equals(m) && head.next != null) {
+                head = (Mushroom) head.next;
+            }
+            if (m.equals(head)) {
+                return; /* Exit we're not dealing with a duplicate. */
+            }
+            head.next = m;
+            m.prev = head;
+        }
     }
 
     public void render(Graphics g) {

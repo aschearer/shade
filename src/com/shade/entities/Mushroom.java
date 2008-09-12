@@ -2,26 +2,40 @@ package com.shade.entities;
 
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Circle;
+import org.newdawn.slick.geom.Transform;
+import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Entity;
 import com.shade.base.Level;
 import com.shade.crash.Body;
+import com.shade.crash.util.CrashGeom;
+import com.shade.util.Geom;
 
 public class Mushroom extends Body {
 
     private enum Status {
-        IDLE
+        IDLE, PICKED
     };
 
     private static final float H_RADIUS = 3f;
     private static final float SCALE_INCREMENT = .1f;
     private static final float MAX_SCALE = 5f;
+    private static final int MAX_DISTANCE = 2500;
+    private static final float SPEED = 1.5f;
 
-    private Level level;
     private Status currentStatus;
     private float timer;
     private float scale;
+
+    /**
+     * Mushrooms are a linked list!
+     * 
+     * Things worth noting... 1. When not picked both prev and next should be
+     * null. 2. When picked the head of the list will be the player! 3. Every
+     * other item on the list will be a shroom.
+     */
+    public Body prev, next;
 
     public Mushroom(float x, float y) {
         initShape(x, y);
@@ -38,7 +52,7 @@ public class Mushroom extends Body {
     }
 
     public void addToLevel(Level l) {
-        level = l;
+        // TODO Auto-generated method stub
     }
 
     public void removeFromLevel(Level l) {
@@ -46,8 +60,9 @@ public class Mushroom extends Body {
     }
 
     public void onCollision(Entity obstacle) {
-        // TODO follow the player instead
-        level.remove(this);
+        if (obstacle.getRole() == Role.PLAYER) {
+            currentStatus = Status.PICKED;
+        }
     }
 
     public void render(Graphics g) {
@@ -56,7 +71,7 @@ public class Mushroom extends Body {
 
     public void update(StateBasedGame game, int delta) {
         timer += delta;
-        if (timer > 300 && currentStatus == Status.IDLE) {
+        if (currentStatus == Status.IDLE && timer > 300) {
             timer = 0;
             if (scale < MAX_SCALE) {
                 scale += SCALE_INCREMENT;
@@ -64,6 +79,18 @@ public class Mushroom extends Body {
             }
             /* Turn to a monster */
         }
+        if (currentStatus == Status.PICKED
+                && CrashGeom.distance2(prev, this) > MAX_DISTANCE) {
+            float angle = CrashGeom.calculateAngle(prev, this);
+            move(SPEED, angle);
+        }
+    }
+
+    /* Move the shape a given amount across two dimensions. */
+    private void move(float magnitude, float direction) {
+        Vector2f d = Geom.calculateVector(magnitude, direction);
+        Transform t = Transform.createTranslateTransform(d.x, d.y);
+        shape = shape.transform(t);
     }
 
     private void grow() {
