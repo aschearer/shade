@@ -28,7 +28,7 @@ public class InGameState extends BasicGameState {
             throws SlickException {
         level = new CrashLevel(new Grid(8, 6, 100));
         
-        Player player = new Player(400, 300);
+        Player player = new Player(400, 350);
         level.add(player);
         
         Mushroom[] m = new Mushroom[3];
@@ -40,10 +40,11 @@ public class InGameState extends BasicGameState {
             level.add(m[i]);
         }
         
-        Block[] b = new Block[3];
-        b[0] = new Block(200, 150);
-        b[1] = new Block(400, 200);
-        b[2] = new Block(450, 500);
+        Block[] b = new Block[4];
+        b[0] = new Block(200, 150, .5f);
+        b[1] = new Block(400, 200, .9f);
+        b[2] = new Block(450, 500, .3f);
+        b[3] = new Block(625, 325);
         
         for (int i = 0; i < b.length; i++) {
             level.add(b[i]);

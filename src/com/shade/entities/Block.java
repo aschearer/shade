@@ -2,6 +2,7 @@ package com.shade.entities;
 
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Rectangle;
+import org.newdawn.slick.geom.Transform;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Entity;
@@ -19,6 +20,18 @@ public class Block extends Body {
         initShape(x, y);
     }
     
+    public Block(float x, float y, float r) {
+        initShape(x, y);
+        rotate(r);
+    }
+    
+    private void rotate(float r) {
+        float x = getCenterX();
+        float y = getCenterY();
+        Transform t = Transform.createRotateTransform(r, x, y);
+        shape = shape.transform(t);
+    }
+
     private void initShape(float x, float y) {
         shape = new Rectangle(x - H_WIDTH, y - H_HEIGHT, WIDTH, HEIGHT);
     }
