@@ -8,6 +8,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Level;
 import com.shade.base.SimpleLevel;
+import com.shade.entities.Mushroom;
 import com.shade.entities.Player;
 
 public class InGameState extends BasicGameState {
@@ -27,6 +28,15 @@ public class InGameState extends BasicGameState {
         
         Player player = new Player(400, 300);
         level.add(player);
+        
+        Mushroom[] m = new Mushroom[3];
+        m[0] = new Mushroom(100, 100);
+        m[1] = new Mushroom(700, 300);
+        m[2] = new Mushroom(300, 450);
+        
+        for (int i = 0; i < m.length; i++) {
+            level.add(m[i]);
+        }
     }
 
     public void render(GameContainer container, StateBasedGame game, Graphics g)

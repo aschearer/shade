@@ -2,7 +2,6 @@ package com.shade.entities;
 
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Circle;
-import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Entity;
@@ -10,12 +9,22 @@ import com.shade.base.Level;
 
 public class Mushroom implements Entity {
     
-    private static final float H_RADIUS = 3f;
+    private enum Status { IDLE };
     
-    private Shape shape;
+    private static final float H_RADIUS = 3f;
+    private static final float SCALE_INCREMENT = .1f;
+    private static final float MAX_SCALE = 5f;
+    
+    private Circle shape;
+
+    private float scale;
+    private Status currentStatus;
+    private float timer;
     
     public Mushroom(float x, float y) {
         initShape(x, y);
+        currentStatus = Status.IDLE;
+        scale = 1;
     }
     
     private void initShape(float x, float y) {
@@ -46,8 +55,19 @@ public class Mushroom implements Entity {
     }
 
     public void update(StateBasedGame game, int delta) {
-        // TODO Auto-generated method stub
-        
+        timer += delta;
+        if (timer > 300 && currentStatus == Status.IDLE) {
+            timer = 0;
+            if (scale < MAX_SCALE) {
+                scale += SCALE_INCREMENT;
+                grow();
+            }
+            /* Turn to a monster */
+        }
+    }
+
+    private void grow() {
+        shape.setRadius(H_RADIUS * scale);
     }
 
 }
