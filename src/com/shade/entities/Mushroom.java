@@ -6,27 +6,29 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Entity;
 import com.shade.base.Level;
+import com.shade.crash.Body;
 
-public class Mushroom implements Entity {
-    
-    private enum Status { IDLE };
-    
+public class Mushroom extends Body {
+
+    private enum Status {
+        IDLE
+    };
+
     private static final float H_RADIUS = 3f;
     private static final float SCALE_INCREMENT = .1f;
     private static final float MAX_SCALE = 5f;
-    
-    private Circle shape;
 
-    private float scale;
+    private Level level;
     private Status currentStatus;
     private float timer;
-    
+    private float scale;
+
     public Mushroom(float x, float y) {
         initShape(x, y);
         currentStatus = Status.IDLE;
         scale = 1;
     }
-    
+
     private void initShape(float x, float y) {
         shape = new Circle(x - H_RADIUS, y - H_RADIUS, H_RADIUS);
     }
@@ -36,18 +38,16 @@ public class Mushroom implements Entity {
     }
 
     public void addToLevel(Level l) {
-        // TODO Auto-generated method stub
-        
+        level = l;
     }
-    
+
     public void removeFromLevel(Level l) {
         // TODO Auto-generated method stub
-        
     }
 
     public void onCollision(Entity obstacle) {
-        // TODO Auto-generated method stub
-        
+        // TODO follow the player instead
+        level.remove(this);
     }
 
     public void render(Graphics g) {
@@ -67,7 +67,7 @@ public class Mushroom implements Entity {
     }
 
     private void grow() {
-        shape.setRadius(H_RADIUS * scale);
+        ((Circle) shape).setRadius(H_RADIUS * scale);
     }
 
 }

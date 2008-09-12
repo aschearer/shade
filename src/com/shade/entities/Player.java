@@ -3,23 +3,22 @@ package com.shade.entities;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.geom.Polygon;
-import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Transform;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Entity;
 import com.shade.base.Level;
+import com.shade.crash.Body;
 import com.shade.util.Geom;
 
-public class Player implements Entity {
+public class Player extends Body {
 
     private static final float SPEED = 2f;
     /* In radians... */
     private static final float TORQUE = .05f;
 
     private float heading;
-    private Shape shape;
 
     public Player(float x, float y) {
         initShape(x, y);
@@ -40,17 +39,14 @@ public class Player implements Entity {
 
     public void addToLevel(Level l) {
         // TODO Auto-generated method stub
-
-    }
-
-    public void onCollision(Entity obstacle) {
-        // TODO Auto-generated method stub
-
     }
 
     public void removeFromLevel(Level l) {
         // TODO Auto-generated method stub
-
+    }
+    
+    public void onCollision(Entity obstacle) {
+        // TODO Auto-generated method stub
     }
 
     public void render(Graphics g) {
@@ -84,8 +80,8 @@ public class Player implements Entity {
     }
 
     private void rotate(float radians) {
-        float x = shape.getCenterX();
-        float y = shape.getCenterY();
+        float x = getCenterX();
+        float y = getCenterY();
         Transform t = Transform.createRotateTransform(radians, x, y);
         shape = shape.transform(t);
         heading += radians;

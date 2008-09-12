@@ -7,7 +7,8 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Level;
-import com.shade.base.SimpleLevel;
+import com.shade.crash.CrashLevel;
+import com.shade.crash.Grid;
 import com.shade.entities.Mushroom;
 import com.shade.entities.Player;
 
@@ -24,7 +25,7 @@ public class InGameState extends BasicGameState {
 
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException {
-        level = new SimpleLevel();
+        level = new CrashLevel(new Grid(8, 6, 100));
         
         Player player = new Player(400, 300);
         level.add(player);
