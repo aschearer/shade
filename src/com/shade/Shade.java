@@ -5,6 +5,8 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
+import com.shade.states.InGameState;
+
 public class Shade extends StateBasedGame {
 
 	public static final String TITLE = "Shade";
@@ -15,8 +17,7 @@ public class Shade extends StateBasedGame {
 
 	@Override
 	public void initStatesList(GameContainer container) throws SlickException {
-		// TODO Auto-generated method stub
-
+	    addState(new InGameState());
 	}
 	
 	public static void main(String[] args) {

@@ -13,14 +13,14 @@ import com.shade.base.Level;
 import com.shade.util.Geom;
 
 public class Player implements Entity {
-    
-    private static final float SPEED = 4f;
+
+    private static final float SPEED = 2f;
     /* In radians... */
-    private static final float TORQUE = .1f;
-    
+    private static final float TORQUE = .05f;
+
     private float heading;
     private Shape shape;
-    
+
     public Player(float x, float y) {
         initShape(x, y);
     }
@@ -29,7 +29,7 @@ public class Player implements Entity {
         Polygon p = new Polygon();
         p.addPoint(-15f, 0);
         p.addPoint(15f, 0);
-        p.addPoint(0, 40f);
+        p.addPoint(0, -40f);
         p.setLocation(x, y);
         shape = p;
     }
@@ -37,7 +37,7 @@ public class Player implements Entity {
     public Role getRole() {
         return Role.PLAYER;
     }
-    
+
     public void addToLevel(Level l) {
         // TODO Auto-generated method stub
 
@@ -63,21 +63,32 @@ public class Player implements Entity {
 
     private void testAndMove(Input input, int delta) {
         if (input.isKeyDown(Input.KEY_LEFT)) {
-            shape.transform(Transform.createRotateTransform(-TORQUE));
-            heading += -TORQUE;
+            rotate(-TORQUE);
         }
         if (input.isKeyDown(Input.KEY_RIGHT)) {
-            shape.transform(Transform.createRotateTransform(TORQUE));
-            heading += TORQUE;
+            rotate(TORQUE);
         }
         if (input.isKeyDown(Input.KEY_UP)) {
-            Vector2f d = Geom.calculateVector(SPEED, heading);
-            shape.transform(Transform.createTranslateTransform(d.x, d.y));
+            move(SPEED, heading);
         }
         if (input.isKeyDown(Input.KEY_DOWN)) {
-            Vector2f d = Geom.calculateVector(-SPEED, heading);
-            shape.transform(Transform.createTranslateTransform(d.x, d.y));
+            move(-SPEED, heading);
         }
+    }
+
+    /* Move the shape a given amount across two dimensions. */
+    private void move(float magnitude, float direction) {
+        Vector2f d = Geom.calculateVector(magnitude, direction);
+        Transform t = Transform.createTranslateTransform(d.x, d.y);
+        shape = shape.transform(t);
+    }
+
+    private void rotate(float radians) {
+        float x = shape.getCenterX();
+        float y = shape.getCenterY();
+        Transform t = Transform.createRotateTransform(radians, x, y);
+        shape = shape.transform(t);
+        heading += radians;
     }
 
 }

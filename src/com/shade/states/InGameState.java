@@ -6,10 +6,16 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import com.shade.base.Level;
+import com.shade.base.SimpleLevel;
+import com.shade.entities.Player;
+
 public class InGameState extends BasicGameState {
 
     public static final int ID = 1;
 
+    private Level level;
+    
     @Override
     public int getID() {
         return ID;
@@ -17,20 +23,20 @@ public class InGameState extends BasicGameState {
 
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException {
-        // TODO Auto-generated method stub
+        level = new SimpleLevel();
         
+        Player player = new Player(400, 300);
+        level.add(player);
     }
 
     public void render(GameContainer container, StateBasedGame game, Graphics g)
             throws SlickException {
-        // TODO Auto-generated method stub
-        
+        level.render(g);
     }
 
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
-        // TODO Auto-generated method stub
-        
+        level.update(game, delta);
     }
 
 }
