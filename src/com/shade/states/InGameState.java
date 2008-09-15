@@ -11,8 +11,10 @@ import com.shade.crash.CrashLevel;
 import com.shade.crash.Grid;
 import com.shade.entities.Basket;
 import com.shade.entities.Block;
+import com.shade.entities.Dome;
 import com.shade.entities.Mushroom;
 import com.shade.entities.Player;
+import com.shade.entities.ShadowCaster;
 
 public class InGameState extends BasicGameState {
 
@@ -36,22 +38,23 @@ public class InGameState extends BasicGameState {
         Player player = new Player(400, 350);
         level.add(player);
         
-        Mushroom[] m = new Mushroom[3];
-        m[0] = new Mushroom(100, 100);
-        m[1] = new Mushroom(700, 300);
-        m[2] = new Mushroom(300, 450);
+//        Mushroom[] m = new Mushroom[3];
+//        m[0] = new Mushroom(100, 100);
+//        m[1] = new Mushroom(700, 300);
+//        m[2] = new Mushroom(300, 450);
+//        
+//        for (int i = 0; i < m.length; i++) {
+//            level.add(m[i]);
+//        }
         
-        for (int i = 0; i < m.length; i++) {
-            level.add(m[i]);
-        }
-        
-        Block[] b = new Block[4];
-        b[0] = new Block(200, 150, .5f);
-        b[1] = new Block(400, 200, .9f);
-        b[2] = new Block(450, 500, .3f);
-        b[3] = new Block(625, 325);
+        ShadowCaster[] b = new ShadowCaster[4];
+        b[2] = new Dome(110, 120, 50, 8);
+        b[0] = new Dome(230, 110, 25, 6);
+        b[1] = new Dome(220, 200, 40, 7);
+        b[3] = new Block(140, 320, 80, 80, 8);
         
         for (int i = 0; i < b.length; i++) {
+            b[i].castShadow(-2.5f);
             level.add(b[i]);
         }
     }

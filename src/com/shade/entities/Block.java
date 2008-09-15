@@ -1,107 +1,102 @@
 package com.shade.entities;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Rectangle;
-import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Transform;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Entity;
 import com.shade.base.Level;
-import com.shade.crash.Body;
 import com.shade.util.Geom;
 
-public class Block extends Body {
-    
-    private static final float H_WIDTH = 40;
-    private static final float WIDTH = 80;
-    private static final float H_HEIGHT = 40;
-    private static final float HEIGHT = 80;
-    
-    private int depth;
-    private float heading;
-    
-    private boolean dirty;
-    private Shape shadow;
+public class Block extends ShadowCaster {
 
-    public Block(float x, float y) {
-        initShape(x, y);
-        depth = 60;
-        dirty = true;
-    }
-    
-    public Block(float x, float y, float r) {
-        this(x, y);
-        r = (r == .5f) ? .51f : r; 
-        rotate(r);
-        heading = r;
-    }
-    
-    private void rotate(float r) {
-        float x = getCenterX();
-        float y = getCenterY();
-        Transform t = Transform.createRotateTransform(r, x, y);
-        shape = shape.transform(t);
+    public Block(float x, float y, float w, float h, float d) {
+        initShape(x, y, w, h);
+        depth = d;
     }
 
-    private void initShape(float x, float y) {
-        shape = new Rectangle(x - H_WIDTH, y - H_HEIGHT, WIDTH, HEIGHT);
+    private void initShape(float x, float y, float w, float h) {
+        shape = new Rectangle(x, y, w, h);
     }
-    
-    private void calcShadow() {
-        shadow = shape;
-        for (int i = 1; i < depth; i++) {
-            Vector2f d = Geom.calculateVector(i, .5f);
-            Transform t = Transform.createTranslateTransform(d.x, d.y);
-            Shape[] union = shadow.union(shape.transform(t));
-            shadow = union[0];
+
+    @Override
+    public void castShadow(float direction) {
+        Vector2f v = Geom.calculateVector(depth * 10, direction);
+
+        Transform t = Transform.createTranslateTransform(v.x, v.y);
+        Polygon extent = (Polygon) shape.transform(t);
+        
+        /*
+         * Step clockwise through the projected shape. Step counter clockwise
+         * through the body's shape. For each pair of points, measure the
+         * distance between the pair. Remove the pair which form the shortest
+         * line.
+         */
+        
+        int index1 = 0;
+        int index2 = 0;
+        float d = -1;
+        
+        for (int i = 0; i < extent.getPointCount(); i++) {
+            float p1[] = extent.getPoint(i);
+            float p2[] = shape.getPoint((4 - i) % 4);
+            
+            float nd = Geom.distance2(p1[0], p1[1], p2[0], p2[0]);
+            if (d < 0 || d > nd) {
+                index1 = i;
+                index2 = (4 - i) % 4;
+                d = nd;
+            }
         }
-    }
-    
-    public Role getRole() {
-        return Role.OBSTACLE;
+        
+        Polygon shade = new Polygon();
+        
+        
+        for (int i = 1; i < 4; i++) {
+            int c = (4 + index1 + i) % 4;
+            float[] p = extent.getPoint(c);
+            shade.addPoint(p[0], p[1]);
+        }
+        
+        for (int i = 1; i < 4; i++) {
+            int c = (4 + index2 + i) % 4;
+            float[] p = shape.getPoint(c);
+            shade.addPoint(p[0], p[1]);
+        }
+        
+        shadow = shade;
     }
 
     public void addToLevel(Level l) {
         // TODO Auto-generated method stub
-        
+
+    }
+
+    public Role getRole() {
+        return Role.OBSTACLE;
     }
 
     public void onCollision(Entity obstacle) {
         // TODO Auto-generated method stub
-        
+
     }
 
     public void removeFromLevel(Level l) {
         // TODO Auto-generated method stub
-        
-    }
-    
-    public float getHeading() {
-        return heading;
+
     }
 
     public void render(Graphics g) {
-        if (dirty) {
-            calcShadow();
-            dirty = false;
-        }
-        
-        Color c = g.getColor();
-        Color s = Color.darkGray;
-        s.a = .5f;
-        g.setColor(s);
-        
-        g.fill(shadow);
-        
-        g.setColor(Color.white);
+        renderShadow(g);
         g.fill(shape);
-        g.setColor(c);
     }
 
     public void update(StateBasedGame game, int delta) {
+        // TODO Auto-generated method stub
+
     }
 
 }

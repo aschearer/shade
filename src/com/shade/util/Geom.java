@@ -24,4 +24,18 @@ public class Geom {
         double angle = Math.atan2(y - y1, x - x1);
         return (float) angle + 1.5f;
     }
+    
+    /**
+     * Return the distance squared between two points.
+     * @param x
+     * @param y
+     * @param x1
+     * @param y1
+     * @return
+     */
+    public static float distance2(float x, float y, float x1, float y1) {
+        x = (float) Math.pow(x - x1, 2);
+        y = (float) Math.pow(y - y1, 2);
+        return (x + y);
+    }
 }
