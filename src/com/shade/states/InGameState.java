@@ -2,6 +2,7 @@ package com.shade.states;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
@@ -20,6 +21,7 @@ public class InGameState extends BasicGameState {
 
     public static final int ID = 1;
 
+    private Image backgroundSprite, trimSprite;
     private Level level;
     
     @Override
@@ -29,13 +31,14 @@ public class InGameState extends BasicGameState {
 
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException {
+        initSprites();
         level = new CrashLevel(new Grid(8, 6, 100));
         
         /* TODO there's a rendering priority problem involved here... */
-        Basket bt = new Basket(380, 340);
+        Basket bt = new Basket(450, 230, 65, 40);
         level.add(bt);
         
-        Player player = new Player(400, 350);
+        Player player = new Player(400, 350, 16);
         level.add(player);
         
 //        Mushroom[] m = new Mushroom[3];
@@ -59,9 +62,16 @@ public class InGameState extends BasicGameState {
         }
     }
 
+    private void initSprites() throws SlickException {
+        backgroundSprite = new Image("states/ingame/background.png");
+        trimSprite = new Image("states/ingame/trim.png");
+    }
+
     public void render(GameContainer container, StateBasedGame game, Graphics g)
             throws SlickException {
+        backgroundSprite.draw();
         level.render(g);
+        trimSprite.draw();
     }
 
     public void update(GameContainer container, StateBasedGame game, int delta)

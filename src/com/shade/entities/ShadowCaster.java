@@ -46,7 +46,7 @@ public abstract class ShadowCaster extends Body {
      */
     protected void renderShadow(Graphics g) {
         Color c = g.getColor();
-        Color shade = Color.darkGray;
+        Color shade = Color.black;
         shade.a = .5f;
         g.setColor(shade);
         g.fill(shadow);

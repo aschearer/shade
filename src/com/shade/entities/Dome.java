@@ -1,6 +1,8 @@
 package com.shade.entities;
 
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -8,10 +10,17 @@ import com.shade.base.Entity;
 import com.shade.base.Level;
 
 public class Dome extends ShadowCaster {
+    
+    private Image sprite;
 
-    public Dome(float x, float y, float r, float d) {
+    public Dome(float x, float y, float r, float d) throws SlickException {
         initShape(x, y, r);
+        initSprite();
         depth = d;
+    }
+
+    private void initSprite() throws SlickException {
+        sprite = new Image("entities/dome/dome.png");
     }
 
     private void initShape(float x, float y, float r) {
@@ -39,7 +48,7 @@ public class Dome extends ShadowCaster {
 
     public void render(Graphics g) {
         renderShadow(g);
-        g.fill(shape);
+        sprite.draw(getX(), getY(), getWidth(), getHeight());
     }
 
     public void update(StateBasedGame game, int delta) {

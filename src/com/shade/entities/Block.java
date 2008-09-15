@@ -1,6 +1,8 @@
 package com.shade.entities;
 
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Transform;
@@ -13,9 +15,16 @@ import com.shade.util.Geom;
 
 public class Block extends ShadowCaster {
 
-    public Block(float x, float y, float w, float h, float d) {
+    private Image sprite;
+
+    public Block(float x, float y, float w, float h, float d) throws SlickException {
         initShape(x, y, w, h);
+        initSprite();
         depth = d;
+    }
+
+    private void initSprite() throws SlickException {
+        sprite = new Image("entities/block/block.png");
     }
 
     private void initShape(float x, float y, float w, float h) {
@@ -91,7 +100,7 @@ public class Block extends ShadowCaster {
 
     public void render(Graphics g) {
         renderShadow(g);
-        g.fill(shape);
+        sprite.draw(getX(), getY(), getWidth(), getHeight());
     }
 
     public void update(StateBasedGame game, int delta) {

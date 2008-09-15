@@ -1,8 +1,9 @@
 package com.shade.entities;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.geom.Circle;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Entity;
@@ -11,14 +12,19 @@ import com.shade.crash.Body;
 
 public class Basket extends Body {
     
-    private static final float RADIUS = 24f;
+    private Image sprite;
 
-    public Basket(float x, float y) {
-        initShape(x, y);
+    public Basket(float x, float y, float w, float h) throws SlickException {
+        initShape(x, y, w, h);
+        initSprite();
     }
 
-    private void initShape(float x, float y) {
-        shape = new Circle(x - RADIUS, y - RADIUS, RADIUS);
+    private void initSprite() throws SlickException {
+        sprite = new Image("entities/basket/basket.png");
+    }
+
+    private void initShape(float x, float y, float w, float h) {
+        shape = new Rectangle(x, y, w, h);
     }
 
     public void addToLevel(Level l) {
@@ -41,10 +47,7 @@ public class Basket extends Body {
     }
 
     public void render(Graphics g) {
-        Color c = g.getColor();
-        g.setColor(Color.darkGray);
-        g.fill(shape);
-        g.setColor(c);
+        sprite.draw(getX(), getY(), getWidth(), getHeight());
     }
 
     public void update(StateBasedGame game, int delta) {

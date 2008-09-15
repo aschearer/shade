@@ -1,7 +1,10 @@
 package com.shade.entities;
 
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
+import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Transform;
 import org.newdawn.slick.geom.Vector2f;
@@ -14,7 +17,7 @@ import com.shade.util.Geom;
 
 public class Player extends Body {
 
-    private static final float SPEED = 2f;
+    private static final float SPEED = 1.5f;
     /* In radians... */
     private static final float TORQUE = .05f;
 
@@ -22,18 +25,19 @@ public class Player extends Body {
     
     private Level level;
     private Mushroom shroomie;
+    private Image sprite;
 
-    public Player(float x, float y) {
-        initShape(x, y);
+    public Player(float x, float y, float r) throws SlickException {
+        initShape(x, y, r);
+        initSprite();
     }
 
-    private void initShape(float x, float y) {
-        Polygon p = new Polygon();
-        p.addPoint(-15f, 0);
-        p.addPoint(15f, 0);
-        p.addPoint(0, -40f);
-        p.setLocation(x, y);
-        shape = p;
+    private void initSprite() throws SlickException {
+        sprite = new Image("entities/player/player.png");
+    }
+
+    private void initShape(float x, float y, float r) {
+        shape = new Circle(x, y, r);
     }
 
     public Role getRole() {
@@ -91,7 +95,12 @@ public class Player extends Body {
     }
 
     public void render(Graphics g) {
-        g.draw(shape);
+        float x = getX();
+        float y = getY();
+        float w = getWidth();
+        float h = getHeight();
+//        sprite.draw(getX(), getY(), getWidth(), getHeight());
+        sprite.drawCentered(getCenterX(), getCenterY());
     }
 
     public void update(StateBasedGame game, int delta) {
