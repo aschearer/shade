@@ -5,7 +5,6 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Circle;
-import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Transform;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
@@ -95,12 +94,9 @@ public class Player extends Body {
     }
 
     public void render(Graphics g) {
-        float x = getX();
-        float y = getY();
-        float w = getWidth();
-        float h = getHeight();
-//        sprite.draw(getX(), getY(), getWidth(), getHeight());
+        g.rotate(getCenterX(), getCenterY(), (float) Math.toDegrees(heading));
         sprite.drawCentered(getCenterX(), getCenterY());
+        g.resetTransform();
     }
 
     public void update(StateBasedGame game, int delta) {

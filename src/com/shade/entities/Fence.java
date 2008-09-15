@@ -1,7 +1,7 @@
 package com.shade.entities;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Rectangle;
@@ -13,23 +13,18 @@ import com.shade.base.Entity;
 import com.shade.base.Level;
 import com.shade.util.Geom;
 
-public class Block extends ShadowCaster {
+public class Fence extends ShadowCaster {
 
-    private Image sprite;
-
-    public Block(float x, float y, float w, float h, float d) throws SlickException {
+    public Fence(float x, float y, float w, float h, float d)
+            throws SlickException {
         initShape(x, y, w, h);
-        initSprite();
         depth = d;
     }
-
-    private void initSprite() throws SlickException {
-        sprite = new Image("entities/block/block.png");
-    }
-
+    
     private void initShape(float x, float y, float w, float h) {
         shape = new Rectangle(x, y, w, h);
     }
+    
 
     @Override
     public void castShadow(float direction) {
@@ -43,9 +38,9 @@ public class Block extends ShadowCaster {
         
         if (v.y > 0) { // bottom
             if (v.x > 0) { // right
-                index1 = 0;
-            } else { // left
                 index1 = 1;
+            } else { // left
+                index1 = 0;
             }
         } else { // top
             if (v.x > 0) { // right
@@ -59,7 +54,7 @@ public class Block extends ShadowCaster {
             index1 = (4 - (index1 + 2)) % 4;
         }
         
-        index2 = (4 + (index1 + 2)) % 4;
+        index2 = (4 - (index1 + 2)) % 4;
         
         Polygon shade = new Polygon();   
         
@@ -80,7 +75,7 @@ public class Block extends ShadowCaster {
 
     public void addToLevel(Level l) {
         // TODO Auto-generated method stub
-
+        
     }
 
     public Role getRole() {
@@ -89,22 +84,25 @@ public class Block extends ShadowCaster {
 
     public void onCollision(Entity obstacle) {
         // TODO Auto-generated method stub
-
+        
     }
 
     public void removeFromLevel(Level l) {
         // TODO Auto-generated method stub
-
+        
     }
 
     public void render(Graphics g) {
         renderShadow(g);
-        sprite.draw(getX(), getY(), getWidth(), getHeight());
+        Color c = new Color(225, 225, 225);
+        g.setColor(c);
+        g.fill(shape);
+        g.setColor(Color.white);
     }
 
     public void update(StateBasedGame game, int delta) {
         // TODO Auto-generated method stub
-
+        
     }
 
 }

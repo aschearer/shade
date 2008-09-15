@@ -117,8 +117,9 @@ public class Grid {
         /* Calculate which column and row the point falls under. */
         int column = (int) Math.floor(x / cellWidth);
         int row = (int) Math.floor(y / cellHeight);
-        assert(column > 0 && column < width);
-        assert(row > 0 && row < height);
+        if (column < 0 || column >= width || row < 0 || row >= height) {
+            return null;
+        }
         Cell target = cells[column][row];
         return target;
     }
@@ -142,22 +143,22 @@ public class Grid {
         float height = b.getHeight() - 1;
 
         Cell topLeft = point2cell(b.getX(), b.getY());
-        if (!c.equals(topLeft)) {
+        if (topLeft != null && !c.equals(topLeft)) {
             neighbors.add(topLeft);
         }
 
         Cell topRight = point2cell(b.getX() + width, b.getY());
-        if (!c.equals(topRight)) {
+        if (topRight != null && !c.equals(topRight)) {
             neighbors.add(topRight);
         }
 
         Cell bottomLeft = point2cell(b.getX(), b.getY() + height);
-        if (!c.equals(bottomLeft)) {
+        if (bottomLeft != null && !c.equals(bottomLeft)) {
             neighbors.add(bottomLeft);
         }
 
         Cell bottomRight = point2cell(b.getX() + width, b.getY() + height);
-        if (!c.equals(bottomRight)) {
+        if (bottomRight != null && !c.equals(bottomRight)) {
             neighbors.add(bottomRight);
         }
         return neighbors;
