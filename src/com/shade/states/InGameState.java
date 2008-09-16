@@ -1,5 +1,7 @@
 package com.shade.states;
 
+import java.util.LinkedList;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -12,17 +14,23 @@ import com.shade.crash.CrashLevel;
 import com.shade.crash.Grid;
 import com.shade.entities.Basket;
 import com.shade.entities.Block;
-import com.shade.entities.Dome;
 import com.shade.entities.Fence;
+import com.shade.entities.Mushroom;
 import com.shade.entities.Player;
-import com.shade.entities.ShadowCaster;
+import com.shade.shadows.ShadowCaster;
+import com.shade.shadows.ShadowLevel;
 
 public class InGameState extends BasicGameState {
 
     public static final int ID = 1;
 
     private Image backgroundSprite, trimSprite;
-    private Level level;
+    private ShadowLevel level;
+
+    private int sunTimer, totalTime;
+    private float sunAngle;
+
+    private ShadowCaster[] b;
     
     @Override
     public int getID() {
@@ -32,16 +40,22 @@ public class InGameState extends BasicGameState {
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException {
         initSprites();
-        level = new CrashLevel(new Grid(8, 6, 100));
+        sunAngle = 2.5f;
+        level = new ShadowLevel(new Grid(8, 6, 100));
         
         /* TODO there's a rendering priority problem involved here... */
-        Basket bt = new Basket(456, 232, 65, 40);
-        level.add(bt);
+//        Basket bt = new Basket(456, 232, 65, 40);
+//        level.add(bt);
         
-        Player player = new Player(400, 350, 16);
-        level.add(player);
+//        Mushroom[] m = new Mushroom[1];
+//        m[0] = new Mushroom(200, 200);
+//        
+//        level.add(m[0]);
         
-        ShadowCaster[] b = new ShadowCaster[14];
+//        Player player = new Player(400, 350, 14);
+//        level.add(player);
+        
+        b = new ShadowCaster[14];
         // boxes
         b[0] = new Block(150, 300, 135, 135, 16);
         b[1] = new Block(324, 376, 56, 56, 6);
@@ -50,20 +64,21 @@ public class InGameState extends BasicGameState {
         b[4] = new Block(545, 450, 80, 80, 10);
         b[5] = new Block(445, 520, 80, 80, 10);
         // domes
-        b[6] = new Dome(175, 36, 44, 8);
-        b[7] = new Dome(300, 18, 25, 6);
-        b[8] = new Dome(278, 90, 32, 7);
-        b[9] = new Dome(618, 75, 40, 8);
-        b[10] = new Dome(700, 162, 60, 11);
+        b[6] = new Block(175, -10, 88, 88, 8);
+        b[7] = new Block(300, 18, 50, 50, 6);
+        b[8] = new Block(278, 90, 64, 64, 7);
+        b[9] = new Block(618, 15, 80, 80, 8);
+        b[10] = new Block(700, 102, 120, 120, 11);
         // fences
         b[11] = new Fence(150, 150, 11, 120, 6);
         b[12] = new Fence(390, 140, 120, 11, 6);
         b[13] = new Fence(700, 368, 11, 120, 6);
         
         for (int i = 0; i < b.length; i++) {
-            b[i].castShadow(-2.5f);
             level.add(b[i]);
         }
+        
+        level.updateShadowscape(sunAngle);
     }
 
     private void initSprites() throws SlickException {
@@ -81,6 +96,18 @@ public class InGameState extends BasicGameState {
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
         level.update(game, delta);
+        totalTime += delta;
+        sunTimer += delta;
+        if (totalTime > 10000) {
+            level.plant();
+            totalTime = 0;
+        }
+        
+//        if (sunTimer > 500) {
+            sunTimer = 0;
+            sunAngle += .001f;
+            level.updateShadowscape(sunAngle);
+//        }
     }
 
 }

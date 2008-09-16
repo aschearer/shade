@@ -1,7 +1,10 @@
 package com.shade.entities;
 
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Circle;
+import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Transform;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
@@ -10,9 +13,10 @@ import com.shade.base.Entity;
 import com.shade.base.Level;
 import com.shade.crash.Body;
 import com.shade.crash.util.CrashGeom;
+import com.shade.shadows.ShadowCaster;
 import com.shade.util.Geom;
 
-public class Mushroom extends Body {
+public class Mushroom extends Body implements ShadowCaster {
 
     private enum Status {
         IDLE, PICKED
@@ -27,6 +31,10 @@ public class Mushroom extends Body {
     private Status currentStatus;
     private float timer;
     private float scale;
+    
+    private int depth;
+    
+    private Image sprite;
 
     /**
      * Mushrooms are a linked list!
@@ -37,10 +45,16 @@ public class Mushroom extends Body {
      */
     public Body prev, next;
 
-    public Mushroom(float x, float y) {
+    public Mushroom(float x, float y) throws SlickException {
         initShape(x, y);
+        initSprite();
         currentStatus = Status.IDLE;
         scale = 1;
+        depth = 2;
+    }
+
+    private void initSprite() throws SlickException {
+        sprite = new Image("entities/mushroom/mushroom.png");
     }
 
     private void initShape(float x, float y) {
@@ -66,12 +80,12 @@ public class Mushroom extends Body {
     }
 
     public void render(Graphics g) {
-        g.draw(shape);
+        sprite.draw(getX(), getY(), getWidth(), getHeight());
     }
 
     public void update(StateBasedGame game, int delta) {
         timer += delta;
-        if (currentStatus == Status.IDLE && timer > 300) {
+        if (currentStatus == Status.IDLE && timer > 1000) {
             timer = 0;
             if (scale < MAX_SCALE) {
                 scale += SCALE_INCREMENT;
@@ -95,6 +109,20 @@ public class Mushroom extends Body {
 
     private void grow() {
         ((Circle) shape).setRadius(RADIUS * scale);
+    }
+
+    public Shape castShadow(float direction) {
+        Vector2f d = Geom.calculateVector(2 * depth, direction);
+        Transform t = Transform.createTranslateTransform(d.x, d.y);
+        return shape.transform(t);
+    }
+
+    public int getZIndex() {
+        return depth;
+    }
+
+    public int compareTo(ShadowCaster s) {
+        return (depth - s.getZIndex());
     }
 
 }

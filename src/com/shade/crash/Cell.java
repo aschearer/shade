@@ -70,4 +70,26 @@ public class Cell {
             }
         }
     }
+
+    /**
+     * Returns true if the body intersects with any other bodies.
+     * @param b
+     * @return
+     */
+    public boolean testForIntersection(Body b) {
+        LinkedList<Body> obstacles = new LinkedList<Body>(bodies);
+        for (Body subject : bodies) {
+            obstacles.remove(); /* Pop off the current body */
+            if (Collider.testAndReturn(subject, obstacles)) {
+                return true;
+            }
+            /* Check against neighbors */
+            for (Cell neighbor : grid.neighbors(this, subject)) {
+                if (Collider.testAndReturn(subject, neighbor.bodies)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

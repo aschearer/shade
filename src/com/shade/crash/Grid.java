@@ -5,6 +5,9 @@ import java.util.LinkedList;
 import java.util.Set;
 
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.geom.Vector2f;
+
+import com.shade.crash.TestBody.TestShape;
 
 public class Grid {
     /** The number of cells across and high. */
@@ -61,11 +64,13 @@ public class Grid {
     public void clear() {
         bodies.clear();
     }
-    
+
     public void debugDraw(Graphics g) {
         for (int x = 0; x < cells.length; x++) {
             for (int y = 0; y < cells[x].length; y++) {
-                g.drawRect(x * cellWidth, y * cellHeight, cellWidth, cellHeight);
+                g
+                        .drawRect(x * cellWidth, y * cellHeight, cellWidth,
+                                  cellHeight);
             }
         }
     }
@@ -162,5 +167,18 @@ public class Grid {
             neighbors.add(bottomRight);
         }
         return neighbors;
+    }
+
+    /**
+     * Return true if there a circle with radius r and center p does not
+     * intersect with anything.
+     * 
+     * @param p
+     * @return
+     */
+    public boolean hasRoom(Vector2f p, float r) {
+        Body test = new TestBody(TestShape.CIRCLE, p, r, r);
+        Cell target = getTargetCell(test);
+        return (target != null && !target.testForIntersection(test));
     }
 }

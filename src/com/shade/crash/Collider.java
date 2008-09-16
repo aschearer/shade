@@ -1,5 +1,7 @@
 package com.shade.crash;
 
+import java.util.LinkedList;
+
 import org.newdawn.slick.geom.Shape;
 
 /** A collection of static methods for intersection testing. */
@@ -48,5 +50,20 @@ public class Collider {
      */
     private static boolean checkPrimitives(Shape one, Shape two) {
         return one.intersects(two);
+    }
+
+    /**
+     * Return true if the subject intersects with any of the obstacles.
+     * @param subject
+     * @param obstacles
+     * @return
+     */
+    public static boolean testAndReturn(Body subject, LinkedList<Body> obstacles) {
+        for (Body obstacle : obstacles) {
+            if (!subject.equals(obstacle) && intersecting(subject, obstacle)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

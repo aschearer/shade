@@ -2,7 +2,7 @@ package com.shade.shadows;
 
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Queue;
+import java.util.PriorityQueue;
 
 /**
  * A collection which orders things according to their depth.
@@ -11,10 +11,10 @@ import java.util.Queue;
  */
 public class ZBuffer implements Iterable<ShadowCaster> {
     
-    private Queue<ShadowCaster> casters;
+    private PriorityQueue<ShadowCaster> casters;
     
     public ZBuffer() {
-        casters = new LinkedList<ShadowCaster>();
+        casters = new PriorityQueue<ShadowCaster>();
     }
 
     public void add(ShadowCaster s) {
@@ -28,14 +28,6 @@ public class ZBuffer implements Iterable<ShadowCaster> {
 
     public void clear() {
         casters.clear();
-    }
-    
-    public ShadowCaster get(int i) {
-        return ((LinkedList<ShadowCaster>) casters).get(i);
-    }
-    
-    public int size() {
-        return casters.size();
     }
     
     public Iterator<ShadowCaster> iterator() {

@@ -1,12 +1,14 @@
 package com.shade.shadows;
 
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Entity;
 import com.shade.base.Level;
 import com.shade.crash.Body;
 import com.shade.crash.Grid;
+import com.shade.entities.Mushroom;
 
 /**
  * Builds on top of the CrashLevel to add support for shadows.
@@ -46,6 +48,15 @@ public class ShadowLevel implements Level {
         grid.remove((Body) e);
         buffer.remove((ShadowCaster) e);
     }
+    
+    public void plant() {
+        try {
+            Mushroom m = shadowscape.plant();
+            add(m);
+        } catch (SlickException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void render(Graphics g) {
         shadowscape.render(g);
@@ -55,13 +66,13 @@ public class ShadowLevel implements Level {
     }
     
     public void updateShadowscape(float direction) {
-        shadowscape = new Shadowscape(buffer, direction);
+        shadowscape = new Shadowscape(buffer, direction, grid);
     }
 
     public void update(StateBasedGame game, int delta) {
         grid.update();
-        for (int i = 0; i < buffer.size(); i++) {
-            buffer.get(i).update(game, delta);
+        for (ShadowCaster e : buffer) {
+            e.update(game, delta);
         }
     }
 

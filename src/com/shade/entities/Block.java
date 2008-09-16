@@ -106,8 +106,8 @@ public class Block extends Body implements ShadowCaster {
         return depth;
     }
 
-    public int compareTo(ShadowCaster c) {
-        return (depth - c.getZIndex());
+    public int compareTo(ShadowCaster s) {
+        return (depth - s.getZIndex());
     }
 
 }
