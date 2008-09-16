@@ -5,19 +5,24 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Rectangle;
+import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Transform;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Entity;
 import com.shade.base.Level;
+import com.shade.crash.Body;
+import com.shade.shadows.ShadowCaster;
 import com.shade.util.Geom;
 
-public class Block extends ShadowCaster {
+public class Block extends Body implements ShadowCaster {
 
     private Image sprite;
+    private int depth;
+    private Level level;
 
-    public Block(float x, float y, float w, float h, float d) throws SlickException {
+    public Block(float x, float y, float w, float h, int d) throws SlickException {
         initShape(x, y, w, h);
         initSprite();
         depth = d;
@@ -31,56 +36,47 @@ public class Block extends ShadowCaster {
         shape = new Rectangle(x, y, w, h);
     }
 
-    @Override
-    public void castShadow(float direction) {
+    public Shape castShadow(float direction) {
         Vector2f v = Geom.calculateVector(depth * 10, direction);
 
         Transform t = Transform.createTranslateTransform(v.x, v.y);
         Polygon extent = (Polygon) shape.transform(t);
         
-        int index1 = 0;
-        int index2 = 2;
+        int index = 0;
         
         if (v.y > 0) { // bottom
             if (v.x > 0) { // right
-                index1 = 0;
+                index = 0;
             } else { // left
-                index1 = 1;
+                index = 1;
             }
         } else { // top
             if (v.x > 0) { // right
-                index1 = 3;
+                index = 3;
             } else { // left
-                index1 = 2;
+                index = 2;
             }
         }
-        
-        if (getWidth() < getHeight()) {
-            index1 = (4 - (index1 + 2)) % 4;
-        }
-        
-        index2 = (4 + (index1 + 2)) % 4;
         
         Polygon shade = new Polygon();   
         
         for (int i = 1; i < 4; i++) {
-            int c = (4 + index1 + i) % 4;
+            int c = (4 + index + i) % 4;
             float[] p = extent.getPoint(c);
             shade.addPoint(p[0], p[1]);
         }
         
-        for (int i = 1; i < 4; i++) {
-            int c = (4 + index2 + i) % 4;
+        for (int i = 3; i > 0; i--) {
+            int c = (4 + index + i) % 4;
             float[] p = shape.getPoint(c);
             shade.addPoint(p[0], p[1]);
         }
         
-        shadow = shade;
+        return shade;
     }
 
     public void addToLevel(Level l) {
-        // TODO Auto-generated method stub
-
+        level = l;
     }
 
     public Role getRole() {
@@ -98,13 +94,20 @@ public class Block extends ShadowCaster {
     }
 
     public void render(Graphics g) {
-        renderShadow(g);
         sprite.draw(getX(), getY(), getWidth(), getHeight());
     }
 
     public void update(StateBasedGame game, int delta) {
         // TODO Auto-generated method stub
 
+    }
+
+    public int getZIndex() {
+        return depth;
+    }
+
+    public int compareTo(ShadowCaster c) {
+        return (depth - c.getZIndex());
     }
 
 }
