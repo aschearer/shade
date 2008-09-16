@@ -21,12 +21,16 @@ public class Mushroom extends Body implements ShadowCaster {
     private enum Status {
         IDLE, PICKED
     };
+    
+    public boolean shaded;
 
     private static final float RADIUS = 3f;
-    private static final float SCALE_INCREMENT = .1f;
+    private static final float SCALE_INCREMENT = .01f;
     private static final float MAX_SCALE = 3f;
+    private static final float MIN_SCALE = 1.2f;
     private static final int MAX_DISTANCE = 2500;
     private static final float SPEED = 1.5f;
+
 
     private Status currentStatus;
     private float timer;
@@ -45,12 +49,15 @@ public class Mushroom extends Body implements ShadowCaster {
      */
     public Body prev, next;
 
+    private Level level;
+
     public Mushroom(float x, float y) throws SlickException {
         initShape(x, y);
         initSprite();
         currentStatus = Status.IDLE;
         scale = 1;
         depth = 2;
+        shaded = true;
     }
 
     private void initSprite() throws SlickException {
@@ -66,7 +73,7 @@ public class Mushroom extends Body implements ShadowCaster {
     }
 
     public void addToLevel(Level l) {
-        // TODO Auto-generated method stub
+        level = l;
     }
 
     public void removeFromLevel(Level l) {
@@ -85,13 +92,23 @@ public class Mushroom extends Body implements ShadowCaster {
 
     public void update(StateBasedGame game, int delta) {
         timer += delta;
-        if (currentStatus == Status.IDLE && timer > 1000) {
+        if (currentStatus == Status.IDLE && shaded) {
             timer = 0;
             if (scale < MAX_SCALE) {
                 scale += SCALE_INCREMENT;
                 grow();
+            } else {
+                System.out.println(scale);
             }
             /* Turn to a monster */
+        }
+        if (currentStatus == Status.IDLE && !shaded) {
+            if (scale > MIN_SCALE) {
+                scale += -SCALE_INCREMENT;
+                grow();
+            } else {
+                level.remove(this);
+            }
         }
         if (currentStatus == Status.PICKED
                 && CrashGeom.distance2(prev, this) > MAX_DISTANCE) {

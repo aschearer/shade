@@ -5,6 +5,7 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Circle;
+import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Transform;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
@@ -12,15 +13,17 @@ import org.newdawn.slick.state.StateBasedGame;
 import com.shade.base.Entity;
 import com.shade.base.Level;
 import com.shade.crash.Body;
+import com.shade.shadows.ShadowCaster;
 import com.shade.util.Geom;
 
-public class Player extends Body {
+public class Player extends Body implements ShadowCaster {
 
-    private static final float SPEED = 1.5f;
+    private static final float SPEED = 1.2f;
     /* In radians... */
     private static final float TORQUE = .05f;
 
     private float heading;
+    private float dx, dy;
     
     private Level level;
     private Mushroom shroomie;
@@ -52,6 +55,57 @@ public class Player extends Body {
     }
     
     public void onCollision(Entity obstacle) {
+        pickMushroom(obstacle);
+        /* Or... */
+        collectMushrooms(obstacle);
+        /* Or... */
+        moveOutOfIntersection(obstacle);
+    }
+
+    private void moveOutOfIntersection(Entity obstacle) {
+        if (obstacle.getRole() == Role.OBSTACLE) {
+            Body b = (Body) obstacle;
+            
+            /* Step back no matter what. */
+            float cx = -dx;
+            float cy = -dy;
+            
+            float x = getX();
+            float xc = getCenterX();
+            float w = getWidth();
+            
+            float bx = b.getX();
+            float bxc = b.getCenterX();
+            float bw = b.getWidth();
+            
+            if (getX() + getWidth() < b.getX() || 
+                getX() > b.getX() + b.getWidth()) {
+                cy += dy;
+            }
+            
+            Transform t = Transform.createTranslateTransform(cx, cy);
+            shape = shape.transform(t);
+        }
+    }
+
+    private void collectMushrooms(Entity obstacle) {
+        if (obstacle.getRole() == Role.BASKET && shroomie != null) {
+            Mushroom head = shroomie;
+            while (head.next != null) {
+                Mushroom m = head;
+                head = (Mushroom) head.next;
+                m.prev = null; /* Kill the node. */
+                m.next = null;
+                level.remove(m);
+            }
+            /* Kill the last damn mushroom. */
+            shroomie = null;
+            head.prev = null;
+            level.remove(head);
+        }
+    }
+
+    private void pickMushroom(Entity obstacle) {
         if (obstacle.getRole() == Role.MUSHROOM) {
             Mushroom m = (Mushroom) obstacle;
             if (shroomie == null) { /* First shroom picked. */
@@ -69,27 +123,6 @@ public class Player extends Body {
             }
             head.next = m;
             m.prev = head;
-        }
-        
-
-        if (obstacle.getRole() == Role.BASKET && shroomie != null) {
-            Mushroom head = shroomie;
-            while (head.next != null) {
-                Mushroom m = head;
-                head = (Mushroom) head.next;
-                m.prev = null; /* Kill the node. */
-                m.next = null;
-                level.remove(m);
-            }
-            /* Kill the last damn mushroom. */
-            shroomie = null;
-            head.prev = null;
-            level.remove(head);
-        }
-        
-        if (obstacle.getRole() == Role.OBSTACLE) {
-            // TODO improve this shitty approach.
-            move(-SPEED, heading);
         }
     }
 
@@ -121,6 +154,8 @@ public class Player extends Body {
     /* Move the shape a given amount across two dimensions. */
     private void move(float magnitude, float direction) {
         Vector2f d = Geom.calculateVector(magnitude, direction);
+        dx = d.x;
+        dy = d.y;
         Transform t = Transform.createTranslateTransform(d.x, d.y);
         shape = shape.transform(t);
     }
@@ -131,6 +166,20 @@ public class Player extends Body {
         Transform t = Transform.createRotateTransform(radians, x, y);
         shape = shape.transform(t);
         heading += radians;
+    }
+
+    public Shape castShadow(float direction) {
+        Vector2f d = Geom.calculateVector(5 * getZIndex(), direction);
+        Transform t = Transform.createTranslateTransform(d.x, d.y);
+        return shape.transform(t);
+    }
+
+    public int getZIndex() {
+        return 3;
+    }
+
+    public int compareTo(ShadowCaster s) {
+        return getZIndex() - s.getZIndex();
     }
 
 }

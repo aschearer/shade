@@ -4,13 +4,15 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Rectangle;
+import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Entity;
 import com.shade.base.Level;
 import com.shade.crash.Body;
+import com.shade.shadows.ShadowCaster;
 
-public class Basket extends Body {
+public class Basket extends Body implements ShadowCaster {
     
     private Image sprite;
 
@@ -53,6 +55,18 @@ public class Basket extends Body {
     public void update(StateBasedGame game, int delta) {
         // TODO Auto-generated method stub
         
+    }
+
+    public Shape castShadow(float direction) {
+        return new Rectangle(0, 0, 0, 0);
+    }
+
+    public int getZIndex() {
+        return 1;
+    }
+
+    public int compareTo(ShadowCaster s) {
+        return getZIndex() - s.getZIndex();
     }
 
 }

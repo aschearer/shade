@@ -1,6 +1,5 @@
 package com.shade.states;
 
-import java.util.LinkedList;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -9,13 +8,10 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import com.shade.base.Level;
-import com.shade.crash.CrashLevel;
 import com.shade.crash.Grid;
 import com.shade.entities.Basket;
 import com.shade.entities.Block;
 import com.shade.entities.Fence;
-import com.shade.entities.Mushroom;
 import com.shade.entities.Player;
 import com.shade.shadows.ShadowCaster;
 import com.shade.shadows.ShadowLevel;
@@ -31,6 +27,8 @@ public class InGameState extends BasicGameState {
     private float sunAngle;
 
     private ShadowCaster[] b;
+
+    private Basket basket;
     
     @Override
     public int getID() {
@@ -41,19 +39,15 @@ public class InGameState extends BasicGameState {
             throws SlickException {
         initSprites();
         sunAngle = 2.5f;
-        level = new ShadowLevel(new Grid(8, 6, 100));
+        Grid grid = new Grid(8, 6, 100);
+        level = new ShadowLevel(grid);
         
         /* TODO there's a rendering priority problem involved here... */
-//        Basket bt = new Basket(456, 232, 65, 40);
-//        level.add(bt);
+        basket = new Basket(456, 232, 65, 40);
+        grid.add(basket);
         
-//        Mushroom[] m = new Mushroom[1];
-//        m[0] = new Mushroom(200, 200);
-//        
-//        level.add(m[0]);
-        
-//        Player player = new Player(400, 350, 14);
-//        level.add(player);
+        Player player = new Player(400, 350, 14);
+        level.add(player);
         
         b = new ShadowCaster[14];
         // boxes
@@ -79,6 +73,11 @@ public class InGameState extends BasicGameState {
         }
         
         level.updateShadowscape(sunAngle);
+        
+        // add five mushrooms to start
+        for (int i = 0; i < 5; i++) {
+            level.plant();
+        }
     }
 
     private void initSprites() throws SlickException {
@@ -89,6 +88,7 @@ public class InGameState extends BasicGameState {
     public void render(GameContainer container, StateBasedGame game, Graphics g)
             throws SlickException {
         backgroundSprite.draw();
+        basket.render(g);
         level.render(g);
         trimSprite.draw();
     }
@@ -96,9 +96,10 @@ public class InGameState extends BasicGameState {
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
         level.update(game, delta);
+        basket.update(game, delta);
         totalTime += delta;
         sunTimer += delta;
-        if (totalTime > 10000) {
+        if (totalTime > 8000) {
             level.plant();
             totalTime = 0;
         }

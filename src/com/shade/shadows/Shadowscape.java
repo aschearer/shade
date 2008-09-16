@@ -63,7 +63,7 @@ public class Shadowscape {
             return false;
         }
         // p is sufficiently far from another object
-        if (!grid.hasRoom(p, 18)) {
+        if (!grid.hasRoom(p, 24)) {
             return false;
         }
         // ok we're done probing
@@ -104,6 +104,22 @@ public class Shadowscape {
         g.flush();
         g.setDrawMode(Graphics.MODE_NORMAL);
         g.setColor(Color.white);
+    }
+
+    /**
+     * Returns true if the mushroom's center is in the shadowscape.
+     * 
+     * TODO make this more accurate?
+     * @param m
+     * @return
+     */
+    public boolean contains(Mushroom m) {
+        for (Shape s : shadows) {
+            if (s.contains(m.getCenterX(), m.getCenterY())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
