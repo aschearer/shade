@@ -63,7 +63,7 @@ public class Shadowscape {
             return false;
         }
         // p is sufficiently far from another object
-        if (!grid.hasRoom(p, 10)) {
+        if (!grid.hasRoom(p, 18)) {
             return false;
         }
         // ok we're done probing

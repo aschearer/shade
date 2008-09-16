@@ -24,7 +24,7 @@ public class Mushroom extends Body implements ShadowCaster {
 
     private static final float RADIUS = 3f;
     private static final float SCALE_INCREMENT = .1f;
-    private static final float MAX_SCALE = 5f;
+    private static final float MAX_SCALE = 3f;
     private static final int MAX_DISTANCE = 2500;
     private static final float SPEED = 1.5f;
 

@@ -77,17 +77,15 @@ public class Cell {
      * @return
      */
     public boolean testForIntersection(Body b) {
-        LinkedList<Body> obstacles = new LinkedList<Body>(bodies);
-        for (Body subject : bodies) {
-            obstacles.remove(); /* Pop off the current body */
-            if (Collider.testAndReturn(subject, obstacles)) {
+        for (Body obstacle : bodies) {
+            if (Collider.testAndReturn(b, bodies)) {
                 return true;
             }
-            /* Check against neighbors */
-            for (Cell neighbor : grid.neighbors(this, subject)) {
-                if (Collider.testAndReturn(subject, neighbor.bodies)) {
-                    return true;
-                }
+        }
+        /* Check against neighbors */
+        for (Cell neighbor : grid.neighbors(this, b)) {
+            if (Collider.testAndReturn(b, neighbor.bodies)) {
+                return true;
             }
         }
         return false;

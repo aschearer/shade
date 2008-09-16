@@ -40,8 +40,7 @@ public class TestBody extends Body {
     }
 
     public void render(Graphics g) {
-        // TODO Auto-generated method stub
-
+        g.draw(shape);
     }
 
     public void update(StateBasedGame game, int delta) {
