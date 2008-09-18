@@ -20,7 +20,6 @@ public class Block extends Body implements ShadowCaster {
 
     private Image sprite;
     private int depth;
-    private Level level;
 
     public Block(float x, float y, float w, float h, int d) throws SlickException {
         initShape(x, y, w, h);
@@ -76,7 +75,7 @@ public class Block extends Body implements ShadowCaster {
     }
 
     public void addToLevel(Level l) {
-        level = l;
+        
     }
 
     public Role getRole() {

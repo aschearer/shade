@@ -10,12 +10,11 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Entity;
 import com.shade.base.Level;
-import com.shade.crash.Body;
 import com.shade.crash.util.CrashGeom;
 import com.shade.shadows.ShadowCaster;
 import com.shade.util.Geom;
 
-public class Mushroom extends Body implements ShadowCaster {
+public class Mushroom extends Linkable implements ShadowCaster {
 
     private enum Status {
         IDLE, PICKED, DEAD
@@ -31,27 +30,17 @@ public class Mushroom extends Body implements ShadowCaster {
     private static final float SPEED = 1.5f;
 
     private Status currentStatus;
-    private float timer;
     private float scale;
 
+    private Level level;
     private Image sprite;
 
-    /**
-     * Mushrooms are a linked list!
-     * 
-     * Things worth noting... 1. When not picked both prev and next should be
-     * null. 2. When picked the head of the list will be the player! 3. Every
-     * other item on the list will be a shroom.
-     */
-    public Body prev, next;
-
-    private Level level;
 
     public Mushroom(float x, float y) throws SlickException {
         initShape(x, y);
         initSprite();
         currentStatus = Status.IDLE;
-        scale = 1;
+        scale = MIN_SCALE;
         shaded = true;
     }
 
@@ -72,12 +61,14 @@ public class Mushroom extends Body implements ShadowCaster {
     }
 
     public void removeFromLevel(Level l) {
+        currentStatus = Status.DEAD;
         // don't break a chain of mushrooms
         if (next != null) {
-            if (prev instanceof Mushroom) {
-                ((Mushroom) prev).next = next;
-            }
-            ((Mushroom) next).prev = prev;
+            prev.next = next;
+            next.prev = prev;
+        }
+        if (prev != null) {
+            prev.next = next;
         }
     }
 
@@ -95,29 +86,46 @@ public class Mushroom extends Body implements ShadowCaster {
     }
 
     public void update(StateBasedGame game, int delta) {
-        timer += delta;
-        if (shaded) {
-            timer = 0;
-            if (scale < MAX_SCALE) {
-                scale += SCALE_INCREMENT;
-                resize();
-            }
-            /* Turn to a monster */
+        if (currentStatus == Status.DEAD) {
+            return;
         }
-        if (!shaded) {
-            if (scale > MIN_SCALE) {
-                scale += -SCALE_INCREMENT / 2;
-                resize();
-            } else {
-                level.remove(this);
-                currentStatus = Status.DEAD;
-            }
+        
+        if (shaded && !tooBig()) {
+            scale += SCALE_INCREMENT;
+            resize();
         }
-        if (currentStatus == Status.PICKED
-                && CrashGeom.distance2(prev, this) > MAX_DISTANCE) {
+
+        if (tooBig()) {
+            /* TODO Turn to a monster. */
+        }
+        
+        if (!shaded && !tooSmall()) {
+            scale += -SCALE_INCREMENT / 2;
+            resize();
+        }
+        
+        if (tooSmall()) {
+            currentStatus = Status.DEAD;
+            level.remove(this);
+            return; // Stop execution here
+        }
+        
+        if (currentStatus == Status.PICKED && tooFar()) {            
             float angle = CrashGeom.calculateAngle(prev, this);
             move(SPEED, angle);
         }
+    }
+
+    private boolean tooFar() {
+        return CrashGeom.distance2(prev, this) > MAX_DISTANCE;
+    }
+
+    private boolean tooSmall() {
+        return scale < MIN_SCALE;
+    }
+
+    private boolean tooBig() {
+        return scale > MAX_SCALE;
     }
 
     /* Move the shape a given amount across two dimensions. */

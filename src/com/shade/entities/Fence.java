@@ -19,7 +19,6 @@ import com.shade.util.Geom;
 public class Fence extends Body implements ShadowCaster {
 
     private int depth;
-    private Level level;
 
     public Fence(float x, float y, float w, float h, int d)
             throws SlickException {
@@ -72,7 +71,7 @@ public class Fence extends Body implements ShadowCaster {
     }
 
     public void addToLevel(Level l) {
-        level = l;
+        // TODO Auto-generated method stub        
     }
 
     public Role getRole() {

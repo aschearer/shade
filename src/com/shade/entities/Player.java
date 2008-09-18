@@ -16,7 +16,7 @@ import com.shade.crash.Body;
 import com.shade.shadows.ShadowCaster;
 import com.shade.util.Geom;
 
-public class Player extends Body implements ShadowCaster {
+public class Player extends Linkable implements ShadowCaster {
 
     private static final float SPEED = 1.2f;
     /* In radians... */
@@ -26,7 +26,6 @@ public class Player extends Body implements ShadowCaster {
     private float dx, dy;
     
     private Level level;
-    private Mushroom shroomie;
     private Image sprite;
 
     public Player(float x, float y, float r) throws SlickException {
@@ -89,17 +88,17 @@ public class Player extends Body implements ShadowCaster {
     }
 
     private void collectMushrooms(Entity obstacle) {
-        if (obstacle.getRole() == Role.BASKET && shroomie != null) {
-            Mushroom head = shroomie;
+        if (obstacle.getRole() == Role.BASKET && next != null) {
+            Linkable head = next;
             while (head.next != null) {
-                Mushroom m = head;
-                head = (Mushroom) head.next;
+                Linkable m = head;
+                head = head.next;
                 m.prev = null; /* Kill the node. */
                 m.next = null;
                 level.remove(m);
             }
             /* Kill the last damn mushroom. */
-            shroomie = null;
+            next = null;
             head.prev = null;
             level.remove(head);
         }
@@ -107,16 +106,16 @@ public class Player extends Body implements ShadowCaster {
 
     private void pickMushroom(Entity obstacle) {
         if (obstacle.getRole() == Role.MUSHROOM) {
-            Mushroom m = (Mushroom) obstacle;
-            if (shroomie == null) { /* First shroom picked. */
-                shroomie = m;
-                shroomie.prev = this;
+            Linkable m = (Linkable) obstacle;
+            if (next == null) { /* First shroom picked. */
+                next = m;
+                next.prev = this;
                 return; /* Exit, we're finished. */
             }
-            Mushroom head = shroomie;
+            Linkable head = next;
             /* Cycle through list and add to end, watch out for duplicates. */
             while (!head.equals(m) && head.next != null) {
-                head = (Mushroom) head.next;
+                head = (Linkable) head.next;
             }
             if (m.equals(head)) {
                 return; /* Exit we're not dealing with a duplicate. */
