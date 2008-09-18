@@ -69,13 +69,13 @@ public class Player extends Linkable implements ShadowCaster {
             float cx = -dx;
             float cy = -dy;
             
-            float x = getX();
-            float xc = getCenterX();
-            float w = getWidth();
-            
-            float bx = b.getX();
-            float bxc = b.getCenterX();
-            float bw = b.getWidth();
+//            float x = getX();
+//            float xc = getCenterX();
+//            float w = getWidth();
+//            
+//            float bx = b.getX();
+//            float bxc = b.getCenterX();
+//            float bw = b.getWidth();
             
             if (getX() + getWidth() < b.getX() || 
                 getX() > b.getX() + b.getWidth()) {

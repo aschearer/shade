@@ -11,6 +11,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import com.shade.crash.Grid;
 import com.shade.entities.Basket;
 import com.shade.entities.Block;
+import com.shade.entities.Dome;
 import com.shade.entities.Fence;
 import com.shade.entities.Player;
 import com.shade.shadows.ShadowCaster;
@@ -55,11 +56,11 @@ public class InGameState extends BasicGameState {
         b[4] = new Block(545, 450, 80, 80, 10);
         b[5] = new Block(445, 520, 80, 80, 10);
         // domes
-        b[6] = new Block(175, -10, 88, 88, 8);
-        b[7] = new Block(300, 18, 50, 50, 6);
-        b[8] = new Block(278, 90, 64, 64, 7);
-        b[9] = new Block(618, 15, 80, 80, 8);
-        b[10] = new Block(700, 102, 120, 120, 11);
+        b[6] = new Dome(180, 25, 44, 8);
+        b[7] = new Dome(300, 18, 25, 4);
+        b[8] = new Dome(288, 90, 32, 5);
+        b[9] = new Dome(648, 55, 40, 7);
+        b[10] = new Dome(745, 132, 60, 11);
         // fences
         b[11] = new Fence(150, 150, 11, 120, 6);
         b[12] = new Fence(390, 140, 120, 11, 6);

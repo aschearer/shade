@@ -14,6 +14,22 @@ public class CrashGeom {
         return (x + y);
     }
 
+    public static float distance2(Body one, float x2, float y2) {
+        float x = one.getCenterX() - x2;
+        x = x * x;
+        float y = one.getCenterY() - y2;
+        y = y * y;
+        return (x + y);
+    }
+    
+    public static float distance(Body one, Body two) {
+        return (float) Math.sqrt(distance2(one, two));
+    }
+    
+    public static float distance(Body one, float x2, float y2) {
+        return (float) Math.sqrt(distance2(one, x2, y2));
+    }
+
     public static float calculateAngle(Body one, Body two) {
         float x1 = one.getCenterX();
         float y1 = one.getCenterY();
@@ -21,4 +37,5 @@ public class CrashGeom {
         float y2 = two.getCenterY();
         return Geom.calculateAngle(x1, y1, x2, y2);
     }
+
 }
