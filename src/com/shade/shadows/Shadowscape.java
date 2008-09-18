@@ -19,7 +19,10 @@ public class Shadowscape {
     public Shadowscape(ZBuffer buffer, float direction, Grid grid) {
         shadows = new LinkedList<Shape>();
         for (ShadowCaster c : buffer) {
-            shadows.add(c.castShadow(direction));
+            Shape shadow = c.castShadow(direction);
+            if (shadow != null) {
+                shadows.add(shadow);
+            }
         }
         this.grid = grid;
     }
@@ -63,7 +66,7 @@ public class Shadowscape {
             return false;
         }
         // p is sufficiently far from another object
-        if (!grid.hasRoom(p, 24)) {
+        if (!grid.hasRoom(p, 48)) {
             return false;
         }
         // ok we're done probing
@@ -93,16 +96,14 @@ public class Shadowscape {
      * @param g
      */
     public void render(Graphics g) {
-        g.flush();
-        g.setDrawMode(Graphics.MODE_NORMAL);
+        g.setAntiAlias(true);
         Color shade = Color.black;
 //        shade.a = .5f;
         g.setColor(shade);
         for (Shape s : shadows) {
             g.fill(s);
         }
-        g.flush();
-        g.setDrawMode(Graphics.MODE_NORMAL);
+        g.setAntiAlias(false);
         g.setColor(Color.white);
     }
 

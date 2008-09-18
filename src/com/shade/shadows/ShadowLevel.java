@@ -25,13 +25,11 @@ public class ShadowLevel implements Level {
     private Grid grid;
     private Shadowscape shadowscape;
     private ZBuffer buffer;
-    private LinkedList<Mushroom> shrooms;
     private LinkedList<Entity> out_queue;
     
     public ShadowLevel(Grid grid) {
         this.grid = grid;
         buffer = new ZBuffer();
-        shrooms = new LinkedList<Mushroom>();
         out_queue = new LinkedList<Entity>();
     }
 
@@ -39,9 +37,6 @@ public class ShadowLevel implements Level {
         e.addToLevel(this);
         grid.add((Body) e);
         buffer.add((ShadowCaster) e);
-        if (e instanceof Mushroom) {
-            shrooms.add((Mushroom) e);
-        }
     }
 
     public void clear() {
@@ -50,16 +45,12 @@ public class ShadowLevel implements Level {
         }
         grid.clear();
         buffer.clear();
-        shrooms.clear();
     }
 
     public void remove(Entity e) {
         e.removeFromLevel(this);
         grid.remove((Body) e);
         out_queue.add(e);
-        if (e instanceof Mushroom) {
-            shrooms.remove((Mushroom) e);
-        }
     }
     
     public void plant() {
@@ -80,8 +71,10 @@ public class ShadowLevel implements Level {
     
     public void updateShadowscape(float direction) {
         shadowscape = new Shadowscape(buffer, direction, grid);
-        for (Mushroom m : shrooms) {
-            m.shaded = shadowscape.contains(m);
+        for (ShadowCaster s : buffer) {
+            if (s instanceof Mushroom) {
+                ((Mushroom) s).shaded = shadowscape.contains((Mushroom) s);
+            }
         }
     }
 

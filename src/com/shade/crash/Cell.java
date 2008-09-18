@@ -77,10 +77,8 @@ public class Cell {
      * @return
      */
     public boolean testForIntersection(Body b) {
-        for (Body obstacle : bodies) {
-            if (Collider.testAndReturn(b, bodies)) {
-                return true;
-            }
+        if (Collider.testAndReturn(b, bodies)) {
+            return true;
         }
         /* Check against neighbors */
         for (Cell neighbor : grid.neighbors(this, b)) {

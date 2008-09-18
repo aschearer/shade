@@ -5,7 +5,6 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Shape;
-import org.newdawn.slick.geom.Transform;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -19,25 +18,22 @@ import com.shade.util.Geom;
 public class Mushroom extends Body implements ShadowCaster {
 
     private enum Status {
-        IDLE, PICKED
+        IDLE, PICKED, DEAD
     };
-    
+
     public boolean shaded;
 
     private static final float RADIUS = 3f;
-    private static final float SCALE_INCREMENT = .01f;
+    private static final float SCALE_INCREMENT = .005f;
     private static final float MAX_SCALE = 3f;
     private static final float MIN_SCALE = 1.2f;
     private static final int MAX_DISTANCE = 2500;
     private static final float SPEED = 1.5f;
 
-
     private Status currentStatus;
     private float timer;
     private float scale;
-    
-    private int depth;
-    
+
     private Image sprite;
 
     /**
@@ -56,7 +52,6 @@ public class Mushroom extends Body implements ShadowCaster {
         initSprite();
         currentStatus = Status.IDLE;
         scale = 1;
-        depth = 2;
         shaded = true;
     }
 
@@ -65,7 +60,7 @@ public class Mushroom extends Body implements ShadowCaster {
     }
 
     private void initShape(float x, float y) {
-        shape = new Circle(x - RADIUS, y - RADIUS, RADIUS);
+        shape = new Circle(x, y, RADIUS);
     }
 
     public Role getRole() {
@@ -77,7 +72,13 @@ public class Mushroom extends Body implements ShadowCaster {
     }
 
     public void removeFromLevel(Level l) {
-        // TODO Auto-generated method stub
+        // don't break a chain of mushrooms
+        if (next != null) {
+            if (prev instanceof Mushroom) {
+                ((Mushroom) prev).next = next;
+            }
+            ((Mushroom) next).prev = prev;
+        }
     }
 
     public void onCollision(Entity obstacle) {
@@ -87,27 +88,29 @@ public class Mushroom extends Body implements ShadowCaster {
     }
 
     public void render(Graphics g) {
+        if (currentStatus == Status.DEAD) {
+            return;
+        }
         sprite.draw(getX(), getY(), getWidth(), getHeight());
     }
 
     public void update(StateBasedGame game, int delta) {
         timer += delta;
-        if (currentStatus == Status.IDLE && shaded) {
+        if (shaded) {
             timer = 0;
             if (scale < MAX_SCALE) {
                 scale += SCALE_INCREMENT;
-                grow();
-            } else {
-                System.out.println(scale);
+                resize();
             }
             /* Turn to a monster */
         }
-        if (currentStatus == Status.IDLE && !shaded) {
+        if (!shaded) {
             if (scale > MIN_SCALE) {
-                scale += -SCALE_INCREMENT;
-                grow();
+                scale += -SCALE_INCREMENT / 2;
+                resize();
             } else {
                 level.remove(this);
+                currentStatus = Status.DEAD;
             }
         }
         if (currentStatus == Status.PICKED
@@ -120,26 +123,37 @@ public class Mushroom extends Body implements ShadowCaster {
     /* Move the shape a given amount across two dimensions. */
     private void move(float magnitude, float direction) {
         Vector2f d = Geom.calculateVector(magnitude, direction);
-        Transform t = Transform.createTranslateTransform(d.x, d.y);
-        shape = shape.transform(t);
+        // Transform t = Transform.createTranslateTransform(d.x, d.y);
+        // shape = shape.transform(t);
+        shape.setCenterX(shape.getCenterX() + d.x);
+        shape.setCenterY(shape.getCenterY() + d.y);
     }
 
-    private void grow() {
+    private void resize() {
+        float x = shape.getCenterX();
+        float y = shape.getCenterY();
         ((Circle) shape).setRadius(RADIUS * scale);
+        shape.setCenterX(x);
+        shape.setCenterY(y);
+
+        // // Right way doesn't work due to bug in Slick
+        // Transform t = Transform.createScaleTransform(scale, scale);
+        // shape = shape.transform(t);
     }
 
     public Shape castShadow(float direction) {
-        Vector2f d = Geom.calculateVector(2 * depth, direction);
-        Transform t = Transform.createTranslateTransform(d.x, d.y);
-        return shape.transform(t);
+        // Vector2f d = Geom.calculateVector(2 * depth, direction);
+        // Transform t = Transform.createTranslateTransform(d.x, d.y);
+        // return shape.transform(t);
+        return null;
     }
 
     public int getZIndex() {
-        return depth;
+        return 2;
     }
 
     public int compareTo(ShadowCaster s) {
-        return (depth - s.getZIndex());
+        return (getZIndex() - s.getZIndex());
     }
 
 }

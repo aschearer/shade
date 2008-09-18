@@ -16,7 +16,8 @@ public class TestBody extends Body {
 
     public TestBody(TestShape s, Vector2f p, float w, float h) {
         if (s == TestShape.CIRCLE) {
-            shape = new Circle(p.x, p.y, w / 2);
+            float r = w / 2;
+            shape = new Circle(p.x, p.y, r);
         }
     }
 

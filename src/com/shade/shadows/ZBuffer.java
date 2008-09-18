@@ -1,8 +1,10 @@
 package com.shade.shadows;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.PriorityQueue;
+import java.util.TreeSet;
 
 /**
  * A collection which orders things according to their depth.
@@ -11,14 +13,16 @@ import java.util.PriorityQueue;
  */
 public class ZBuffer implements Iterable<ShadowCaster> {
     
-    private PriorityQueue<ShadowCaster> casters;
+    private boolean dirty;
+    private LinkedList<ShadowCaster> casters;
     
     public ZBuffer() {
-        casters = new PriorityQueue<ShadowCaster>();
+        casters = new LinkedList<ShadowCaster>();
     }
 
     public void add(ShadowCaster s) {
         casters.add(s);
+        dirty = true;
     }
 
 
@@ -31,6 +35,9 @@ public class ZBuffer implements Iterable<ShadowCaster> {
     }
     
     public Iterator<ShadowCaster> iterator() {
+        if (dirty) {
+            Collections.sort(casters);
+        }
         return casters.iterator();
     }
     

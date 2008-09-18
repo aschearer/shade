@@ -58,7 +58,7 @@ public class Basket extends Body implements ShadowCaster {
     }
 
     public Shape castShadow(float direction) {
-        return new Rectangle(0, 0, 0, 0);
+        return null;
     }
 
     public int getZIndex() {

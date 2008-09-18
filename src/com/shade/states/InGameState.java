@@ -46,9 +46,6 @@ public class InGameState extends BasicGameState {
         basket = new Basket(456, 232, 65, 40);
         grid.add(basket);
         
-        Player player = new Player(400, 350, 14);
-        level.add(player);
-        
         b = new ShadowCaster[14];
         // boxes
         b[0] = new Block(150, 300, 135, 135, 16);
@@ -72,12 +69,16 @@ public class InGameState extends BasicGameState {
             level.add(b[i]);
         }
         
+        grid.update();
         level.updateShadowscape(sunAngle);
         
         // add five mushrooms to start
         for (int i = 0; i < 5; i++) {
             level.plant();
         }
+        
+        Player player = new Player(400, 350, 14);
+        level.add(player);
     }
 
     private void initSprites() throws SlickException {
@@ -100,13 +101,15 @@ public class InGameState extends BasicGameState {
         totalTime += delta;
         sunTimer += delta;
         if (totalTime > 8000) {
+            level.plant();            
+            level.plant();            
             level.plant();
             totalTime = 0;
         }
         
 //        if (sunTimer > 500) {
             sunTimer = 0;
-            sunAngle += .001f;
+            sunAngle += .0005f;
             level.updateShadowscape(sunAngle);
 //        }
     }
