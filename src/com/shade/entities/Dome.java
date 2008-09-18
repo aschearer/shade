@@ -21,12 +21,23 @@ public class Dome extends Body implements ShadowCaster {
 
     public Dome(float x, float y, float r, int d) throws SlickException {
         initShape(x, y, r);
-        initSprite();
         depth = d;
+        initSprite();
     }
 
     private void initSprite() throws SlickException {
-        sprite = new Image("entities/dome/dome.png");
+        String path = "entities/dome/dome.small.png";
+        if (depth > 4) {
+            path = "entities/dome/dome.medium.png";
+        }
+        if (depth > 6) {
+            path = "entities/dome/dome.big.png";
+        }
+        if (depth > 10) {
+            path = "entities/dome/dome.xbig.png";
+        }
+        
+        sprite = new Image(path);
     }
 
     private void initShape(float x, float y, float r) {

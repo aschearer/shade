@@ -142,21 +142,15 @@ public class Player extends Linkable implements ShadowCaster {
     private void testAndMove(Input input, int delta) {
         if (input.isKeyDown(Input.KEY_LEFT)) {
             rotate(-TORQUE);
-            move(SPEED, heading);
-            return;
         }
         if (input.isKeyDown(Input.KEY_RIGHT)) {
             rotate(TORQUE);
-            move(SPEED, heading);
-            return;
         }
         if (input.isKeyDown(Input.KEY_UP)) {
             move(SPEED, heading);
-            return;
         }
         if (input.isKeyDown(Input.KEY_DOWN)) {
             move(-SPEED, heading);
-            return;
         }
     }
 

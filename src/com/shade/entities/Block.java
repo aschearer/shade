@@ -37,12 +37,20 @@ public class Block extends Body implements ShadowCaster {
     public Block(float x, float y, float w, float h, int d)
             throws SlickException {
         initShape(x, y, w, h);
-        initSprite();
         depth = d;
+        initSprite();
     }
 
     private void initSprite() throws SlickException {
-        sprite = new Image("entities/block/block.png");
+        String path = "entities/block/block.small.png";
+        if (depth > 6) {
+            path = "entities/block/block.medium.png";
+        }
+        if (depth > 10) {
+            path = "entities/block/block.big.png";
+        }
+        
+        sprite = new Image(path);
     }
 
     private void initShape(float x, float y, float w, float h) {

@@ -1,7 +1,7 @@
 package com.shade.entities;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Rectangle;
@@ -19,26 +19,35 @@ import com.shade.util.Geom;
 public class Fence extends Body implements ShadowCaster {
 
     private int depth;
+    private Image sprite;
 
     public Fence(float x, float y, float w, float h, int d)
             throws SlickException {
         initShape(x, y, w, h);
         depth = d;
+        initSprite(w, h);
     }
-    
+
     private void initShape(float x, float y, float w, float h) {
         shape = new Rectangle(x, y, w, h);
     }
-    
+
+    private void initSprite(float w, float h) throws SlickException {
+        String path = "entities/fence/fence.vertical.png";
+        if (w > h) {
+            path = "entities/fence/fence.horizontal.png";
+        }
+        sprite = new Image(path);
+    }
 
     public Shape castShadow(float direction) {
         Vector2f v = Geom.calculateVector(depth * 10, direction);
 
         Transform t = Transform.createTranslateTransform(v.x, v.y);
         Polygon extent = (Polygon) shape.transform(t);
-        
+
         int index = 0;
-        
+
         if (v.y > 0) { // bottom
             if (v.x > 0) { // right
                 index = 0;
@@ -52,26 +61,26 @@ public class Fence extends Body implements ShadowCaster {
                 index = 2;
             }
         }
-        
-        Polygon shade = new Polygon();   
-        
+
+        Polygon shade = new Polygon();
+
         for (int i = 1; i < 4; i++) {
             int c = (4 + index + i) % 4;
             float[] p = extent.getPoint(c);
             shade.addPoint(p[0], p[1]);
         }
-        
+
         for (int i = 3; i > 0; i--) {
             int c = (4 + index + i) % 4;
             float[] p = shape.getPoint(c);
             shade.addPoint(p[0], p[1]);
         }
-        
+
         return shade;
     }
 
     public void addToLevel(Level l) {
-        // TODO Auto-generated method stub        
+        // TODO Auto-generated method stub
     }
 
     public Role getRole() {
@@ -80,24 +89,21 @@ public class Fence extends Body implements ShadowCaster {
 
     public void onCollision(Entity obstacle) {
         // TODO Auto-generated method stub
-        
+
     }
 
     public void removeFromLevel(Level l) {
         // TODO Auto-generated method stub
-        
+
     }
 
-    public void render(Graphics g) {
-        Color c = new Color(225, 225, 225);
-        g.setColor(c);
-        g.fill(shape);
-        g.setColor(Color.white);
+    public void render(Graphics g) {        
+        sprite.draw(getX(), getY(), getWidth(), getHeight());
     }
 
     public void update(StateBasedGame game, int delta) {
         // TODO Auto-generated method stub
-        
+
     }
 
     public int getZIndex() {
