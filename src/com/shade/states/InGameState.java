@@ -1,12 +1,17 @@
 package com.shade.states;
 
 
+import java.awt.Font;
+import java.io.InputStream;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.util.ResourceLoader;
 
 import com.shade.crash.Grid;
 import com.shade.entities.Basket;
@@ -21,15 +26,19 @@ public class InGameState extends BasicGameState {
 
     public static final int ID = 1;
 
-    private Image backgroundSprite, trimSprite;
-    private ShadowLevel level;
+    private Image backgroundSprite, trimSprite, counterSprite;
+    private TrueTypeFont counterFont;
 
+    private ShadowLevel level;
     private int sunTimer, totalTime;
     private float sunAngle;
 
     private ShadowCaster[] b;
 
     private Basket basket;
+
+    private Player player;
+
     
     @Override
     public int getID() {
@@ -39,6 +48,7 @@ public class InGameState extends BasicGameState {
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException {
         initSprites();
+        initFonts();
         sunAngle = 2.5f;
         Grid grid = new Grid(8, 6, 100);
         level = new ShadowLevel(grid);
@@ -73,18 +83,32 @@ public class InGameState extends BasicGameState {
         grid.update();
         level.updateShadowscape(sunAngle);
         
+        container.setSoundVolume(0f);
         // add five mushrooms to start
         for (int i = 0; i < 5; i++) {
             level.plant();
         }
+        container.setSoundVolume(1f);
         
-        Player player = new Player(400, 350, 14);
+        player = new Player(400, 350, 14);
         level.add(player);
+    }
+
+    private void initFonts() throws SlickException {
+        try {
+            InputStream oi = ResourceLoader
+                    .getResourceAsStream("states/ingame/jekyll.ttf");
+            Font jekyll = Font.createFont(Font.TRUETYPE_FONT, oi);
+            counterFont = new TrueTypeFont(jekyll.deriveFont(36f), true);;
+        } catch (Exception e) {
+            throw new SlickException("Failed to load font.", e);
+        }   
     }
 
     private void initSprites() throws SlickException {
         backgroundSprite = new Image("states/ingame/background.png");
         trimSprite = new Image("states/ingame/trim.png");
+        counterSprite = new Image("states/ingame/counter.png");
     }
 
     public void render(GameContainer container, StateBasedGame game, Graphics g)
@@ -93,6 +117,8 @@ public class InGameState extends BasicGameState {
         basket.render(g);
         level.render(g);
         trimSprite.draw();
+        counterSprite.draw(25, 510);
+        counterFont.drawString(128, 518, player.mushroomsCollected + "");
     }
 
     public void update(GameContainer container, StateBasedGame game, int delta)
@@ -101,9 +127,13 @@ public class InGameState extends BasicGameState {
         basket.update(game, delta);
         totalTime += delta;
         sunTimer += delta;
+        
+        double r = Math.random() * 1000;
+        if (r < 3) {
+            level.plant();
+        }
+        
         if (totalTime > 8000) {
-            level.plant();            
-            level.plant();            
             level.plant();
             totalTime = 0;
         }

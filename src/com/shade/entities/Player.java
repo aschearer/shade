@@ -27,6 +27,8 @@ public class Player extends Linkable implements ShadowCaster {
     
     private Level level;
     private Image sprite;
+    
+    public int mushroomsCollected;
 
     public Player(float x, float y, float r) throws SlickException {
         initShape(x, y, r);
@@ -96,11 +98,13 @@ public class Player extends Linkable implements ShadowCaster {
                 m.prev = null; /* Kill the node. */
                 m.next = null;
                 level.remove(m);
+                mushroomsCollected++;
             }
             /* Kill the last damn mushroom. */
             next = null;
             head.prev = null;
             level.remove(head);
+            mushroomsCollected++;
         }
     }
 
@@ -138,15 +142,21 @@ public class Player extends Linkable implements ShadowCaster {
     private void testAndMove(Input input, int delta) {
         if (input.isKeyDown(Input.KEY_LEFT)) {
             rotate(-TORQUE);
+            move(SPEED, heading);
+            return;
         }
         if (input.isKeyDown(Input.KEY_RIGHT)) {
             rotate(TORQUE);
+            move(SPEED, heading);
+            return;
         }
         if (input.isKeyDown(Input.KEY_UP)) {
             move(SPEED, heading);
+            return;
         }
         if (input.isKeyDown(Input.KEY_DOWN)) {
             move(-SPEED, heading);
+            return;
         }
     }
 

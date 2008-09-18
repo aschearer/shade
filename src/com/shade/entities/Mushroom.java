@@ -3,6 +3,7 @@ package com.shade.entities;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.Sound;
 import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
@@ -33,15 +34,20 @@ public class Mushroom extends Linkable implements ShadowCaster {
     private float scale;
 
     private Level level;
+    
     private Image sprite;
+
+    private Sound sproutSound;
 
 
     public Mushroom(float x, float y) throws SlickException {
         initShape(x, y);
         initSprite();
+        initSound();
         currentStatus = Status.IDLE;
         scale = MIN_SCALE;
         shaded = true;
+        sproutSound.play();
     }
 
     private void initSprite() throws SlickException {
@@ -50,6 +56,10 @@ public class Mushroom extends Linkable implements ShadowCaster {
 
     private void initShape(float x, float y) {
         shape = new Circle(x, y, RADIUS);
+    }
+
+    private void initSound() throws SlickException {
+        sproutSound = new Sound("entities/mushroom/sprout.ogg");
     }
 
     public Role getRole() {
@@ -73,9 +83,13 @@ public class Mushroom extends Linkable implements ShadowCaster {
     }
 
     public void onCollision(Entity obstacle) {
-        if (obstacle.getRole() == Role.PLAYER) {
+        if (!picked() && obstacle.getRole() == Role.PLAYER) {
             currentStatus = Status.PICKED;
         }
+    }
+
+    private boolean picked() {
+        return currentStatus == Status.PICKED;
     }
 
     public void render(Graphics g) {
@@ -110,7 +124,7 @@ public class Mushroom extends Linkable implements ShadowCaster {
             return; // Stop execution here
         }
         
-        if (currentStatus == Status.PICKED && tooFar()) {            
+        if (picked() && tooFar()) {            
             float angle = CrashGeom.calculateAngle(prev, this);
             move(SPEED, angle);
         }
