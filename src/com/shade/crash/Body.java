@@ -36,4 +36,9 @@ public abstract class Body implements Entity {
     public float getHeight() {
         return shape.getMaxY() - shape.getY();
     }
+    
+    @Override
+    public String toString() {
+        return "Body[" + getCenterX() + "," + getCenterY() + "]";
+    }
 }
