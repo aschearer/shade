@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+
+<!-- 
+    Assumptions
+    1. The base dir is the workspace. 
+    2. Slick is assumed to be in the workspace.
+-->
+<project name="Shade" basedir="../">
+    <!-- Properties -->
+    <property name="slick.dir" value="Slick/" />
+    <property name="native.dir" value="${slick.dir}/natives" />
+
+    <!-- Set up the native directory for Slick. -->
+    <target name="mac">
+        <mkdir dir="${slick.dir}/natives" />
+        <unzip src="${slick.dir}/lib/natives-mac.jar" dest="${native.dir}" />
+    </target>
+
+    <target name="windows">
+        <mkdir dir="${slick.dir}/natives" />
+        <unzip src="${slick.dir}/lib/natives-win32.jar" dest="${native.dir}" />
+    </target>
+
+    <target name="linux">
+        <mkdir dir="${slick.dir}/natives" />
+        <unzip src="${slick.dir}/lib/natives-linux.jar" dest="${native.dir}" />
+    </target>
+</project>
