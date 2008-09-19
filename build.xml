@@ -1,28 +1,69 @@
 <?xml version="1.0" ?>
 
-<!-- 
-    Assumptions
-    1. The base dir is the workspace. 
-    2. Slick is assumed to be in the workspace.
+<!--
+
+Shade build file.
+
+Please run ant setup before you do anything else. This will set up the
+environment for you.
+
+ant setup Initialize Shade environment. RUN THIS FIRST!!
+ant build Run to compile the code.
+ant run Run to launch Shade (should be run after ant build...)
+ant clean Remove .class files from object directory.
+
+Alex Schearer
 -->
-<project name="Shade" basedir="../">
-    <!-- Properties -->
-    <property name="slick.dir" value="Slick/" />
-    <property name="native.dir" value="${slick.dir}/natives" />
+<project name="Shade" basedir=".">
 
-    <!-- Set up the native directory for Slick. -->
-    <target name="mac">
-        <mkdir dir="${slick.dir}/natives" />
-        <unzip src="${slick.dir}/lib/natives-mac.jar" dest="${native.dir}" />
+	<property name="src.dir" value="src" />
+	<property name="res.dir" value="res" />
+    <property name="lib.dir" value="lib" />
+    <property name="obj.dir" value="bin" />
+    <property name="target.dir" value="." />
+
+    <!-- Compile and archive Shade. -->
+    <target name="build">
+        <antcall target="compile" />
+        <antcall target="archive" />
     </target>
 
-    <target name="windows">
-        <mkdir dir="${slick.dir}/natives" />
-        <unzip src="${slick.dir}/lib/natives-win32.jar" dest="${native.dir}" />
+    <!-- Run Shade. -->
+    <target name="run">
+        <java jar="${target.dir}/shade.jar" fork="true" failonerror="true">
+            <jvmarg value="-Djava.library.path=lib/natives" />
+        </java>
     </target>
 
-    <target name="linux">
-        <mkdir dir="${slick.dir}/natives" />
-        <unzip src="${slick.dir}/lib/natives-linux.jar" dest="${native.dir}" />
+    <!-- Compile the code put results into obj.dir. -->
+    <target name="compile">
+        <mkdir dir="${obj.dir}" />
+        <javac destdir="${obj.dir}" debug="on">
+            <src path="${src.dir}" />
+            <classpath>
+                <pathelement path="${lib.dir}/slick.jar" />
+            </classpath>
+        </javac>
+    </target>
+
+    <!-- Jar compiled code and place result into target.dir. -->
+    <target name="archive">
+        <jar destfile="${target.dir}/shade.jar" manifest="manifest.txt">
+            <fileset dir="${obj.dir}" />
+            <fileset dir="${res.dir}" />
+        </jar>
+    </target>
+
+    <!-- Clean up the obj.dir. -->
+    <target name="clean">
+        <delete dir="${obj.dir}" />
+    </target>
+
+    <!-- Set up the Shade environment including preparing the natives. -->
+    <target name="setup">
+        <mkdir dir="${lib.dir}/natives" />
+        <unzip src="${lib.dir}/natives-win32.jar" dest="${lib.dir}/natives" />
+        <unzip src="${lib.dir}/natives-mac.jar" dest="${lib.dir}/natives" />
+        <unzip src="${lib.dir}/natives-linux.jar" dest="${lib.dir}/natives" />
     </target>
 </project>
