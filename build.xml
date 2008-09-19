@@ -61,6 +61,7 @@ Alex Schearer
 
     <!-- Set up the Shade environment including preparing the natives. -->
     <target name="setup">
+        <delete dir="${lib.dir}/natives" />
         <mkdir dir="${lib.dir}/natives" />
         <unzip src="${lib.dir}/natives-win32.jar" dest="${lib.dir}/natives" />
         <unzip src="${lib.dir}/natives-mac.jar" dest="${lib.dir}/natives" />
