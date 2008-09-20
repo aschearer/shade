@@ -4,10 +4,6 @@ Shade -- A casual 2d game written in Java
 An ant file is included with this project. To get up and running please
 follow these instructions.
 
-Set up the environment:
-
-    ant setup // sets up native libraries used by Shade
-
 Building Shade:
 
     ant build // compiles source code and creates shade.jar
