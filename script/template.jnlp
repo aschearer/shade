@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0+"
+      codebase="@codebase@/webstart">
+   <information>
+      <title>Shade</title>
+      <vendor>Another Early Morning</vendor>
+      <description kind="short">Shade, a Casual 2d game</description>
+      <homepage href="http://github.com/aschearer/shade/wikis" />
+   </information>
+   <security>
+       <all-permissions/>
+   </security>
+   <resources>
+       <j2se version="1.5+"/>
+       <jar href="shade.jar"/>
+       <extension href="http://anotherearlymorning.com/games/slick/Slick.jnlp" />
+   </resources> 
+   <application-desc main-class="com.shade.Shade"/>
+</jnlp>

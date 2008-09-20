@@ -1,6 +1,43 @@
+Shade -- A casual 2d game written in Java
+    http://github.com/aschearer/shade/wikis
+
+An ant file is included with this project. To get up and running please
+follow these instructions.
+
+Set up the environment:
+
+    ant setup // sets up native libraries used by Shade
+
+Building Shade:
+
+    ant build // compiles source code and creates shade.jar
+
+Running Shade:
+
+    ant run // executes shade.jar with necessary arguments
+
+Cleaning:
+
+    ant clean // removes bin/, webstart/, and shade.jar
+
+Deploying Shade:
+
+    ant webstart // creates a webstart to deploy to a server
+
+This last one warrants some explanation. If you want to create a webstart
+to host Shade on your website then you need to provide the url for your
+server as well as a username and password to sign shade.jar. 
+
+This will create a directory, webstart/, which contains all the necessary
+files. Simply upload webstart/ to your server and navigate to:
+
+    http://anotherearlymorning.com/webstart/shade.jnlp
+
+
 Please see the wiki for all issues including but not limited to:
 
   + Building and running Shade
   + Contributing to Shade
   + Reporting bugs
   + Giving Feedback
+

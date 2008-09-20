@@ -10,17 +10,29 @@ environment for you.
 ant setup Initialize Shade environment. RUN THIS FIRST!!
 ant build Run to compile the code.
 ant run Run to launch Shade (should be run after ant build...)
+ant webstart Deploy shade as a webstart.
 ant clean Remove .class files from object directory.
 
 Alex Schearer
 -->
 <project name="Shade" basedir=".">
 
-	<property name="src.dir" value="src" />
-	<property name="res.dir" value="res" />
+    <property name="src.dir" value="src" />
+    <property name="res.dir" value="res" />
     <property name="lib.dir" value="lib" />
     <property name="obj.dir" value="bin" />
     <property name="target.dir" value="." />
+    <property name="script.dir" value="script" />
+    <property name="webstart.dir" value="${target.dir}/webstart" />
+
+    <!-- Set up the Shade environment including preparing the natives. -->
+    <target name="setup">
+        <delete dir="${lib.dir}/natives" />
+        <mkdir dir="${lib.dir}/natives" />
+        <unzip src="${lib.dir}/natives-win32.jar" dest="${lib.dir}/natives" />
+        <unzip src="${lib.dir}/natives-mac.jar" dest="${lib.dir}/natives" />
+        <unzip src="${lib.dir}/natives-linux.jar" dest="${lib.dir}/natives" />
+    </target>
 
     <!-- Compile and archive Shade. -->
     <target name="build">
@@ -33,6 +45,63 @@ Alex Schearer
         <java jar="${target.dir}/shade.jar" fork="true" failonerror="true">
             <jvmarg value="-Djava.library.path=lib/natives" />
         </java>
+    </target>
+
+    <!-- Clean up the environment. -->
+    <target name="clean">
+        <delete dir="${obj.dir}" />
+        <delete file="${target.dir}/shade.jar" />
+        <delete dir="${webstart.dir}" />
+    </target>
+
+    <!-- Create a webstart directory in order to deploy Shade. -->
+    <target name="webstart">
+        <input message="Target webserver:" addproperty="codebase" />
+        <delete dir="${webstart.dir}" />
+        <mkdir dir="${webstart.dir}" />
+        <copy file="${script.dir}/htaccess" tofile="${webstart.dir}/.htaccess" />
+        <copy file="${target.dir}/shade.jar" tofile="${webstart.dir}/shade.jar" />
+        <copy file="${script.dir}/template.jnlp" tofile="${webstart.dir}/shade.jnlp">
+            <filterchain>
+                <replacetokens>
+                    <token key="codebase" value="${codebase}" />
+                </replacetokens>
+            </filterchain>
+        </copy>
+        <antcall target="signjar" />
+    </target>
+
+    <target name="check-keystore">
+        <input message="Username:" addproperty="keystore.alias" />
+        <input message="Password:" addproperty="keystore.pass" />
+        <condition property="keystore.exists">
+            <available file="${target.dir}/${keystore.alias}.ks" type="file" />
+        </condition>
+    </target>
+
+    <!-- Create a key store. -->
+    <target name="keystore" depends="check-keystore" unless="keystore.exists">
+        <input message="Full Name:" addproperty="keystore.name" />
+        <input message="Company:" addproperty="keystore.company" />
+
+        <genkey keystore="${target.dir}/${keystore.alias}.ks"
+                alias="${keystore.alias}"
+                storepass="${keystore.pass}">
+            <dname>
+                <param name="CN" value="${keystore.name}" />
+                <param name="OU" value="${keystore.company}" />
+                <param name="O" value="" />
+                <param name="C"  value=""/>
+            </dname>
+        </genkey>
+    </target>
+
+    <!-- Sign's webstart/shade.jar for deployment. -->
+    <target name="signjar" depends="check-keystore">
+        <signjar jar="${webstart.dir}/shade.jar"
+                 keystore="${target.dir}/${keystore.alias}.ks" 
+                 storepass="${keystore.pass}"
+                 alias="${keystore.alias}" />
     </target>
 
     <!-- Compile the code put results into obj.dir. -->
@@ -54,17 +123,4 @@ Alex Schearer
         </jar>
     </target>
 
-    <!-- Clean up the obj.dir. -->
-    <target name="clean">
-        <delete dir="${obj.dir}" />
-    </target>
-
-    <!-- Set up the Shade environment including preparing the natives. -->
-    <target name="setup">
-        <delete dir="${lib.dir}/natives" />
-        <mkdir dir="${lib.dir}/natives" />
-        <unzip src="${lib.dir}/natives-win32.jar" dest="${lib.dir}/natives" />
-        <unzip src="${lib.dir}/natives-mac.jar" dest="${lib.dir}/natives" />
-        <unzip src="${lib.dir}/natives-linux.jar" dest="${lib.dir}/natives" />
-    </target>
 </project>
