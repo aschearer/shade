@@ -24,6 +24,7 @@ public class Player extends Linkable implements ShadowCaster {
     private Level level;
     private Image sprite;
     
+    public int sunMeter;
     public int mushroomsCollected;
     
     private float dx, dy;

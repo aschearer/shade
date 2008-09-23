@@ -27,13 +27,13 @@ public class Dome extends Body implements ShadowCaster {
 
     private void initSprite() throws SlickException {
         String path = "entities/dome/dome.small.png";
-        if (depth > 4) {
+        if (depth > 6) {
             path = "entities/dome/dome.medium.png";
         }
-        if (depth > 6) {
+        if (depth > 9) {
             path = "entities/dome/dome.big.png";
         }
-        if (depth > 10) {
+        if (depth > 12) {
             path = "entities/dome/dome.xbig.png";
         }
         
@@ -82,7 +82,7 @@ public class Dome extends Body implements ShadowCaster {
      */
     public Shape castShadow(float direction) {
         float r = ((Circle) shape).radius;
-        float h = depth * 10 * 2;
+        float h = depth * 10 * 1.6f;
         float x = getCenterX();
         float y = getCenterY();
         Transform t = Transform.createRotateTransform(direction + 3.14f, x, y);

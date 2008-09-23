@@ -56,27 +56,29 @@ public class InGameState extends BasicGameState {
         level = new ShadowLevel(grid);
         
         /* TODO there's a rendering priority problem involved here... */
-        basket = new Basket(456, 232, 65, 40);
+        basket = new Basket(400, 250, 65, 40);
         grid.add(basket);
         
-        b = new ShadowCaster[14];
+        b = new ShadowCaster[16];
         // boxes
-        b[0] = new Block(150, 317, 125, 125, 16);
-        b[1] = new Block(324, 386, 56, 56, 6);
-        b[2] = new Block(424, 386, 56, 56, 6);
-        b[3] = new Block(524, 335, 56, 56, 6);
-        b[4] = new Block(545, 460, 80, 80, 10);
-        b[5] = new Block(445, 530, 80, 80, 10);
+        b[0] = new Block(55, 355, 125, 125, 16);
+        b[1] = new Block(224, 424, 56, 56, 6);
+        b[2] = new Block(324, 424, 56, 56, 6);
+        b[3] = new Block(75, 225, 56, 56, 6);
+        b[4] = new Block(545, 380, 80, 80, 10);
+        b[5] = new Block(445, 460, 80, 80, 10);
         // domes
-        b[6] = new Dome(180, 25, 44, 8);
-        b[7] = new Dome(300, 18, 25, 4);
-        b[8] = new Dome(288, 90, 32, 5);
-        b[9] = new Dome(648, 55, 40, 7);
-        b[10] = new Dome(745, 132, 60, 11);
+        b[6] = new Dome(288, 165, 32, 7);
+        b[7] = new Dome(180, 95, 44, 10);
+        b[8] = new Dome(300, 85, 25, 6);
+        b[9] = new Dome(680, 70, 28, 6);
+        b[10] = new Dome(600, 120, 40, 9);
+        b[11] = new Dome(680, 220, 60, 13);
         // fences
-        b[11] = new Fence(150, 150, 11, 120, 6);
-        b[12] = new Fence(390, 140, 120, 11, 6);
-        b[13] = new Fence(715, 368, 11, 120, 6);
+        b[12] = new Fence(225, 225, 11, 120, 6);
+        b[13] = new Fence(390, 140, 120, 11, 6);
+        b[14] = new Fence(715, 368, 11, 120, 6);
+        b[15] = new Fence(50, 50, 11, 120, 6);
         
         for (int i = 0; i < b.length; i++) {
             level.add(b[i]);
