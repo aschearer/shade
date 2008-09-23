@@ -119,6 +119,9 @@ Alex Schearer
                 <pathelement path="${lib.dir}/slick.jar" />
             </classpath>
         </javac>
+        <copy todir="${obj.dir}">
+            <fileset dir="${res.dir}" />
+        </copy>
     </target>
 
     <!-- Jar compiled code and place result into target.dir. -->
