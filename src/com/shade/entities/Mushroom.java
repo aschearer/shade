@@ -28,7 +28,7 @@ public class Mushroom extends Linkable implements ShadowCaster {
     private static final float MAX_SCALE = 3f;
     private static final float MIN_SCALE = 1.2f;
     private static final int MAX_DISTANCE = 2500;
-    private static final float SPEED = 1.5f;
+    private static final float SPEED = 1f;
 
     private Status currentStatus;
     private float scale;
@@ -38,7 +38,6 @@ public class Mushroom extends Linkable implements ShadowCaster {
     private Image sprite;
 
     private Sound sproutSound;
-
 
     public Mushroom(float x, float y) throws SlickException {
         initShape(x, y);
@@ -97,6 +96,7 @@ public class Mushroom extends Linkable implements ShadowCaster {
             return;
         }
         sprite.draw(getX(), getY(), getWidth(), getHeight());
+//        g.draw(shape);
     }
 
     public void update(StateBasedGame game, int delta) {
@@ -124,7 +124,7 @@ public class Mushroom extends Linkable implements ShadowCaster {
             return; // Stop execution here
         }
         
-        if (picked() && tooFar()) {            
+        if (picked() && tooFar()) {
             float angle = CrashGeom.calculateAngle(prev, this);
             move(SPEED, angle);
         }

@@ -12,23 +12,21 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Entity;
 import com.shade.base.Level;
-import com.shade.crash.Body;
 import com.shade.shadows.ShadowCaster;
 import com.shade.util.Geom;
 
 public class Player extends Linkable implements ShadowCaster {
 
-    private static final float SPEED = 1.2f;
-    /* In radians... */
-    private static final float TORQUE = .05f;
+    private static final float SPEED = 1f;
 
     private float heading;
-    private float dx, dy;
     
     private Level level;
     private Image sprite;
     
     public int mushroomsCollected;
+    
+    private float dx, dy;
 
     public Player(float x, float y, float r) throws SlickException {
         initShape(x, y, r);
@@ -65,12 +63,12 @@ public class Player extends Linkable implements ShadowCaster {
 
     private void moveOutOfIntersection(Entity obstacle) {
         if (obstacle.getRole() == Role.OBSTACLE) {
-            Body b = (Body) obstacle;
+//            Body b = (Body) obstacle;
             
             /* Step back no matter what. */
-            float cx = -dx;
-            float cy = -dy;
-            
+//            float cx = -dx;
+//            float cy = -dy;
+//            
 //            float x = getX();
 //            float xc = getCenterX();
 //            float w = getWidth();
@@ -79,13 +77,13 @@ public class Player extends Linkable implements ShadowCaster {
 //            float bxc = b.getCenterX();
 //            float bw = b.getWidth();
             
-            if (getX() + getWidth() < b.getX() || 
-                getX() > b.getX() + b.getWidth()) {
-                cy += dy;
-            }
+//            if (getX() + getWidth() < b.getX() || 
+//                getX() > b.getX() + b.getWidth()) {
+//                cy += dy;
+//            }
             
-            Transform t = Transform.createTranslateTransform(cx, cy);
-            shape = shape.transform(t);
+            shape.setCenterX(getCenterX() - dx * SPEED);
+            shape.setCenterY(getCenterY() - dy * SPEED);
         }
     }
 
@@ -133,6 +131,7 @@ public class Player extends Linkable implements ShadowCaster {
         g.rotate(getCenterX(), getCenterY(), (float) Math.toDegrees(heading));
         sprite.drawCentered(getCenterX(), getCenterY());
         g.resetTransform();
+//        g.draw(shape);
     }
 
     public void update(StateBasedGame game, int delta) {
@@ -140,35 +139,37 @@ public class Player extends Linkable implements ShadowCaster {
     }
 
     private void testAndMove(Input input, int delta) {
+        dx = 0; 
+        dy = 0;
         if (input.isKeyDown(Input.KEY_LEFT)) {
-            rotate(-TORQUE);
+            dx--;
+            shape.setCenterX(getCenterX() - SPEED);
         }
         if (input.isKeyDown(Input.KEY_RIGHT)) {
-            rotate(TORQUE);
+            dx++;
+            shape.setCenterX(getCenterX() + SPEED);
         }
         if (input.isKeyDown(Input.KEY_UP)) {
-            move(SPEED, heading);
+            dy--;
+            shape.setCenterY(getCenterY() - SPEED);
         }
         if (input.isKeyDown(Input.KEY_DOWN)) {
-            move(-SPEED, heading);
+            dy++;
+            shape.setCenterY(getCenterY() + SPEED);
         }
-    }
-
-    /* Move the shape a given amount across two dimensions. */
-    private void move(float magnitude, float direction) {
-        Vector2f d = Geom.calculateVector(magnitude, direction);
-        dx = d.x;
-        dy = d.y;
-        Transform t = Transform.createTranslateTransform(d.x, d.y);
-        shape = shape.transform(t);
-    }
-
-    private void rotate(float radians) {
-        float x = getCenterX();
-        float y = getCenterY();
-        Transform t = Transform.createRotateTransform(radians, x, y);
-        shape = shape.transform(t);
-        heading += radians;
+        
+        if (getCenterX() <= 0) {
+            shape.setCenterX(799);
+        }
+        if (getCenterX() > 799) {
+            shape.setCenterX(0);
+        }
+        if (getCenterY() <= 0) {
+            shape.setCenterY(599);
+        }
+        if (getCenterY() > 599) {
+            shape.setCenterY(0);
+        }
     }
 
     public Shape castShadow(float direction) {

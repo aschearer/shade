@@ -98,7 +98,7 @@ public class Shadowscape {
     public void render(Graphics g) {
         g.setAntiAlias(true);
         Color shade = Color.black;
-//        shade.a = .5f;
+        shade.a = .5f;
         g.setColor(shade);
         for (Shape s : shadows) {
             g.fill(s);

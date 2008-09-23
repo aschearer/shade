@@ -4,18 +4,15 @@
 
 Shade build file.
 
-Please run ant setup before you do anything else. This will set up the
-environment for you.
-
-ant setup Initialize Shade environment. RUN THIS FIRST!!
+ant setup Initialize Shade environment.
 ant build Run to compile the code.
 ant run Run to launch Shade (should be run after ant build...)
 ant webstart Deploy shade as a webstart.
-ant clean Remove .class files from object directory.
+ant clean Removes products of the build process, etc.
 
 Alex Schearer
 -->
-<project name="Shade" basedir=".">
+<project name="Shade">
 
     <property name="src.dir" value="src" />
     <property name="res.dir" value="res" />

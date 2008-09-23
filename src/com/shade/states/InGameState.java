@@ -39,6 +39,8 @@ public class InGameState extends BasicGameState {
 
     private Player player;
 
+    private Grid grid;
+
     
     @Override
     public int getID() {
@@ -50,7 +52,7 @@ public class InGameState extends BasicGameState {
         initSprites();
         initFonts();
         sunAngle = 2.5f;
-        Grid grid = new Grid(8, 6, 100);
+        grid = new Grid(8, 6, 100);
         level = new ShadowLevel(grid);
         
         /* TODO there's a rendering priority problem involved here... */
@@ -59,12 +61,12 @@ public class InGameState extends BasicGameState {
         
         b = new ShadowCaster[14];
         // boxes
-        b[0] = new Block(150, 300, 135, 135, 16);
-        b[1] = new Block(324, 376, 56, 56, 6);
-        b[2] = new Block(416, 376, 56, 56, 6);
-        b[3] = new Block(508, 325, 56, 56, 6);
-        b[4] = new Block(545, 450, 80, 80, 10);
-        b[5] = new Block(445, 520, 80, 80, 10);
+        b[0] = new Block(150, 317, 125, 125, 16);
+        b[1] = new Block(324, 386, 56, 56, 6);
+        b[2] = new Block(424, 386, 56, 56, 6);
+        b[3] = new Block(524, 335, 56, 56, 6);
+        b[4] = new Block(545, 460, 80, 80, 10);
+        b[5] = new Block(445, 530, 80, 80, 10);
         // domes
         b[6] = new Dome(180, 25, 44, 8);
         b[7] = new Dome(300, 18, 25, 4);
@@ -74,7 +76,7 @@ public class InGameState extends BasicGameState {
         // fences
         b[11] = new Fence(150, 150, 11, 120, 6);
         b[12] = new Fence(390, 140, 120, 11, 6);
-        b[13] = new Fence(700, 368, 11, 120, 6);
+        b[13] = new Fence(715, 368, 11, 120, 6);
         
         for (int i = 0; i < b.length; i++) {
             level.add(b[i]);
@@ -90,7 +92,7 @@ public class InGameState extends BasicGameState {
         }
         container.setSoundVolume(1f);
         
-        player = new Player(400, 350, 14);
+        player = new Player(400, 350, 18);
         level.add(player);
     }
 
@@ -119,6 +121,7 @@ public class InGameState extends BasicGameState {
         trimSprite.draw();
         counterSprite.draw(25, 510);
         counterFont.drawString(128, 518, player.mushroomsCollected + "");
+//        grid.debugDraw(g);
     }
 
     public void update(GameContainer container, StateBasedGame game, int delta)
