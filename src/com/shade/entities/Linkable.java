@@ -13,6 +13,6 @@ import com.shade.crash.Body;
  */
 public abstract class Linkable extends Body {
 
-    protected Linkable prev, next;
+    public Linkable prev, next;
     
 }

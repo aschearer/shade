@@ -1,37 +1,36 @@
 package com.shade.entities;
 
+import java.util.LinkedList;
+
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Shape;
-import org.newdawn.slick.geom.Transform;
-import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Entity;
 import com.shade.base.Level;
+import com.shade.controls.MushroomCounter;
 import com.shade.shadows.ShadowCaster;
-import com.shade.util.Geom;
 
 public class Player extends Linkable implements ShadowCaster {
 
     private static final float SPEED = 1f;
-
-    private float heading;
     
     private Level level;
     private Image sprite;
     
-    public int sunMeter;
-    public int mushroomsCollected;
-    
+    public boolean shaded;
     private float dx, dy;
+
+    private LinkedList<MushroomCounter> counters;
 
     public Player(float x, float y, float r) throws SlickException {
         initShape(x, y, r);
         initSprite();
+        counters = new LinkedList<MushroomCounter>();
     }
 
     private void initSprite() throws SlickException {
@@ -64,25 +63,6 @@ public class Player extends Linkable implements ShadowCaster {
 
     private void moveOutOfIntersection(Entity obstacle) {
         if (obstacle.getRole() == Role.OBSTACLE) {
-//            Body b = (Body) obstacle;
-            
-            /* Step back no matter what. */
-//            float cx = -dx;
-//            float cy = -dy;
-//            
-//            float x = getX();
-//            float xc = getCenterX();
-//            float w = getWidth();
-//            
-//            float bx = b.getX();
-//            float bxc = b.getCenterX();
-//            float bw = b.getWidth();
-            
-//            if (getX() + getWidth() < b.getX() || 
-//                getX() > b.getX() + b.getWidth()) {
-//                cy += dy;
-//            }
-            
             shape.setCenterX(getCenterX() - dx * SPEED);
             shape.setCenterY(getCenterY() - dy * SPEED);
         }
@@ -90,6 +70,7 @@ public class Player extends Linkable implements ShadowCaster {
 
     private void collectMushrooms(Entity obstacle) {
         if (obstacle.getRole() == Role.BASKET && next != null) {
+            notifyCounters();
             Linkable head = next;
             while (head.next != null) {
                 Linkable m = head;
@@ -97,13 +78,17 @@ public class Player extends Linkable implements ShadowCaster {
                 m.prev = null; /* Kill the node. */
                 m.next = null;
                 level.remove(m);
-                mushroomsCollected++;
             }
             /* Kill the last damn mushroom. */
             next = null;
             head.prev = null;
             level.remove(head);
-            mushroomsCollected++;
+        }
+    }
+
+    private void notifyCounters() {
+        for (MushroomCounter c : counters) {
+            c.onCollect((Mushroom) next);
         }
     }
 
@@ -129,9 +114,7 @@ public class Player extends Linkable implements ShadowCaster {
     }
 
     public void render(Graphics g) {
-        g.rotate(getCenterX(), getCenterY(), (float) Math.toDegrees(heading));
         sprite.drawCentered(getCenterX(), getCenterY());
-        g.resetTransform();
 //        g.draw(shape);
     }
 
@@ -174,9 +157,10 @@ public class Player extends Linkable implements ShadowCaster {
     }
 
     public Shape castShadow(float direction) {
-        Vector2f d = Geom.calculateVector(5 * getZIndex(), direction);
-        Transform t = Transform.createTranslateTransform(d.x, d.y);
-        return shape.transform(t);
+//        Vector2f d = Geom.calculateVector(5 * getZIndex(), direction);
+//        Transform t = Transform.createTranslateTransform(d.x, d.y);
+//        return shape.transform(t);
+        return null;
     }
 
     public int getZIndex() {
@@ -185,6 +169,10 @@ public class Player extends Linkable implements ShadowCaster {
 
     public int compareTo(ShadowCaster s) {
         return getZIndex() - s.getZIndex();
+    }
+
+    public void add(MushroomCounter counter) {
+        counters.add(counter);
     }
 
 }
