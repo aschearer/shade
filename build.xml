@@ -126,7 +126,7 @@ Alex Schearer
 
     <!-- Jar compiled code and place result into target.dir. -->
     <target name="archive">
-        <jar destfile="${target.dir}/shade.jar" manifest="manifest.txt">
+        <jar destfile="${target.dir}/shade.jar" manifest="${script.dir}/manifest.txt">
             <fileset dir="${obj.dir}" />
         </jar>
     </target>
