@@ -11,6 +11,7 @@ import com.shade.base.Level;
 import com.shade.crash.Body;
 import com.shade.crash.Grid;
 import com.shade.entities.Mushroom;
+import com.shade.entities.Player;
 
 /**
  * Builds on top of the CrashLevel to add support for shadows.
@@ -73,11 +74,19 @@ public class ShadowLevel implements Level {
     public void updateShadowscape(float direction) {
         resolve();
         shadowscape = new Shadowscape(buffer, direction, grid);
+        // TODO this only makes sense if the shadowscape is updated every time
         for (ShadowCaster s : buffer) {
             if (s instanceof Mushroom) {
                 ((Mushroom) s).shaded = shadowscape.contains((Mushroom) s);
             }
+            if (s instanceof Player) {
+                ((Player) s).shaded = shadowscape.contains((Player) s);
+            }
         }
+    }
+    
+    public boolean shaded(Body b) {
+        return shadowscape.contains(b);
     }
 
     public void update(StateBasedGame game, int delta) {

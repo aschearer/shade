@@ -141,6 +141,10 @@ public class Mushroom extends Linkable implements ShadowCaster {
     private boolean tooBig() {
         return scale > MAX_SCALE;
     }
+    
+    public float getSize() {
+        return scale;
+    }
 
     /* Move the shape a given amount across two dimensions. */
     private void move(float magnitude, float direction) {
