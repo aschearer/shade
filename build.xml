@@ -128,7 +128,6 @@ Alex Schearer
     <target name="archive">
         <jar destfile="${target.dir}/shade.jar" manifest="manifest.txt">
             <fileset dir="${obj.dir}" />
-            <fileset dir="${res.dir}" />
         </jar>
     </target>
 
