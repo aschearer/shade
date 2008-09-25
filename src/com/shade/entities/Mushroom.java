@@ -1,5 +1,7 @@
 package com.shade.entities;
 
+import java.util.Arrays;
+
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
@@ -85,6 +87,10 @@ public class Mushroom extends Linkable implements ShadowCaster {
         if (!picked() && obstacle.getRole() == Role.PLAYER) {
             currentStatus = Status.PICKED;
         }
+//        if (obstacle.getRole() == Role.OBSTACLE) {
+//            shape.setCenterX(getCenterX() - dx);
+//            shape.setCenterY(getCenterY() - dy);
+//        }
     }
 
     private boolean picked() {
@@ -125,13 +131,67 @@ public class Mushroom extends Linkable implements ShadowCaster {
         }
         
         if (picked() && tooFar()) {
-            float angle = CrashGeom.calculateAngle(prev, this);
-            move(SPEED, angle);
+            followLeader();
+            testAndWrap();
+//            float angle = CrashGeom.calculateAngle(prev, this);
+//            move(SPEED, angle);
+//            System.out.println("too far");
         }
     }
 
+    private void followLeader() {
+        float[] d = new float[3];
+        d[0] = CrashGeom.distance2(prev, this);
+        d[1] = d[0];
+        d[2] = d[0];
+        // if I'm left of my target
+        if (getX() < prev.getX()) {
+            d[1] = CrashGeom.distance2(prev, getCenterX() + 800, getCenterY());
+        } else {
+            d[1] = CrashGeom.distance2(this, prev.getCenterX() + 800, prev.getCenterY());
+        }
+        
+        // if I'm above my target
+        if (getY() < prev.getY()) {
+            d[2] = CrashGeom.distance2(prev, getCenterX(), getCenterY() + 600);
+        } else {
+            d[2] = CrashGeom.distance2(this, prev.getCenterX(), prev.getCenterY() + 600);
+        }
+        
+        float angle = CrashGeom.calculateAngle(prev, this);
+        if (d[1] < d[0] && d[1] < d[2]) {
+            angle += Math.PI;
+        }
+        if (d[2] < d[0]) {
+            angle += Math.PI;
+        }
+        
+        move(SPEED, angle);
+    }
+
     private boolean tooFar() {
-        return CrashGeom.distance2(prev, this) > MAX_DISTANCE;
+        float[] d = new float[3];
+        
+        d[0] = CrashGeom.distance2(prev, this);
+        d[1] = d[0];
+        d[2] = d[0];
+        // if I'm left of my target
+        if (getX() < prev.getX()) {
+            d[1] = CrashGeom.distance2(prev, getCenterX() + 800, getCenterY());
+        } else {
+            d[1] = CrashGeom.distance2(this, prev.getCenterX() + 800, prev.getCenterY());
+        }
+        
+        // if I'm above my target
+        if (getY() < prev.getY()) {
+            d[2] = CrashGeom.distance2(prev, getCenterX(), getCenterY() + 600);
+        } else {
+            d[2] = CrashGeom.distance2(this, prev.getCenterX(), prev.getCenterY() + 600);
+        }
+        
+        Arrays.sort(d);
+        
+        return (d[0] > MAX_DISTANCE);
     }
 
     private boolean tooSmall() {

@@ -120,6 +120,7 @@ public class Player extends Linkable implements ShadowCaster {
 
     public void update(StateBasedGame game, int delta) {
         testAndMove(game.getContainer().getInput(), delta);
+        testAndWrap();
     }
 
     private void testAndMove(Input input, int delta) {
@@ -140,19 +141,6 @@ public class Player extends Linkable implements ShadowCaster {
         if (input.isKeyDown(Input.KEY_DOWN)) {
             dy++;
             shape.setCenterY(getCenterY() + SPEED);
-        }
-        
-        if (getCenterX() <= 0) {
-            shape.setCenterX(799);
-        }
-        if (getCenterX() > 799) {
-            shape.setCenterX(0);
-        }
-        if (getCenterY() <= 0) {
-            shape.setCenterY(599);
-        }
-        if (getCenterY() > 599) {
-            shape.setCenterY(0);
         }
     }
 

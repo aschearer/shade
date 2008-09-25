@@ -14,5 +14,24 @@ import com.shade.crash.Body;
 public abstract class Linkable extends Body {
 
     public Linkable prev, next;
-    
+
+    /**
+     * Checks whether a linkable is over the edge of the screen and wraps it if
+     * it is.
+     */
+    protected void testAndWrap() {
+        if (getCenterX() <= 5) {
+            shape.setCenterX(795);
+        }
+        if (getCenterX() > 795) {
+            shape.setCenterX(5);
+        }
+        if (getCenterY() <= 5) {
+            shape.setCenterY(595);
+        }
+        if (getCenterY() > 595) {
+            shape.setCenterY(5);
+        }
+    }
+
 }
