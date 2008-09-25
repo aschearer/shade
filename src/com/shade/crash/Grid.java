@@ -181,4 +181,58 @@ public class Grid {
         Cell target = getTargetCell(test);
         return (target != null && !target.testForIntersection(test));
     }
+
+    /* Return true if there are no walls between one and two. */
+    public boolean ray(Body one, Body two) {
+        Ray ray = new Ray(one, two);
+        /* Current cell we're in on the grid. */
+        int currentX = (int) Math.floor(one.getCenterX() / cellWidth);
+        int currentY = (int) Math.floor(one.getCenterY() / cellHeight);
+        /* Target cell we're aiming for. */
+        int targetX = (int) Math.floor(two.getCenterX() / cellWidth);
+        int targetY = (int) Math.floor(two.getCenterY() / cellHeight);
+        Vector2f direction = ray.getDirection();
+        /* Distance from current position to next x, y side. */
+        float sideDistX, sideDistY;
+        /* Length of ray necessary to go from one cell to the next. */
+        float deltaDistX = (float) Math.sqrt(1 + (direction.y * direction.y)
+                / (direction.x * direction.x));
+        float deltaDistY = (float) Math.sqrt(1 + (direction.x * direction.x)
+                / (direction.y * direction.y));
+        /* Direction to step in: 1 or -1. */
+        int stepX, stepY;
+        /* Calculate step and initial distance. */
+        if (direction.x < 0) {
+            stepX = -1;
+            sideDistX = (one.getCenterX() - (currentX * cellWidth))
+                    * deltaDistX;
+        } else {
+            stepX = 1;
+            sideDistX = ((currentX + 1) * cellWidth - one.getCenterX())
+                    * deltaDistX;
+        }
+        if (direction.y < 0) {
+            stepY = -1;
+            sideDistY = (one.getCenterY() - (currentY * cellHeight))
+                    * deltaDistY;
+        } else {
+            stepY = 1;
+            sideDistY = ((currentY + 1) * cellHeight - one.getCenterY())
+                    * deltaDistY;
+        }
+        boolean obstructed = false;
+        while (!obstructed && !(currentX == targetX && currentY == targetY)) {
+            if (sideDistX < sideDistY) {
+                sideDistX += deltaDistX * cellWidth;
+                currentX += stepX;
+            } else {
+                sideDistY += deltaDistY * cellHeight;
+                currentY += stepY;
+            }
+            obstructed = Collider.testAndReturn(ray,
+                    cells[currentX][currentY].bodies);
+        }
+
+        return obstructed;
+    }
 }

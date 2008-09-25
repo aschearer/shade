@@ -10,6 +10,7 @@ import com.shade.base.Entity;
 import com.shade.base.Level;
 import com.shade.crash.Body;
 import com.shade.crash.Grid;
+import com.shade.crash.util.CrashGeom;
 import com.shade.entities.Mushroom;
 import com.shade.entities.Player;
 
@@ -23,6 +24,7 @@ import com.shade.entities.Player;
  */
 public class ShadowLevel implements Level {
 
+    private static final float MAX_DISTANCE = 2500;
     private Grid grid;
     private Shadowscape shadowscape;
     private ZBuffer buffer;
@@ -54,41 +56,15 @@ public class ShadowLevel implements Level {
         grid.remove((Body) e);
         out_queue.add(e);
     }
-    
-    public void plant() {
-        try {
-            Mushroom m = shadowscape.plant();
-            add(m);
-        } catch (SlickException e) {
-            e.printStackTrace();
-        }
-    }
 
     public void render(Graphics g) {
         shadowscape.render(g);
         for (ShadowCaster e : buffer) {
             e.render(g);
         }
+//        grid.debugDraw(g);
     }
     
-    public void updateShadowscape(float direction) {
-        resolve();
-        shadowscape = new Shadowscape(buffer, direction, grid);
-        // TODO this only makes sense if the shadowscape is updated every time
-        for (ShadowCaster s : buffer) {
-            if (s instanceof Mushroom) {
-                ((Mushroom) s).shaded = shadowscape.contains((Mushroom) s);
-            }
-            if (s instanceof Player) {
-                ((Player) s).shaded = shadowscape.contains((Player) s);
-            }
-        }
-    }
-    
-    public boolean shaded(Body b) {
-        return shadowscape.contains(b);
-    }
-
     public void update(StateBasedGame game, int delta) {
         grid.update();
         for (ShadowCaster e : buffer) {
@@ -106,6 +82,72 @@ public class ShadowLevel implements Level {
         }
         in_queue.clear();
         out_queue.clear();
+    }
+    
+    /**
+     * Update the shadowscape with a new light source.
+     * @param direction
+     */
+    public void updateShadowscape(float direction) {
+        resolve();
+        shadowscape = new Shadowscape(buffer, direction, grid);
+        // TODO this only makes sense if the shadowscape is updated every time
+        for (ShadowCaster s : buffer) {
+            if (s instanceof Mushroom) {
+                ((Mushroom) s).shaded = shadowscape.contains((Mushroom) s);
+            }
+            if (s instanceof Player) {
+                ((Player) s).shaded = shadowscape.contains((Player) s);
+            }
+        }
+    }
+    
+    /**
+     * Plant a mushroom randomly in the shadows.
+     */
+    public void plant() {
+        try {
+            Mushroom m = shadowscape.plant();
+            add(m);
+        } catch (SlickException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Return true if the body is in a shadow.
+     * @param b
+     * @return
+     */
+    public boolean shaded(Body b) {
+        return shadowscape.contains(b);
+    }
+    
+    /**
+     * Return a list of mushrooms near this body.
+     * @param b
+     * @return
+     */
+    public Mushroom[] nearbyShrooms(Body b) {
+        LinkedList<Mushroom> mushrooms = new LinkedList<Mushroom>();
+        for (ShadowCaster s : buffer) {
+            if (s instanceof Mushroom) {
+                if (CrashGeom.distance2(b, (Body) s) < MAX_DISTANCE) {
+                    mushrooms.add((Mushroom) s);
+                }
+            }
+        }
+        return mushrooms.toArray(new Mushroom[0]);
+    }
+
+    /**
+     * Cast a ray from body one to body two return true if it reaches body two.
+     * @param one
+     * @param two
+     * @return
+     */
+    public boolean ray(Body one, Body two) {
+        return grid.ray(one, two);
     }
 
 }

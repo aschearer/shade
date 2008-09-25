@@ -59,7 +59,7 @@ public class Shadowscape {
 
     private boolean checkPoint(Vector2f p, Shape shadow) {
         // is it within bounds
-        if (!(p.x > 0 && p.x < 800 && p.y > 0 && p.y < 600)) {
+        if (!(p.x > 10 && p.x < 790 && p.y > 10 && p.y < 590)) {
             return false;
         }
         // p is in the shadow
