@@ -89,6 +89,12 @@ public class Drone extends Linkable implements ShadowCaster {
         if (currentStatus == Status.WORKING) {
             work(delta);
         }
+        if (currentStatus == Status.INACTIVE) {
+            timer += delta;
+            if (timer > 4000) {
+                
+            }
+        }
     }
 
     private void seek(int delta) {
@@ -106,6 +112,7 @@ public class Drone extends Linkable implements ShadowCaster {
     private void stopWork() {
         target.detach();
         currentStatus = Status.INACTIVE;
+        timer = 0;
     }
     
     /* Move the shape a given amount across two dimensions. */
