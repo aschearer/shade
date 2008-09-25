@@ -73,18 +73,15 @@ public class Mushroom extends Linkable implements ShadowCaster {
 
     public void removeFromLevel(Level l) {
         currentStatus = Status.DEAD;
-        // don't break a chain of mushrooms
-        if (next != null) {
-            prev.next = next;
-            next.prev = prev;
-        }
-        if (prev != null) {
-            prev.next = next;
-        }
     }
 
     public void onCollision(Entity obstacle) {
         if (!picked() && obstacle.getRole() == Role.PLAYER) {
+            ((Linkable) obstacle).attach(this);
+            currentStatus = Status.PICKED;
+        }
+        if (!picked() && obstacle.getRole() == Role.DRONE) {
+            ((Linkable) obstacle).attach(this);
             currentStatus = Status.PICKED;
         }
     }

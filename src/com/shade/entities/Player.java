@@ -54,8 +54,6 @@ public class Player extends Linkable implements ShadowCaster {
     }
     
     public void onCollision(Entity obstacle) {
-        pickMushroom(obstacle);
-        /* Or... */
         collectMushrooms(obstacle);
         /* Or... */
         moveOutOfIntersection(obstacle);
@@ -71,45 +69,17 @@ public class Player extends Linkable implements ShadowCaster {
     private void collectMushrooms(Entity obstacle) {
         if (obstacle.getRole() == Role.BASKET && next != null) {
             notifyCounters();
-            Linkable head = next;
-            while (head.next != null) {
-                Linkable m = head;
-                head = head.next;
-                m.prev = null; /* Kill the node. */
-                m.next = null;
-                level.remove(m);
+            
+            while (next != null) {
+                level.remove(next);
+                next.detach();
             }
-            /* Kill the last damn mushroom. */
-            next = null;
-            head.prev = null;
-            level.remove(head);
         }
     }
 
     private void notifyCounters() {
         for (MushroomCounter c : counters) {
             c.onCollect((Mushroom) next);
-        }
-    }
-
-    private void pickMushroom(Entity obstacle) {
-        if (obstacle.getRole() == Role.MUSHROOM) {
-            Linkable m = (Linkable) obstacle;
-            if (next == null) { /* First shroom picked. */
-                next = m;
-                next.prev = this;
-                return; /* Exit, we're finished. */
-            }
-            Linkable head = next;
-            /* Cycle through list and add to end, watch out for duplicates. */
-            while (!head.equals(m) && head.next != null) {
-                head = (Linkable) head.next;
-            }
-            if (m.equals(head)) {
-                return; /* Exit we're not dealing with a duplicate. */
-            }
-            head.next = m;
-            m.prev = head;
         }
     }
 

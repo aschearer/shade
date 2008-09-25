@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.state.*;
@@ -61,7 +62,6 @@ public class InGameState extends BasicGameState {
                     .getResourceAsStream("states/ingame/jekyll.ttf");
             Font jekyll = Font.createFont(Font.TRUETYPE_FONT, oi);
             counterFont = new TrueTypeFont(jekyll.deriveFont(36f), true);
-            ;
         } catch (Exception e) {
             throw new SlickException("Failed to load font.", e);
         }
@@ -86,6 +86,14 @@ public class InGameState extends BasicGameState {
         initObstacles();
         initBasket();
         initPlayer();
+        
+        updateShadow();
+        
+        Mushroom m = new Mushroom(200, 200);
+        level.add(m);
+        
+        Drone d = new Drone(200, 160, 8);
+        level.add(d);
     }
 
     private void initObstacles() throws SlickException {
@@ -142,17 +150,17 @@ public class InGameState extends BasicGameState {
 
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
-        updateShadow();
+//        updateShadow();
         
         if (currentStatus == Status.RUNNING) {
             level.update(game, delta);
             timer += delta;
 
             // Randomly plant mushrooms
-            if (Math.random() > .997 || timer > 6000) {
-                timer = 0;
-                level.plant();
-            }
+//            if (Math.random() > .997 || timer > 6000) {
+//                timer = 0;
+//                level.plant();
+//            }
 
             meter.update(game, delta);
             counter.update(game, delta);
@@ -163,8 +171,13 @@ public class InGameState extends BasicGameState {
 
             // Check for lose condition
             if (meter.isEmpty()) {
-                currentStatus = Status.GAME_OVER;
+//                currentStatus = Status.GAME_OVER;
             }
+        }
+        
+        // check whether to restart
+        if (container.getInput().isKeyPressed(Input.KEY_R)) {
+            enter(container, game);
         }
     }
 

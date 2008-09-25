@@ -12,7 +12,7 @@ public interface Entity extends Animatable {
      * Roles are used to determine how to respond to a collision.
      */
     public enum Role {
-        PLAYER, MUSHROOM, OBSTACLE, BASKET
+        PLAYER, MUSHROOM, OBSTACLE, BASKET, DRONE, RAY
     };
     
     public Role getRole();
