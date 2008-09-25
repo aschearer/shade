@@ -43,6 +43,8 @@ public abstract class Linkable extends Body {
         if (next != null) {
             next.prev = prev;
         }
+        prev = null;
+        next = null;
     }
 
     /**

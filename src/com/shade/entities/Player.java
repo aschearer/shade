@@ -70,10 +70,13 @@ public class Player extends Linkable implements ShadowCaster {
         if (obstacle.getRole() == Role.BASKET && next != null) {
             notifyCounters();
             
-            while (next != null) {
-                level.remove(next);
-                next.detach();
+            Linkable head = next;
+            while (head != null) {
+                head.detach();
+                level.remove(head);
+                head = next;
             }
+            next = null;
         }
     }
 
