@@ -87,10 +87,6 @@ public class Mushroom extends Linkable implements ShadowCaster {
         if (!picked() && obstacle.getRole() == Role.PLAYER) {
             currentStatus = Status.PICKED;
         }
-//        if (obstacle.getRole() == Role.OBSTACLE) {
-//            shape.setCenterX(getCenterX() - dx);
-//            shape.setCenterY(getCenterY() - dy);
-//        }
     }
 
     private boolean picked() {
@@ -133,9 +129,6 @@ public class Mushroom extends Linkable implements ShadowCaster {
         if (picked() && tooFar()) {
             followLeader();
             testAndWrap();
-//            float angle = CrashGeom.calculateAngle(prev, this);
-//            move(SPEED, angle);
-//            System.out.println("too far");
         }
     }
 
@@ -159,10 +152,7 @@ public class Mushroom extends Linkable implements ShadowCaster {
         }
         
         float angle = CrashGeom.calculateAngle(prev, this);
-        if (d[1] < d[0] && d[1] < d[2]) {
-            angle += Math.PI;
-        }
-        if (d[2] < d[0]) {
+        if (d[1] < d[0] || d[2] < d[0]) {
             angle += Math.PI;
         }
         

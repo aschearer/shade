@@ -149,7 +149,7 @@ public class InGameState extends BasicGameState {
             timer += delta;
 
             // Randomly plant mushrooms
-            if (Math.random() > .996 || timer > 4000) {
+            if (Math.random() > .997 || timer > 6000) {
                 timer = 0;
                 level.plant();
             }
