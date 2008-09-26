@@ -17,6 +17,7 @@ import com.shade.controls.*;
 import com.shade.crash.*;
 import com.shade.entities.*;
 import com.shade.shadows.*;
+import com.shade.util.LevelUtil;
 
 public class InGameState extends BasicGameState {
 
@@ -84,16 +85,17 @@ public class InGameState extends BasicGameState {
         counter = new CounterControl(60, 520, counterSprite, counterFont);
 
         initObstacles();
+        initMoles(container);
         initBasket();
         initPlayer();
-        
-        updateShadow();
-        
-        Mushroom m = new Mushroom(200, 200);
-        level.add(m);
-        
-        Drone d = new Drone(200, 160, 8);
-        level.add(d);
+    }
+
+    private void initMoles(GameContainer c) {
+        level.add(new Mole(5000));
+        level.add(new Mole(3000));
+        level.add(new Mole(8000));
+//        level.add(new Mole(LevelUtil.randomPoint(c), 3600));
+//        level.add(new Mole(LevelUtil.randomPoint(c), 4800));
     }
 
     private void initObstacles() throws SlickException {
@@ -150,17 +152,17 @@ public class InGameState extends BasicGameState {
 
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
-//        updateShadow();
+        updateShadow();
         
         if (currentStatus == Status.RUNNING) {
             level.update(game, delta);
             timer += delta;
 
             // Randomly plant mushrooms
-//            if (Math.random() > .997 || timer > 6000) {
-//                timer = 0;
-//                level.plant();
-//            }
+            if (Math.random() > .997 || timer > 6000) {
+                timer = 0;
+                level.plant();
+            }
 
             meter.update(game, delta);
             counter.update(game, delta);
@@ -171,7 +173,7 @@ public class InGameState extends BasicGameState {
 
             // Check for lose condition
             if (meter.isEmpty()) {
-//                currentStatus = Status.GAME_OVER;
+                currentStatus = Status.GAME_OVER;
             }
         }
         

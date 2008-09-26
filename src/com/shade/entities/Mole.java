@@ -12,28 +12,30 @@ import com.shade.crash.util.CrashGeom;
 import com.shade.shadows.ShadowCaster;
 import com.shade.shadows.ShadowLevel;
 import com.shade.util.Geom;
+import com.shade.util.LevelUtil;
 
-public class Drone extends Linkable implements ShadowCaster {
+public class Mole extends Linkable implements ShadowCaster {
     
-    private static final float SPEED = 1f;
-
+    private static final float SPEED = .7f;
+    
     private enum Status {
-        IDLING, SEEKING, WORKING, INACTIVE
-    };
+        DIGGING, WAKING, IDLING, SEEKING, WORKING
+    }
     
-    private Status currentStatus;
     private ShadowLevel level;
+    private Status status;
     private Mushroom target;
     private float heading;
-    private int timer;
+    private int timer, cooldown;
 
-    public Drone(float x, float y, float r) {
-        initShape(x, y, r);
-        currentStatus = Status.IDLING;
+    public Mole(int cool) {
+        initShape();
+        status = Status.DIGGING;
+        cooldown = cool;
     }
 
-    private void initShape(float x, float y, float r) {
-        shape = new Circle(x, y, r);
+    private void initShape() {
+        shape = new Circle(0, 0, 6);
     }
 
     public Shape castShadow(float direction) {
@@ -41,7 +43,11 @@ public class Drone extends Linkable implements ShadowCaster {
     }
 
     public int getZIndex() {
-        return 2;
+        return 3;
+    }
+
+    public int compareTo(ShadowCaster s) {
+        return getZIndex() - s.getZIndex();
     }
 
     public void addToLevel(Level l) {
@@ -49,82 +55,82 @@ public class Drone extends Linkable implements ShadowCaster {
     }
 
     public Role getRole() {
-        return Role.DRONE;
+        return Role.MOLE;
     }
 
     public void onCollision(Entity obstacle) {
-        if (obstacle.getRole() == Role.MUSHROOM && currentStatus == Status.SEEKING) {
-            timer = 0;
+        if (status == Status.SEEKING && obstacle.getRole() == Role.MUSHROOM) {
+            // start working
             heading = (float) (Math.random() * 2 * Math.PI);
-            currentStatus = Status.WORKING;
+            target = (Mushroom) obstacle;
+            attach(target);
+            status = Status.WORKING;
+            timer = 0;
         }
-        if (obstacle.getRole() == Role.OBSTACLE) {
+        
+        if (status == Status.WORKING && obstacle.getRole() == Role.OBSTACLE) {
+            // change direction
+            heading = (float) (Math.random() * 2 * Math.PI);
+        }
+        
+        if (status == Status.SEEKING && obstacle.getRole() == Role.OBSTACLE) {
+            // die
             stopWork();
+        }
+        
+        if (status == Status.WAKING && obstacle.getRole() == Role.OBSTACLE) {
+            // back underground
+            status = Status.DIGGING;
         }
     }
 
     public void removeFromLevel(Level l) {
-
+        // TODO Auto-generated method stub
+        
     }
 
     public void render(Graphics g) {
-        if (currentStatus == Status.INACTIVE) {
+        if (status == Status.DIGGING) {
             return;
         }
         g.draw(shape);
     }
 
     public void update(StateBasedGame game, int delta) {
-        testAndMove(delta);
+        timer += delta;
+        if (status == Status.DIGGING && timer > cooldown) {
+            Vector2f p = LevelUtil.randomPoint(game.getContainer());
+            shape.setCenterX(p.x);
+            shape.setCenterY(p.y);
+            status = Status.WAKING;
+            timer = 0;
+        }
+        if (status == Status.WAKING && timer > cooldown) {
+            // wake up!
+            timer = 0;
+            status = Status.IDLING;
+        }
+        if (status == Status.IDLING && findTarget()) {
+            // target found
+            status = Status.SEEKING;
+        }
+        if (status == Status.SEEKING) {
+            // move towards target
+            move(SPEED, heading);
+        }
+        if (status == Status.WORKING) {
+            // move the target
+            move(SPEED, heading);
+        }
+        if (status == Status.WORKING && timer > cooldown) {
+            stopWork();
+        }
         testAndWrap();
     }
 
-    private void testAndMove(int delta) {
-        if (currentStatus == Status.IDLING) {
-            findMushroom();
-        }
-        if (currentStatus == Status.SEEKING) {
-            seek(delta);
-        }
-        if (currentStatus == Status.WORKING) {
-            work(delta);
-        }
-        if (currentStatus == Status.INACTIVE) {
-            timer += delta;
-            if (timer > 4000) {
-                
-            }
-        }
-    }
-
-    private void seek(int delta) {
-        move(SPEED, heading);
-    }
-
-    private void work(int delta) {
-        move(SPEED, heading);
-        timer += delta;
-        if (Math.random() > .999 || timer > 4000) {
-            stopWork();
-        }
-    }
-
-    private void stopWork() {
-        target.detach();
-        currentStatus = Status.INACTIVE;
-        timer = 0;
-    }
-    
-    /* Move the shape a given amount across two dimensions. */
-    private void move(float magnitude, float direction) {
-        Vector2f d = Geom.calculateVector(magnitude, direction);
-        shape.setCenterX(shape.getCenterX() + d.x);
-        shape.setCenterY(shape.getCenterY() + d.y);
-    }
-
-    private void findMushroom() {
+    private boolean findTarget() {
         Mushroom[] shroomies = level.nearbyShrooms(this);
-        
+
         boolean lineOfSight = false;
         int i = 0;
         while (!lineOfSight && i < shroomies.length) {
@@ -132,16 +138,30 @@ public class Drone extends Linkable implements ShadowCaster {
             i++;
         }
         i--;
-        
+
         if (lineOfSight) {
             target = shroomies[i];
-            currentStatus = Status.SEEKING;
+            status = Status.SEEKING;
             heading = CrashGeom.calculateAngle(target, this);
+            return true;
+        }
+        return false;
+    }
+    
+    private void stopWork() {
+        status = Status.DIGGING;
+        timer = 0;
+        if (target != null) {
+            target.detach();
+            target = null;
         }
     }
-
-    public int compareTo(ShadowCaster s) {
-        return getZIndex() - s.getZIndex();
+    
+    /* Move the shape a given amount across two dimensions. */
+    private void move(float magnitude, float direction) {
+        Vector2f d = Geom.calculateVector(magnitude, direction);
+        shape.setCenterX(shape.getCenterX() + d.x);
+        shape.setCenterY(shape.getCenterY() + d.y);
     }
 
 }

@@ -80,8 +80,8 @@ public class Mushroom extends Linkable implements ShadowCaster {
             ((Linkable) obstacle).attach(this);
             currentStatus = Status.PICKED;
         }
-        if (!picked() && obstacle.getRole() == Role.DRONE) {
-            ((Linkable) obstacle).attach(this);
+        if (!picked() && obstacle.getRole() == Role.MOLE) {
+//            ((Linkable) obstacle).attach(this);
             currentStatus = Status.PICKED;
         }
     }
@@ -96,6 +96,12 @@ public class Mushroom extends Linkable implements ShadowCaster {
         }
         sprite.draw(getX(), getY(), getWidth(), getHeight());
 //        g.draw(shape);
+    }
+    
+    @Override
+    public void detach() {
+        super.detach();
+        currentStatus = Status.IDLE;
     }
 
     public void update(StateBasedGame game, int delta) {
@@ -119,8 +125,13 @@ public class Mushroom extends Linkable implements ShadowCaster {
         
         if (tooSmall()) {
             currentStatus = Status.DEAD;
+            detach();
             level.remove(this);
             return; // Stop execution here
+        }
+        
+        if (picked() && prev == null) {
+            System.out.println("foo");
         }
         
         if (picked() && tooFar()) {
@@ -187,6 +198,10 @@ public class Mushroom extends Linkable implements ShadowCaster {
 
     private boolean tooBig() {
         return scale > MAX_SCALE;
+    }
+    
+    public void release() {
+        currentStatus = Status.IDLE;
     }
     
     public float getSize() {
