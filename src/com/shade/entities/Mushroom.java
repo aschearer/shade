@@ -36,7 +36,7 @@ public class Mushroom extends Linkable implements ShadowCaster {
     private float scale;
 
     private Level level;
-    
+
     private Image sprite;
 
     private Sound sproutSound;
@@ -77,13 +77,19 @@ public class Mushroom extends Linkable implements ShadowCaster {
 
     public void onCollision(Entity obstacle) {
         if (!picked() && obstacle.getRole() == Role.PLAYER) {
+            detach();
             ((Linkable) obstacle).attach(this);
             currentStatus = Status.PICKED;
         }
-        if (!picked() && obstacle.getRole() == Role.MOLE) {
-//            ((Linkable) obstacle).attach(this);
+        if (obstacle.getRole() == Role.MOLE) {
+            detach();
+            ((Linkable) obstacle).attach(this);
             currentStatus = Status.PICKED;
         }
+    }
+
+    public boolean isDead() {
+        return currentStatus == Status.DEAD;
     }
 
     private boolean picked() {
@@ -91,13 +97,13 @@ public class Mushroom extends Linkable implements ShadowCaster {
     }
 
     public void render(Graphics g) {
-        if (currentStatus == Status.DEAD) {
+        if (isDead()) {
             return;
         }
         sprite.draw(getX(), getY(), getWidth(), getHeight());
-//        g.draw(shape);
+        // g.draw(shape);
     }
-    
+
     @Override
     public void detach() {
         super.detach();
@@ -105,10 +111,10 @@ public class Mushroom extends Linkable implements ShadowCaster {
     }
 
     public void update(StateBasedGame game, int delta) {
-        if (currentStatus == Status.DEAD) {
+        if (isDead()) {
             return;
         }
-        
+
         if (shaded && !tooBig()) {
             scale += SCALE_INCREMENT;
             resize();
@@ -117,23 +123,19 @@ public class Mushroom extends Linkable implements ShadowCaster {
         if (tooBig()) {
             /* TODO Turn to a monster. */
         }
-        
+
         if (!shaded && !tooSmall()) {
             scale += -SCALE_INCREMENT / 2;
             resize();
         }
-        
+
         if (tooSmall()) {
             currentStatus = Status.DEAD;
             detach();
             level.remove(this);
             return; // Stop execution here
         }
-        
-        if (picked() && prev == null) {
-            System.out.println("foo");
-        }
-        
+
         if (picked() && tooFar()) {
             followLeader();
             testAndWrap();
@@ -149,27 +151,29 @@ public class Mushroom extends Linkable implements ShadowCaster {
         if (getX() < prev.getX()) {
             d[1] = CrashGeom.distance2(prev, getCenterX() + 800, getCenterY());
         } else {
-            d[1] = CrashGeom.distance2(this, prev.getCenterX() + 800, prev.getCenterY());
+            d[1] = CrashGeom.distance2(this, prev.getCenterX() + 800, prev
+                    .getCenterY());
         }
-        
+
         // if I'm above my target
         if (getY() < prev.getY()) {
             d[2] = CrashGeom.distance2(prev, getCenterX(), getCenterY() + 600);
         } else {
-            d[2] = CrashGeom.distance2(this, prev.getCenterX(), prev.getCenterY() + 600);
+            d[2] = CrashGeom.distance2(this, prev.getCenterX(), prev
+                    .getCenterY() + 600);
         }
-        
+
         float angle = CrashGeom.calculateAngle(prev, this);
         if (d[1] < d[0] || d[2] < d[0]) {
             angle += Math.PI;
         }
-        
+
         move(SPEED, angle);
     }
 
     private boolean tooFar() {
         float[] d = new float[3];
-        
+
         d[0] = CrashGeom.distance2(prev, this);
         d[1] = d[0];
         d[2] = d[0];
@@ -177,18 +181,20 @@ public class Mushroom extends Linkable implements ShadowCaster {
         if (getX() < prev.getX()) {
             d[1] = CrashGeom.distance2(prev, getCenterX() + 800, getCenterY());
         } else {
-            d[1] = CrashGeom.distance2(this, prev.getCenterX() + 800, prev.getCenterY());
+            d[1] = CrashGeom.distance2(this, prev.getCenterX() + 800, prev
+                    .getCenterY());
         }
-        
+
         // if I'm above my target
         if (getY() < prev.getY()) {
             d[2] = CrashGeom.distance2(prev, getCenterX(), getCenterY() + 600);
         } else {
-            d[2] = CrashGeom.distance2(this, prev.getCenterX(), prev.getCenterY() + 600);
+            d[2] = CrashGeom.distance2(this, prev.getCenterX(), prev
+                    .getCenterY() + 600);
         }
-        
+
         Arrays.sort(d);
-        
+
         return (d[0] > MAX_DISTANCE);
     }
 
@@ -199,11 +205,11 @@ public class Mushroom extends Linkable implements ShadowCaster {
     private boolean tooBig() {
         return scale > MAX_SCALE;
     }
-    
+
     public void release() {
         currentStatus = Status.IDLE;
     }
-    
+
     public float getSize() {
         return scale;
     }

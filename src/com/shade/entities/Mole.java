@@ -61,9 +61,8 @@ public class Mole extends Linkable implements ShadowCaster {
     public void onCollision(Entity obstacle) {
         if (status == Status.SEEKING && obstacle.getRole() == Role.MUSHROOM) {
             // start working
-            heading = (float) (Math.random() * 2 * Math.PI);
+            heading += Math.PI;
             target = (Mushroom) obstacle;
-            attach(target);
             status = Status.WORKING;
             timer = 0;
         }
@@ -81,6 +80,10 @@ public class Mole extends Linkable implements ShadowCaster {
         if (status == Status.WAKING && obstacle.getRole() == Role.OBSTACLE) {
             // back underground
             status = Status.DIGGING;
+        }
+        if (obstacle.getRole() == Role.PLAYER) {
+            // he got ya
+            stopWork();
         }
     }
 
@@ -114,15 +117,26 @@ public class Mole extends Linkable implements ShadowCaster {
             // target found
             status = Status.SEEKING;
         }
+        if (status == Status.IDLING && timer > cooldown) {
+            // go back underground start over
+            stopWork();
+        }
         if (status == Status.SEEKING) {
             // move towards target
+            heading = CrashGeom.calculateAngle(target, this);
             move(SPEED, heading);
+        }
+        if (status == Status.SEEKING && target.isDead()) {
+            stopWork();
         }
         if (status == Status.WORKING) {
             // move the target
             move(SPEED, heading);
         }
         if (status == Status.WORKING && timer > cooldown) {
+            stopWork();
+        }
+        if (status == Status.WORKING && target.isDead()) {
             stopWork();
         }
         testAndWrap();
@@ -142,7 +156,6 @@ public class Mole extends Linkable implements ShadowCaster {
         if (lineOfSight) {
             target = shroomies[i];
             status = Status.SEEKING;
-            heading = CrashGeom.calculateAngle(target, this);
             return true;
         }
         return false;
@@ -151,8 +164,13 @@ public class Mole extends Linkable implements ShadowCaster {
     private void stopWork() {
         status = Status.DIGGING;
         timer = 0;
-        if (target != null) {
-            target.detach();
+        if (next != null) {
+            Linkable head = next;
+            while (head != null) {
+                head.detach();
+                head = next;
+            }
+            next = null;
             target = null;
         }
     }

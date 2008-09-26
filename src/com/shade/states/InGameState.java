@@ -17,7 +17,6 @@ import com.shade.controls.*;
 import com.shade.crash.*;
 import com.shade.entities.*;
 import com.shade.shadows.*;
-import com.shade.util.LevelUtil;
 
 public class InGameState extends BasicGameState {
 
@@ -42,6 +41,8 @@ public class InGameState extends BasicGameState {
     private Player player;
 
     private int timer;
+
+    private int numMoles;
 
     @Override
     public int getID() {
@@ -85,17 +86,8 @@ public class InGameState extends BasicGameState {
         counter = new CounterControl(60, 520, counterSprite, counterFont);
 
         initObstacles();
-        initMoles(container);
         initBasket();
         initPlayer();
-    }
-
-    private void initMoles(GameContainer c) {
-        level.add(new Mole(5000));
-        level.add(new Mole(3000));
-        level.add(new Mole(8000));
-//        level.add(new Mole(LevelUtil.randomPoint(c), 3600));
-//        level.add(new Mole(LevelUtil.randomPoint(c), 4800));
     }
 
     private void initObstacles() throws SlickException {
@@ -162,6 +154,11 @@ public class InGameState extends BasicGameState {
             if (Math.random() > .997 || timer > 6000) {
                 timer = 0;
                 level.plant();
+                if (numMoles < 3) { 
+                    // add three moles
+                    level.add(new Mole(5000));
+                    numMoles++;
+                }
             }
 
             meter.update(game, delta);

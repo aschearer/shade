@@ -125,7 +125,7 @@ public class Player extends Linkable implements ShadowCaster {
     }
 
     public int getZIndex() {
-        return 3;
+        return 4;
     }
 
     public int compareTo(ShadowCaster s) {

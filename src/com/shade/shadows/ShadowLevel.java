@@ -1,5 +1,7 @@
 package com.shade.shadows;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 
 import org.newdawn.slick.Graphics;
@@ -17,19 +19,19 @@ import com.shade.entities.Player;
 /**
  * Builds on top of the CrashLevel to add support for shadows.
  * 
- * This assumes that all entities to be stored in the level are both
- * instances of the Body class and the ShadowCaster interface.
+ * This assumes that all entities to be stored in the level are both instances
+ * of the Body class and the ShadowCaster interface.
  * 
  * @author Alexander Schearer <aschearr@gmail.com>
  */
 public class ShadowLevel implements Level {
 
-    private static final float MAX_DISTANCE = 2500;
+    private static final float MAX_DISTANCE = 40000;
     private Grid grid;
     private Shadowscape shadowscape;
     private ZBuffer buffer;
     private LinkedList<Entity> in_queue, out_queue;
-    
+
     public ShadowLevel(Grid grid) {
         this.grid = grid;
         buffer = new ZBuffer();
@@ -62,9 +64,9 @@ public class ShadowLevel implements Level {
         for (ShadowCaster e : buffer) {
             e.render(g);
         }
-//        grid.debugDraw(g);
+        // grid.debugDraw(g);
     }
-    
+
     public void update(StateBasedGame game, int delta) {
         grid.update();
         for (ShadowCaster e : buffer) {
@@ -72,7 +74,7 @@ public class ShadowLevel implements Level {
         }
         resolve();
     }
-    
+
     private void resolve() {
         for (Entity e : in_queue) {
             buffer.add((ShadowCaster) e);
@@ -83,9 +85,10 @@ public class ShadowLevel implements Level {
         in_queue.clear();
         out_queue.clear();
     }
-    
+
     /**
      * Update the shadowscape with a new light source.
+     * 
      * @param direction
      */
     public void updateShadowscape(float direction) {
@@ -101,7 +104,7 @@ public class ShadowLevel implements Level {
             }
         }
     }
-    
+
     /**
      * Plant a mushroom randomly in the shadows.
      */
@@ -113,22 +116,24 @@ public class ShadowLevel implements Level {
             e.printStackTrace();
         }
     }
-    
+
     /**
      * Return true if the body is in a shadow.
+     * 
      * @param b
      * @return
      */
     public boolean shaded(Body b) {
         return shadowscape.contains(b);
     }
-    
+
     /**
      * Return a list of mushrooms near this body.
+     * 
      * @param b
      * @return
      */
-    public Mushroom[] nearbyShrooms(Body b) {
+    public Mushroom[] nearbyShrooms(final Body b) {
         LinkedList<Mushroom> mushrooms = new LinkedList<Mushroom>();
         for (ShadowCaster s : buffer) {
             if (s instanceof Mushroom) {
@@ -137,11 +142,21 @@ public class ShadowLevel implements Level {
                 }
             }
         }
+        
+        Collections.sort(mushrooms, new Comparator<Mushroom>() {
+
+            public int compare(Mushroom m1, Mushroom m2) {
+                return (int) (CrashGeom.distance2(b, m1) - CrashGeom.distance2(b, m2));
+            }
+
+        });
+
         return mushrooms.toArray(new Mushroom[0]);
     }
 
     /**
      * Cast a ray from body one to body two return true if it reaches body two.
+     * 
      * @param one
      * @param two
      * @return
