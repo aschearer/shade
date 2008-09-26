@@ -44,4 +44,17 @@ public interface Entity extends Animatable {
      * @param obstacle
      */
     public void onCollision(Entity obstacle);
+    
+    /**
+     * Called to repel any object which collides with it.
+     * Takes the position and velocity, and calculates 
+     * where the shape should be put.
+     * 
+     * @param x the x position of the caller
+     * @param y the y position of the caller
+     * @param velx the x velocity of the caller
+     * @param vely the y velocity of the caller
+     */
+    public void repel(Entity repellee);
+     
 }

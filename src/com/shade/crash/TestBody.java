@@ -49,4 +49,10 @@ public class TestBody extends Body {
 
     }
 
+	@Override
+	public void repel(Entity repellee) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
