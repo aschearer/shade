@@ -8,6 +8,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 
+import com.shade.crash.Body;
 import com.shade.crash.Grid;
 import com.shade.entities.Mushroom;
 
@@ -108,15 +109,15 @@ public class Shadowscape {
     }
 
     /**
-     * Returns true if the mushroom's center is in the shadowscape.
+     * Returns true if the entity's center is in the shadowscape.
      * 
      * TODO make this more accurate?
-     * @param m
+     * @param b
      * @return
      */
-    public boolean contains(Mushroom m) {
+    public boolean contains(Body b) {
         for (Shape s : shadows) {
-            if (s.contains(m.getCenterX(), m.getCenterY())) {
+            if (s.contains(b.getCenterX(), b.getCenterY())) {
                 return true;
             }
         }

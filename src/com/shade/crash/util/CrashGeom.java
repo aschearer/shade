@@ -38,4 +38,10 @@ public class CrashGeom {
         return Geom.calculateAngle(x1, y1, x2, y2);
     }
 
+    public static float calculateAngle(Body one, float x2, float y2) {
+        float x1 = one.getCenterX();
+        float y1 = one.getCenterY();
+        return Geom.calculateAngle(x1, y1, x2, y2);
+    }
+
 }
