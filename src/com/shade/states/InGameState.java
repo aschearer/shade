@@ -84,7 +84,7 @@ public class InGameState extends BasicGameState {
         level.updateShadowscape(sunAngle);
         meter = new MeterControl(20, 456, 100, 100);
         counter = new CounterControl(60, 520, counterSprite, counterFont);
-        numMoles = 0;
+        numMoles = 3;
 
         initObstacles();
         initBasket();
@@ -97,20 +97,20 @@ public class InGameState extends BasicGameState {
         casters.add(new Block(224, 424, 56, 56, 6));
         casters.add(new Block(324, 424, 56, 56, 6));
         casters.add(new Block(75, 225, 56, 56, 6));
-        casters.add(new Block(545, 380, 80, 80, 10));
+        casters.add(new Block(545, 330, 80, 80, 10));
         casters.add(new Block(445, 460, 80, 80, 10));
         // domes
         casters.add(new Dome(288, 165, 32, 7));
         casters.add(new Dome(180, 95, 44, 10));
-        casters.add(new Dome(300, 85, 25, 6));
-        casters.add(new Dome(680, 70, 28, 6));
-        casters.add(new Dome(600, 120, 40, 9));
+        casters.add(new Dome(300, 65, 25, 6));
+        casters.add(new Dome(710, 80, 28, 6));
+        casters.add(new Dome(600, 100, 40, 9));
         casters.add(new Dome(680, 220, 60, 13));
         // fences
-        casters.add(new Fence(225, 225, 11, 120, 6));
-        casters.add(new Fence(390, 140, 120, 11, 6));
-        casters.add(new Fence(715, 368, 11, 120, 6));
-        casters.add(new Fence(50, 50, 11, 120, 6));
+        casters.add(new Fence(225, 225, 11, 120, 5));
+        casters.add(new Fence(390, 140, 120, 11, 5));
+        casters.add(new Fence(715, 368, 11, 120, 5));
+        casters.add(new Fence(50, 50, 11, 120, 5));
 
         for (ShadowCaster c : casters) {
             level.add(c);

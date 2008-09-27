@@ -60,11 +60,14 @@ public class ShadowLevel implements Level {
     }
 
     public void render(Graphics g) {
-        shadowscape.render(g);
-        for (ShadowCaster e : buffer) {
+        for (ShadowCaster e : buffer.under(5)) {
             e.render(g);
         }
-        // grid.debugDraw(g);
+        shadowscape.render(g);
+        for (ShadowCaster e : buffer.over(5)) {
+            e.render(g);
+        }
+//        grid.debugDraw(g);
     }
 
     public void update(StateBasedGame game, int delta) {
@@ -142,11 +145,12 @@ public class ShadowLevel implements Level {
                 }
             }
         }
-        
+
         Collections.sort(mushrooms, new Comparator<Mushroom>() {
 
             public int compare(Mushroom m1, Mushroom m2) {
-                return (int) (CrashGeom.distance2(b, m1) - CrashGeom.distance2(b, m2));
+                return (int) (CrashGeom.distance2(b, m1) - CrashGeom
+                        .distance2(b, m2));
             }
 
         });

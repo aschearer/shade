@@ -39,4 +39,39 @@ public class ZBuffer implements Iterable<ShadowCaster> {
         return casters.iterator();
     }
     
+    /**
+     * Return all casters with z-index below the ceiling.
+     * 
+     * This is used to paint the shadowscape over certain casters.
+     * @param ceiling
+     * @return
+     */
+    public Iterable<ShadowCaster> under(int ceiling) {
+        LinkedList<ShadowCaster> qualified = new LinkedList<ShadowCaster>();
+        for (ShadowCaster s : this) {
+            if (s.getZIndex() >= ceiling) {
+                return qualified;
+            }
+            qualified.add(s);
+        }
+        return qualified;
+    }
+    
+    /**
+     * Return all casters with z-index at or above the floor.
+     * 
+     * This is used to paint the shadowscape over certain casters.
+     * @param floor
+     * @return
+     */
+    public Iterable<ShadowCaster> over(int floor) {
+        LinkedList<ShadowCaster> qualified = new LinkedList<ShadowCaster>();
+        for (ShadowCaster s : this) {
+            if (s.getZIndex() >= floor) {
+                qualified.add(s);
+            }
+        }
+        return qualified;
+    }
+    
 }

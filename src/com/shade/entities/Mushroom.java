@@ -13,6 +13,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Entity;
 import com.shade.base.Level;
+import com.shade.crash.Body;
 import com.shade.crash.util.CrashGeom;
 import com.shade.shadows.ShadowCaster;
 import com.shade.util.Geom;
@@ -29,8 +30,8 @@ public class Mushroom extends Linkable implements ShadowCaster {
     private static final float SCALE_INCREMENT = .005f;
     private static final float MAX_SCALE = 3f;
     private static final float MIN_SCALE = 1.2f;
-    private static final int MAX_DISTANCE = 2500;
-    private static final float SPEED = 1.2f;
+    private static final int MAX_DISTANCE = 1200;
+    private static final float SPEED = 1.4f;
 
     private Status currentStatus;
     private float scale;
@@ -85,6 +86,10 @@ public class Mushroom extends Linkable implements ShadowCaster {
             detach();
             ((Linkable) obstacle).attach(this);
             currentStatus = Status.PICKED;
+        }
+        if (obstacle.getRole() == Role.OBSTACLE) {
+            Body b = (Body) obstacle;
+            b.repel(this);
         }
     }
 
@@ -217,6 +222,8 @@ public class Mushroom extends Linkable implements ShadowCaster {
     /* Move the shape a given amount across two dimensions. */
     private void move(float magnitude, float direction) {
         Vector2f d = Geom.calculateVector(magnitude, direction);
+        xVelocity = d.x;
+        yVelocity = d.y;
         // Transform t = Transform.createTranslateTransform(d.x, d.y);
         // shape = shape.transform(t);
         shape.setCenterX(shape.getCenterX() + d.x);
@@ -250,9 +257,18 @@ public class Mushroom extends Linkable implements ShadowCaster {
         return (getZIndex() - s.getZIndex());
     }
 
-	public void repel(Entity repellee) {
-		// TODO Auto-generated method stub
-		
-	}
+    public void repel(Entity repellee) {
+        Body b = (Body) repellee;
+        double playerx = b.getCenterX();
+        double playery = b.getCenterY();
+        double dist_x = playerx - getCenterX();
+        double dist_y = playery - getCenterY();
+        double mag = Math.sqrt(dist_x * dist_x + dist_y * dist_y);
+        double playradius = b.getWidth() / 2;
+        double obstacleradius = getWidth() / 2;
+        double angle = Math.atan2(dist_y, dist_x);
+        double move = (playradius + obstacleradius - mag) * 1.5;
+        b.move(Math.cos(angle) * move, Math.sin(angle) * move);
+    }
 
 }

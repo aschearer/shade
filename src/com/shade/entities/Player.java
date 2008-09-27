@@ -19,12 +19,11 @@ import com.shade.shadows.ShadowCaster;
 public class Player extends Linkable implements ShadowCaster {
 
     private static final float SPEED = 1.4f;
-    
+
     private Level level;
     private Image sprite;
-    
+
     public boolean shaded;
-    private float dx, dy;
 
     private LinkedList<MushroomCounter> counters;
 
@@ -53,7 +52,7 @@ public class Player extends Linkable implements ShadowCaster {
     public void removeFromLevel(Level l) {
         // TODO Auto-generated method stub
     }
-    
+
     public void onCollision(Entity obstacle) {
         collectMushrooms(obstacle);
         /* Or... */
@@ -62,15 +61,15 @@ public class Player extends Linkable implements ShadowCaster {
 
     private void moveOutOfIntersection(Entity obstacle) {
         if (obstacle.getRole() == Role.OBSTACLE) {
-        	Body b = (Body)obstacle;
-        	b.repel(this);
+            Body b = (Body) obstacle;
+            b.repel(this);
         }
     }
 
     private void collectMushrooms(Entity obstacle) {
         if (obstacle.getRole() == Role.BASKET && next != null) {
             notifyCounters();
-            
+
             Linkable head = next;
             while (head != null) {
                 head.detach();
@@ -89,7 +88,7 @@ public class Player extends Linkable implements ShadowCaster {
 
     public void render(Graphics g) {
         sprite.drawCentered(getCenterX(), getCenterY());
-//        g.draw(shape);
+        // g.draw(shape);
     }
 
     public void update(StateBasedGame game, int delta) {
@@ -98,33 +97,30 @@ public class Player extends Linkable implements ShadowCaster {
     }
 
     private void testAndMove(Input input, int delta) {
-        dx = 0; 
-        dy = 0;
+        xVelocity = 0;
+        yVelocity = 0;
         if (input.isKeyDown(Input.KEY_LEFT)) {
-            dx--;
+            xVelocity--;
         }
         if (input.isKeyDown(Input.KEY_RIGHT)) {
-            dx++;
+            xVelocity++;
         }
         if (input.isKeyDown(Input.KEY_UP)) {
-            dy--;
+            yVelocity--;
         }
         if (input.isKeyDown(Input.KEY_DOWN)) {
-            dy++;
+            yVelocity++;
         }
-    	double mag = Math.sqrt(dx*dx+dy*dy);
-        //make it uniform speed
-       	dx = (float)(1.0*SPEED*dx/mag);
-       	dy = (float)(1.0*SPEED*dy/mag);
-        if(mag!=0){
-        move(dx,dy);
+        double mag = Math.sqrt(xVelocity * xVelocity + yVelocity * yVelocity);
+        // make it uniform speed
+        xVelocity = (float) (1.0 * SPEED * xVelocity / mag);
+        yVelocity = (float) (1.0 * SPEED * yVelocity / mag);
+        if (mag != 0) {
+            move(xVelocity, yVelocity);
+        } else {
+            xVelocity = 0;
+            yVelocity = 0;
         }
-        else {
-        	dx=0;
-        	dy =0;
-        }
-        super.xVelocity = dx;
-        super.yVelocity = dy;
         if (getCenterX() <= 0) {
             shape.setCenterX(799);
         }
@@ -137,12 +133,12 @@ public class Player extends Linkable implements ShadowCaster {
         if (getCenterY() > 599) {
             shape.setCenterY(0);
         }
-   }
+    }
 
     public Shape castShadow(float direction) {
-//        Vector2f d = Geom.calculateVector(5 * getZIndex(), direction);
-//        Transform t = Transform.createTranslateTransform(d.x, d.y);
-//        return shape.transform(t);
+        // Vector2f d = Geom.calculateVector(5 * getZIndex(), direction);
+        // Transform t = Transform.createTranslateTransform(d.x, d.y);
+        // return shape.transform(t);
         return null;
     }
 
@@ -154,19 +150,20 @@ public class Player extends Linkable implements ShadowCaster {
         return getZIndex() - s.getZIndex();
     }
 
-	public void repel(Entity repellee) {
-		Body b = (Body) repellee;
-		double playerx = b.getCenterX();
-		double playery = b.getCenterY();
-		double dist_x = playerx-getCenterX();
-		double dist_y = playery-getCenterY();
-		double mag = Math.sqrt(dist_x*dist_x + dist_y*dist_y);
-		double playradius = b.getWidth()/2;
-		double obstacleradius = getWidth()/2;
-		double angle = Math.atan2(dist_y,dist_x);
-		double move = (playradius+obstacleradius-mag)*1.5;
-		b.move(Math.cos(angle)*move,Math.sin(angle)*move);
-	}
+    public void repel(Entity repellee) {
+        Body b = (Body) repellee;
+        double playerx = b.getCenterX();
+        double playery = b.getCenterY();
+        double dist_x = playerx - getCenterX();
+        double dist_y = playery - getCenterY();
+        double mag = Math.sqrt(dist_x * dist_x + dist_y * dist_y);
+        double playradius = b.getWidth() / 2;
+        double obstacleradius = getWidth() / 2;
+        double angle = Math.atan2(dist_y, dist_x);
+        double move = (playradius + obstacleradius - mag) * 1.5;
+        b.move(Math.cos(angle) * move, Math.sin(angle) * move);
+    }
+
     public void add(MushroomCounter counter) {
         counters.add(counter);
     }

@@ -13,8 +13,7 @@ public abstract class Body implements Entity {
 
     /** The underlying shape of this body, used to perform intersection tests. */
     protected Shape shape;
-    protected double xVelocity = 0;
-    protected double yVelocity = 0;
+    protected float xVelocity, yVelocity;
 
     public float getCenterX() {
         return shape.getCenterX();
@@ -40,7 +39,7 @@ public abstract class Body implements Entity {
         return shape.getMaxY() - shape.getY();
     }
     
-    public void setVelocity(double x, double y){
+    public void setVelocity(float x, float y){
     	xVelocity = x;
     	yVelocity = y;
     }
