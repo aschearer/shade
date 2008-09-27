@@ -99,4 +99,19 @@ public class Dome extends Body implements ShadowCaster {
         return depth - s.getZIndex();
     }
 
+	@Override
+	public void repel(Entity repellee) {
+		Body b = (Body) repellee;
+		double playerx = b.getCenterX();
+		double playery = b.getCenterY();
+		double dist_x = playerx-getCenterX();
+		double dist_y = playery-getCenterY();
+		double mag = Math.sqrt(dist_x*dist_x + dist_y*dist_y);
+		double playradius = b.getWidth()/2;
+		double obstacleradius = getWidth()/2;
+		double angle = Math.atan2(dist_y,dist_x);
+		double move = (playradius+obstacleradius-mag)*1.5;
+		b.move(Math.cos(angle)*move,Math.sin(angle)*move);
+	}
+
 }

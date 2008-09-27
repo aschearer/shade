@@ -12,12 +12,13 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Entity;
 import com.shade.base.Level;
+import com.shade.crash.Body;
 import com.shade.controls.MushroomCounter;
 import com.shade.shadows.ShadowCaster;
 
 public class Player extends Linkable implements ShadowCaster {
 
-    private static final float SPEED = 1f;
+    private static final float SPEED = 2f;
     
     private Level level;
     private Image sprite;
@@ -61,8 +62,8 @@ public class Player extends Linkable implements ShadowCaster {
 
     private void moveOutOfIntersection(Entity obstacle) {
         if (obstacle.getRole() == Role.OBSTACLE) {
-            shape.setCenterX(getCenterX() - dx * SPEED);
-            shape.setCenterY(getCenterY() - dy * SPEED);
+        	Body b = (Body)obstacle;
+        	b.repel(this);
         }
     }
 
@@ -101,21 +102,42 @@ public class Player extends Linkable implements ShadowCaster {
         dy = 0;
         if (input.isKeyDown(Input.KEY_LEFT)) {
             dx--;
-            shape.setCenterX(getCenterX() - SPEED);
         }
         if (input.isKeyDown(Input.KEY_RIGHT)) {
             dx++;
-            shape.setCenterX(getCenterX() + SPEED);
         }
         if (input.isKeyDown(Input.KEY_UP)) {
             dy--;
-            shape.setCenterY(getCenterY() - SPEED);
         }
         if (input.isKeyDown(Input.KEY_DOWN)) {
             dy++;
-            shape.setCenterY(getCenterY() + SPEED);
         }
-    }
+    	double mag = Math.sqrt(dx*dx+dy*dy);
+        //make it uniform speed
+       	dx = (float)(1.0*SPEED*dx/mag);
+       	dy = (float)(1.0*SPEED*dy/mag);
+        if(mag!=0){
+        move(dx,dy);
+        }
+        else {
+        	dx=0;
+        	dy =0;
+        }
+        super.xVelocity = dx;
+        super.yVelocity = dy;
+        if (getCenterX() <= 0) {
+            shape.setCenterX(799);
+        }
+        if (getCenterX() > 799) {
+            shape.setCenterX(0);
+        }
+        if (getCenterY() <= 0) {
+            shape.setCenterY(599);
+        }
+        if (getCenterY() > 599) {
+            shape.setCenterY(0);
+        }
+   }
 
     public Shape castShadow(float direction) {
 //        Vector2f d = Geom.calculateVector(5 * getZIndex(), direction);
@@ -132,6 +154,20 @@ public class Player extends Linkable implements ShadowCaster {
         return getZIndex() - s.getZIndex();
     }
 
+	@Override
+	public void repel(Entity repellee) {
+		Body b = (Body) repellee;
+		double playerx = b.getCenterX();
+		double playery = b.getCenterY();
+		double dist_x = playerx-getCenterX();
+		double dist_y = playery-getCenterY();
+		double mag = Math.sqrt(dist_x*dist_x + dist_y*dist_y);
+		double playradius = b.getWidth()/2;
+		double obstacleradius = getWidth()/2;
+		double angle = Math.atan2(dist_y,dist_x);
+		double move = (playradius+obstacleradius-mag)*1.5;
+		b.move(Math.cos(angle)*move,Math.sin(angle)*move);
+	}
     public void add(MushroomCounter counter) {
         counters.add(counter);
     }

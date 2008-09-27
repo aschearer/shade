@@ -70,4 +70,10 @@ public class Basket extends Body implements ShadowCaster {
         return getZIndex() - s.getZIndex();
     }
 
+	@Override
+	public void repel(Entity repellee) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
