@@ -18,13 +18,13 @@ import com.shade.util.Geom;
 
 public class Fence extends Body implements ShadowCaster {
 
-	private int depth;
+	private int height;
 	private Image sprite;
 
 	public Fence(float x, float y, float w, float h, int d)
 			throws SlickException {
 		initShape(x, y, w, h);
-		depth = d;
+		height = d;
 		initSprite(w, h);
 	}
 
@@ -40,8 +40,8 @@ public class Fence extends Body implements ShadowCaster {
 		sprite = new Image(path);
 	}
 
-	public Shape castShadow(float direction) {
-		Vector2f v = Geom.calculateVector(depth * 10, direction);
+	public Shape castShadow(float direction, float depth) {
+		Vector2f v = Geom.calculateVector(height * depth, direction);
 
 		Transform t = Transform.createTranslateTransform(v.x, v.y);
 		Polygon extent = (Polygon) shape.transform(t);
@@ -108,11 +108,11 @@ public class Fence extends Body implements ShadowCaster {
 	}
 
 	public int getZIndex() {
-		return depth;
+		return height;
 	}
 
 	public int compareTo(ShadowCaster s) {
-		return (depth - s.getZIndex());
+		return (height - s.getZIndex());
 	}
 
 	public void repel(Entity repellee) {

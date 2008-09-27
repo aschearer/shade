@@ -242,7 +242,7 @@ public class Mushroom extends Linkable implements ShadowCaster {
         // shape = shape.transform(t);
     }
 
-    public Shape castShadow(float direction) {
+    public Shape castShadow(float direction, float depth) {
         // Vector2f d = Geom.calculateVector(2 * depth, direction);
         // Transform t = Transform.createTranslateTransform(d.x, d.y);
         // return shape.transform(t);

@@ -18,10 +18,10 @@ public class Shadowscape {
     private Grid grid;
     private LinkedList<Shape> shadows;
     
-    public Shadowscape(ZBuffer buffer, float direction, Grid grid) {
+    public Shadowscape(ZBuffer buffer, float direction, float shadowLength, Grid grid) {
         shadows = new LinkedList<Shape>();
         for (ShadowCaster c : buffer) {
-            Shape shadow = c.castShadow(direction);
+            Shape shadow = c.castShadow(direction, shadowLength);
             if (shadow != null) {
                 shadows.add(shadow);
             }
@@ -60,7 +60,7 @@ public class Shadowscape {
 
     private boolean checkPoint(Vector2f p, Shape shadow) {
         // is it within bounds
-        if (!(p.x > 10 && p.x < 790 && p.y > 10 && p.y < 590)) {
+        if (!(p.x > 0 && p.x < 800 && p.y > 0 && p.y < 600)) {
             return false;
         }
         // p is in the shadow

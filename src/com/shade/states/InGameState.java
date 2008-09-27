@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.io.InputStream;
 import java.util.LinkedList;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -21,6 +22,10 @@ import com.shade.shadows.*;
 public class InGameState extends BasicGameState {
 
     public static final int ID = 1;
+	public static final float TRANSITION_TIME = 1f/7;
+	public static final float MAX_SHADOW = 0.6f;
+	public static final float SUN_ANGLE_INCREMENT = 0.005f;
+	public static final int SECONDS_PER_DAY = (int)Math.ceil(Math.PI*32/SUN_ANGLE_INCREMENT);
 
     private enum Status {
         NOT_STARTED, RUNNING, PAUSED, GAME_OVER
@@ -81,7 +86,7 @@ public class InGameState extends BasicGameState {
         currentStatus = Status.RUNNING;
 
         level.clear();
-        level.updateShadowscape(sunAngle);
+        level.updateShadowscape(sunAngle, (float)Math.sin(sunAngle)*2f);
         meter = new MeterControl(20, 456, 100, 100);
         counter = new CounterControl(60, 520, counterSprite, counterFont);
         numMoles = 3;
@@ -135,9 +140,35 @@ public class InGameState extends BasicGameState {
         backgroundSprite.draw();
         level.render(g);
         trimSprite.draw();
+
+        
+		int timeofday = timer%SECONDS_PER_DAY;
+		//is it day or night? 
+		if(timeofday>1.0*SECONDS_PER_DAY*(1f/2-TRANSITION_TIME)){
+			float factor = MAX_SHADOW;
+			float colorizer = 0;
+			float colorizeg = 0;
+			float colorizeb = 0;
+			if(timeofday<1.0*SECONDS_PER_DAY/2){
+				factor = (float)1.0*MAX_SHADOW*((timeofday-SECONDS_PER_DAY/2f)/(SECONDS_PER_DAY*TRANSITION_TIME)+1);
+				colorizer = 0.2f*(float)Math.abs(Math.sin(Math.PI*((timeofday-SECONDS_PER_DAY/2f)/(SECONDS_PER_DAY*TRANSITION_TIME)+1)));
+				colorizeg = 0.1f*(float)Math.abs(Math.sin(Math.PI*((timeofday-SECONDS_PER_DAY/2f)/(SECONDS_PER_DAY*TRANSITION_TIME)+1)));
+				
+			}
+			if(timeofday>1.0*SECONDS_PER_DAY*(1-TRANSITION_TIME)){
+				factor = MAX_SHADOW*(SECONDS_PER_DAY-timeofday)/(SECONDS_PER_DAY*TRANSITION_TIME);
+				colorizer = 0.1f*(float)Math.abs(Math.cos(Math.PI/2*((timeofday-SECONDS_PER_DAY/2f)/(SECONDS_PER_DAY*TRANSITION_TIME)+1)));
+				colorizeg = 0.1f*(float)Math.abs(Math.cos(Math.PI/2*((timeofday-SECONDS_PER_DAY/2f)/(SECONDS_PER_DAY*TRANSITION_TIME)+1)));
+				colorizeb = 0.05f*(float)Math.abs(Math.cos(Math.PI/2*((timeofday-SECONDS_PER_DAY/2f)/(SECONDS_PER_DAY*TRANSITION_TIME)+1)));
+			}
+			Color night = new Color(colorizer,colorizeg,colorizeb,factor);
+			
+			g.setColor(night);
+			g.fillRect(0, 0, game.getContainer().getScreenWidth(), game.getContainer().getScreenHeight());
+			g.setColor(Color.white);
+		}
         meter.render(g);
         counter.render(g);
-        
         if (currentStatus == Status.GAME_OVER) {
             counterFont.drawString(320, 300, "Game Over");
         }
@@ -152,8 +183,7 @@ public class InGameState extends BasicGameState {
             timer += delta;
 
             // Randomly plant mushrooms
-            if (Math.random() > .997 || timer > 6000) {
-                timer = 0;
+            if (Math.random() > .997 || timer%6000 + delta>6000) {
                 level.plant();
                 if (numMoles < 3) { 
                     // add three moles
@@ -182,8 +212,8 @@ public class InGameState extends BasicGameState {
     }
 
     private void updateShadow() {
-        sunAngle += .0005f;
-        level.updateShadowscape(sunAngle);
+        sunAngle += SUN_ANGLE_INCREMENT;
+        level.updateShadowscape(sunAngle, 10f);//(float)(10f/(1+0.9*Math.cos(sunAngle*2))));
     }
 
 }

@@ -29,7 +29,8 @@ public interface ShadowCaster extends Entity, Comparable<ShadowCaster> {
      * assumed that this will only be called after the body is initialized.
      * 
      * @param direction The angle of the sun in radians.
+     * @param depth TODO
      * @return the object's shadow.
      */
-    public Shape castShadow(float direction);
+    public Shape castShadow(float direction, float depth);
 }

@@ -17,23 +17,23 @@ import com.shade.shadows.ShadowCaster;
 public class Dome extends Body implements ShadowCaster {
 
     private Image sprite;
-    private int depth;
+    private int height;
 
     public Dome(float x, float y, float r, int d) throws SlickException {
         initShape(x, y, r);
-        depth = d;
+        height = d;
         initSprite();
     }
 
     private void initSprite() throws SlickException {
         String path = "entities/dome/dome.small.png";
-        if (depth > 6) {
+        if (height > 6) {
             path = "entities/dome/dome.medium.png";
         }
-        if (depth > 9) {
+        if (height > 9) {
             path = "entities/dome/dome.big.png";
         }
-        if (depth > 12) {
+        if (height > 12) {
             path = "entities/dome/dome.xbig.png";
         }
         
@@ -80,9 +80,9 @@ public class Dome extends Body implements ShadowCaster {
      * obviously will impact the odds of a mushroom being placed in said shadow.
      * But it's performant so I'm willing to accept that.
      */
-    public Shape castShadow(float direction) {
+    public Shape castShadow(float direction, float depth) {
         float r = ((Circle) shape).radius;
-        float h = depth * 10 * 1.6f;
+        float h = height * depth * 1.6f;
         float x = getCenterX();
         float y = getCenterY();
         Transform t = Transform.createRotateTransform(direction + 3.14f, x, y);
@@ -92,11 +92,11 @@ public class Dome extends Body implements ShadowCaster {
     }
 
     public int getZIndex() {
-        return depth;
+        return height;
     }
 
     public int compareTo(ShadowCaster s) {
-        return depth - s.getZIndex();
+        return height - s.getZIndex();
     }
 
 	public void repel(Entity repellee) {

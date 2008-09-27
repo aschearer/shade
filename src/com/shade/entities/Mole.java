@@ -38,7 +38,7 @@ public class Mole extends Linkable implements ShadowCaster {
         shape = new Circle(0, 0, 6);
     }
 
-    public Shape castShadow(float direction) {
+    public Shape castShadow(float direction, float depth) {
         return null;
     }
 
