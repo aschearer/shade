@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.state.*;
@@ -41,6 +42,8 @@ public class InGameState extends BasicGameState {
 
     private int timer;
 
+    private int numMoles;
+
     @Override
     public int getID() {
         return ID;
@@ -61,7 +64,6 @@ public class InGameState extends BasicGameState {
                     .getResourceAsStream("states/ingame/jekyll.ttf");
             Font jekyll = Font.createFont(Font.TRUETYPE_FONT, oi);
             counterFont = new TrueTypeFont(jekyll.deriveFont(36f), true);
-            ;
         } catch (Exception e) {
             throw new SlickException("Failed to load font.", e);
         }
@@ -82,6 +84,7 @@ public class InGameState extends BasicGameState {
         level.updateShadowscape(sunAngle);
         meter = new MeterControl(20, 456, 100, 100);
         counter = new CounterControl(60, 520, counterSprite, counterFont);
+        numMoles = 3;
 
         initObstacles();
         initBasket();
@@ -94,20 +97,20 @@ public class InGameState extends BasicGameState {
         casters.add(new Block(224, 424, 56, 56, 6));
         casters.add(new Block(324, 424, 56, 56, 6));
         casters.add(new Block(75, 225, 56, 56, 6));
-        casters.add(new Block(545, 380, 80, 80, 10));
+        casters.add(new Block(545, 330, 80, 80, 10));
         casters.add(new Block(445, 460, 80, 80, 10));
         // domes
         casters.add(new Dome(288, 165, 32, 7));
         casters.add(new Dome(180, 95, 44, 10));
-        casters.add(new Dome(300, 85, 25, 6));
-        casters.add(new Dome(680, 70, 28, 6));
-        casters.add(new Dome(600, 120, 40, 9));
+        casters.add(new Dome(300, 65, 25, 6));
+        casters.add(new Dome(710, 80, 28, 6));
+        casters.add(new Dome(600, 100, 40, 9));
         casters.add(new Dome(680, 220, 60, 13));
         // fences
-        casters.add(new Fence(225, 225, 11, 120, 6));
-        casters.add(new Fence(390, 140, 120, 11, 6));
-        casters.add(new Fence(715, 368, 11, 120, 6));
-        casters.add(new Fence(50, 50, 11, 120, 6));
+        casters.add(new Fence(225, 225, 11, 120, 5));
+        casters.add(new Fence(390, 140, 120, 11, 5));
+        casters.add(new Fence(715, 368, 11, 120, 5));
+        casters.add(new Fence(50, 50, 11, 120, 5));
 
         for (ShadowCaster c : casters) {
             level.add(c);
@@ -149,9 +152,14 @@ public class InGameState extends BasicGameState {
             timer += delta;
 
             // Randomly plant mushrooms
-            if (Math.random() > .996 || timer > 4000) {
+            if (Math.random() > .997 || timer > 6000) {
                 timer = 0;
                 level.plant();
+                if (numMoles < 3) { 
+                    // add three moles
+                    level.add(new Mole(5000));
+                    numMoles++;
+                }
             }
 
             meter.update(game, delta);
@@ -165,6 +173,11 @@ public class InGameState extends BasicGameState {
             if (meter.isEmpty()) {
                 currentStatus = Status.GAME_OVER;
             }
+        }
+        
+        // check whether to restart
+        if (container.getInput().isKeyPressed(Input.KEY_R)) {
+            enter(container, game);
         }
     }
 

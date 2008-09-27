@@ -13,8 +13,7 @@ public abstract class Body implements Entity {
 
     /** The underlying shape of this body, used to perform intersection tests. */
     protected Shape shape;
-    protected double xVelocity = 0;
-    protected double yVelocity = 0;
+    protected float xVelocity, yVelocity;
 
     public float getCenterX() {
         return shape.getCenterX();
@@ -40,7 +39,7 @@ public abstract class Body implements Entity {
         return shape.getMaxY() - shape.getY();
     }
     
-    public void setVelocity(double x, double y){
+    public void setVelocity(float x, float y){
     	xVelocity = x;
     	yVelocity = y;
     }
@@ -57,14 +56,9 @@ public abstract class Body implements Entity {
     public void move(double x, double y){
     	float xf = (float)x;
     	float yf = (float)y;
-    	System.out.println("x, "+getCenterX()+" y,"+getCenterY()+" width"+getWidth()+", height" +getHeight());
-    	System.out.println("move amount: "+x+","+y);
-    	System.out.println("move to: "+(getCenterX()+xf)+", "+(getCenterY()+yf));
     	float endx = getCenterX()-getWidth()/2+xf;
     	float endy = getCenterY()-getHeight()/2+yf;
     	shape.setLocation(endx,endy);
-    	
-    	//shape.setLocation(getCenterX()+xf, getCenterY()+yf);
         
     }
 }

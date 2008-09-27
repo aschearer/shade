@@ -14,6 +14,38 @@ import com.shade.crash.Body;
 public abstract class Linkable extends Body {
 
     public Linkable prev, next;
+    
+    /**
+     * Attach the object to the end of this linked list.
+     * @param l
+     */
+    protected void attach(Linkable l) {
+        if (next == null) {
+            next = l;
+            l.prev = this;
+            return;
+        }
+        Linkable head = next;
+        while (head.next != null) {
+            head = head.next;
+        }
+        head.next = l;
+        l.prev = head;
+    }
+    
+    /**
+     * Remove this object from its linked list.
+     */
+    protected void detach() {
+        if (prev != null) {
+            prev.next = next;
+        }
+        if (next != null) {
+            next.prev = prev;
+        }
+        prev = null;
+        next = null;
+    }
 
     /**
      * Checks whether a linkable is over the edge of the screen and wraps it if

@@ -99,7 +99,6 @@ public class Dome extends Body implements ShadowCaster {
         return depth - s.getZIndex();
     }
 
-	@Override
 	public void repel(Entity repellee) {
 		Body b = (Body) repellee;
 		double playerx = b.getCenterX();

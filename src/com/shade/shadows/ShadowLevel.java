@@ -1,5 +1,7 @@
 package com.shade.shadows;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 
 import org.newdawn.slick.Graphics;
@@ -10,24 +12,26 @@ import com.shade.base.Entity;
 import com.shade.base.Level;
 import com.shade.crash.Body;
 import com.shade.crash.Grid;
+import com.shade.crash.util.CrashGeom;
 import com.shade.entities.Mushroom;
 import com.shade.entities.Player;
 
 /**
  * Builds on top of the CrashLevel to add support for shadows.
  * 
- * This assumes that all entities to be stored in the level are both
- * instances of the Body class and the ShadowCaster interface.
+ * This assumes that all entities to be stored in the level are both instances
+ * of the Body class and the ShadowCaster interface.
  * 
  * @author Alexander Schearer <aschearr@gmail.com>
  */
 public class ShadowLevel implements Level {
 
+    private static final float MAX_DISTANCE = 40000;
     private Grid grid;
     private Shadowscape shadowscape;
     private ZBuffer buffer;
     private LinkedList<Entity> in_queue, out_queue;
-    
+
     public ShadowLevel(Grid grid) {
         this.grid = grid;
         buffer = new ZBuffer();
@@ -54,23 +58,42 @@ public class ShadowLevel implements Level {
         grid.remove((Body) e);
         out_queue.add(e);
     }
-    
-    public void plant() {
-        try {
-            Mushroom m = shadowscape.plant();
-            add(m);
-        } catch (SlickException e) {
-            e.printStackTrace();
-        }
-    }
 
     public void render(Graphics g) {
-        shadowscape.render(g);
-        for (ShadowCaster e : buffer) {
+        for (ShadowCaster e : buffer.under(5)) {
             e.render(g);
         }
+        shadowscape.render(g);
+        for (ShadowCaster e : buffer.over(5)) {
+            e.render(g);
+        }
+//        grid.debugDraw(g);
     }
-    
+
+    public void update(StateBasedGame game, int delta) {
+        grid.update();
+        for (ShadowCaster e : buffer) {
+            e.update(game, delta);
+        }
+        resolve();
+    }
+
+    private void resolve() {
+        for (Entity e : in_queue) {
+            buffer.add((ShadowCaster) e);
+        }
+        for (Entity e : out_queue) {
+            buffer.remove((ShadowCaster) e);
+        }
+        in_queue.clear();
+        out_queue.clear();
+    }
+
+    /**
+     * Update the shadowscape with a new light source.
+     * 
+     * @param direction
+     */
     public void updateShadowscape(float direction) {
         resolve();
         shadowscape = new Shadowscape(buffer, direction, grid);
@@ -84,28 +107,66 @@ public class ShadowLevel implements Level {
             }
         }
     }
-    
+
+    /**
+     * Plant a mushroom randomly in the shadows.
+     */
+    public void plant() {
+        try {
+            Mushroom m = shadowscape.plant();
+            add(m);
+        } catch (SlickException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Return true if the body is in a shadow.
+     * 
+     * @param b
+     * @return
+     */
     public boolean shaded(Body b) {
         return shadowscape.contains(b);
     }
 
-    public void update(StateBasedGame game, int delta) {
-        grid.update();
-        for (ShadowCaster e : buffer) {
-            e.update(game, delta);
+    /**
+     * Return a list of mushrooms near this body.
+     * 
+     * @param b
+     * @return
+     */
+    public Mushroom[] nearbyShrooms(final Body b) {
+        LinkedList<Mushroom> mushrooms = new LinkedList<Mushroom>();
+        for (ShadowCaster s : buffer) {
+            if (s instanceof Mushroom) {
+                if (CrashGeom.distance2(b, (Body) s) < MAX_DISTANCE) {
+                    mushrooms.add((Mushroom) s);
+                }
+            }
         }
-        resolve();
+
+        Collections.sort(mushrooms, new Comparator<Mushroom>() {
+
+            public int compare(Mushroom m1, Mushroom m2) {
+                return (int) (CrashGeom.distance2(b, m1) - CrashGeom
+                        .distance2(b, m2));
+            }
+
+        });
+
+        return mushrooms.toArray(new Mushroom[0]);
     }
-    
-    private void resolve() {
-        for (Entity e : in_queue) {
-            buffer.add((ShadowCaster) e);
-        }
-        for (Entity e : out_queue) {
-            buffer.remove((ShadowCaster) e);
-        }
-        in_queue.clear();
-        out_queue.clear();
+
+    /**
+     * Cast a ray from body one to body two return true if it reaches body two.
+     * 
+     * @param one
+     * @param two
+     * @return
+     */
+    public boolean ray(Body one, Body two) {
+        return grid.ray(one, two);
     }
 
 }

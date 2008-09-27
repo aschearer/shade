@@ -181,4 +181,10 @@ public class Grid {
         Cell target = getTargetCell(test);
         return (target != null && !target.testForIntersection(test));
     }
+
+    /* Return true if there are no walls between one and two. */
+    public boolean ray(Body one, Body two) {
+        
+        return false;
+    }
 }
