@@ -14,6 +14,7 @@ import com.shade.entities.Mushroom;
 
 public class Shadowscape {
     
+	public static final float SHADOW_ALPHA = 0.3f;
     private Grid grid;
     private LinkedList<Shape> shadows;
     
@@ -99,7 +100,7 @@ public class Shadowscape {
     public void render(Graphics g) {
         g.setAntiAlias(true);
         Color shade = Color.black;
-        shade.a = .5f;
+        shade.a = SHADOW_ALPHA;
         g.setColor(shade);
         for (Shape s : shadows) {
             g.fill(s);
