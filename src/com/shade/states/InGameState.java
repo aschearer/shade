@@ -84,6 +84,7 @@ public class InGameState extends BasicGameState {
         level.updateShadowscape(sunAngle);
         meter = new MeterControl(20, 456, 100, 100);
         counter = new CounterControl(60, 520, counterSprite, counterFont);
+        numMoles = 0;
 
         initObstacles();
         initBasket();

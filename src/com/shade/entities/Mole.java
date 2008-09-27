@@ -59,7 +59,7 @@ public class Mole extends Linkable implements ShadowCaster {
     }
 
     public void onCollision(Entity obstacle) {
-        if (status == Status.SEEKING && obstacle.getRole() == Role.MUSHROOM) {
+        if (obstacle.getRole() == Role.MUSHROOM) {
             // start working
             heading += Math.PI;
             target = (Mushroom) obstacle;
@@ -180,6 +180,11 @@ public class Mole extends Linkable implements ShadowCaster {
         Vector2f d = Geom.calculateVector(magnitude, direction);
         shape.setCenterX(shape.getCenterX() + d.x);
         shape.setCenterY(shape.getCenterY() + d.y);
+    }
+
+    public void repel(Entity repellee) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

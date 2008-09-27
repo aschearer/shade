@@ -18,7 +18,7 @@ import com.shade.shadows.ShadowCaster;
 
 public class Player extends Linkable implements ShadowCaster {
 
-    private static final float SPEED = 2f;
+    private static final float SPEED = 1.4f;
     
     private Level level;
     private Image sprite;
@@ -154,7 +154,6 @@ public class Player extends Linkable implements ShadowCaster {
         return getZIndex() - s.getZIndex();
     }
 
-	@Override
 	public void repel(Entity repellee) {
 		Body b = (Body) repellee;
 		double playerx = b.getCenterX();

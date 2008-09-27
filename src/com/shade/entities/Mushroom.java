@@ -30,7 +30,7 @@ public class Mushroom extends Linkable implements ShadowCaster {
     private static final float MAX_SCALE = 3f;
     private static final float MIN_SCALE = 1.2f;
     private static final int MAX_DISTANCE = 2500;
-    private static final float SPEED = 2f;
+    private static final float SPEED = 1.2f;
 
     private Status currentStatus;
     private float scale;
@@ -250,7 +250,6 @@ public class Mushroom extends Linkable implements ShadowCaster {
         return (getZIndex() - s.getZIndex());
     }
 
-	@Override
 	public void repel(Entity repellee) {
 		// TODO Auto-generated method stub
 		

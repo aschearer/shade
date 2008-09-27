@@ -149,7 +149,7 @@ public class Block extends Body implements ShadowCaster {
 		return (depth - s.getZIndex());
 	}
 
-	@Override
+	
 	public void repel(Entity repellee) {
 		Body b = (Body) repellee;
 		Vector2f vect = b.getVelocity();
@@ -162,7 +162,6 @@ public class Block extends Body implements ShadowCaster {
 		double left = playerx+b.getWidth()/2-(getCenterX()-getWidth()/2);
 		double top = playery-b.getHeight()/2-(getCenterY()+getHeight()/2);
 		double bottom = playery+b.getHeight()/2-(getCenterY()-getHeight()/2);
-		System.out.println("right "+right+", left "+left+", top "+top+", bottom "+bottom);
 		double minx = Math.min(Math.abs(right), Math.abs(left));
 		double miny = Math.min(Math.abs(top), Math.abs(bottom));
 		if(minx<miny)

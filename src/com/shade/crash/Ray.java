@@ -62,4 +62,9 @@ public class Ray extends Body {
         // TODO Auto-generated method stub
 
     }
+
+    public void repel(Entity repellee) {
+        // TODO Auto-generated method stub
+        
+    }
 }
