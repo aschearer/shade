@@ -32,21 +32,21 @@ import com.shade.util.Geom;
 public class Block extends Body implements ShadowCaster {
 
     private Image sprite;
-    private int depth;
+    private int height;
 
     public Block(float x, float y, float w, float h, int d)
             throws SlickException {
         initShape(x, y, w, h);
-        depth = d;
+        height = d;
         initSprite();
     }
 
     private void initSprite() throws SlickException {
         String path = "entities/block/block.small.png";
-        if (depth > 6) {
+        if (height > 6) {
             path = "entities/block/block.medium.png";
         }
-        if (depth > 10) {
+        if (height > 10) {
             path = "entities/block/block.big.png";
         }
 
@@ -61,8 +61,8 @@ public class Block extends Body implements ShadowCaster {
      * Determine which corner points between the block and its shadow are
      * closest and then build a new polygon from the resulting points.
      */
-    public Shape castShadow(float direction) {
-        Vector2f v = Geom.calculateVector(depth * 10, direction);
+    public Shape castShadow(float direction, float depth) {
+        Vector2f v = Geom.calculateVector(height * depth, direction);
 
         Transform t = Transform.createTranslateTransform(v.x, v.y);
         Polygon extent = (Polygon) shape.transform(t);
@@ -142,11 +142,11 @@ public class Block extends Body implements ShadowCaster {
     }
 
     public int getZIndex() {
-        return depth;
+        return height;
     }
 
     public int compareTo(ShadowCaster s) {
-        return (depth - s.getZIndex());
+        return (height - s.getZIndex());
     }
 
     public void repel(Entity repellee) {

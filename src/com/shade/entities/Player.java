@@ -135,7 +135,7 @@ public class Player extends Linkable implements ShadowCaster {
         }
     }
 
-    public Shape castShadow(float direction) {
+    public Shape castShadow(float direction, float depth) {
         return null;
     }
 

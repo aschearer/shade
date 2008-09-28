@@ -14,13 +14,14 @@ import com.shade.entities.Mushroom;
 
 public class Shadowscape {
     
+	public static final float SHADOW_ALPHA = 0.3f;
     private Grid grid;
     private LinkedList<Shape> shadows;
     
-    public Shadowscape(ZBuffer buffer, float direction, Grid grid) {
+    public Shadowscape(ZBuffer buffer, float direction, float shadowLength, Grid grid) {
         shadows = new LinkedList<Shape>();
         for (ShadowCaster c : buffer) {
-            Shape shadow = c.castShadow(direction);
+            Shape shadow = c.castShadow(direction, shadowLength);
             if (shadow != null) {
                 shadows.add(shadow);
             }
@@ -59,7 +60,7 @@ public class Shadowscape {
 
     private boolean checkPoint(Vector2f p, Shape shadow) {
         // is it within bounds
-        if (!(p.x > 10 && p.x < 790 && p.y > 10 && p.y < 590)) {
+        if (!(p.x > 0 && p.x < 800 && p.y > 0 && p.y < 600)) {
             return false;
         }
         // p is in the shadow
@@ -99,7 +100,7 @@ public class Shadowscape {
     public void render(Graphics g) {
         g.setAntiAlias(true);
         Color shade = Color.black;
-        shade.a = .5f;
+        shade.a = SHADOW_ALPHA;
         g.setColor(shade);
         for (Shape s : shadows) {
             g.fill(s);

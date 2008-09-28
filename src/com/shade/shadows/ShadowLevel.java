@@ -94,9 +94,9 @@ public class ShadowLevel implements Level {
      * 
      * @param direction
      */
-    public void updateShadowscape(float direction) {
+    public void updateShadowscape(float direction, float shadowLength) {
         resolve();
-        shadowscape = new Shadowscape(buffer, direction, grid);
+        shadowscape = new Shadowscape(buffer, direction, shadowLength, grid);
         // TODO this only makes sense if the shadowscape is updated every time
         for (ShadowCaster s : buffer) {
             if (s instanceof Mushroom) {
