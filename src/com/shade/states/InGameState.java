@@ -24,7 +24,7 @@ public class InGameState extends BasicGameState {
     public static final int ID = 1;
     public static final float TRANSITION_TIME = 1f / 7;
     public static final float MAX_SHADOW = 0.6f;
-    public static final float SUN_ANGLE_INCREMENT = 0.005f;
+    public static final float SUN_ANGLE_INCREMENT = 0.001f;
     public static final int SECONDS_PER_DAY = (int) Math.ceil(Math.PI * 32
             / SUN_ANGLE_INCREMENT);
 
