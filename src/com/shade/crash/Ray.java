@@ -16,7 +16,8 @@ public class Ray extends Body {
     private float heading;
 
     public Ray(Body one, Body two) {
-        shape = new Rectangle(one.getCenterX() - 4, one.getCenterY(), 8,
+        float w = one.getWidth();
+        shape = new Rectangle(one.getCenterX() - w / 2, one.getCenterY(), 2,
                 CrashGeom.distance(one, two));
         heading = CrashGeom.calculateAngle(one, two);
         Transform t = Transform.createRotateTransform(heading,
