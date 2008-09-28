@@ -22,6 +22,9 @@ public class Grid {
     private LinkedList<Body> bodies;
     private Cell[][] cells;
 
+    private Graphics g;
+//    private LinkedList<Ray> rays;
+
     /** Create a new grid with square cells. */
     public Grid(int width, int height, int cell) {
         this.width = width;
@@ -29,6 +32,7 @@ public class Grid {
         this.cellWidth = cell;
         this.cellHeight = cell;
         bodies = new LinkedList<Body>();
+//        rays = new LinkedList<Ray>();
         initCells();
     }
 
@@ -66,6 +70,9 @@ public class Grid {
     }
 
     public void debugDraw(Graphics g) {
+        if (this.g == null) {
+            this.g = g;
+        }
         for (int x = 0; x < cells.length; x++) {
             for (int y = 0; y < cells[x].length; y++) {
                 g
@@ -73,6 +80,9 @@ public class Grid {
                                   cellHeight);
             }
         }
+//        for (Ray r : rays) {
+//            r.render(g);
+//        }
     }
 
     public void update() {
@@ -184,7 +194,69 @@ public class Grid {
 
     /* Return true if there are no walls between one and two. */
     public boolean ray(Body one, Body two) {
-        
-        return false;
+        Ray ray = new Ray(one, two);
+//        rays.add(ray);
+        Vector2f direction = ray.getDirection();
+
+        /* Current cell to examine. */
+        int currentX = (int) Math.floor(one.getCenterX() / cellWidth);
+        int currentY = (int) Math.floor(one.getCenterY() / cellHeight);
+
+        /*
+         * Hard to explain, please see
+         * http://student.kuleuven.be/~m0216922/CG/images/raycastdelta.gif
+         */
+        float deltaX = (float) Math.sqrt(1 + (direction.y * direction.y)
+                / (direction.x * direction.x));
+        float deltaY = (float) Math.sqrt(1 + (direction.x * direction.x)
+                / (direction.y * direction.y));
+        // float deltaX = (float) Math.abs((cellWidth / Math.cos(direction
+        // .getTheta())));
+        // float deltaY = (float) Math.abs((cellHeight / Math.sin(direction
+        // .getTheta())));
+
+        /* Similar to deltaX, deltaY but reflects current position. */
+        float sideX, sideY;
+        /* Direction to step, -1 or 1. */
+        int stepX, stepY;
+
+        if (direction.x < 0) {
+            stepX = -1;
+            sideX = (one.getCenterX() - (currentX * cellWidth)) * deltaX;
+        } else {
+            stepX = 1;
+            sideX = ((1 + currentX) * cellWidth - one.getCenterX()) * deltaX;
+        }
+        if (direction.y < 0) {
+            stepY = -1;
+            sideY = (one.getCenterY() - (currentY * cellHeight)) * deltaY;
+        } else {
+            stepY = 1;
+            sideY = ((1 + currentY) * cellHeight - one.getCenterY()) * deltaY;
+        }
+        assert (sideX > 0);
+        assert (sideX < cellWidth * width);
+        assert (sideY > 0);
+        assert (sideX < cellHeight * height);
+
+        boolean obstructed = false;
+        while (!obstructed && inBounds(currentX, currentY)) {
+            obstructed = Collider
+                    .testAndReturn(ray, cells[currentX][currentY].bodies, one,
+                                   two);
+            if (sideX < sideY) {
+                sideX += deltaX * cellWidth;
+                currentX += stepX;
+            } else {
+                sideY += deltaY * cellHeight;
+                currentY += stepY;
+            }
+        }
+
+        return !obstructed;
+    }
+
+    private boolean inBounds(int x, int y) {
+        return (x > 0 && x < width && y > 0 && y < height);
     }
 }

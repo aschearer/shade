@@ -58,9 +58,18 @@ public class Collider {
      * @param obstacles
      * @return
      */
-    public static boolean testAndReturn(Body subject, LinkedList<Body> obstacles) {
+    public static boolean testAndReturn(Body subject, LinkedList<Body> obstacles, Body ... exceptions) {
         for (Body obstacle : obstacles) {
-            if (!subject.equals(obstacle) && intersecting(subject, obstacle)) {
+            if (!matches(obstacle, exceptions) && intersecting(subject, obstacle)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    private static boolean matches(Body subject, Body ... obstacles) {
+        for (Body obstacle : obstacles) {
+            if (subject.equals(obstacle)) {
                 return true;
             }
         }
