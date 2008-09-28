@@ -59,7 +59,7 @@ public class Mole extends Linkable implements ShadowCaster {
     }
 
     public void onCollision(Entity obstacle) {
-        if (obstacle.getRole() == Role.MUSHROOM) {
+        if (status != Status.WORKING && obstacle.getRole() == Role.MUSHROOM) {
             // start working
             heading += Math.PI;
             target = (Mushroom) obstacle;

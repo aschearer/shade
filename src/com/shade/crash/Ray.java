@@ -13,21 +13,23 @@ import com.shade.util.Geom;
 
 public class Ray extends Body {
 
-    private float heading;
+    private Vector2f start, end;
 
     public Ray(Body one, Body two) {
         float w = one.getWidth();
         shape = new Rectangle(one.getCenterX() - w / 2, one.getCenterY(), w,
                 CrashGeom.distance(one, two));
-        heading = CrashGeom.calculateAngle(one, two);
+        start = new Vector2f(one.getCenterX(), one.getCenterY());
+        end = new Vector2f(two.getCenterX(), two.getCenterY());
+        float heading = Geom.calculateAngle(start.x, start.y, end.x, end.y);
         Transform t = Transform.createRotateTransform(heading,
-                                                      one.getCenterX(), one
-                                                              .getCenterY());
+                                                      one.getCenterX(), 
+                                                      one.getCenterY());
         shape = shape.transform(t);
     }
 
     public Vector2f getDirection() {
-        return Geom.calculateVector(1, heading);
+        return end.sub(start);
     }
 
     public void render(StateBasedGame game, Graphics g) {

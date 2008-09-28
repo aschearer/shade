@@ -22,7 +22,6 @@ public class Grid {
     private LinkedList<Body> bodies;
     private Cell[][] cells;
 
-    private Graphics g;
 //    private LinkedList<Ray> rays;
 
     /** Create a new grid with square cells. */
@@ -70,9 +69,6 @@ public class Grid {
     }
 
     public void debugDraw(Graphics g) {
-        if (this.g == null) {
-            this.g = g;
-        }
         for (int x = 0; x < cells.length; x++) {
             for (int y = 0; y < cells[x].length; y++) {
                 g
@@ -81,7 +77,7 @@ public class Grid {
             }
         }
 //        for (Ray r : rays) {
-//            r.render(g);
+//            r.render(null, g);
 //        }
     }
 
@@ -201,6 +197,9 @@ public class Grid {
         /* Current cell to examine. */
         int currentX = (int) Math.floor(one.getCenterX() / cellWidth);
         int currentY = (int) Math.floor(one.getCenterY() / cellHeight);
+        /* Target cell. */
+        int targetX = (int) Math.floor(two.getCenterX() / cellWidth);
+        int targetY = (int) Math.floor(two.getCenterY() / cellHeight);
 
         /*
          * Hard to explain, please see
@@ -210,10 +209,6 @@ public class Grid {
                 / (direction.x * direction.x));
         float deltaY = (float) Math.sqrt(1 + (direction.x * direction.x)
                 / (direction.y * direction.y));
-        // float deltaX = (float) Math.abs((cellWidth / Math.cos(direction
-        // .getTheta())));
-        // float deltaY = (float) Math.abs((cellHeight / Math.sin(direction
-        // .getTheta())));
 
         /* Similar to deltaX, deltaY but reflects current position. */
         float sideX, sideY;
@@ -239,11 +234,10 @@ public class Grid {
         assert (sideY > 0);
         assert (sideX < cellHeight * height);
 
-        boolean obstructed = false;
-        while (!obstructed && inBounds(currentX, currentY)) {
-            obstructed = Collider
-                    .testAndReturn(ray, cells[currentX][currentY].bodies, one,
-                                   two);
+        Body obstacle = null;
+        while (obstacle == null && inBounds(currentX, currentY)) {
+            obstacle = Collider
+                    .testAndReturn(ray, cells[currentX][currentY].bodies, one);
             if (sideX < sideY) {
                 sideX += deltaX * cellWidth;
                 currentX += stepX;
@@ -253,10 +247,10 @@ public class Grid {
             }
         }
 
-        return !obstructed;
+        return (two == obstacle);
     }
 
     private boolean inBounds(int x, int y) {
-        return (x > 0 && x < width && y > 0 && y < height);
+        return (x >= 0 && x < width && y >= 0 && y < height);
     }
 }
