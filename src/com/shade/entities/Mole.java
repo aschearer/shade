@@ -124,8 +124,7 @@ public class Mole extends Linkable implements ShadowCaster {
         }
         if (status == Status.SEEKING) {
             // move towards target
-            heading = CrashGeom.calculateAngle(target, this);
-            move(SPEED, heading);
+            seekTarget();
         }
         if (status == Status.SEEKING && target.isDead()) {
             stopWork();
@@ -141,6 +140,35 @@ public class Mole extends Linkable implements ShadowCaster {
             stopWork();
         }
         testAndWrap();
+    }
+
+    private void seekTarget() {
+        float[] d = new float[3];
+        d[0] = CrashGeom.distance2(target, this);
+        d[1] = d[0];
+        d[2] = d[0];
+        // if I'm left of my target
+        if (getX() < target.getX()) {
+            d[1] = CrashGeom.distance2(target, getCenterX() + 800, getCenterY());
+        } else {
+            d[1] = CrashGeom.distance2(this, target.getCenterX() + 800, target
+                    .getCenterY());
+        }
+
+        // if I'm above my target
+        if (getY() < target.getY()) {
+            d[2] = CrashGeom.distance2(target, getCenterX(), getCenterY() + 600);
+        } else {
+            d[2] = CrashGeom.distance2(this, target.getCenterX(), target
+                    .getCenterY() + 600);
+        }
+
+        heading = CrashGeom.calculateAngle(target, this);
+        if (d[1] < d[0] || d[2] < d[0]) {
+            heading += Math.PI;
+        }
+
+        move(SPEED, heading);
     }
 
     private boolean findTarget() {
