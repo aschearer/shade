@@ -40,7 +40,7 @@ public class InGameState extends BasicGameState {
 
     private Player player;
 
-    private int timer;
+    private int timer, totalTimer;
 
     private int numMoles;
 
@@ -84,7 +84,7 @@ public class InGameState extends BasicGameState {
         level.updateShadowscape(sunAngle);
         meter = new MeterControl(20, 456, 100, 100);
         counter = new CounterControl(60, 520, counterSprite, counterFont);
-        numMoles = 2;
+        numMoles = 0;
 
         initObstacles();
         initBasket();
@@ -150,18 +150,33 @@ public class InGameState extends BasicGameState {
         if (currentStatus == Status.RUNNING) {
             level.update(game, delta);
             timer += delta;
-
-            // Randomly plant mushrooms
-            if (Math.random() > .997 || timer > 6000) {
-                timer = 0;
-                level.plant();
-                if (numMoles < 3) { 
-                    // add three moles
-                    level.add(new Mole(5000));
-                    numMoles++;
-                }
+            totalTimer += delta;
+            
+            // reward the player less as time goes forward
+            if (totalTimer % 60000 == 0 && !meter.tappedOut()) {
+                meter.tap();
             }
 
+            // Randomly plant mushrooms
+            if (Math.random() > .9965 || timer > 5000) {
+                timer = 0;
+                level.plant();
+            }
+
+            if (counter.value > 5 && numMoles < 1) { 
+                level.add(new Mole(4000));
+                numMoles++;
+            }
+            if (counter.value > 25 && numMoles < 2) { 
+                level.add(new Mole(5000));
+                numMoles++;
+            }
+            if (counter.value > 75 && numMoles < 3) { 
+                level.add(new Mole(6000));
+                numMoles++;
+            }
+            
+            
             meter.update(game, delta);
             counter.update(game, delta);
 

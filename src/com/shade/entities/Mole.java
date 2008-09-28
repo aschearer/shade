@@ -8,6 +8,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Entity;
 import com.shade.base.Level;
+import com.shade.crash.Body;
 import com.shade.crash.util.CrashGeom;
 import com.shade.shadows.ShadowCaster;
 import com.shade.shadows.ShadowLevel;
@@ -83,7 +84,7 @@ public class Mole extends Linkable implements ShadowCaster {
         }
         if (obstacle.getRole() == Role.PLAYER) {
             // he got ya
-            stopWork();
+            repel(obstacle);
         }
     }
 
@@ -183,8 +184,17 @@ public class Mole extends Linkable implements ShadowCaster {
     }
 
     public void repel(Entity repellee) {
-        // TODO Auto-generated method stub
-        
+        Body b = (Body) repellee;
+        double playerx = b.getCenterX();
+        double playery = b.getCenterY();
+        double dist_x = playerx - getCenterX();
+        double dist_y = playery - getCenterY();
+        double mag = Math.sqrt(dist_x * dist_x + dist_y * dist_y);
+        double playradius = b.getWidth() / 2;
+        double obstacleradius = getWidth() / 2;
+        double angle = Math.atan2(dist_y, dist_x);
+        double move = (playradius + obstacleradius - mag) * 1.5;
+        b.move(Math.cos(angle) * move, Math.sin(angle) * move);
     }
 
 }

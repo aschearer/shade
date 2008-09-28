@@ -120,7 +120,7 @@ public class Mushroom extends Linkable implements ShadowCaster {
             return;
         }
 
-        if (shaded && !tooBig()) {
+        if (!picked() && shaded && !tooBig()) {
             scale += SCALE_INCREMENT;
             resize();
         }

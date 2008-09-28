@@ -197,9 +197,6 @@ public class Grid {
         /* Current cell to examine. */
         int currentX = (int) Math.floor(one.getCenterX() / cellWidth);
         int currentY = (int) Math.floor(one.getCenterY() / cellHeight);
-        /* Target cell. */
-        int targetX = (int) Math.floor(two.getCenterX() / cellWidth);
-        int targetY = (int) Math.floor(two.getCenterY() / cellHeight);
 
         /*
          * Hard to explain, please see
