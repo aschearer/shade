@@ -79,6 +79,8 @@ public class InGameState extends BasicGameState {
     public void enter(GameContainer container, StateBasedGame game)
             throws SlickException {
         currentStatus = Status.RUNNING;
+        totalTimer = 0;
+        timer = 0;
 
         level.clear();
         level.updateShadowscape(sunAngle);
@@ -89,6 +91,12 @@ public class InGameState extends BasicGameState {
         initObstacles();
         initBasket();
         initPlayer();
+    }
+
+    private void initShrooms(GameContainer container) {
+        for (int i = 0; i < 5; i++) {
+            level.plant();
+        }
     }
 
     private void initObstacles() throws SlickException {
@@ -137,7 +145,7 @@ public class InGameState extends BasicGameState {
         trimSprite.draw();
         meter.render(game, g);
         counter.render(game, g);
-        
+
         if (currentStatus == Status.GAME_OVER) {
             counterFont.drawString(320, 300, "Game Over");
         }
@@ -146,15 +154,15 @@ public class InGameState extends BasicGameState {
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
         updateShadow();
-        
+
         if (currentStatus == Status.RUNNING) {
             level.update(game, delta);
             timer += delta;
             totalTimer += delta;
             
-            // reward the player less as time goes forward
-            if (totalTimer % 60000 == 0 && !meter.tappedOut()) {
-                meter.tap();
+            // first run
+            if (totalTimer == delta) {
+                initShrooms(container);
             }
 
             // Randomly plant mushrooms
@@ -163,20 +171,19 @@ public class InGameState extends BasicGameState {
                 level.plant();
             }
 
-            if (counter.value > 5 && numMoles < 1) { 
+            if (counter.value > 5 && numMoles < 1) {
                 level.add(new Mole(4000));
                 numMoles++;
             }
-            if (counter.value > 25 && numMoles < 2) { 
+            if (counter.value > 25 && numMoles < 2) {
                 level.add(new Mole(5000));
                 numMoles++;
             }
-            if (counter.value > 75 && numMoles < 3) { 
+            if (counter.value > 50 && numMoles < 3) {
                 level.add(new Mole(6000));
                 numMoles++;
             }
-            
-            
+
             meter.update(game, delta);
             counter.update(game, delta);
 
@@ -189,7 +196,7 @@ public class InGameState extends BasicGameState {
                 currentStatus = Status.GAME_OVER;
             }
         }
-        
+
         // check whether to restart
         if (container.getInput().isKeyPressed(Input.KEY_R)) {
             enter(container, game);
