@@ -5,6 +5,7 @@ import java.util.Arrays;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
@@ -19,6 +20,10 @@ import com.shade.util.Geom;
 
 public class Mushroom extends Linkable implements ShadowCaster {
 
+    public enum Type {
+        POISON, NORMAL, GOOD, RARE
+    };
+
     private enum Status {
         IDLE, PICKED, DEAD
     };
@@ -27,19 +32,21 @@ public class Mushroom extends Linkable implements ShadowCaster {
 
     private static final float RADIUS = 3f;
     private static final float SCALE_INCREMENT = .005f;
-    private static final float MAX_SCALE = 3f;
-    private static final float MIN_SCALE = 1.2f;
+    private static final float MAX_SCALE = 3.5f;
+    private static final float MIN_SCALE = 1.5f;
     private static final int MAX_DISTANCE = 1200;
     private static final float SPEED = 1.4f;
 
     private Status currentStatus;
     private float scale;
+    public Type type;
 
     private Level level;
 
     private Image sprite;
 
-    public Mushroom(float x, float y) throws SlickException {
+    public Mushroom(float x, float y, Type t) throws SlickException {
+        type = t;
         initShape(x, y);
         initSprite();
         currentStatus = Status.IDLE;
@@ -48,7 +55,8 @@ public class Mushroom extends Linkable implements ShadowCaster {
     }
 
     private void initSprite() throws SlickException {
-        sprite = new Image("entities/mushroom/mushroom.png");
+        SpriteSheet s = new SpriteSheet("entities/mushroom/mushrooms.png", 40, 40);
+        sprite = s.getSprite(type.ordinal(), 0);
     }
 
     private void initShape(float x, float y) {
@@ -121,7 +129,11 @@ public class Mushroom extends Linkable implements ShadowCaster {
         }
 
         if (!shaded && !tooSmall()) {
-            scale += -SCALE_INCREMENT / 2;
+            if (type != Type.RARE) {
+                scale += -SCALE_INCREMENT / 4;
+            } else {
+                scale += -SCALE_INCREMENT / 2;
+            }
             resize();
         }
 
