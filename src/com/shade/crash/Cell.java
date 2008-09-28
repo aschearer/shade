@@ -77,12 +77,12 @@ public class Cell {
      * @return
      */
     public boolean testForIntersection(Body b) {
-        if (Collider.testAndReturn(b, bodies)) {
+        if (Collider.testAndFlag(b, bodies)) {
             return true;
         }
         /* Check against neighbors */
         for (Cell neighbor : grid.neighbors(this, b)) {
-            if (Collider.testAndReturn(b, neighbor.bodies)) {
+            if (Collider.testAndFlag(b, neighbor.bodies)) {
                 return true;
             }
         }

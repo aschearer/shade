@@ -53,12 +53,29 @@ public class Collider {
     }
 
     /**
+     * Return the first obstacle the subject intersects with.
+     * @param subject
+     * @param obstacles
+     * @param exceptions
+     * @return
+     */
+    public static Body testAndReturn(Body subject, LinkedList<Body> obstacles, Body ... exceptions) {
+        for (Body obstacle : obstacles) {
+            if (!matches(obstacle, exceptions) && intersecting(subject, obstacle)) {
+                return obstacle;
+            }
+        }
+        return null;
+    }
+    
+    /**
      * Return true if the subject intersects with any of the obstacles.
      * @param subject
      * @param obstacles
+     * @param exceptions
      * @return
      */
-    public static boolean testAndReturn(Body subject, LinkedList<Body> obstacles, Body ... exceptions) {
+    public static boolean testAndFlag(Body subject, LinkedList<Body> obstacles, Body ... exceptions) {
         for (Body obstacle : obstacles) {
             if (!matches(obstacle, exceptions) && intersecting(subject, obstacle)) {
                 return true;
