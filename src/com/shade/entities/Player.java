@@ -86,7 +86,7 @@ public class Player extends Linkable implements ShadowCaster {
         }
     }
 
-    public void render(Graphics g) {
+    public void render(StateBasedGame game, Graphics g) {
         sprite.drawCentered(getCenterX(), getCenterY());
         // g.draw(shape);
     }

@@ -101,7 +101,7 @@ public class Mushroom extends Linkable implements ShadowCaster {
         return currentStatus == Status.PICKED;
     }
 
-    public void render(Graphics g) {
+    public void render(StateBasedGame game, Graphics g) {
         if (isDead()) {
             return;
         }

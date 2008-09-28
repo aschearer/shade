@@ -131,7 +131,7 @@ public class Block extends Body implements ShadowCaster {
 
     }
 
-    public void render(Graphics g) {
+    public void render(StateBasedGame game, Graphics g) {
         sprite.draw(getX(), getY(), getWidth(), getHeight());
         // g.draw(shape);
     }

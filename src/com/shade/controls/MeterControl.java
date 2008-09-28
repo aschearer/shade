@@ -48,7 +48,7 @@ public class MeterControl implements MushroomCounter, Animatable {
         clamp();
     }
 
-    public void render(Graphics g) {
+    public void render(StateBasedGame game, Graphics g) {
         g.setColor(OFF);
         g.fillRect(x, y, WIDTH, HEIGHT);
 

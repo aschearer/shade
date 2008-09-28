@@ -29,7 +29,7 @@ public class Ray extends Body {
         return Geom.calculateVector(1, heading);
     }
 
-    public void render(Graphics g) {
+    public void render(StateBasedGame game, Graphics g) {
         g.draw(shape);
     }
 

@@ -59,13 +59,13 @@ public class ShadowLevel implements Level {
         out_queue.add(e);
     }
 
-    public void render(Graphics g) {
+    public void render(StateBasedGame game, Graphics g) {
         for (ShadowCaster e : buffer.under(5)) {
-            e.render(g);
+            e.render(game, g);
         }
         shadowscape.render(g);
         for (ShadowCaster e : buffer.over(5)) {
-            e.render(g);
+            e.render(game, g);
         }
 //        grid.debugDraw(g);
     }

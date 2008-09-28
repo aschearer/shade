@@ -92,7 +92,7 @@ public class Mole extends Linkable implements ShadowCaster {
         
     }
 
-    public void render(Graphics g) {
+    public void render(StateBasedGame game, Graphics g) {
         if (status == Status.DIGGING) {
             return;
         }

@@ -84,7 +84,7 @@ public class InGameState extends BasicGameState {
         level.updateShadowscape(sunAngle);
         meter = new MeterControl(20, 456, 100, 100);
         counter = new CounterControl(60, 520, counterSprite, counterFont);
-        numMoles = 3;
+        numMoles = 2;
 
         initObstacles();
         initBasket();
@@ -133,10 +133,10 @@ public class InGameState extends BasicGameState {
     public void render(GameContainer container, StateBasedGame game, Graphics g)
             throws SlickException {
         backgroundSprite.draw();
-        level.render(g);
+        level.render(game, g);
         trimSprite.draw();
-        meter.render(g);
-        counter.render(g);
+        meter.render(game, g);
+        counter.render(game, g);
         
         if (currentStatus == Status.GAME_OVER) {
             counterFont.drawString(320, 300, "Game Over");
