@@ -136,6 +136,9 @@ public class Mole extends Linkable implements ShadowCaster {
         sniff.update(delta);
         if (status == Status.DIGGING && timer > cooldown) {
             Vector2f p = LevelUtil.randomPoint(game.getContainer());
+            while (!level.clear(p.x, p.y, 18)) {
+                p = LevelUtil.randomPoint(game.getContainer());
+            }
             shape.setCenterX(p.x);
             shape.setCenterY(p.y);
             status = Status.WAKING;
