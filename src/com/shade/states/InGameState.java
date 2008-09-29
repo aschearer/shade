@@ -203,7 +203,7 @@ public class InGameState extends BasicGameState {
                 level.plant();
             }
 
-            if (counter.value > 5 && numMoles < 1) {
+            if (counter.value >= 5 && numMoles < 1) {
                 level.add(new Mole(4000));
                 numMoles++;
             }

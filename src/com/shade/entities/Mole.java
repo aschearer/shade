@@ -1,6 +1,9 @@
 package com.shade.entities;
 
+import org.newdawn.slick.Animation;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.SlickException;
+import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
@@ -20,7 +23,7 @@ public class Mole extends Linkable implements ShadowCaster {
     private static final float SPEED = .7f;
     
     private enum Status {
-        DIGGING, WAKING, IDLING, SEEKING, WORKING
+        DIGGING, WAKING, IDLING, SEEKING, WORKING, CONFUSED
     }
     
     private ShadowLevel level;
@@ -28,15 +31,32 @@ public class Mole extends Linkable implements ShadowCaster {
     private Mushroom target;
     private float heading;
     private int timer, cooldown;
+    private Animation sniff, question;
 
-    public Mole(int cool) {
+    public Mole(int cool) throws SlickException {
         initShape();
+        initSprites();
         status = Status.DIGGING;
         cooldown = cool;
+        heading = (float) Math.PI;
     }
 
     private void initShape() {
-        shape = new Circle(0, 0, 6);
+        shape = new Circle(0, 0, 12);
+    }
+
+    private void initSprites() throws SlickException {
+        SpriteSheet sniffs = new SpriteSheet("entities/mole/sniff.png", 40, 40);
+        
+        sniff = new Animation(sniffs, 300);
+        sniff.setAutoUpdate(false);
+        sniff.setPingPong(true);
+        
+        SpriteSheet questions = new SpriteSheet("entities/mole/question.png", 40, 40);
+        
+        question = new Animation(questions, 400);
+        question.setAutoUpdate(false);
+        question.setPingPong(true);
     }
 
     public Shape castShadow(float direction, float depth) {
@@ -60,6 +80,9 @@ public class Mole extends Linkable implements ShadowCaster {
     }
 
     public void onCollision(Entity obstacle) {
+        if (status == Status.DIGGING) {
+            return;
+        }
         if (status != Status.WORKING && obstacle.getRole() == Role.MUSHROOM) {
             // start working
             heading += Math.PI;
@@ -97,19 +120,37 @@ public class Mole extends Linkable implements ShadowCaster {
         if (status == Status.DIGGING) {
             return;
         }
-        g.draw(shape);
+        g.rotate(getCenterX(), getCenterY(), (float) Math.toDegrees(heading));
+        if (status == Status.WAKING || status == Status.IDLING) {
+            sniff.draw(getX(), getY(), getWidth(), getHeight());
+        } else {
+            sniff.getImage(0).draw(getX(), getY(), getWidth(), getHeight());
+        }
+        g.resetTransform();
+        
+        if (status == Status.CONFUSED) {
+            question.draw(getCenterX() - 10, getCenterY() - 50);
+        }
+        
+//        g.draw(shape);
     }
 
     public void update(StateBasedGame game, int delta) {
         timer += delta;
+        sniff.update(delta);
+        question.update(delta);
         if (status == Status.DIGGING && timer > cooldown) {
             Vector2f p = LevelUtil.randomPoint(game.getContainer());
             shape.setCenterX(p.x);
             shape.setCenterY(p.y);
             status = Status.WAKING;
+            sniff.restart();
             timer = 0;
         }
-        if (status == Status.WAKING && timer > cooldown) {
+        if (status == Status.CONFUSED && timer * 1.5 > cooldown) {
+            stopWork();
+        }
+        if (status == Status.WAKING && timer > cooldown * 1.5) {
             // wake up!
             timer = 0;
             status = Status.IDLING;
@@ -120,14 +161,18 @@ public class Mole extends Linkable implements ShadowCaster {
         }
         if (status == Status.IDLING && timer > cooldown) {
             // go back underground start over
-            stopWork();
+            timer = 0;
+            status = Status.CONFUSED;
+            question.restart();
         }
         if (status == Status.SEEKING) {
             // move towards target
             seekTarget();
         }
         if (status == Status.SEEKING && target.isDead()) {
-            stopWork();
+            timer = 0;
+            status = Status.CONFUSED;
+            question.restart();
         }
         if (status == Status.WORKING) {
             // move the target
@@ -193,6 +238,7 @@ public class Mole extends Linkable implements ShadowCaster {
     private void stopWork() {
         status = Status.DIGGING;
         timer = 0;
+        heading = (float) Math.PI;
         if (next != null) {
             Linkable head = next;
             while (head != null) {
