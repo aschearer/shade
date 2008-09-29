@@ -191,15 +191,7 @@ public class Grid {
         TestBody test = new TestBody(TestShape.CIRCLE, p, r, r);
 //        testBodies.add(test);
         Cell target = getTargetCell(test);
-        if (target != null && target.testForIntersection(test)) {
-            return false; // intersected in current cell
-        }
-        for (Cell neighbor : neighbors(target, test)) {
-            if (neighbor.testForIntersection(test)) {
-                return false;
-            }
-        }
-        return true;
+        return (target != null && !target.testForIntersection(test));
     }
 
     /* Return true if there are no walls between one and two. */
