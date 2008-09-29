@@ -180,7 +180,7 @@ public class ShadowLevel implements Level {
      * @return
      */
     public boolean clear(float x, float y, float r) {
-        return grid.hasRoom(new Vector2f(x, y), r);
+        return grid.hasRoom(new Vector2f(x, y), r * 2);
     }
 
 }

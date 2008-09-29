@@ -20,6 +20,7 @@ import com.shade.util.LevelUtil;
 
 public class Mole extends Linkable implements ShadowCaster {
     
+    private static final int RADIUS = 12;
     private static final float SPEED = .7f;
     
     private enum Status {
@@ -42,7 +43,7 @@ public class Mole extends Linkable implements ShadowCaster {
     }
 
     private void initShape() {
-        shape = new Circle(0, 0, 12);
+        shape = new Circle(0, 0, RADIUS);
     }
 
     private void initSprites() throws SlickException {
@@ -136,7 +137,7 @@ public class Mole extends Linkable implements ShadowCaster {
         sniff.update(delta);
         if (status == Status.DIGGING && timer > cooldown) {
             Vector2f p = LevelUtil.randomPoint(game.getContainer());
-            while (!level.clear(p.x, p.y, 18)) {
+            while (!level.clear(p.x, p.y, RADIUS * 2)) {
                 p = LevelUtil.randomPoint(game.getContainer());
             }
             shape.setCenterX(p.x);
