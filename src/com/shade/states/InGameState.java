@@ -18,6 +18,7 @@ import com.shade.controls.*;
 import com.shade.crash.*;
 import com.shade.entities.*;
 import com.shade.shadows.*;
+import com.shade.shadows.ShadowLevel.ShadowStatus;
 
 public class InGameState extends BasicGameState {
 
@@ -192,9 +193,11 @@ public class InGameState extends BasicGameState {
             meter.update(game, delta);
             counter.update(game, delta);
 
-            if (!player.shaded) {
-                meter.decrement();
+            if (player.shaded==ShadowStatus.UNSHADOWED) {
+            	meter.decrement();
             }
+            System.out.println("player status is "+player.shaded);
+            
 
             // Check for lose condition
             if (meter.isEmpty()) {

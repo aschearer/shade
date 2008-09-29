@@ -12,14 +12,18 @@ import com.shade.crash.Body;
 import com.shade.crash.Grid;
 import com.shade.entities.Mushroom;
 import com.shade.entities.util.MushroomFactory;
+import com.shade.shadows.ShadowLevel.*;
 
 public class Shadowscape {
     
 	public static final float SHADOW_ALPHA = 0.3f;
     private Grid grid;
     private LinkedList<Shape> shadows;
+
+    DaylightStatus daylight;
     
-    public Shadowscape(ZBuffer buffer, float direction, float shadowLength, Grid grid) {
+    public Shadowscape(ZBuffer buffer, float direction, float shadowLength, Grid grid, DaylightStatus daynight) {
+    	daylight = daynight;
         shadows = new LinkedList<Shape>();
         for (ShadowCaster c : buffer) {
             Shape shadow = c.castShadow(direction, shadowLength);
@@ -117,13 +121,15 @@ public class Shadowscape {
      * @param b
      * @return
      */
-    public boolean contains(Body b) {
+    public ShadowStatus contains(Body b) {
         for (Shape s : shadows) {
             if (s.contains(b.getCenterX(), b.getCenterY())) {
-                return true;
+                return ShadowStatus.CASTSHADOWED;
             }
         }
-        return false;
+        System.out.println("daylight status is "+daylight);
+    	if(daylight==DaylightStatus.NIGHT) return ShadowStatus.SHADOWED;
+        return ShadowStatus.UNSHADOWED;
     }
 
 }

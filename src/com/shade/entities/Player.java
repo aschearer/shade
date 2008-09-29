@@ -15,6 +15,7 @@ import com.shade.base.Level;
 import com.shade.crash.Body;
 import com.shade.controls.MushroomCounter;
 import com.shade.shadows.ShadowCaster;
+import com.shade.shadows.ShadowLevel.ShadowStatus;
 
 public class Player extends Linkable implements ShadowCaster {
 
@@ -23,7 +24,7 @@ public class Player extends Linkable implements ShadowCaster {
     private Level level;
     private Image sprite;
 
-    public boolean shaded;
+    public ShadowStatus shaded;
 
     private LinkedList<MushroomCounter> counters;
 

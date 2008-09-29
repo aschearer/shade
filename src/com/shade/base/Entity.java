@@ -15,6 +15,8 @@ public interface Entity extends Animatable {
         PLAYER, MUSHROOM, OBSTACLE, BASKET, MOLE, RAY 
     };
     
+
+    
     public Role getRole();
 
     /**

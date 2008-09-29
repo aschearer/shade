@@ -15,7 +15,7 @@ import com.shade.base.Entity;
  * @author Alexander Schearer <aas11@duke.edu>
  */
 public interface ShadowCaster extends Entity, Comparable<ShadowCaster> {
-
+	
     /**
      * Returns the entity's depth, or how tall it is, in the 3rd dimension.
      * @return
