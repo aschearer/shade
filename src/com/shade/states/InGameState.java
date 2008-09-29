@@ -57,7 +57,7 @@ public class InGameState extends BasicGameState {
 
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException {
-        level = new ShadowLevel(new Grid(8, 6, 100));
+        level = new ShadowLevel(new Grid(8, 6, 200));
         sunAngle = 2.5f;
         currentStatus = Status.NOT_STARTED;
         initSprites();

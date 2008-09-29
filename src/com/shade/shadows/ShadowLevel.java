@@ -68,7 +68,7 @@ public class ShadowLevel implements Level {
         for (ShadowCaster e : buffer.over(5)) {
             e.render(game, g);
         }
-        // grid.debugDraw(g);
+//         grid.debugDraw(g);
     }
 
     public void update(StateBasedGame game, int delta) {

@@ -23,6 +23,7 @@ public class Grid {
     private Cell[][] cells;
 
 //    private LinkedList<Ray> rays;
+//    private LinkedList<TestBody> testBodies;
 
     /** Create a new grid with square cells. */
     public Grid(int width, int height, int cell) {
@@ -32,6 +33,7 @@ public class Grid {
         this.cellHeight = cell;
         bodies = new LinkedList<Body>();
 //        rays = new LinkedList<Ray>();
+//        testBodies = new LinkedList<TestBody>();
         initCells();
     }
 
@@ -78,6 +80,9 @@ public class Grid {
         }
 //        for (Ray r : rays) {
 //            r.render(null, g);
+//        }
+//        for (TestBody b : testBodies) {
+//            b.render(null, g);
 //        }
     }
 
@@ -183,9 +188,18 @@ public class Grid {
      * @return
      */
     public boolean hasRoom(Vector2f p, float r) {
-        Body test = new TestBody(TestShape.CIRCLE, p, r, r);
+        TestBody test = new TestBody(TestShape.CIRCLE, p, r, r);
+//        testBodies.add(test);
         Cell target = getTargetCell(test);
-        return (target != null && !target.testForIntersection(test));
+        if (target != null && target.testForIntersection(test)) {
+            return false; // intersected in current cell
+        }
+        for (Cell neighbor : neighbors(target, test)) {
+            if (neighbor.testForIntersection(test)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /* Return true if there are no walls between one and two. */
