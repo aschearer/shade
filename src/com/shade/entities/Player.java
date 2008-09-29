@@ -86,7 +86,7 @@ public class Player extends Linkable implements ShadowCaster {
         }
     }
 
-    public void render(Graphics g) {
+    public void render(StateBasedGame game, Graphics g) {
         sprite.drawCentered(getCenterX(), getCenterY());
         // g.draw(shape);
     }
@@ -136,9 +136,6 @@ public class Player extends Linkable implements ShadowCaster {
     }
 
     public Shape castShadow(float direction, float depth) {
-        // Vector2f d = Geom.calculateVector(5 * getZIndex(), direction);
-        // Transform t = Transform.createTranslateTransform(d.x, d.y);
-        // return shape.transform(t);
         return null;
     }
 

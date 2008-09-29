@@ -6,11 +6,14 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Animatable;
 import com.shade.entities.Mushroom;
+import com.shade.entities.Mushroom.Type;
 
 public class MeterControl implements MushroomCounter, Animatable {
 
+    private static final float MIN_SCORE = 1;
+    private static final float SCORE_INCREMENT = .3f;
+    private static final float SCORE_MULTIPLE = 4;
     private static final float BASE_INCREMENT = .05f;
-    private static final float BASE_MULTIPLE = 3;
     private static final float WIDTH = 24;
     private static final float HEIGHT = 124;
     private static final Color BORDER = new Color(163, 183, 139);
@@ -19,12 +22,14 @@ public class MeterControl implements MushroomCounter, Animatable {
 
     private float x, y;
     private float value, max;
+    private float score;
 
     public MeterControl(float x, float y, float value, float max) {
         this.x = x;
         this.y = y;
         this.value = value;
         this.max = max;
+        score = SCORE_MULTIPLE;
     }
 
     public boolean isEmpty() {
@@ -37,10 +42,25 @@ public class MeterControl implements MushroomCounter, Animatable {
 
     public void onCollect(Mushroom shroomie) {
         while (shroomie.next != null) {
-            value += shroomie.getSize() * BASE_MULTIPLE;
+            valueMushroom(shroomie);
             shroomie = (Mushroom) shroomie.next;
         }
-        value += shroomie.getSize() * BASE_MULTIPLE;
+        valueMushroom(shroomie);
+    }
+
+    private void valueMushroom(Mushroom shroomie) {
+        if (shroomie.type == Type.POISON) {
+            value -= shroomie.getSize() * score;    
+        }
+        if (shroomie.type == Type.NORMAL) {
+            value += shroomie.getSize() * score;
+        }
+        if (shroomie.type == Type.GOOD) {
+            value += shroomie.getSize() * 2 * score;
+        }
+        if (shroomie.type == Type.RARE) {
+            value += shroomie.getSize() * 10 * score;
+        }
     }
 
     public void decrement() {
@@ -48,7 +68,7 @@ public class MeterControl implements MushroomCounter, Animatable {
         clamp();
     }
 
-    public void render(Graphics g) {
+    public void render(StateBasedGame game, Graphics g) {
         g.setColor(OFF);
         g.fillRect(x, y, WIDTH, HEIGHT);
 
@@ -74,5 +94,20 @@ public class MeterControl implements MushroomCounter, Animatable {
         if (value > max) {
             value = max;
         }
+    }
+
+    /**
+     * It is no longer possible to reduce the amount to reward a player.
+     * @return
+     */
+    public boolean tappedOut() {
+        return score > MIN_SCORE;
+    }
+
+    /**
+     * Reduce the amount that a mushroom refills the meter.
+     */
+    public void tap() {
+        score -= SCORE_INCREMENT;
     }
 }

@@ -34,7 +34,7 @@ public class CounterControl implements MushroomCounter, Animatable {
         value++;
     }
 
-    public void render(Graphics g) {
+    public void render(StateBasedGame game, Graphics g) {
         sprite.draw(x, y);
         float xBuffer = x + sprite.getWidth() + X_OFFSET;
         float yBuffer = y + Y_OFFSET;

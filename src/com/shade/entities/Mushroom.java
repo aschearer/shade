@@ -5,7 +5,7 @@ import java.util.Arrays;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.Sound;
+import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
@@ -20,6 +20,10 @@ import com.shade.util.Geom;
 
 public class Mushroom extends Linkable implements ShadowCaster {
 
+    public enum Type {
+        POISON, NORMAL, GOOD, RARE
+    };
+
     private enum Status {
         IDLE, PICKED, DEAD
     };
@@ -28,40 +32,35 @@ public class Mushroom extends Linkable implements ShadowCaster {
 
     private static final float RADIUS = 3f;
     private static final float SCALE_INCREMENT = .005f;
-    private static final float MAX_SCALE = 3f;
-    private static final float MIN_SCALE = 1.2f;
+    private static final float MAX_SCALE = 3.5f;
+    private static final float MIN_SCALE = 1.5f;
     private static final int MAX_DISTANCE = 1200;
     private static final float SPEED = 1.4f;
 
     private Status currentStatus;
     private float scale;
+    public Type type;
 
     private Level level;
 
     private Image sprite;
 
-    private Sound sproutSound;
-
-    public Mushroom(float x, float y) throws SlickException {
+    public Mushroom(float x, float y, Type t) throws SlickException {
+        type = t;
         initShape(x, y);
         initSprite();
-        initSound();
         currentStatus = Status.IDLE;
         scale = MIN_SCALE;
         shaded = true;
-        sproutSound.play();
     }
 
     private void initSprite() throws SlickException {
-        sprite = new Image("entities/mushroom/mushroom.png");
+        SpriteSheet s = new SpriteSheet("entities/mushroom/mushrooms.png", 40, 40);
+        sprite = s.getSprite(type.ordinal(), 0);
     }
 
     private void initShape(float x, float y) {
         shape = new Circle(x, y, RADIUS);
-    }
-
-    private void initSound() throws SlickException {
-        sproutSound = new Sound("entities/mushroom/sprout.ogg");
     }
 
     public Role getRole() {
@@ -83,9 +82,12 @@ public class Mushroom extends Linkable implements ShadowCaster {
             currentStatus = Status.PICKED;
         }
         if (obstacle.getRole() == Role.MOLE) {
-            detach();
-            ((Linkable) obstacle).attach(this);
-            currentStatus = Status.PICKED;
+            Mole m = (Mole) obstacle;
+            if (!m.digging()) {
+                detach();
+                m.attach(this);
+                currentStatus = Status.PICKED;
+            }
         }
         if (obstacle.getRole() == Role.OBSTACLE) {
             Body b = (Body) obstacle;
@@ -101,7 +103,7 @@ public class Mushroom extends Linkable implements ShadowCaster {
         return currentStatus == Status.PICKED;
     }
 
-    public void render(Graphics g) {
+    public void render(StateBasedGame game, Graphics g) {
         if (isDead()) {
             return;
         }
@@ -120,7 +122,7 @@ public class Mushroom extends Linkable implements ShadowCaster {
             return;
         }
 
-        if (shaded && !tooBig()) {
+        if (!picked() && shaded && !tooBig()) {
             scale += SCALE_INCREMENT;
             resize();
         }
@@ -130,7 +132,11 @@ public class Mushroom extends Linkable implements ShadowCaster {
         }
 
         if (!shaded && !tooSmall()) {
-            scale += -SCALE_INCREMENT / 2;
+            if (type != Type.RARE) {
+                scale += -SCALE_INCREMENT / 4;
+            } else {
+                scale += -SCALE_INCREMENT / 2;
+            }
             resize();
         }
 

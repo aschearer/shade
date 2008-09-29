@@ -40,7 +40,7 @@ public class TestBody extends Body {
 
     }
 
-    public void render(Graphics g) {
+    public void render(StateBasedGame game, Graphics g) {
         g.draw(shape);
     }
 

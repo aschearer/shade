@@ -31,6 +31,7 @@ import com.shade.util.Geom;
  */
 public class Block extends Body implements ShadowCaster {
 
+
 	private Image sprite;
 	private int height;
 
@@ -131,7 +132,7 @@ public class Block extends Body implements ShadowCaster {
 
 	}
 
-	public void render(Graphics g) {
+	public void render(StateBasedGame game, Graphics g) {
 		sprite.draw(getX(), getY(), getWidth(), getHeight());
 		// g.draw(shape);
 	}

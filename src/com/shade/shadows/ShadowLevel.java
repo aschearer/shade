@@ -6,6 +6,7 @@ import java.util.LinkedList;
 
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Entity;
@@ -59,15 +60,15 @@ public class ShadowLevel implements Level {
         out_queue.add(e);
     }
 
-    public void render(Graphics g) {
+    public void render(StateBasedGame game, Graphics g) {
         for (ShadowCaster e : buffer.under(5)) {
-            e.render(g);
+            e.render(game, g);
         }
         shadowscape.render(g);
         for (ShadowCaster e : buffer.over(5)) {
-            e.render(g);
+            e.render(game, g);
         }
-//        grid.debugDraw(g);
+//         grid.debugDraw(g);
     }
 
     public void update(StateBasedGame game, int delta) {
@@ -167,6 +168,19 @@ public class ShadowLevel implements Level {
      */
     public boolean ray(Body one, Body two) {
         return grid.ray(one, two);
+    }
+
+    /**
+     * Determine if there is a certain amount of free space around a given
+     * point.
+     * 
+     * @param x
+     * @param y
+     * @param r
+     * @return
+     */
+    public boolean clear(float x, float y, float r) {
+        return grid.hasRoom(new Vector2f(x, y), r * 2);
     }
 
 }

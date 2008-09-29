@@ -30,9 +30,9 @@ public class SimpleLevel implements Level {
         entities.remove(e);
     }
 
-    public void render(Graphics g) {
+    public void render(StateBasedGame game, Graphics g) {
         for (Entity e : entities) {
-            e.render(g);
+            e.render(game, g);
         }
     }
 

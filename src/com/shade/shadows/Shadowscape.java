@@ -11,6 +11,7 @@ import org.newdawn.slick.geom.Vector2f;
 import com.shade.crash.Body;
 import com.shade.crash.Grid;
 import com.shade.entities.Mushroom;
+import com.shade.entities.util.MushroomFactory;
 
 public class Shadowscape {
     
@@ -55,7 +56,7 @@ public class Shadowscape {
             p = getRandomPointIn(shadow);
             finished = checkPoint(p, shadow);
         }
-        return new Mushroom(p.x, p.y);        
+        return MushroomFactory.makeMushroom(p.x, p.y);    
     }
 
     private boolean checkPoint(Vector2f p, Shape shadow) {

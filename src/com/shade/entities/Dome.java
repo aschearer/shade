@@ -36,7 +36,7 @@ public class Dome extends Body implements ShadowCaster {
         if (height > 12) {
             path = "entities/dome/dome.xbig.png";
         }
-        
+
         sprite = new Image(path);
     }
 
@@ -63,9 +63,9 @@ public class Dome extends Body implements ShadowCaster {
 
     }
 
-    public void render(Graphics g) {
+    public void render(StateBasedGame game, Graphics g) {
         sprite.draw(getX(), getY(), getWidth(), getHeight());
-//        g.draw(shape);
+        // g.draw(shape);
     }
 
     public void update(StateBasedGame game, int delta) {
@@ -99,18 +99,18 @@ public class Dome extends Body implements ShadowCaster {
         return height - s.getZIndex();
     }
 
-	public void repel(Entity repellee) {
-		Body b = (Body) repellee;
-		double playerx = b.getCenterX();
-		double playery = b.getCenterY();
-		double dist_x = playerx-getCenterX();
-		double dist_y = playery-getCenterY();
-		double mag = Math.sqrt(dist_x*dist_x + dist_y*dist_y);
-		double playradius = b.getWidth()/2;
-		double obstacleradius = getWidth()/2;
-		double angle = Math.atan2(dist_y,dist_x);
-		double move = (playradius+obstacleradius-mag)*1.5;
-		b.move(Math.cos(angle)*move,Math.sin(angle)*move);
-	}
+    public void repel(Entity repellee) {
+        Body b = (Body) repellee;
+        double playerx = b.getCenterX();
+        double playery = b.getCenterY();
+        double dist_x = playerx - getCenterX();
+        double dist_y = playery - getCenterY();
+        double mag = Math.sqrt(dist_x * dist_x + dist_y * dist_y);
+        double playradius = b.getWidth() / 2;
+        double obstacleradius = getWidth() / 2;
+        double angle = Math.atan2(dist_y, dist_x);
+        double move = (playradius + obstacleradius - mag) * 1.5;
+        b.move(Math.cos(angle) * move, Math.sin(angle) * move);
+    }
 
 }

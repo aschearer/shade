@@ -10,7 +10,7 @@ import org.newdawn.slick.state.StateBasedGame;
  */
 public interface Animatable {
     
-    public void render(Graphics g);
+    public void render(StateBasedGame game, Graphics g);
 
     public void update(StateBasedGame game, int delta);
 }

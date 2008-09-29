@@ -24,7 +24,7 @@ public class InGameState extends BasicGameState {
     public static final int ID = 1;
 	public static final float TRANSITION_TIME = 1f/7;
 	public static final float MAX_SHADOW = 0.6f;
-	public static final float SUN_ANGLE_INCREMENT = 0.0005f;
+	public static final float SUN_ANGLE_INCREMENT = 0.001f;
 	public static final int SECONDS_PER_DAY = (int)Math.ceil(Math.PI*32/SUN_ANGLE_INCREMENT);
 
     private enum Status {
@@ -45,7 +45,7 @@ public class InGameState extends BasicGameState {
 
     private Player player;
 
-    private int timer;
+    private int timer, totalTimer;
 
     private int numMoles;
 
@@ -56,7 +56,7 @@ public class InGameState extends BasicGameState {
 
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException {
-        level = new ShadowLevel(new Grid(8, 6, 100));
+        level = new ShadowLevel(new Grid(8, 6, 200));
         sunAngle = 2.5f;
         currentStatus = Status.NOT_STARTED;
         initSprites();
@@ -84,16 +84,24 @@ public class InGameState extends BasicGameState {
     public void enter(GameContainer container, StateBasedGame game)
             throws SlickException {
         currentStatus = Status.RUNNING;
+        totalTimer = 0;
+        timer = 0;
 
         level.clear();
-        level.updateShadowscape(sunAngle, (float)Math.sin(sunAngle)*2f);
+        level.updateShadowscape(sunAngle, (float) Math.sin(sunAngle) * 2f);
         meter = new MeterControl(20, 456, 100, 100);
         counter = new CounterControl(60, 520, counterSprite, counterFont);
-        numMoles = 3;
+        numMoles = 0;
 
         initObstacles();
         initBasket();
         initPlayer();
+    }
+
+    private void initShrooms(GameContainer container) {
+        for (int i = 0; i < 5; i++) {
+            level.plant();
+        }
     }
 
     private void initObstacles() throws SlickException {
@@ -138,13 +146,14 @@ public class InGameState extends BasicGameState {
     public void render(GameContainer container, StateBasedGame game, Graphics g)
             throws SlickException {
         backgroundSprite.draw();
-        level.render(g);
+        level.render(game, g);
         trimSprite.draw();
-
+        meter.render(game, g);
+        counter.render(game, g);
         
 		renderNight(game, g);
-        meter.render(g);
-        counter.render(g);
+        meter.render(game, g);
+        counter.render(game, g);
         if (currentStatus == Status.GAME_OVER) {
             counterFont.drawString(320, 300, "Game Over");
         }
@@ -152,7 +161,7 @@ public class InGameState extends BasicGameState {
 
 	private void renderNight(StateBasedGame game, Graphics g) {
 		int timeofday = timer%SECONDS_PER_DAY;
-		//is it day or night? 
+		// is it day or night?
 		if(timeofday>1.0*SECONDS_PER_DAY*(1f/2-TRANSITION_TIME)){
 			float factor = MAX_SHADOW;
 			float colorizer = 0;
@@ -176,24 +185,43 @@ public class InGameState extends BasicGameState {
 			g.fillRect(0, 0, game.getContainer().getScreenWidth(), game.getContainer().getScreenHeight());
 			g.setColor(Color.white);
 		}
-	}
+        meter.render(game, g);
+        counter.render(game, g);
+        if (currentStatus == Status.GAME_OVER) {
+            counterFont.drawString(320, 300, "Game Over");
+        }
+    }
 
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
         updateShadow();
-        
+
         if (currentStatus == Status.RUNNING) {
             level.update(game, delta);
             timer += delta;
+            totalTimer += delta;
+            
+            // first run
+            if (totalTimer == delta) {
+                initShrooms(container);
+            }
 
             // Randomly plant mushrooms
-            if (Math.random() > .997 || timer%6000 + delta>6000) {
+            if (Math.random() > .9965 || timer % 5000 + delta > 5000) {
                 level.plant();
-                if (numMoles < 3) { 
-                    // add three moles
-                    level.add(new Mole(5000));
-                    numMoles++;
-                }
+            }
+
+            if (counter.value >= 5 && numMoles < 1) {
+                level.add(new Mole(4000));
+                numMoles++;
+            }
+            if (counter.value > 25 && numMoles < 2) {
+                level.add(new Mole(5000));
+                numMoles++;
+            }
+            if (counter.value > 50 && numMoles < 3) {
+                level.add(new Mole(6000));
+                numMoles++;
             }
 
             meter.update(game, delta);
@@ -208,7 +236,7 @@ public class InGameState extends BasicGameState {
                 currentStatus = Status.GAME_OVER;
             }
         }
-        
+
         // check whether to restart
         if (container.getInput().isKeyPressed(Input.KEY_R)) {
             enter(container, game);
