@@ -93,7 +93,7 @@ public class Mole extends Linkable implements ShadowCaster {
         
         if (status == Status.WORKING && obstacle.getRole() == Role.OBSTACLE) {
             // change direction
-            heading = (float) (Math.random() * 2 * Math.PI);
+            heading += Math.PI / 2;
         }
         
         if (status == Status.SEEKING && obstacle.getRole() == Role.OBSTACLE) {
@@ -128,17 +128,12 @@ public class Mole extends Linkable implements ShadowCaster {
         }
         g.resetTransform();
         
-        if (status == Status.CONFUSED) {
-            question.draw(getCenterX() - 10, getCenterY() - 50);
-        }
-        
 //        g.draw(shape);
     }
 
     public void update(StateBasedGame game, int delta) {
         timer += delta;
         sniff.update(delta);
-        question.update(delta);
         if (status == Status.DIGGING && timer > cooldown) {
             Vector2f p = LevelUtil.randomPoint(game.getContainer());
             shape.setCenterX(p.x);
@@ -146,9 +141,6 @@ public class Mole extends Linkable implements ShadowCaster {
             status = Status.WAKING;
             sniff.restart();
             timer = 0;
-        }
-        if (status == Status.CONFUSED && timer * 1.5 > cooldown) {
-            stopWork();
         }
         if (status == Status.WAKING && timer > cooldown * 1.5) {
             // wake up!
@@ -161,18 +153,14 @@ public class Mole extends Linkable implements ShadowCaster {
         }
         if (status == Status.IDLING && timer > cooldown) {
             // go back underground start over
-            timer = 0;
-            status = Status.CONFUSED;
-            question.restart();
+            stopWork();
         }
         if (status == Status.SEEKING) {
             // move towards target
             seekTarget();
         }
         if (status == Status.SEEKING && target.isDead()) {
-            timer = 0;
-            status = Status.CONFUSED;
-            question.restart();
+            stopWork();
         }
         if (status == Status.WORKING) {
             // move the target
@@ -269,6 +257,10 @@ public class Mole extends Linkable implements ShadowCaster {
         double angle = Math.atan2(dist_y, dist_x);
         double move = (playradius + obstacleradius - mag) * 1.5;
         b.move(Math.cos(angle) * move, Math.sin(angle) * move);
+    }
+
+    public boolean digging() {
+        return status == Status.DIGGING;
     }
 
 }

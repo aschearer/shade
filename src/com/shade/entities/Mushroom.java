@@ -82,9 +82,12 @@ public class Mushroom extends Linkable implements ShadowCaster {
             currentStatus = Status.PICKED;
         }
         if (obstacle.getRole() == Role.MOLE) {
-            detach();
-            ((Linkable) obstacle).attach(this);
-            currentStatus = Status.PICKED;
+            Mole m = (Mole) obstacle;
+            if (!m.digging()) {
+                detach();
+                m.attach(this);
+                currentStatus = Status.PICKED;
+            }
         }
         if (obstacle.getRole() == Role.OBSTACLE) {
             Body b = (Body) obstacle;
