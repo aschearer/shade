@@ -24,7 +24,7 @@ public class InGameState extends BasicGameState {
     public static final int ID = 1;
 	public static final float TRANSITION_TIME = 1f/7;
 	public static final float MAX_SHADOW = 0.6f;
-	public static final float SUN_ANGLE_INCREMENT = 0.005f;
+	public static final float SUN_ANGLE_INCREMENT = 0.0005f;
 	public static final int SECONDS_PER_DAY = (int)Math.ceil(Math.PI*32/SUN_ANGLE_INCREMENT);
 
     private enum Status {
@@ -99,11 +99,11 @@ public class InGameState extends BasicGameState {
     private void initObstacles() throws SlickException {
         LinkedList<ShadowCaster> casters = new LinkedList<ShadowCaster>();
         casters.add(new Block(55, 355, 125, 125, 16));
-        casters.add(new Block(224, 424, 56, 56, 6));
-        casters.add(new Block(324, 424, 56, 56, 6));
-        casters.add(new Block(75, 225, 56, 56, 6));
-        casters.add(new Block(545, 330, 80, 80, 10));
-        casters.add(new Block(445, 460, 80, 80, 10));
+        casters.add(new Block(224, 424, 56, 56, 12));
+        casters.add(new Block(324, 424, 56, 56, 2));
+        casters.add(new Block(75, 225, 56, 56, 9));
+        casters.add(new Block(545, 330, 80, 80, 8));
+        casters.add(new Block(445, 460, 80, 80, 5));
         // domes
         casters.add(new Dome(288, 165, 32, 7));
         casters.add(new Dome(180, 95, 44, 10));
@@ -112,10 +112,10 @@ public class InGameState extends BasicGameState {
         casters.add(new Dome(600, 100, 40, 9));
         casters.add(new Dome(680, 220, 60, 13));
         // fences
-        casters.add(new Fence(225, 225, 11, 120, 5));
-        casters.add(new Fence(390, 140, 120, 11, 5));
+        casters.add(new Fence(225, 225, 11, 120, 2));
+        casters.add(new Fence(390, 140, 120, 11, 8));
         casters.add(new Fence(715, 368, 11, 120, 5));
-        casters.add(new Fence(50, 50, 11, 120, 5));
+        casters.add(new Fence(50, 50, 11, 120, 19));
 
         for (ShadowCaster c : casters) {
             level.add(c);
@@ -142,6 +142,15 @@ public class InGameState extends BasicGameState {
         trimSprite.draw();
 
         
+		renderNight(game, g);
+        meter.render(g);
+        counter.render(g);
+        if (currentStatus == Status.GAME_OVER) {
+            counterFont.drawString(320, 300, "Game Over");
+        }
+    }
+
+	private void renderNight(StateBasedGame game, Graphics g) {
 		int timeofday = timer%SECONDS_PER_DAY;
 		//is it day or night? 
 		if(timeofday>1.0*SECONDS_PER_DAY*(1f/2-TRANSITION_TIME)){
@@ -167,12 +176,7 @@ public class InGameState extends BasicGameState {
 			g.fillRect(0, 0, game.getContainer().getScreenWidth(), game.getContainer().getScreenHeight());
 			g.setColor(Color.white);
 		}
-        meter.render(g);
-        counter.render(g);
-        if (currentStatus == Status.GAME_OVER) {
-            counterFont.drawString(320, 300, "Game Over");
-        }
-    }
+	}
 
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
@@ -213,7 +217,7 @@ public class InGameState extends BasicGameState {
 
     private void updateShadow() {
         sunAngle += SUN_ANGLE_INCREMENT;
-        level.updateShadowscape(sunAngle, 10f);//(float)(10f/(1+0.9*Math.cos(sunAngle*2))));
+        level.updateShadowscape((float)(sunAngle), (float)(10f/(1+0.8*Math.cos(sunAngle*2))));
     }
 
 }

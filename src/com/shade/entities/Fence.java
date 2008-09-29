@@ -129,12 +129,17 @@ public class Fence extends Body implements ShadowCaster {
 		double bottom = playery+b.getHeight()/2-(getCenterY()-getHeight()/2);
 		double minx = Math.min(Math.abs(right), Math.abs(left));
 		double miny = Math.min(Math.abs(top), Math.abs(bottom));
-		if(minx<miny)
+		if(minx<miny){
+			//if we move, move AWAY from the block.
+			if(Math.abs(playerx-getCenterX()-velx)<Math.abs(playerx-getCenterX()))
+				velx = -velx;
 			b.move(-velx, 0);
-		else 
+		}
+		else{
+			if(Math.abs(playery-getCenterY()-vely)<Math.abs(playery-getCenterY())){
+				vely = -vely;
+			}
 			b.move(0,-vely);
-		
-
-	}
+		}	}
 
 }
