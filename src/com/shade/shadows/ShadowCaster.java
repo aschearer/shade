@@ -15,6 +15,13 @@ import com.shade.base.Entity;
  * @author Alexander Schearer <aas11@duke.edu>
  */
 public interface ShadowCaster extends Entity, Comparable<ShadowCaster> {
+    
+    /**
+     * Range of intensities which impact meter and similar mechanics.
+     */
+    public enum DaylightStatus { 
+        DAY, DAWN, NIGHT, DUSK
+    }
 	
     /**
      * Returns the entity's depth, or how tall it is, in the 3rd dimension.
