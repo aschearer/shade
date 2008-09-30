@@ -168,6 +168,7 @@ public class Mole extends Linkable implements ShadowCaster {
         }
         if (status == Status.SEEKING && target.isDead()) {
             status = Status.WAKING;
+            heading = (float) Math.PI;
             timer = 0;
         }
         if (status == Status.WORKING) {
