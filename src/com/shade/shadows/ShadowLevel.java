@@ -4,8 +4,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -26,8 +28,25 @@ import com.shade.entities.Player;
  * @author Alexander Schearer <aschearr@gmail.com>
  */
 public class ShadowLevel implements Level {
+	
+	public static final float TRANSITION_TIME = 1f/7;
+	public static final float MAX_SHADOW = 0.6f;
+	public static final float SUN_ANGLE_INCREMENT = 0.001f;
+	public static final int SECONDS_PER_DAY = (int)Math.ceil(Math.PI*32/SUN_ANGLE_INCREMENT);
 
     private static final float MAX_DISTANCE = 40000;
+    
+
+    public enum ShadowStatus {
+    	UNSHADOWED, SHADOWED, CASTSHADOWED
+    };
+    
+    public enum DaylightStatus { 
+    	DAY, DAWN, NIGHT, DUSK
+    };
+    
+    
+    private DaylightStatus daylight;
     private Grid grid;
     private Shadowscape shadowscape;
     private ZBuffer buffer;
@@ -38,6 +57,10 @@ public class ShadowLevel implements Level {
         buffer = new ZBuffer();
         out_queue = new LinkedList<Entity>();
         in_queue = new LinkedList<Entity>();
+    }
+    
+    public boolean isNight(){
+    	return daylight==DaylightStatus.NIGHT;
     }
 
     public void add(Entity e) {
@@ -70,6 +93,8 @@ public class ShadowLevel implements Level {
         }
 //         grid.debugDraw(g);
     }
+    
+    
 
     public void update(StateBasedGame game, int delta) {
         grid.update();
@@ -89,6 +114,38 @@ public class ShadowLevel implements Level {
         in_queue.clear();
         out_queue.clear();
     }
+    
+    public void renderTimeOfDay(int totaltime, StateBasedGame game, Graphics g){
+		int timeofday = totaltime%SECONDS_PER_DAY;
+		// is it day or night?
+		if(timeofday>1.0*SECONDS_PER_DAY*(1f/2-TRANSITION_TIME)){
+			daylight = DaylightStatus.NIGHT;
+			float factor = MAX_SHADOW;
+			float colorizer = 0;
+			float colorizeg = 0;
+			float colorizeb = 0;
+			if(timeofday<1.0*SECONDS_PER_DAY/2){
+				daylight = DaylightStatus.DAWN;
+				factor = (float)1.0*MAX_SHADOW*((timeofday-SECONDS_PER_DAY/2f)/(SECONDS_PER_DAY*TRANSITION_TIME)+1);
+				colorizer = 0.2f*(float)Math.abs(Math.sin(Math.PI*((timeofday-SECONDS_PER_DAY/2f)/(SECONDS_PER_DAY*TRANSITION_TIME)+1)));
+				colorizeg = 0.1f*(float)Math.abs(Math.sin(Math.PI*((timeofday-SECONDS_PER_DAY/2f)/(SECONDS_PER_DAY*TRANSITION_TIME)+1)));
+				
+			}
+			if(timeofday>1.0*SECONDS_PER_DAY*(1-TRANSITION_TIME)){
+				daylight = DaylightStatus.DUSK;
+				factor = MAX_SHADOW*(SECONDS_PER_DAY-timeofday)/(SECONDS_PER_DAY*TRANSITION_TIME);
+				colorizer = 0.1f*(float)Math.abs(Math.cos(Math.PI/2*((timeofday-SECONDS_PER_DAY/2f)/(SECONDS_PER_DAY*TRANSITION_TIME)+1)));
+				colorizeg = 0.1f*(float)Math.abs(Math.cos(Math.PI/2*((timeofday-SECONDS_PER_DAY/2f)/(SECONDS_PER_DAY*TRANSITION_TIME)+1)));
+				colorizeb = 0.05f*(float)Math.abs(Math.cos(Math.PI/2*((timeofday-SECONDS_PER_DAY/2f)/(SECONDS_PER_DAY*TRANSITION_TIME)+1)));
+			}
+			Color night = new Color(colorizer,colorizeg,colorizeb,factor);
+			
+			g.setColor(night);
+			g.fillRect(0, 0, game.getContainer().getScreenWidth(), game.getContainer().getScreenHeight());
+			g.setColor(Color.white);
+		}
+
+    }
 
     /**
      * Update the shadowscape with a new light source.
@@ -97,7 +154,7 @@ public class ShadowLevel implements Level {
      */
     public void updateShadowscape(float direction, float shadowLength) {
         resolve();
-        shadowscape = new Shadowscape(buffer, direction, shadowLength, grid);
+        shadowscape = new Shadowscape(buffer, direction, shadowLength, grid, daylight);
         // TODO this only makes sense if the shadowscape is updated every time
         for (ShadowCaster s : buffer) {
             if (s instanceof Mushroom) {
@@ -114,7 +171,7 @@ public class ShadowLevel implements Level {
      */
     public void plant() {
         try {
-            Mushroom m = shadowscape.plant();
+        	Mushroom m = shadowscape.plant();
             add(m);
         } catch (SlickException e) {
             e.printStackTrace();
@@ -128,7 +185,7 @@ public class ShadowLevel implements Level {
      * @return
      */
     public boolean shaded(Body b) {
-        return shadowscape.contains(b);
+        return shadowscape.contains(b)==ShadowStatus.CASTSHADOWED;
     }
 
     /**
