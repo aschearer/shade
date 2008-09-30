@@ -4,7 +4,6 @@ import java.awt.Font;
 import java.io.InputStream;
 import java.util.LinkedList;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -87,7 +86,7 @@ public class InGameState extends BasicGameState {
         timer = 0;
 
         level.clear();
-        level.updateShadowscape(sunAngle, (float)(10f/(1+0.8*Math.cos(sunAngle*2))));
+        level.updateShadowscape(sunAngle, 10f);
         meter = new MeterControl(20, 456, 100, 100);
         counter = new CounterControl(60, 520, counterSprite, counterFont);
         numMoles = 0;
@@ -106,11 +105,11 @@ public class InGameState extends BasicGameState {
     private void initObstacles() throws SlickException {
         LinkedList<ShadowCaster> casters = new LinkedList<ShadowCaster>();
         casters.add(new Block(55, 355, 125, 125, 16));
-        casters.add(new Block(224, 424, 56, 56, 12));
-        casters.add(new Block(324, 424, 56, 56, 2));
-        casters.add(new Block(75, 225, 56, 56, 9));
-        casters.add(new Block(545, 330, 80, 80, 8));
-        casters.add(new Block(445, 460, 80, 80, 5));
+        casters.add(new Block(224, 424, 56, 56, 6));
+        casters.add(new Block(324, 424, 56, 56, 6));
+        casters.add(new Block(75, 225, 56, 56, 6));
+        casters.add(new Block(545, 330, 80, 80, 10));
+        casters.add(new Block(445, 460, 80, 80, 10));
         // domes
         casters.add(new Dome(288, 165, 32, 7));
         casters.add(new Dome(180, 95, 44, 10));
@@ -119,10 +118,10 @@ public class InGameState extends BasicGameState {
         casters.add(new Dome(600, 100, 40, 9));
         casters.add(new Dome(680, 220, 60, 13));
         // fences
-        casters.add(new Fence(225, 225, 11, 120, 2));
-        casters.add(new Fence(390, 140, 120, 11, 8));
+        casters.add(new Fence(225, 225, 11, 120, 5));
+        casters.add(new Fence(390, 140, 120, 11, 5));
         casters.add(new Fence(715, 368, 11, 120, 5));
-        casters.add(new Fence(50, 50, 11, 120, 19));
+        casters.add(new Fence(50, 50, 11, 120, 5));
 
         for (ShadowCaster c : casters) {
             level.add(c);
@@ -196,7 +195,6 @@ public class InGameState extends BasicGameState {
             if (player.shaded==ShadowStatus.UNSHADOWED) {
             	meter.decrement();
             }
-            System.out.println("player status is "+player.shaded);
             
 
             // Check for lose condition
@@ -213,7 +211,7 @@ public class InGameState extends BasicGameState {
 
     private void updateShadow() {
         sunAngle += SUN_ANGLE_INCREMENT;
-        level.updateShadowscape((float)(sunAngle), (float)(10f/(1+0.8*Math.cos(sunAngle*2))));
+        level.updateShadowscape(sunAngle, 10f);
     }
 
 }

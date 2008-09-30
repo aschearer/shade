@@ -127,7 +127,6 @@ public class Shadowscape {
                 return ShadowStatus.CASTSHADOWED;
             }
         }
-        System.out.println("daylight status is "+daylight);
     	if(daylight==DaylightStatus.NIGHT) return ShadowStatus.SHADOWED;
         return ShadowStatus.UNSHADOWED;
     }
