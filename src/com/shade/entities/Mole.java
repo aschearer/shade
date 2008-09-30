@@ -32,7 +32,7 @@ public class Mole extends Linkable implements ShadowCaster {
     private Mushroom target;
     private float heading;
     private int timer, cooldown;
-    private Animation sniff, question;
+    private Animation sniff, move;
 
     public Mole(int cool) throws SlickException {
         initShape();
@@ -53,11 +53,10 @@ public class Mole extends Linkable implements ShadowCaster {
         sniff.setAutoUpdate(false);
         sniff.setPingPong(true);
         
-        SpriteSheet questions = new SpriteSheet("entities/mole/question.png", 40, 40);
+        SpriteSheet moves = new SpriteSheet("entities/mole/move.png", 40, 40);
         
-        question = new Animation(questions, 400);
-        question.setAutoUpdate(false);
-        question.setPingPong(true);
+        move = new Animation(moves, 300);
+        move.setAutoUpdate(false);
     }
 
     public Shape castShadow(float direction, float depth) {
@@ -124,8 +123,9 @@ public class Mole extends Linkable implements ShadowCaster {
         g.rotate(getCenterX(), getCenterY(), (float) Math.toDegrees(heading));
         if (status == Status.WAKING || status == Status.IDLING) {
             sniff.draw(getX(), getY(), getWidth(), getHeight());
-        } else {
-            sniff.getImage(0).draw(getX(), getY(), getWidth(), getHeight());
+        }
+        if (status == Status.SEEKING || status == Status.WORKING) {
+            move.draw(getX(), getY(), getWidth(), getHeight());
         }
         g.resetTransform();
         
@@ -135,6 +135,7 @@ public class Mole extends Linkable implements ShadowCaster {
     public void update(StateBasedGame game, int delta) {
         timer += delta;
         sniff.update(delta);
+        move.update(delta);
         if (status == Status.DIGGING && timer > cooldown) {
             Vector2f p = LevelUtil.randomPoint(game.getContainer());
             while (!level.clear(p.x, p.y, RADIUS * 2)) {
@@ -153,7 +154,9 @@ public class Mole extends Linkable implements ShadowCaster {
         }
         if (status == Status.IDLING && findTarget()) {
             // target found
-            status = Status.SEEKING;
+//            status = Status.SEEKING;
+//            move.restart();
+            // TODO figure out where to put state changes
         }
         if (status == Status.IDLING && timer > cooldown) {
             // go back underground start over
@@ -164,7 +167,8 @@ public class Mole extends Linkable implements ShadowCaster {
             seekTarget();
         }
         if (status == Status.SEEKING && target.isDead()) {
-            stopWork();
+            status = Status.WAKING;
+            timer = 0;
         }
         if (status == Status.WORKING) {
             // move the target
@@ -222,6 +226,7 @@ public class Mole extends Linkable implements ShadowCaster {
         if (lineOfSight) {
             target = shroomies[i];
             status = Status.SEEKING;
+            move.restart();
             return true;
         }
         return false;
