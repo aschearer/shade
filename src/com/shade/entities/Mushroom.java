@@ -16,7 +16,6 @@ import com.shade.base.Level;
 import com.shade.crash.Body;
 import com.shade.crash.util.CrashGeom;
 import com.shade.shadows.ShadowCaster;
-import com.shade.shadows.ShadowLevel.ShadowStatus;
 import com.shade.util.Geom;
 
 public class Mushroom extends Linkable implements ShadowCaster {
@@ -56,7 +55,8 @@ public class Mushroom extends Linkable implements ShadowCaster {
     }
 
     private void initSprite() throws SlickException {
-        SpriteSheet s = new SpriteSheet("entities/mushroom/mushrooms.png", 40, 40);
+        SpriteSheet s = new SpriteSheet("entities/mushroom/mushrooms.png", 40,
+                40);
         sprite = s.getSprite(type.ordinal(), 0);
     }
 
@@ -123,7 +123,7 @@ public class Mushroom extends Linkable implements ShadowCaster {
             return;
         }
 
-        if (!picked() && shaded!=ShadowStatus.UNSHADOWED && !tooBig()) {
+        if (!picked() && shaded != ShadowStatus.UNSHADOWED && !tooBig()) {
             scale += SCALE_INCREMENT;
             resize();
         }
@@ -132,7 +132,7 @@ public class Mushroom extends Linkable implements ShadowCaster {
             /* TODO Turn to a monster. */
         }
 
-        if (shaded==ShadowStatus.UNSHADOWED && !tooSmall()) {
+        if (shaded == ShadowStatus.UNSHADOWED && !tooSmall()) {
             if (type != Type.RARE) {
                 scale += -SCALE_INCREMENT / 4;
             } else {

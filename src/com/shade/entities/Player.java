@@ -15,7 +15,6 @@ import com.shade.base.Level;
 import com.shade.crash.Body;
 import com.shade.controls.MushroomCounter;
 import com.shade.shadows.ShadowCaster;
-import com.shade.shadows.ShadowLevel.ShadowStatus;
 
 public class Player extends Linkable implements ShadowCaster {
 
