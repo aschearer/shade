@@ -103,7 +103,7 @@ Alex Schearer
     </target>
 
     <!-- Sign's webstart/shade.jar for deployment. -->
-    <target name="signjar" depends="check-keystore">
+    <target name="signjar" depends="keystore">
         <signjar jar="${webstart.dir}/shade.jar"
                  keystore="${target.dir}/${keystore.alias}.ks" 
                  storepass="${keystore.pass}"
