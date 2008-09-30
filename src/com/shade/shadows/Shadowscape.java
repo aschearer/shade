@@ -12,7 +12,7 @@ import com.shade.crash.Body;
 import com.shade.crash.Grid;
 import com.shade.entities.Mushroom;
 import com.shade.entities.util.MushroomFactory;
-import com.shade.shadows.ShadowCaster.DaylightStatus;
+import com.shade.shadows.ShadowCaster.ShadowStatus;
 import com.shade.shadows.ShadowLevel.*;
 
 public class Shadowscape {

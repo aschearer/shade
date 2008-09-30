@@ -17,7 +17,7 @@ import com.shade.crash.Grid;
 import com.shade.crash.util.CrashGeom;
 import com.shade.entities.Mushroom;
 import com.shade.entities.Player;
-import com.shade.shadows.ShadowCaster.DaylightStatus;
+import com.shade.shadows.ShadowCaster.ShadowStatus;
 
 /**
  * Builds on top of the CrashLevel to add support for shadows.
@@ -36,10 +36,10 @@ public class ShadowLevel implements Level {
             / SUN_ANGLE_INCREMENT);
 
     private static final float MAX_DISTANCE = 40000;
-
-    public enum ShadowStatus {
-        UNSHADOWED, SHADOWED, CASTSHADOWED
-    };
+    
+    public enum DaylightStatus { 
+        DAY, DAWN, NIGHT, DUSK
+    }
 
     private DaylightStatus daylight;
     private Grid grid;

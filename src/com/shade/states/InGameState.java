@@ -17,14 +17,13 @@ import com.shade.controls.*;
 import com.shade.crash.*;
 import com.shade.entities.*;
 import com.shade.shadows.*;
-import com.shade.shadows.ShadowLevel.ShadowStatus;
+import com.shade.shadows.ShadowCaster.ShadowStatus;
 
 public class InGameState extends BasicGameState {
 
     public static final int ID = 1;
     public static final float SUN_ANGLE_INCREMENT = 0.001f;
-	
-	
+
     private enum Status {
         NOT_STARTED, RUNNING, PAUSED, GAME_OVER
     };
@@ -147,15 +146,13 @@ public class InGameState extends BasicGameState {
         level.render(game, g);
         trimSprite.draw();
         level.renderTimeOfDay(totalTimer, game, g);
-        
+
         meter.render(game, g);
         counter.render(game, g);
         if (currentStatus == Status.GAME_OVER) {
             counterFont.drawString(320, 300, "Game Over");
         }
     }
-
-
 
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
@@ -165,7 +162,7 @@ public class InGameState extends BasicGameState {
             level.update(game, delta);
             timer += delta;
             totalTimer += delta;
-            
+
             // first run
             if (totalTimer == delta) {
                 initShrooms(container);
@@ -192,10 +189,9 @@ public class InGameState extends BasicGameState {
             meter.update(game, delta);
             counter.update(game, delta);
 
-            if (player.shaded==ShadowStatus.UNSHADOWED) {
-            	meter.decrement();
+            if (player.shaded == ShadowStatus.UNSHADOWED) {
+                meter.decrement();
             }
-            
 
             // Check for lose condition
             if (meter.isEmpty()) {
