@@ -4,28 +4,30 @@ import java.awt.Font;
 import java.io.InputStream;
 import java.util.LinkedList;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.*;
 import org.newdawn.slick.util.ResourceLoader;
 
 import com.shade.controls.*;
 import com.shade.crash.*;
 import com.shade.entities.*;
+import com.shade.entities.util.MushroomFactory;
 import com.shade.shadows.*;
-import com.shade.shadows.ShadowLevel.ShadowStatus;
+import com.shade.shadows.ShadowEntity.ShadowIntensity;
 
 public class InGameState extends BasicGameState {
 
     public static final int ID = 1;
-    public static final float SUN_ANGLE_INCREMENT = 0.0005f;
-	
-	
+    private static final float SUN_START_ANGLE = 2.5f;
+    private static final float SUN_START_DEPTH = 10f;
+    private static final float SUN_ANGLE_INCREMENT = 0.001f;
+
     private enum Status {
         NOT_STARTED, RUNNING, PAUSED, GAME_OVER
     };
@@ -40,8 +42,6 @@ public class InGameState extends BasicGameState {
     private Image counterSprite;
     private TrueTypeFont counterFont;
 
-    private float sunAngle;
-
     private Player player;
 
     private int timer, totalTimer;
@@ -55,8 +55,8 @@ public class InGameState extends BasicGameState {
 
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException {
-        level = new ShadowLevel(new Grid(8, 6, 200));
-        sunAngle = 2.5f;
+        level = new ShadowLevel(new Grid(8, 6, 200), SUN_START_ANGLE,
+                SUN_START_DEPTH, SUN_ANGLE_INCREMENT);
         currentStatus = Status.NOT_STARTED;
         initSprites();
         initFonts();
@@ -87,7 +87,6 @@ public class InGameState extends BasicGameState {
         timer = 0;
 
         level.clear();
-        level.updateShadowscape(sunAngle, (float)(10f/(1+0.8*Math.cos(sunAngle*2))));
         meter = new MeterControl(20, 456, 100, 100);
         counter = new CounterControl(60, 520, counterSprite, counterFont);
         numMoles = 0;
@@ -97,20 +96,21 @@ public class InGameState extends BasicGameState {
         initPlayer();
     }
 
-    private void initShrooms(GameContainer container) {
+    private void initShrooms(GameContainer container) throws SlickException {
         for (int i = 0; i < 5; i++) {
-            level.plant();
+            Vector2f p = level.randomPoint(container);
+            level.add(MushroomFactory.makeMushroom(p.x, p.y));
         }
     }
 
     private void initObstacles() throws SlickException {
         LinkedList<ShadowCaster> casters = new LinkedList<ShadowCaster>();
         casters.add(new Block(55, 355, 125, 125, 16));
-        casters.add(new Block(224, 424, 56, 56, 12));
-        casters.add(new Block(324, 424, 56, 56, 2));
-        casters.add(new Block(75, 225, 56, 56, 9));
-        casters.add(new Block(545, 330, 80, 80, 8));
-        casters.add(new Block(445, 460, 80, 80, 5));
+        casters.add(new Block(224, 424, 56, 56, 6));
+        casters.add(new Block(324, 424, 56, 56, 6));
+        casters.add(new Block(75, 225, 56, 56, 6));
+        casters.add(new Block(545, 330, 80, 80, 10));
+        casters.add(new Block(445, 460, 80, 80, 10));
         // domes
         casters.add(new Dome(288, 165, 32, 7));
         casters.add(new Dome(180, 95, 44, 10));
@@ -119,10 +119,10 @@ public class InGameState extends BasicGameState {
         casters.add(new Dome(600, 100, 40, 9));
         casters.add(new Dome(680, 220, 60, 13));
         // fences
-        casters.add(new Fence(225, 225, 11, 120, 2));
-        casters.add(new Fence(390, 140, 120, 11, 8));
+        casters.add(new Fence(225, 225, 11, 120, 5));
+        casters.add(new Fence(390, 140, 120, 11, 5));
         casters.add(new Fence(715, 368, 11, 120, 5));
-        casters.add(new Fence(50, 50, 11, 120, 19));
+        casters.add(new Fence(50, 50, 11, 120, 5));
 
         for (ShadowCaster c : casters) {
             level.add(c);
@@ -147,8 +147,6 @@ public class InGameState extends BasicGameState {
         backgroundSprite.draw();
         level.render(game, g);
         trimSprite.draw();
-        level.renderTimeOfDay(totalTimer, game, g);
-        
         meter.render(game, g);
         counter.render(game, g);
         if (currentStatus == Status.GAME_OVER) {
@@ -156,17 +154,14 @@ public class InGameState extends BasicGameState {
         }
     }
 
-
-
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
-        updateShadow();
 
         if (currentStatus == Status.RUNNING) {
             level.update(game, delta);
             timer += delta;
             totalTimer += delta;
-            
+
             // first run
             if (totalTimer == delta) {
                 initShrooms(container);
@@ -174,7 +169,8 @@ public class InGameState extends BasicGameState {
 
             // Randomly plant mushrooms
             if (Math.random() > .9965 || timer % 5000 + delta > 5000) {
-                level.plant();
+                Vector2f p = level.randomPoint(container);
+                level.add(MushroomFactory.makeMushroom(p.x, p.y));
             }
 
             if (counter.value >= 5 && numMoles < 1) {
@@ -193,8 +189,8 @@ public class InGameState extends BasicGameState {
             meter.update(game, delta);
             counter.update(game, delta);
 
-            if (player.shaded==ShadowStatus.UNSHADOWED) {
-            	meter.decrement();
+            if (player.hasIntensity(ShadowIntensity.UNSHADOWED)) {
+                meter.decrement();
             }
 
             // Check for lose condition
@@ -207,11 +203,6 @@ public class InGameState extends BasicGameState {
         if (container.getInput().isKeyPressed(Input.KEY_R)) {
             enter(container, game);
         }
-    }
-
-    private void updateShadow() {
-        sunAngle += SUN_ANGLE_INCREMENT;
-        level.updateShadowscape((float)(sunAngle), (float)(10f/(1+0.8*Math.cos(sunAngle*2))));
     }
 
 }

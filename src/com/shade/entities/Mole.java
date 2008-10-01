@@ -5,7 +5,6 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.geom.Circle;
-import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -13,26 +12,26 @@ import com.shade.base.Entity;
 import com.shade.base.Level;
 import com.shade.crash.Body;
 import com.shade.crash.util.CrashGeom;
-import com.shade.shadows.ShadowCaster;
+import com.shade.shadows.ShadowEntity;
 import com.shade.shadows.ShadowLevel;
 import com.shade.util.Geom;
-import com.shade.util.LevelUtil;
 
-public class Mole extends Linkable implements ShadowCaster {
-    
+public class Mole extends Linkable implements ShadowEntity {
+
     private static final int RADIUS = 12;
     private static final float SPEED = .7f;
-    
+
     private enum Status {
         DIGGING, WAKING, IDLING, SEEKING, WORKING, CONFUSED
     }
-    
+
     private ShadowLevel level;
     private Status status;
     private Mushroom target;
     private float heading;
     private int timer, cooldown;
-    private Animation sniff, question;
+    private Animation sniff, move;
+    private ShadowIntensity shadowStatus;
 
     public Mole(int cool) throws SlickException {
         initShape();
@@ -48,28 +47,15 @@ public class Mole extends Linkable implements ShadowCaster {
 
     private void initSprites() throws SlickException {
         SpriteSheet sniffs = new SpriteSheet("entities/mole/sniff.png", 40, 40);
-        
+
         sniff = new Animation(sniffs, 300);
         sniff.setAutoUpdate(false);
         sniff.setPingPong(true);
-        
-        SpriteSheet questions = new SpriteSheet("entities/mole/question.png", 40, 40);
-        
-        question = new Animation(questions, 400);
-        question.setAutoUpdate(false);
-        question.setPingPong(true);
-    }
 
-    public Shape castShadow(float direction, float depth) {
-        return null;
-    }
+        SpriteSheet moves = new SpriteSheet("entities/mole/move.png", 40, 40);
 
-    public int getZIndex() {
-        return 3;
-    }
-
-    public int compareTo(ShadowCaster s) {
-        return getZIndex() - s.getZIndex();
+        move = new Animation(moves, 300);
+        move.setAutoUpdate(false);
     }
 
     public void addToLevel(Level l) {
@@ -78,6 +64,14 @@ public class Mole extends Linkable implements ShadowCaster {
 
     public Role getRole() {
         return Role.MOLE;
+    }
+
+    public boolean hasIntensity(ShadowIntensity s) {
+        return s == shadowStatus;
+    }
+
+    public void setIntensity(ShadowIntensity s) {
+        shadowStatus = s;
     }
 
     public void onCollision(Entity obstacle) {
@@ -91,17 +85,17 @@ public class Mole extends Linkable implements ShadowCaster {
             status = Status.WORKING;
             timer = 0;
         }
-        
+
         if (status == Status.WORKING && obstacle.getRole() == Role.OBSTACLE) {
             // change direction
             heading += Math.PI / 2;
         }
-        
+
         if (status == Status.SEEKING && obstacle.getRole() == Role.OBSTACLE) {
             // die
             stopWork();
         }
-        
+
         if (status == Status.WAKING && obstacle.getRole() == Role.OBSTACLE) {
             // back underground
             status = Status.DIGGING;
@@ -114,7 +108,7 @@ public class Mole extends Linkable implements ShadowCaster {
 
     public void removeFromLevel(Level l) {
         // TODO Auto-generated method stub
-        
+
     }
 
     public void render(StateBasedGame game, Graphics g) {
@@ -124,22 +118,21 @@ public class Mole extends Linkable implements ShadowCaster {
         g.rotate(getCenterX(), getCenterY(), (float) Math.toDegrees(heading));
         if (status == Status.WAKING || status == Status.IDLING) {
             sniff.draw(getX(), getY(), getWidth(), getHeight());
-        } else {
-            sniff.getImage(0).draw(getX(), getY(), getWidth(), getHeight());
+        }
+        if (status == Status.SEEKING || status == Status.WORKING) {
+            move.draw(getX(), getY(), getWidth(), getHeight());
         }
         g.resetTransform();
-        
-//        g.draw(shape);
+
+        // g.draw(shape);
     }
 
     public void update(StateBasedGame game, int delta) {
         timer += delta;
         sniff.update(delta);
+        move.update(delta);
         if (status == Status.DIGGING && timer > cooldown) {
-            Vector2f p = LevelUtil.randomPoint(game.getContainer());
-            while (!level.clear(p.x, p.y, RADIUS * 2)) {
-                p = LevelUtil.randomPoint(game.getContainer());
-            }
+            Vector2f p = level.randomPoint(game.getContainer());
             shape.setCenterX(p.x);
             shape.setCenterY(p.y);
             status = Status.WAKING;
@@ -153,7 +146,9 @@ public class Mole extends Linkable implements ShadowCaster {
         }
         if (status == Status.IDLING && findTarget()) {
             // target found
-            status = Status.SEEKING;
+            // status = Status.SEEKING;
+            // move.restart();
+            // TODO figure out where to put state changes
         }
         if (status == Status.IDLING && timer > cooldown) {
             // go back underground start over
@@ -164,7 +159,9 @@ public class Mole extends Linkable implements ShadowCaster {
             seekTarget();
         }
         if (status == Status.SEEKING && target.isDead()) {
-            stopWork();
+            status = Status.WAKING;
+            heading = (float) Math.PI;
+            timer = 0;
         }
         if (status == Status.WORKING) {
             // move the target
@@ -186,7 +183,8 @@ public class Mole extends Linkable implements ShadowCaster {
         d[2] = d[0];
         // if I'm left of my target
         if (getX() < target.getX()) {
-            d[1] = CrashGeom.distance2(target, getCenterX() + 800, getCenterY());
+            d[1] = CrashGeom
+                    .distance2(target, getCenterX() + 800, getCenterY());
         } else {
             d[1] = CrashGeom.distance2(this, target.getCenterX() + 800, target
                     .getCenterY());
@@ -194,7 +192,8 @@ public class Mole extends Linkable implements ShadowCaster {
 
         // if I'm above my target
         if (getY() < target.getY()) {
-            d[2] = CrashGeom.distance2(target, getCenterX(), getCenterY() + 600);
+            d[2] = CrashGeom
+                    .distance2(target, getCenterX(), getCenterY() + 600);
         } else {
             d[2] = CrashGeom.distance2(this, target.getCenterX(), target
                     .getCenterY() + 600);
@@ -209,24 +208,27 @@ public class Mole extends Linkable implements ShadowCaster {
     }
 
     private boolean findTarget() {
-        Mushroom[] shroomies = level.nearbyShrooms(this);
+        ShadowEntity[] entities = level.nearByEntities(this, 300);
 
         boolean lineOfSight = false;
         int i = 0;
-        while (!lineOfSight && i < shroomies.length) {
-            lineOfSight = level.ray(this, shroomies[i]);
+        while (!lineOfSight && i < entities.length) {
+            if (((Entity) entities[i]).getRole() == Role.MUSHROOM) {
+                lineOfSight = level.lineOfSight(this, entities[i]);
+            }
             i++;
         }
         i--;
 
         if (lineOfSight) {
-            target = shroomies[i];
+            target = (Mushroom) entities[i];
             status = Status.SEEKING;
+            move.restart();
             return true;
         }
         return false;
     }
-    
+
     private void stopWork() {
         status = Status.DIGGING;
         timer = 0;
@@ -241,7 +243,7 @@ public class Mole extends Linkable implements ShadowCaster {
             target = null;
         }
     }
-    
+
     /* Move the shape a given amount across two dimensions. */
     private void move(float magnitude, float direction) {
         Vector2f d = Geom.calculateVector(magnitude, direction);
@@ -265,6 +267,14 @@ public class Mole extends Linkable implements ShadowCaster {
 
     public boolean digging() {
         return status == Status.DIGGING;
+    }
+
+    public int getZIndex() {
+        return 4;
+    }
+
+    public int compareTo(ShadowEntity s) {
+        return getZIndex() - s.getZIndex();
     }
 
 }

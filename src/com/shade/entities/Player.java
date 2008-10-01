@@ -7,26 +7,24 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Circle;
-import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Entity;
 import com.shade.base.Level;
 import com.shade.crash.Body;
 import com.shade.controls.MushroomCounter;
-import com.shade.shadows.ShadowCaster;
-import com.shade.shadows.ShadowLevel.ShadowStatus;
+import com.shade.shadows.ShadowEntity;
 
-public class Player extends Linkable implements ShadowCaster {
+public class Player extends Linkable implements ShadowEntity {
 
     private static final float SPEED = 1.4f;
 
     private Level level;
     private Image sprite;
 
-    public ShadowStatus shaded;
-
     private LinkedList<MushroomCounter> counters;
+
+    private ShadowIntensity shadowStatus;
 
     public Player(float x, float y, float r) throws SlickException {
         initShape(x, y, r);
@@ -52,6 +50,14 @@ public class Player extends Linkable implements ShadowCaster {
 
     public void removeFromLevel(Level l) {
         // TODO Auto-generated method stub
+    }
+    
+    public boolean hasIntensity(ShadowIntensity s) {
+        return s == shadowStatus;
+    }
+
+    public void setIntensity(ShadowIntensity s) {
+        shadowStatus = s;
     }
 
     public void onCollision(Entity obstacle) {
@@ -135,19 +141,7 @@ public class Player extends Linkable implements ShadowCaster {
             shape.setCenterY(0);
         }
     }
-
-    public Shape castShadow(float direction, float depth) {
-        return null;
-    }
-
-    public int getZIndex() {
-        return 4;
-    }
-
-    public int compareTo(ShadowCaster s) {
-        return getZIndex() - s.getZIndex();
-    }
-
+    
     public void repel(Entity repellee) {
         Body b = (Body) repellee;
         double playerx = b.getCenterX();
@@ -164,6 +158,14 @@ public class Player extends Linkable implements ShadowCaster {
 
     public void add(MushroomCounter counter) {
         counters.add(counter);
+    }
+    
+    public int getZIndex() {
+        return 4;
+    }
+
+    public int compareTo(ShadowEntity s) {
+        return getZIndex() - s.getZIndex();
     }
 
 }

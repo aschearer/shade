@@ -4,17 +4,17 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Rectangle;
-import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Entity;
 import com.shade.base.Level;
 import com.shade.crash.Body;
-import com.shade.shadows.ShadowCaster;
+import com.shade.shadows.ShadowEntity;
 
-public class Basket extends Body implements ShadowCaster {
+public class Basket extends Body implements ShadowEntity {
     
     private Image sprite;
+    private ShadowIntensity shadowStatus;
 
     public Basket(float x, float y, float w, float h) throws SlickException {
         initShape(x, y, w, h);
@@ -37,6 +37,14 @@ public class Basket extends Body implements ShadowCaster {
     public Role getRole() {
         return Role.BASKET;
     }
+    
+    public boolean hasIntensity(ShadowIntensity s) {
+        return s == shadowStatus;
+    }
+
+    public void setIntensity(ShadowIntensity s) {
+        shadowStatus = s;
+    }
 
     public void onCollision(Entity obstacle) {
         // TODO Auto-generated method stub
@@ -58,21 +66,17 @@ public class Basket extends Body implements ShadowCaster {
         
     }
 
-    public Shape castShadow(float direction, float depth) {
-        return null;
-    }
-
-    public int getZIndex() {
-        return 1;
-    }
-
-    public int compareTo(ShadowCaster s) {
-        return getZIndex() - s.getZIndex();
-    }
-
 	public void repel(Entity repellee) {
 		// TODO Auto-generated method stub
 		
 	}
+	
+    public int getZIndex() {
+        return 1;
+    }
+
+    public int compareTo(ShadowEntity s) {
+        return getZIndex() - s.getZIndex();
+    }
 
 }

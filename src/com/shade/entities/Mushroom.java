@@ -7,7 +7,6 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.geom.Circle;
-import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -15,11 +14,10 @@ import com.shade.base.Entity;
 import com.shade.base.Level;
 import com.shade.crash.Body;
 import com.shade.crash.util.CrashGeom;
-import com.shade.shadows.ShadowCaster;
-import com.shade.shadows.ShadowLevel.ShadowStatus;
+import com.shade.shadows.ShadowEntity;
 import com.shade.util.Geom;
 
-public class Mushroom extends Linkable implements ShadowCaster {
+public class Mushroom extends Linkable implements ShadowEntity {
 
     public enum Type {
         POISON, NORMAL, GOOD, RARE
@@ -28,8 +26,6 @@ public class Mushroom extends Linkable implements ShadowCaster {
     private enum Status {
         IDLE, PICKED, DEAD
     };
-
-    public ShadowStatus shaded;
 
     private static final float RADIUS = 3f;
     private static final float SCALE_INCREMENT = .005f;
@@ -45,6 +41,7 @@ public class Mushroom extends Linkable implements ShadowCaster {
     private Level level;
 
     private Image sprite;
+    private ShadowIntensity shadowStatus;
 
     public Mushroom(float x, float y, Type t) throws SlickException {
         type = t;
@@ -52,11 +49,11 @@ public class Mushroom extends Linkable implements ShadowCaster {
         initSprite();
         currentStatus = Status.IDLE;
         scale = MIN_SCALE;
-        shaded = ShadowStatus.SHADOWED;
     }
 
     private void initSprite() throws SlickException {
-        SpriteSheet s = new SpriteSheet("entities/mushroom/mushrooms.png", 40, 40);
+        SpriteSheet s = new SpriteSheet("entities/mushroom/mushrooms.png", 40,
+                40);
         sprite = s.getSprite(type.ordinal(), 0);
     }
 
@@ -74,6 +71,14 @@ public class Mushroom extends Linkable implements ShadowCaster {
 
     public void removeFromLevel(Level l) {
         currentStatus = Status.DEAD;
+    }
+    
+    public boolean hasIntensity(ShadowIntensity s) {
+        return s == shadowStatus;
+    }
+
+    public void setIntensity(ShadowIntensity s) {
+        shadowStatus = s;
     }
 
     public void onCollision(Entity obstacle) {
@@ -123,7 +128,7 @@ public class Mushroom extends Linkable implements ShadowCaster {
             return;
         }
 
-        if (!picked() && shaded!=ShadowStatus.UNSHADOWED && !tooBig()) {
+        if (!picked() && shadowStatus != ShadowIntensity.UNSHADOWED && !tooBig()) {
             scale += SCALE_INCREMENT;
             resize();
         }
@@ -132,7 +137,7 @@ public class Mushroom extends Linkable implements ShadowCaster {
             /* TODO Turn to a monster. */
         }
 
-        if (shaded==ShadowStatus.UNSHADOWED && !tooSmall()) {
+        if (shadowStatus == ShadowIntensity.UNSHADOWED && !tooSmall()) {
             if (type != Type.RARE) {
                 scale += -SCALE_INCREMENT / 4;
             } else {
@@ -249,21 +254,6 @@ public class Mushroom extends Linkable implements ShadowCaster {
         // shape = shape.transform(t);
     }
 
-    public Shape castShadow(float direction, float depth) {
-        // Vector2f d = Geom.calculateVector(2 * depth, direction);
-        // Transform t = Transform.createTranslateTransform(d.x, d.y);
-        // return shape.transform(t);
-        return null;
-    }
-
-    public int getZIndex() {
-        return 2;
-    }
-
-    public int compareTo(ShadowCaster s) {
-        return (getZIndex() - s.getZIndex());
-    }
-
     public void repel(Entity repellee) {
         Body b = (Body) repellee;
         double playerx = b.getCenterX();
@@ -276,6 +266,14 @@ public class Mushroom extends Linkable implements ShadowCaster {
         double angle = Math.atan2(dist_y, dist_x);
         double move = (playradius + obstacleradius - mag) * 1.5;
         b.move(Math.cos(angle) * move, Math.sin(angle) * move);
+    }
+    
+    public int getZIndex() {
+        return 2;
+    }
+
+    public int compareTo(ShadowEntity s) {
+        return getZIndex() - s.getZIndex();
     }
 
 }

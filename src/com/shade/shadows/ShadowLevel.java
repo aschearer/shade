@@ -5,9 +5,8 @@ import java.util.Comparator;
 import java.util.LinkedList;
 
 import org.newdawn.slick.Color;
+import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.SlickException;
-import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -16,228 +15,259 @@ import com.shade.base.Level;
 import com.shade.crash.Body;
 import com.shade.crash.Grid;
 import com.shade.crash.util.CrashGeom;
-import com.shade.entities.Mushroom;
-import com.shade.entities.Player;
 
 /**
  * Builds on top of the CrashLevel to add support for shadows.
  * 
  * This assumes that all entities to be stored in the level are both instances
- * of the Body class and the ShadowCaster interface.
+ * of the Body class and the ShadowEntity interface. All ShadowCasters should be
+ * placed into a Shadowscape instance prior to construction.
  * 
  * @author Alexander Schearer <aschearr@gmail.com>
  */
 public class ShadowLevel implements Level {
-	
-	public static final float TRANSITION_TIME = 1f/7;
-	public static final float MAX_SHADOW = 0.6f;
-	public static final float SUN_ANGLE_INCREMENT = 0.001f;
-	public static final int SECONDS_PER_DAY = (int)Math.ceil(Math.PI*32/SUN_ANGLE_INCREMENT);
 
-    private static final float MAX_DISTANCE = 40000;
-    
+    public static final float TRANSITION_TIME = 1f / 7;
+    public static final float MAX_SHADOW = 0.6f;
+    public static final float SUN_ANGLE_INCREMENT = 0.001f;
+    public static final int SECONDS_PER_DAY = (int) Math.ceil(Math.PI * 32
+            / SUN_ANGLE_INCREMENT);
 
-    public enum ShadowStatus {
-    	UNSHADOWED, SHADOWED, CASTSHADOWED
-    };
-    
-    public enum DaylightStatus { 
-    	DAY, DAWN, NIGHT, DUSK
-    };
-    
-    
-    private DaylightStatus daylight;
+    protected enum DayLightStatus {
+        DAWN, DAY, DUSK, NIGHT
+    }
+
     private Grid grid;
     private Shadowscape shadowscape;
-    private ZBuffer buffer;
-    private LinkedList<Entity> in_queue, out_queue;
+    private LinkedList<ShadowEntity> in_queue, out_queue;
+    private ZBuffer entities;
+    private float direction, depth, rate;
+    private DayLightStatus daylight;
+    private int totalTime;
 
-    public ShadowLevel(Grid grid) {
+    public ShadowLevel(Grid grid, float direction, float depth, float rate) {
         this.grid = grid;
-        buffer = new ZBuffer();
-        out_queue = new LinkedList<Entity>();
-        in_queue = new LinkedList<Entity>();
-    }
-    
-    public boolean isNight(){
-    	return daylight==DaylightStatus.NIGHT;
+        this.direction = direction;
+        this.depth = depth;
+        this.rate = rate;
+        daylight = DayLightStatus.DAY;
+        shadowscape = new Shadowscape(daylight, direction, depth);
+        entities = new ZBuffer();
+        in_queue = new LinkedList<ShadowEntity>();
+        out_queue = new LinkedList<ShadowEntity>();
     }
 
     public void add(Entity e) {
         e.addToLevel(this);
+        in_queue.add((ShadowEntity) e);
         grid.add((Body) e);
-        in_queue.add(e);
+    }
+
+    /**
+     * Override behavior for shadow casters so they get placed into the
+     * shadowscape.
+     * 
+     * @param s
+     */
+    public void add(ShadowCaster s) {
+        shadowscape.add(s);
+        grid.add((Body) s);
     }
 
     public void clear() {
-        for (ShadowCaster s : buffer) {
-            s.removeFromLevel(this);
+        shadowscape.clear();
+        for (ShadowEntity e : entities) {
+            e.removeFromLevel(this);
+            out_queue.add(e);
         }
         grid.clear();
-        buffer.clear();
     }
 
     public void remove(Entity e) {
         e.removeFromLevel(this);
+        out_queue.add((ShadowEntity) e);
         grid.remove((Body) e);
-        out_queue.add(e);
     }
 
     public void render(StateBasedGame game, Graphics g) {
-        for (ShadowCaster e : buffer.under(5)) {
+        for (ShadowEntity e : entities) {
             e.render(game, g);
         }
-        shadowscape.render(g);
-        for (ShadowCaster e : buffer.over(5)) {
-            e.render(game, g);
-        }
-//         grid.debugDraw(g);
+        shadowscape.render(game, g);
+        renderTimeOfDay(totalTime, game, g);
     }
-    
-    
 
+    private void renderTimeOfDay(int totaltime, StateBasedGame game, Graphics g) {
+        int timeofday = totaltime % SECONDS_PER_DAY;
+        // is it day or night?
+        if (timeofday > 1.0 * SECONDS_PER_DAY * (1f / 2 - TRANSITION_TIME)) {
+            daylight = DayLightStatus.NIGHT;
+            float factor = MAX_SHADOW;
+            float colorizer = 0;
+            float colorizeg = 0;
+            float colorizeb = 0;
+            if (timeofday < 1.0 * SECONDS_PER_DAY / 2) {
+                daylight = DayLightStatus.DAWN;
+                factor = (float) 1.0
+                        * MAX_SHADOW
+                        * ((timeofday - SECONDS_PER_DAY / 2f)
+                                / (SECONDS_PER_DAY * TRANSITION_TIME) + 1);
+                colorizer = 0.2f * (float) Math.abs(Math.sin(Math.PI
+                        * ((timeofday - SECONDS_PER_DAY / 2f)
+                                / (SECONDS_PER_DAY * TRANSITION_TIME) + 1)));
+                colorizeg = 0.1f * (float) Math.abs(Math.sin(Math.PI
+                        * ((timeofday - SECONDS_PER_DAY / 2f)
+                                / (SECONDS_PER_DAY * TRANSITION_TIME) + 1)));
+
+            }
+            if (timeofday > 1.0 * SECONDS_PER_DAY * (1 - TRANSITION_TIME)) {
+                daylight = DayLightStatus.DUSK;
+                factor = (float) 1.0
+                        * MAX_SHADOW
+                        * ((timeofday - SECONDS_PER_DAY / 2f)
+                                / (SECONDS_PER_DAY * TRANSITION_TIME) + 1);
+                colorizer = 0.2f * (float) Math.abs(Math.sin(Math.PI
+                        * ((timeofday - SECONDS_PER_DAY / 2f)
+                                / (SECONDS_PER_DAY * TRANSITION_TIME) + 1)));
+                colorizeg = 0.1f * (float) Math.abs(Math.sin(Math.PI
+                        * ((timeofday - SECONDS_PER_DAY / 2f)
+                                / (SECONDS_PER_DAY * TRANSITION_TIME) + 1)));
+
+            }
+            if (timeofday > 1.0 * SECONDS_PER_DAY * (1 - TRANSITION_TIME)) {
+                daylight = DayLightStatus.DUSK;
+                factor = MAX_SHADOW * (SECONDS_PER_DAY - timeofday)
+                        / (SECONDS_PER_DAY * TRANSITION_TIME);
+                colorizer = 0.1f * (float) Math.abs(Math.cos(Math.PI
+                        / 2
+                        * ((timeofday - SECONDS_PER_DAY / 2f)
+                                / (SECONDS_PER_DAY * TRANSITION_TIME) + 1)));
+                colorizeg = 0.1f * (float) Math.abs(Math.cos(Math.PI
+                        / 2
+                        * ((timeofday - SECONDS_PER_DAY / 2f)
+                                / (SECONDS_PER_DAY * TRANSITION_TIME) + 1)));
+                colorizeb = 0.05f * (float) Math.abs(Math.cos(Math.PI
+                        / 2
+                        * ((timeofday - SECONDS_PER_DAY / 2f)
+                                / (SECONDS_PER_DAY * TRANSITION_TIME) + 1)));
+            }
+            Color night = new Color(colorizer, colorizeg, colorizeb, factor);
+
+            g.setColor(night);
+            g.fillRect(0, 0, game.getContainer().getScreenWidth(), game
+                    .getContainer().getScreenHeight());
+            g.setColor(Color.white);
+        }
+
+    }
+
+    /**
+     * Update the level as well as the shadowscape.
+     * 
+     * This should change the direction of the light as needed. It should also
+     * update the shadow entities status as needed.
+     */
     public void update(StateBasedGame game, int delta) {
+        totalTime += delta;
+        resolve();
         grid.update();
-        for (ShadowCaster e : buffer) {
+        direction += rate;
+        shadowscape.setDirection(direction);
+        shadowscape.setDayLight(daylight);
+        shadowscape.update(game, delta);
+        for (ShadowEntity e : entities) {
             e.update(game, delta);
         }
-        resolve();
+        updateIntensities();
+    }
+
+    private void updateIntensities() {
+        for (ShadowEntity e : entities) {
+            e.setIntensity(shadowscape.contains((Body) e));
+        }
     }
 
     private void resolve() {
-        for (Entity e : in_queue) {
-            buffer.add((ShadowCaster) e);
+        for (ShadowEntity e : in_queue) {
+            entities.add(e);
         }
-        for (Entity e : out_queue) {
-            buffer.remove((ShadowCaster) e);
+        for (ShadowEntity e : out_queue) {
+            entities.remove(e);
         }
         in_queue.clear();
         out_queue.clear();
     }
-    
-    public void renderTimeOfDay(int totaltime, StateBasedGame game, Graphics g){
-		int timeofday = totaltime%SECONDS_PER_DAY;
-		// is it day or night?
-		if(timeofday>1.0*SECONDS_PER_DAY*(1f/2-TRANSITION_TIME)){
-			daylight = DaylightStatus.NIGHT;
-			float factor = MAX_SHADOW;
-			float colorizer = 0;
-			float colorizeg = 0;
-			float colorizeb = 0;
-			if(timeofday<1.0*SECONDS_PER_DAY/2){
-				daylight = DaylightStatus.DAWN;
-				factor = (float)1.0*MAX_SHADOW*((timeofday-SECONDS_PER_DAY/2f)/(SECONDS_PER_DAY*TRANSITION_TIME)+1);
-				colorizer = 0.2f*(float)Math.abs(Math.sin(Math.PI*((timeofday-SECONDS_PER_DAY/2f)/(SECONDS_PER_DAY*TRANSITION_TIME)+1)));
-				colorizeg = 0.1f*(float)Math.abs(Math.sin(Math.PI*((timeofday-SECONDS_PER_DAY/2f)/(SECONDS_PER_DAY*TRANSITION_TIME)+1)));
-				
-			}
-			if(timeofday>1.0*SECONDS_PER_DAY*(1-TRANSITION_TIME)){
-				daylight = DaylightStatus.DUSK;
-				factor = MAX_SHADOW*(SECONDS_PER_DAY-timeofday)/(SECONDS_PER_DAY*TRANSITION_TIME);
-				colorizer = 0.1f*(float)Math.abs(Math.cos(Math.PI/2*((timeofday-SECONDS_PER_DAY/2f)/(SECONDS_PER_DAY*TRANSITION_TIME)+1)));
-				colorizeg = 0.1f*(float)Math.abs(Math.cos(Math.PI/2*((timeofday-SECONDS_PER_DAY/2f)/(SECONDS_PER_DAY*TRANSITION_TIME)+1)));
-				colorizeb = 0.05f*(float)Math.abs(Math.cos(Math.PI/2*((timeofday-SECONDS_PER_DAY/2f)/(SECONDS_PER_DAY*TRANSITION_TIME)+1)));
-			}
-			Color night = new Color(colorizer,colorizeg,colorizeb,factor);
-			
-			g.setColor(night);
-			g.fillRect(0, 0, game.getContainer().getScreenWidth(), game.getContainer().getScreenHeight());
-			g.setColor(Color.white);
-		}
-
-    }
 
     /**
-     * Update the shadowscape with a new light source.
-     * 
-     * @param direction
+     * Returns a random point in the shadowscape such that it is not
+     * intersecting with anything.
      */
-    public void updateShadowscape(float direction, float shadowLength) {
-        resolve();
-        shadowscape = new Shadowscape(buffer, direction, shadowLength, grid, daylight);
-        // TODO this only makes sense if the shadowscape is updated every time
-        for (ShadowCaster s : buffer) {
-            if (s instanceof Mushroom) {
-                ((Mushroom) s).shaded = shadowscape.contains((Mushroom) s);
-            }
-            if (s instanceof Player) {
-                ((Player) s).shaded = shadowscape.contains((Player) s);
-            }
+    public Vector2f randomPoint(GameContainer container) {
+        Vector2f p = shadowscape.randomShadowedPoint();
+        while (!validPoint(p, container)) {
+            p = shadowscape.randomShadowedPoint();
         }
+        return p;
     }
 
-    /**
-     * Plant a mushroom randomly in the shadows.
-     */
-    public void plant() {
-        try {
-        	Mushroom m = shadowscape.plant();
-            add(m);
-        } catch (SlickException e) {
-            e.printStackTrace();
+    private boolean validPoint(Vector2f p, GameContainer container) {
+        if (!(p.x > 0 && p.x < container.getWidth())) {
+            return false;
         }
-    }
-
-    /**
-     * Return true if the body is in a shadow.
-     * 
-     * @param b
-     * @return
-     */
-    public boolean shaded(Body b) {
-        return shadowscape.contains(b)==ShadowStatus.CASTSHADOWED;
-    }
-
-    /**
-     * Return a list of mushrooms near this body.
-     * 
-     * @param b
-     * @return
-     */
-    public Mushroom[] nearbyShrooms(final Body b) {
-        LinkedList<Mushroom> mushrooms = new LinkedList<Mushroom>();
-        for (ShadowCaster s : buffer) {
-            if (s instanceof Mushroom) {
-                if (CrashGeom.distance2(b, (Body) s) < MAX_DISTANCE) {
-                    mushrooms.add((Mushroom) s);
-                }
-            }
+        if (!(p.y > 0 && p.y < container.getHeight())) {
+            return false;
+        }
+        if (!grid.hasRoom(p, 48)) {
+            return false;
         }
 
-        Collections.sort(mushrooms, new Comparator<Mushroom>() {
-
-            public int compare(Mushroom m1, Mushroom m2) {
-                return (int) (CrashGeom.distance2(b, m1) - CrashGeom
-                        .distance2(b, m2));
-            }
-
-        });
-
-        return mushrooms.toArray(new Mushroom[0]);
+        return true;
     }
 
     /**
-     * Cast a ray from body one to body two return true if it reaches body two.
+     * Returns true if one can "see" two. This means that there is a clear path
+     * between the two objects. This is useful when AI needs to determine
+     * whether to pursue a target.
      * 
      * @param one
      * @param two
      * @return
      */
-    public boolean ray(Body one, Body two) {
-        return grid.ray(one, two);
+    public boolean lineOfSight(Entity one, Entity two) {
+        return grid.ray((Body) one, (Body) two);
     }
 
     /**
-     * Determine if there is a certain amount of free space around a given
-     * point.
+     * Return a list of entities within a given distance to the subject.
      * 
-     * @param x
-     * @param y
-     * @param r
+     * This is useful for AI which needs to hunt down nearby targets. It allows
+     * the AI to focus in on neighbors, for instance it may check whether it has
+     * a direct line of sight with its neigbhors.
+     * 
+     * @param subject
+     * @param threshold
      * @return
      */
-    public boolean clear(float x, float y, float r) {
-        return grid.hasRoom(new Vector2f(x, y), r * 2);
+    public ShadowEntity[] nearByEntities(final Entity subject, int threshold) {
+        int threshold2 = threshold * threshold;
+        LinkedList<ShadowEntity> neighbors = new LinkedList<ShadowEntity>();
+        for (ShadowEntity e : entities) {
+            if (CrashGeom.distance2((Body) subject, (Body) e) < threshold2) {
+                neighbors.add(e);
+            }
+        }
+        // TODO verify this is sorting in the right order
+        Collections.sort(neighbors, new Comparator<ShadowEntity>() {
+
+            public int compare(ShadowEntity e1, ShadowEntity e2) {
+                float d1 = CrashGeom.distance2((Body) subject, (Body) e1);
+                float d2 = CrashGeom.distance2((Body) subject, (Body) e2);
+                return (int) (d1 - d2);
+            }
+
+        });
+
+        return neighbors.toArray(new ShadowEntity[0]);
     }
 
 }
