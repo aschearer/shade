@@ -1,5 +1,7 @@
 package com.shade.entities;
 
+import java.util.LinkedList;
+
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
@@ -8,17 +10,20 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Entity;
 import com.shade.base.Level;
-import com.shade.crash.Body;
+import com.shade.controls.MushroomCounter;
 import com.shade.shadows.ShadowEntity;
 
-public class Basket extends Body implements ShadowEntity {
+public class Basket extends Linkable implements ShadowEntity {
     
     private Image sprite;
     private ShadowIntensity shadowStatus;
+    private LinkedList<MushroomCounter> counters;
+    private Level level;
 
     public Basket(float x, float y, float w, float h) throws SlickException {
         initShape(x, y, w, h);
         initSprite();
+        counters = new LinkedList<MushroomCounter>();
     }
 
     private void initSprite() throws SlickException {
@@ -30,8 +35,7 @@ public class Basket extends Body implements ShadowEntity {
     }
 
     public void addToLevel(Level l) {
-        // TODO Auto-generated method stub
-        
+        level = l;
     }
 
     public Role getRole() {
@@ -47,9 +51,24 @@ public class Basket extends Body implements ShadowEntity {
     }
 
     public void onCollision(Entity obstacle) {
-        // TODO Auto-generated method stub
-        
+        if (obstacle.getRole() == Role.MUSHROOM) {
+            Mushroom m = (Mushroom) obstacle;
+            m.detach();
+            notifyCounters(m);
+            level.remove(m);
+        }
     }
+    
+    private void notifyCounters(Mushroom m) {
+        for (MushroomCounter c : counters) {
+            c.onCollect(m);
+        }
+    }
+
+    public void add(MushroomCounter counter) {
+        counters.add(counter);
+    }
+    
 
     public void removeFromLevel(Level l) {
         // TODO Auto-generated method stub

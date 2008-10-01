@@ -24,7 +24,7 @@ public class Mushroom extends Linkable implements ShadowEntity {
     };
 
     private enum Status {
-        IDLE, PICKED, DEAD
+        IDLE, PICKED, COLLECTED, DEAD
     };
 
     private static final float RADIUS = 3f;
@@ -157,6 +157,18 @@ public class Mushroom extends Linkable implements ShadowEntity {
             followLeader();
             testAndWrap();
         }
+        
+        if (collected()) {
+            followLeader();
+        }
+    }
+    
+    public void collect() {
+        currentStatus = Status.COLLECTED;
+    }
+
+    private boolean collected() {
+        return currentStatus == Status.COLLECTED;
     }
 
     private void followLeader() {

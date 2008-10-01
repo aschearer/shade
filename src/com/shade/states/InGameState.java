@@ -124,6 +124,8 @@ public class InGameState extends BasicGameState {
         casters.add(new Fence(390, 140, 120, 11, 5));
         casters.add(new Fence(715, 368, 11, 120, 5));
         casters.add(new Fence(50, 50, 11, 120, 5));
+        // shrubs
+        // casters.add(new Shrub(300, 300));
 
         for (ShadowCaster c : casters) {
             level.add(c);
@@ -132,14 +134,13 @@ public class InGameState extends BasicGameState {
 
     private void initBasket() throws SlickException {
         Basket b = new Basket(400, 250, 65, 40);
+        b.add(counter);
+        b.add(meter);
         level.add(b);
     }
 
     private void initPlayer() throws SlickException {
         player = new Player(400, 350, 18);
-        player.add(counter);
-        player.add(meter);
-
         level.add(player);
     }
 
