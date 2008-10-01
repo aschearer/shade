@@ -17,13 +17,6 @@ import com.shade.base.Entity;
 public interface ShadowCaster extends Entity, Comparable<ShadowCaster> {
 
     /**
-     * Range of intensities which impact meter and similar mechanics.
-     */
-    public enum ShadowStatus {
-        UNSHADOWED, SHADOWED, CASTSHADOWED
-    };
-
-    /**
      * Returns the entity's depth, or how tall it is, in the 3rd dimension.
      * 
      * @return

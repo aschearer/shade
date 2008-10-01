@@ -9,69 +9,34 @@ import java.util.LinkedList;
  * 
  * @author Alexander Schearer <aschearer@gmail.com>
  */
-public class ZBuffer implements Iterable<ShadowCaster> {
+public class ZBuffer implements Iterable<ShadowEntity> {
     
     private boolean dirty;
-    private LinkedList<ShadowCaster> casters;
+    private LinkedList<ShadowEntity> entities;
     
     public ZBuffer() {
-        casters = new LinkedList<ShadowCaster>();
+        entities = new LinkedList<ShadowEntity>();
     }
 
-    public void add(ShadowCaster s) {
-        casters.add(s);
+    public void add(ShadowEntity s) {
+        entities.add(s);
         dirty = true;
     }
 
 
-    public void remove(ShadowCaster s) {
-        casters.remove(s);
+    public void remove(ShadowEntity s) {
+        entities.remove(s);
     }
 
     public void clear() {
-        casters.clear();
+        entities.clear();
     }
     
-    public Iterator<ShadowCaster> iterator() {
+    public Iterator<ShadowEntity> iterator() {
         if (dirty) {
-            Collections.sort(casters);
+            Collections.sort(entities);
         }
-        return casters.iterator();
-    }
-    
-    /**
-     * Return all casters with z-index below the ceiling.
-     * 
-     * This is used to paint the shadowscape over certain casters.
-     * @param ceiling
-     * @return
-     */
-    public Iterable<ShadowCaster> under(int ceiling) {
-        LinkedList<ShadowCaster> qualified = new LinkedList<ShadowCaster>();
-        for (ShadowCaster s : this) {
-            if (s.getZIndex() >= ceiling) {
-                return qualified;
-            }
-            qualified.add(s);
-        }
-        return qualified;
-    }
-    
-    /**
-     * Return all casters with z-index at or above the floor.
-     * 
-     * This is used to paint the shadowscape over certain casters.
-     * @param floor
-     * @return
-     */
-    public Iterable<ShadowCaster> over(int floor) {
-        LinkedList<ShadowCaster> qualified = new LinkedList<ShadowCaster>();
-        for (ShadowCaster s : this) {
-            if (s.getZIndex() >= floor) {
-                qualified.add(s);
-            }
-        }
-        return qualified;
+        return entities.iterator();
     }
     
 }
