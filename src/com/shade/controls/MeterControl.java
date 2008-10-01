@@ -41,10 +41,6 @@ public class MeterControl implements MushroomCounter, Animatable {
     }
 
     public void onCollect(Mushroom shroomie) {
-        while (shroomie.next != null) {
-            valueMushroom(shroomie);
-            shroomie = (Mushroom) shroomie.next;
-        }
         valueMushroom(shroomie);
     }
 
