@@ -72,9 +72,11 @@ class Shadowscape implements Animatable {
     public void renderShadowscape(StateBasedGame game, Graphics g) {
         Color c = g.getColor();
         g.setColor(SHADOW_COLOR);
+        g.setAntiAlias(true);
         for (Shape s : shadows) {
             g.fill(s);
         }
+        g.setAntiAlias(false);
         g.setColor(c);
     }
 
