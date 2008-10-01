@@ -23,7 +23,7 @@ import com.shade.shadows.ShadowLevel.ShadowStatus;
 public class InGameState extends BasicGameState {
 
     public static final int ID = 1;
-    public static final float SUN_ANGLE_INCREMENT = 0.001f;
+    public static final float SUN_ANGLE_INCREMENT = 0.0005f;
 	
 	
     private enum Status {
@@ -196,8 +196,6 @@ public class InGameState extends BasicGameState {
             if (player.shaded==ShadowStatus.UNSHADOWED) {
             	meter.decrement();
             }
-            System.out.println("player status is "+player.shaded);
-            
 
             // Check for lose condition
             if (meter.isEmpty()) {

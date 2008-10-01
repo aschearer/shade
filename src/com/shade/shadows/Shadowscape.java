@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 
@@ -46,7 +47,7 @@ public class Shadowscape {
      */
     public Mushroom plant() throws SlickException {
         Shape shadow = getRandomShadow();
-        
+        if(daylight == DaylightStatus.NIGHT) shadow = new Rectangle(0,0,800,600);
         int tries = 0;
         boolean finished = false;
         Vector2f p = null;
@@ -127,7 +128,6 @@ public class Shadowscape {
                 return ShadowStatus.CASTSHADOWED;
             }
         }
-        System.out.println("daylight status is "+daylight);
     	if(daylight==DaylightStatus.NIGHT) return ShadowStatus.SHADOWED;
         return ShadowStatus.UNSHADOWED;
     }
