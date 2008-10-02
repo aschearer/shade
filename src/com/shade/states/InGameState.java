@@ -14,6 +14,7 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.*;
 import org.newdawn.slick.util.ResourceLoader;
 
+import com.shade.base.Entity;
 import com.shade.controls.*;
 import com.shade.crash.*;
 import com.shade.entities.*;
@@ -125,6 +126,17 @@ public class InGameState extends BasicGameState {
         casters.add(new Fence(50, 50, 11, 120, 5));
         // shrubs
         // casters.add(new Shrub(300, 300));
+        
+        //gargoyles
+        Gargoyle g1 = new Gargoyle(500,300);
+        Gargoyle g2 = new Gargoyle(500,200);
+        Gargoyle g3 = new Gargoyle(500,400);
+    	casters.add(g1);
+    	casters.add(g2);
+    	casters.add(g3);
+    	level.add((Entity)g1);
+    	level.add((Entity)g2);
+    	level.add((Entity)g3);
 
         for (ShadowCaster c : casters) {
             level.add(c);
@@ -191,7 +203,11 @@ public class InGameState extends BasicGameState {
             counter.update(game, delta);
 
             if (player.hasIntensity(ShadowIntensity.UNSHADOWED)) {
-                meter.decrement();
+               meter.decrement(0.1);
+            }
+            
+            if(player.isStunned()){
+            	meter.decrement(0.5);
             }
 
             // Check for lose condition

@@ -33,7 +33,7 @@ public class ShadowLevel implements Level {
     public static final int SECONDS_PER_DAY = (int) Math.ceil(Math.PI * 32
             / SUN_ANGLE_INCREMENT);
 
-    protected enum DayLightStatus {
+    public enum DayLightStatus {
         DAWN, DAY, DUSK, NIGHT
     }
 
@@ -61,6 +61,10 @@ public class ShadowLevel implements Level {
         e.addToLevel(this);
         in_queue.add((ShadowEntity) e);
         grid.add((Body) e);
+    }
+    
+    public DayLightStatus getDayLight(){
+    	return daylight;
     }
 
     /**
@@ -107,35 +111,21 @@ public class ShadowLevel implements Level {
             float colorizeg = 0;
             float colorizeb = 0;
             if (timeofday < 1.0 * SECONDS_PER_DAY / 2) {
+                daylight = DayLightStatus.DUSK;
+                factor = (float) 1.0
+                        * MAX_SHADOW
+                        * ((timeofday - SECONDS_PER_DAY / 2f)
+                                / (SECONDS_PER_DAY * TRANSITION_TIME) + 1);
+                colorizer = 0.2f * (float) Math.abs(Math.sin(Math.PI
+                        * ((timeofday - SECONDS_PER_DAY / 2f)
+                                / (SECONDS_PER_DAY * TRANSITION_TIME) + 1)));
+                colorizeg = 0.1f * (float) Math.abs(Math.sin(Math.PI
+                        * ((timeofday - SECONDS_PER_DAY / 2f)
+                                / (SECONDS_PER_DAY * TRANSITION_TIME) + 1)));
+
+            }
+            if (timeofday > 1.0 * SECONDS_PER_DAY * (1 - TRANSITION_TIME)) {
                 daylight = DayLightStatus.DAWN;
-                factor = (float) 1.0
-                        * MAX_SHADOW
-                        * ((timeofday - SECONDS_PER_DAY / 2f)
-                                / (SECONDS_PER_DAY * TRANSITION_TIME) + 1);
-                colorizer = 0.2f * (float) Math.abs(Math.sin(Math.PI
-                        * ((timeofday - SECONDS_PER_DAY / 2f)
-                                / (SECONDS_PER_DAY * TRANSITION_TIME) + 1)));
-                colorizeg = 0.1f * (float) Math.abs(Math.sin(Math.PI
-                        * ((timeofday - SECONDS_PER_DAY / 2f)
-                                / (SECONDS_PER_DAY * TRANSITION_TIME) + 1)));
-
-            }
-            if (timeofday > 1.0 * SECONDS_PER_DAY * (1 - TRANSITION_TIME)) {
-                daylight = DayLightStatus.DUSK;
-                factor = (float) 1.0
-                        * MAX_SHADOW
-                        * ((timeofday - SECONDS_PER_DAY / 2f)
-                                / (SECONDS_PER_DAY * TRANSITION_TIME) + 1);
-                colorizer = 0.2f * (float) Math.abs(Math.sin(Math.PI
-                        * ((timeofday - SECONDS_PER_DAY / 2f)
-                                / (SECONDS_PER_DAY * TRANSITION_TIME) + 1)));
-                colorizeg = 0.1f * (float) Math.abs(Math.sin(Math.PI
-                        * ((timeofday - SECONDS_PER_DAY / 2f)
-                                / (SECONDS_PER_DAY * TRANSITION_TIME) + 1)));
-
-            }
-            if (timeofday > 1.0 * SECONDS_PER_DAY * (1 - TRANSITION_TIME)) {
-                daylight = DayLightStatus.DUSK;
                 factor = MAX_SHADOW * (SECONDS_PER_DAY - timeofday)
                         / (SECONDS_PER_DAY * TRANSITION_TIME);
                 colorizer = 0.1f * (float) Math.abs(Math.cos(Math.PI
@@ -158,6 +148,7 @@ public class ShadowLevel implements Level {
                     .getContainer().getScreenHeight());
             g.setColor(Color.white);
         }
+        else daylight = DayLightStatus.DAY;
 
     }
 

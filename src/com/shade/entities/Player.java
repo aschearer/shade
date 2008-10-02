@@ -21,6 +21,9 @@ public class Player extends Linkable implements ShadowEntity {
     private Image sprite;
 
     private ShadowIntensity shadowStatus;
+    
+    //make them stunned
+    private int stunTimer = 0;
 
     public Player(float x, float y, float r) throws SlickException {
         initShape(x, y, r);
@@ -81,12 +84,18 @@ public class Player extends Linkable implements ShadowEntity {
     }
 
     public void render(StateBasedGame game, Graphics g) {
+    	if(stunTimer>0)
+    		if(stunTimer%2==0)
+    		sprite.drawCentered(getCenterX(), getCenterY());
+    		else return;
         sprite.drawCentered(getCenterX(), getCenterY());
         // g.draw(shape);
     }
 
     public void update(StateBasedGame game, int delta) {
+    	if(stunTimer<1)
         testAndMove(game.getContainer().getInput(), delta);
+    	else stunTimer-=delta;
         testAndWrap();
     }
     
@@ -164,5 +173,23 @@ public class Player extends Linkable implements ShadowEntity {
     public int compareTo(ShadowEntity s) {
         return getZIndex() - s.getZIndex();
     }
-
+    
+    public boolean isStunned(){
+    	return stunTimer>0;
+    }
+    
+    public void getHit(Body b){
+    	stunTimer = 1000;
+    	double xdiff = getCenterX()-b.getCenterX();
+    	double ydiff = getCenterY()-b.getCenterY();
+    	move(xdiff/2, ydiff/2);
+    	Linkable temp = next;
+    	while(temp!=null){
+    		Mushroom m = (Mushroom) temp;
+    		int jump = 100;
+    		temp.move((Math.random()-0.5)*jump, (Math.random()-0.5)*jump);
+    		temp = temp.next;
+    		m.detach();
+    	}
+    }
 }

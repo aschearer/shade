@@ -32,6 +32,7 @@ public class Mushroom extends Linkable implements ShadowEntity {
     private static final float MAX_SCALE = 3.5f;
     private static final float MIN_SCALE = 1.5f;
     private static final int MAX_DISTANCE = 1200;
+    private static final int OUT_OF_REACH = 1900;
     private static final float SPEED = 1.4f;
 
     private Status currentStatus;
@@ -129,6 +130,8 @@ public class Mushroom extends Linkable implements ShadowEntity {
         if (isDead()) {
             return;
         }
+        
+        if(picked()&&outOfRange()) detach();
 
         if (!picked() && shadowStatus != ShadowIntensity.UNSHADOWED && !tooBig()) {
             scale += SCALE_INCREMENT;
@@ -163,6 +166,12 @@ public class Mushroom extends Linkable implements ShadowEntity {
         if (collected()) {
             followLeader();
         }
+        
+    }
+    
+    private boolean outOfRange(){
+        float dist = CrashGeom.distance2(prev, this);
+        return dist>OUT_OF_REACH;
     }
     
     public void collect() {

@@ -56,6 +56,8 @@ public abstract class Body implements Entity {
     public void move(double x, double y){
     	float xf = (float)x;
     	float yf = (float)y;
+    	//xVelocity += xf;
+    	//yVelocity +=yf;
     	float endx = getCenterX()-getWidth()/2+xf;
     	float endy = getCenterY()-getHeight()/2+yf;
     	shape.setLocation(endx,endy);

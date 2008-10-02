@@ -59,8 +59,8 @@ public class MeterControl implements MushroomCounter, Animatable {
         }
     }
 
-    public void decrement() {
-        value += -BASE_INCREMENT;
+    public void decrement(double amt) {
+        value -= amt;
         clamp();
     }
 
