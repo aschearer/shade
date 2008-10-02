@@ -24,7 +24,7 @@ public class Mushroom extends Linkable implements ShadowEntity {
     };
 
     private enum Status {
-        IDLE, PICKED, DEAD
+        IDLE, PICKED, COLLECTED, DEAD
     };
 
     private static final float RADIUS = 3f;
@@ -82,10 +82,12 @@ public class Mushroom extends Linkable implements ShadowEntity {
     }
 
     public void onCollision(Entity obstacle) {
-        if (!picked() && obstacle.getRole() == Role.PLAYER) {
-            detach();
-            ((Linkable) obstacle).attach(this);
-            currentStatus = Status.PICKED;
+        if (!picked() && !collected() && obstacle.getRole() == Role.PLAYER) {
+            if (!((Player) obstacle).maxedOut()) {
+                detach();
+                ((Linkable) obstacle).attach(this);
+                currentStatus = Status.PICKED;
+            }
         }
         if (obstacle.getRole() == Role.MOLE) {
             Mole m = (Mole) obstacle;
@@ -157,6 +159,18 @@ public class Mushroom extends Linkable implements ShadowEntity {
             followLeader();
             testAndWrap();
         }
+        
+        if (collected()) {
+            followLeader();
+        }
+    }
+    
+    public void collect() {
+        currentStatus = Status.COLLECTED;
+    }
+
+    private boolean collected() {
+        return currentStatus == Status.COLLECTED;
     }
 
     private void followLeader() {

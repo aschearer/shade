@@ -27,10 +27,6 @@ public class CounterControl implements MushroomCounter, Animatable {
     }
 
     public void onCollect(Mushroom shroomie) {
-        while (shroomie.next != null) {
-            value++;
-            shroomie = (Mushroom) shroomie.next;
-        }
         value++;
     }
 

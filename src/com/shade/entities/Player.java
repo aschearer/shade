@@ -1,7 +1,5 @@
 package com.shade.entities;
 
-import java.util.LinkedList;
-
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
@@ -12,24 +10,21 @@ import org.newdawn.slick.state.StateBasedGame;
 import com.shade.base.Entity;
 import com.shade.base.Level;
 import com.shade.crash.Body;
-import com.shade.controls.MushroomCounter;
 import com.shade.shadows.ShadowEntity;
 
 public class Player extends Linkable implements ShadowEntity {
 
     private static final float SPEED = 1.4f;
 
-    private Level level;
-    private Image sprite;
+    private static final int MUSHROOM_LIMIT = 3;
 
-    private LinkedList<MushroomCounter> counters;
+    private Image sprite;
 
     private ShadowIntensity shadowStatus;
 
     public Player(float x, float y, float r) throws SlickException {
         initShape(x, y, r);
         initSprite();
-        counters = new LinkedList<MushroomCounter>();
     }
 
     private void initSprite() throws SlickException {
@@ -45,7 +40,7 @@ public class Player extends Linkable implements ShadowEntity {
     }
 
     public void addToLevel(Level l) {
-        level = l;
+        
     }
 
     public void removeFromLevel(Level l) {
@@ -75,21 +70,13 @@ public class Player extends Linkable implements ShadowEntity {
 
     private void collectMushrooms(Entity obstacle) {
         if (obstacle.getRole() == Role.BASKET && next != null) {
-            notifyCounters();
-
+            next.prev = (Basket) obstacle;
             Linkable head = next;
             while (head != null) {
-                head.detach();
-                level.remove(head);
-                head = next;
+                ((Mushroom) head).collect();
+                head = head.next;
             }
             next = null;
-        }
-    }
-
-    private void notifyCounters() {
-        for (MushroomCounter c : counters) {
-            c.onCollect((Mushroom) next);
         }
     }
 
@@ -101,6 +88,20 @@ public class Player extends Linkable implements ShadowEntity {
     public void update(StateBasedGame game, int delta) {
         testAndMove(game.getContainer().getInput(), delta);
         testAndWrap();
+    }
+    
+
+    public boolean maxedOut() {
+        if (next == null) {
+            return false;
+        }
+        int i = 1;
+        Linkable head = next;
+        while (head.next != null) {
+            i++;
+            head = head.next;
+        }
+        return i >= MUSHROOM_LIMIT;
     }
 
     private void testAndMove(Input input, int delta) {
@@ -154,10 +155,6 @@ public class Player extends Linkable implements ShadowEntity {
         double angle = Math.atan2(dist_y, dist_x);
         double move = (playradius + obstacleradius - mag) * 1.5;
         b.move(Math.cos(angle) * move, Math.sin(angle) * move);
-    }
-
-    public void add(MushroomCounter counter) {
-        counters.add(counter);
     }
     
     public int getZIndex() {
