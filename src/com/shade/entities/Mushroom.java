@@ -82,10 +82,12 @@ public class Mushroom extends Linkable implements ShadowEntity {
     }
 
     public void onCollision(Entity obstacle) {
-        if (!picked() && obstacle.getRole() == Role.PLAYER) {
-            detach();
-            ((Linkable) obstacle).attach(this);
-            currentStatus = Status.PICKED;
+        if (!picked() && !collected() && obstacle.getRole() == Role.PLAYER) {
+            if (!((Player) obstacle).maxedOut()) {
+                detach();
+                ((Linkable) obstacle).attach(this);
+                currentStatus = Status.PICKED;
+            }
         }
         if (obstacle.getRole() == Role.MOLE) {
             Mole m = (Mole) obstacle;

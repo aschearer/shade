@@ -16,6 +16,8 @@ public class Player extends Linkable implements ShadowEntity {
 
     private static final float SPEED = 1.4f;
 
+    private static final int MUSHROOM_LIMIT = 3;
+
     private Image sprite;
 
     private ShadowIntensity shadowStatus;
@@ -86,6 +88,20 @@ public class Player extends Linkable implements ShadowEntity {
     public void update(StateBasedGame game, int delta) {
         testAndMove(game.getContainer().getInput(), delta);
         testAndWrap();
+    }
+    
+
+    public boolean maxedOut() {
+        if (next == null) {
+            return false;
+        }
+        int i = 1;
+        Linkable head = next;
+        while (head.next != null) {
+            i++;
+            head = head.next;
+        }
+        return i >= MUSHROOM_LIMIT;
     }
 
     private void testAndMove(Input input, int delta) {
