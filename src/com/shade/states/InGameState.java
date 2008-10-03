@@ -203,7 +203,7 @@ public class InGameState extends BasicGameState {
             counter.update(game, delta);
 
             if (player.hasIntensity(ShadowIntensity.UNSHADOWED)) {
-               meter.decrement(0.1);
+               meter.decrement(0.05);
             }
             
             if(player.isStunned()){

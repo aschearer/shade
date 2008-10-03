@@ -141,15 +141,15 @@ public class Gargoyle extends Linkable implements ShadowEntity, ShadowCaster {
         	seekTarget();
         else{
         	if(wander<100&&wander>0){
-        	move(SPEED,heading);
-        	wander++;
+        		move(SPEED/2f,heading);
+        		wander++;
         	}
-        	else if(wander==100) wander = -100;
+        	else if(wander==100) 
+        		wander = -100;
         	else if (wander<0) {
         		wander++;
         	}
         	else {
-        		System.out.println("changing direction");
         		wander = 1;
         		heading = (float)(Math.random()*Math.PI*2);
         	}
