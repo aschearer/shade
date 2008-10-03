@@ -18,12 +18,13 @@ import com.shade.crash.util.CrashGeom;
 import com.shade.shadows.ShadowCaster;
 import com.shade.shadows.ShadowEntity;
 import com.shade.shadows.ShadowLevel;
+import com.shade.shadows.ShadowLevel.DayLightStatus;
 import com.shade.util.Geom;
 
 public class Gargoyle extends Linkable implements ShadowEntity, ShadowCaster {
 
-    private static final int RADIUS = 12;
-    private static final float SPEED = .7f;
+    private static final int RADIUS = 20;
+    private static final float SPEED = .5f;
     private static final int COOLDOWN_TIME = 8000;
 
     private enum Status {
@@ -41,7 +42,7 @@ public class Gargoyle extends Linkable implements ShadowEntity, ShadowCaster {
     public Gargoyle(int x, int y) throws SlickException {
         initShape();
         initSprites();
-    	shape.setLocation(x, y);
+        shape.setLocation(x, y);
         status = Status.ASLEEP;
         cooldown = 0;
         heading = (float) Math.PI;
@@ -63,8 +64,8 @@ public class Gargoyle extends Linkable implements ShadowEntity, ShadowCaster {
 
         move = new Animation(moves, 300);
         move.setAutoUpdate(false);
-        
-        SpriteSheet question = new SpriteSheet("entities/mole/move.png",40,40);
+
+        SpriteSheet question = new SpriteSheet("entities/mole/move.png", 40, 40);
         bored = new Animation(question, 300);
         bored.setAutoUpdate(false);
     }
@@ -86,20 +87,20 @@ public class Gargoyle extends Linkable implements ShadowEntity, ShadowCaster {
     }
 
     public void onCollision(Entity obstacle) {
-    	if (obstacle.getRole() == Role.PLAYER && status != Status.ASLEEP) {
+        if (obstacle.getRole() == Role.PLAYER && status != Status.ASLEEP) {
             // he got ya
-        	Player p = (Player) obstacle;
+            Player p = (Player) obstacle;
             p.getHit(this);
             cooldown = COOLDOWN_TIME;
             wander = 1;
-            heading = (float)(Math.atan2(getCenterY()-p.getCenterY(), getCenterX()-p.getCenterX()));
-        }
-    	else{
-        	Body b = (Body) obstacle;
-        	b.repel(this);
+            heading = (float) (Math.atan2(getCenterY() - p.getCenterY(),
+                                          getCenterX() - p.getCenterX()));
+        } else {
+            Body b = (Body) obstacle;
+            b.repel(this);
             return;
-    	}
-        
+        }
+
     }
 
     public void removeFromLevel(Level l) {
@@ -109,18 +110,18 @@ public class Gargoyle extends Linkable implements ShadowEntity, ShadowCaster {
 
     public void render(StateBasedGame game, Graphics g) {
         g.rotate(getCenterX(), getCenterY(), (float) Math.toDegrees(heading));
-    	if(status == Status.ALERT){
+        if (status == Status.ALERT) {
             sniff.draw(getX(), getY(), getWidth(), getHeight());
-    	}
-    	if(status == Status.ASLEEP){
-    		bored.draw(getX(), getY(), getWidth(), getHeight());
-    	}
-    	if(status == Status.CHASING){
+        }
+        if (status == Status.ASLEEP) {
+            bored.draw(getX(), getY(), getWidth(), getHeight());
+        }
+        if (status == Status.CHASING) {
             move.draw(getX(), getY(), getWidth(), getHeight());
-    	}
-    	if(status == Status.CONFUSED){
-    		//do nothing right now
-    	}
+        }
+        if (status == Status.CONFUSED) {
+            // do nothing right now
+        }
         g.resetTransform();
 
         // g.draw(shape);
@@ -130,40 +131,38 @@ public class Gargoyle extends Linkable implements ShadowEntity, ShadowCaster {
         timer += delta;
         sniff.update(delta);
         move.update(delta);
-        //let's let the ubermoles stay awake for now
-        if(level.getDayLight()==ShadowLevel.DayLightStatus.DAY
-        		||level.getDayLight()==ShadowLevel.DayLightStatus.DAWN){
-        	status = Status.ASLEEP;
+        // let's let the ubermoles stay awake for now
+        if (level.getDayLight() != DayLightStatus.NIGHT) {
+            status = Status.ASLEEP;
+            return;
         }
-        else status = Status.ALERT;
-        if(status == Status.ASLEEP) return;
-        if(findTarget()&&cooldown<1)
-        	seekTarget();
-        else{
-        	if(wander<100&&wander>0){
-        	move(SPEED,heading);
-        	wander++;
-        	}
-        	else if(wander==100) wander = -100;
-        	else if (wander<0) {
-        		wander++;
-        	}
-        	else {
-        		System.out.println("changing direction");
-        		wander = 1;
-        		heading = (float)(Math.random()*Math.PI*2);
-        	}
+
+        status = Status.ALERT;
+        if (findTarget() && cooldown < 1) {
+            seekTarget();
+        } else {
+            if (wander < 100 && wander > 0) {
+                move(SPEED, heading);
+                wander++;
+            } else if (wander == 100)
+                wander = -100;
+            else if (wander < 0) {
+                wander++;
+            } else {
+                wander = 1;
+                heading = (float) (Math.random() * Math.PI * 2);
+            }
         }
-    	cooldown-=delta;
+        cooldown -= delta;
         testAndWrap();
     }
 
     private void seekTarget() {
         float[] d = new float[3];
         d[0] = CrashGeom.distance2(target, this);
-        if(d[0]>500&&target.hasIntensity(ShadowIntensity.CASTSHADOWED)){
-        	wander = 0;
-        	return;
+        if (d[0] > 500 && target.hasIntensity(ShadowIntensity.CASTSHADOWED)) {
+            wander = 0;
+            return;
         }
         d[1] = d[0];
         d[2] = d[0];
@@ -215,7 +214,6 @@ public class Gargoyle extends Linkable implements ShadowEntity, ShadowCaster {
         return false;
     }
 
-
     /* Move the shape a given amount across two dimensions. */
     private void move(float magnitude, float direction) {
         Vector2f d = Geom.calculateVector(magnitude, direction);
@@ -253,7 +251,7 @@ public class Gargoyle extends Linkable implements ShadowEntity, ShadowCaster {
 
     public Shape castShadow(float direction, float depth) {
         float r = ((Circle) shape).radius;
-        float h = 2 * depth * 1.6f;
+        float h = getZIndex() * depth * 1.6f;
         float x = getCenterX();
         float y = getCenterY();
         Transform t = Transform.createRotateTransform(direction + 3.14f, x, y);
