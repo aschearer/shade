@@ -1,6 +1,9 @@
 package com.shade.entities;
 
+import java.util.Arrays;
+
 import com.shade.crash.Body;
+import com.shade.crash.util.CrashGeom;
 
 /**
  * Linkables are bodies which form a doubly linked list.
@@ -14,9 +17,10 @@ import com.shade.crash.Body;
 public abstract class Linkable extends Body {
 
     public Linkable prev, next;
-    
+
     /**
      * Attach the object to the end of this linked list.
+     * 
      * @param l
      */
     protected void attach(Linkable l) {
@@ -32,7 +36,7 @@ public abstract class Linkable extends Body {
         head.next = l;
         l.prev = head;
     }
-    
+
     /**
      * Remove this object from its linked list.
      */
@@ -64,6 +68,43 @@ public abstract class Linkable extends Body {
         if (getCenterY() > 595) {
             shape.setCenterY(5);
         }
+    }
+
+    /**
+     * Return true if this body and the target are further apart than the
+     * threshold.
+     * 
+     * @param target
+     * @param threshold
+     * @return
+     */
+    protected boolean overThreshold(Body target, float threshold) {
+        float[] d = new float[3];
+
+        d[0] = CrashGeom.distance2(target, this);
+        d[1] = d[0];
+        d[2] = d[0];
+        // if I'm left of my target
+        if (getX() < target.getX()) {
+            d[1] = CrashGeom
+                    .distance2(target, getCenterX() + 800, getCenterY());
+        } else {
+            d[1] = CrashGeom.distance2(this, target.getCenterX() + 800, target
+                    .getCenterY());
+        }
+
+        // if I'm above my target
+        if (getY() < prev.getY()) {
+            d[2] = CrashGeom
+                    .distance2(target, getCenterX(), getCenterY() + 600);
+        } else {
+            d[2] = CrashGeom.distance2(this, target.getCenterX(), target
+                    .getCenterY() + 600);
+        }
+
+        Arrays.sort(d);
+
+        return (d[0] > threshold);
     }
 
 }

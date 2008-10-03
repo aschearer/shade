@@ -1,7 +1,5 @@
 package com.shade.entities;
 
-import java.util.Arrays;
-
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
@@ -32,7 +30,7 @@ public class Mushroom extends Linkable implements ShadowEntity {
     private static final float MAX_SCALE = 3.5f;
     private static final float MIN_SCALE = 1.5f;
     private static final int MAX_DISTANCE = 1200;
-    private static final int OUT_OF_REACH = 1900;
+    private static final int OUT_OF_REACH = 10000;
     private static final float SPEED = 1.4f;
 
     private Status currentStatus;
@@ -73,7 +71,7 @@ public class Mushroom extends Linkable implements ShadowEntity {
     public void removeFromLevel(Level l) {
         currentStatus = Status.DEAD;
     }
-    
+
     public boolean hasIntensity(ShadowIntensity s) {
         return s == shadowStatus;
     }
@@ -130,10 +128,13 @@ public class Mushroom extends Linkable implements ShadowEntity {
         if (isDead()) {
             return;
         }
-        
-        if(picked()&&outOfRange()) detach();
 
-        if (!picked() && shadowStatus != ShadowIntensity.UNSHADOWED && !tooBig()) {
+        if (prev != null && overThreshold(prev, OUT_OF_REACH)) {
+            detach();
+        }
+
+        if (!picked() && shadowStatus != ShadowIntensity.UNSHADOWED
+                && !tooBig()) {
             scale += SCALE_INCREMENT;
             resize();
         }
@@ -158,22 +159,17 @@ public class Mushroom extends Linkable implements ShadowEntity {
             return; // Stop execution here
         }
 
-        if (picked() && tooFar()) {
+        if (picked() && overThreshold(prev, MAX_DISTANCE)) {
             followLeader();
             testAndWrap();
         }
-        
+
         if (collected()) {
             followLeader();
         }
-        
+
     }
-    
-    private boolean outOfRange(){
-        float dist = CrashGeom.distance2(prev, this);
-        return dist>OUT_OF_REACH;
-    }
-    
+
     public void collect() {
         currentStatus = Status.COLLECTED;
     }
@@ -209,33 +205,6 @@ public class Mushroom extends Linkable implements ShadowEntity {
         }
 
         move(SPEED, angle);
-    }
-
-    private boolean tooFar() {
-        float[] d = new float[3];
-
-        d[0] = CrashGeom.distance2(prev, this);
-        d[1] = d[0];
-        d[2] = d[0];
-        // if I'm left of my target
-        if (getX() < prev.getX()) {
-            d[1] = CrashGeom.distance2(prev, getCenterX() + 800, getCenterY());
-        } else {
-            d[1] = CrashGeom.distance2(this, prev.getCenterX() + 800, prev
-                    .getCenterY());
-        }
-
-        // if I'm above my target
-        if (getY() < prev.getY()) {
-            d[2] = CrashGeom.distance2(prev, getCenterX(), getCenterY() + 600);
-        } else {
-            d[2] = CrashGeom.distance2(this, prev.getCenterX(), prev
-                    .getCenterY() + 600);
-        }
-
-        Arrays.sort(d);
-
-        return (d[0] > MAX_DISTANCE);
     }
 
     private boolean tooSmall() {
@@ -290,7 +259,7 @@ public class Mushroom extends Linkable implements ShadowEntity {
         double move = (playradius + obstacleradius - mag) * 1.5;
         b.move(Math.cos(angle) * move, Math.sin(angle) * move);
     }
-    
+
     public int getZIndex() {
         return 2;
     }
