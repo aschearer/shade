@@ -24,7 +24,7 @@ import com.shade.util.Geom;
 
 public class Monster extends Linkable implements ShadowEntity {
 
-    private static final float SPEED = .7f;
+    private static final float SPEED = .9f;
     private static final float SIZE = 20;
 
     public enum MonsterState {
@@ -357,9 +357,6 @@ public class Monster extends Linkable implements ShadowEntity {
     public void onCollision(Entity obstacle) {
         manager.onCollision(obstacle);
         if (obstacle.getRole() == Role.OBSTACLE) {
-            obstacle.repel(this);
-        }
-        if (obstacle.getRole() == Role.PLAYER) {
             obstacle.repel(this);
         }
     }
