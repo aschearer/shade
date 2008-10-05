@@ -3,6 +3,7 @@ package com.shade.entities.util;
 import java.util.LinkedList;
 
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Entity;
 
@@ -33,12 +34,13 @@ public class StateManager {
         for (State s : states) {
             if (s.equals(o)) {
                 currentState = s;
+                currentState.enter();
             }
         }
     }
     
-    public void update(int delta) {
-        currentState.update(delta);
+    public void update(StateBasedGame game, int delta) {
+        currentState.update(game, delta);
     }
     
     public void onCollision(Entity obstacle) {
@@ -47,6 +49,10 @@ public class StateManager {
 
     public void render(Graphics g) {
         currentState.render(g);
+    }
+
+    public Object currentState() {
+        return currentState;
     }
 
 }

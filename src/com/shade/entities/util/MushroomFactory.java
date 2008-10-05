@@ -23,8 +23,8 @@ public class MushroomFactory {
         return new Mushroom(x, y, getType(randomType()));
     }
 
-    private static Mushroom.Type getType(int i) {
-        Mushroom.Type[] types = Mushroom.Type.values();
+    private static Mushroom.MushroomType getType(int i) {
+        Mushroom.MushroomType[] types = Mushroom.MushroomType.values();
         return types[i];
     }
 
