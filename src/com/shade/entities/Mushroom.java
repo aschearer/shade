@@ -12,64 +12,290 @@ import com.shade.base.Entity;
 import com.shade.base.Level;
 import com.shade.crash.Body;
 import com.shade.crash.util.CrashGeom;
+import com.shade.entities.util.State;
+import com.shade.entities.util.StateManager;
 import com.shade.shadows.ShadowEntity;
 import com.shade.util.Geom;
 
 public class Mushroom extends Linkable implements ShadowEntity {
 
-    public enum Type {
-        POISON, NORMAL, GOOD, RARE
-    };
-
-    private enum Status {
-        IDLE, PICKED, COLLECTED, DEAD
-    };
-
     private static final float RADIUS = 3f;
     private static final float SCALE_INCREMENT = .005f;
     private static final float MAX_SCALE = 3.5f;
     private static final float MIN_SCALE = 1.5f;
-    private static final int MAX_DISTANCE = 1200;
-    private static final int OUT_OF_REACH = 10000;
+    private static final float START_SCALE = MIN_SCALE + .5f;
     private static final float SPEED = 1.4f;
 
-    private Status currentStatus;
-    private float scale;
-    public Type type;
+    private enum MushroomState {
+        NORMAL, PICKED, COLLECTED, DEAD
+    };
 
+    public enum MushroomType {
+        POISON, NORMAL, GOOD, RARE
+    };
+
+    public MushroomType type;
     private Level level;
-
-    private Image sprite;
+    private StateManager manager;
     private ShadowIntensity shadowStatus;
+    private Image mushroom;
+    private float scale;
 
-    public Mushroom(float x, float y, Type t) throws SlickException {
-        type = t;
+    public Mushroom(float x, float y, MushroomType t) throws SlickException {
         initShape(x, y);
-        initSprite();
-        currentStatus = Status.IDLE;
-        scale = MIN_SCALE;
-    }
-
-    private void initSprite() throws SlickException {
-        SpriteSheet s = new SpriteSheet("entities/mushroom/mushrooms.png", 40,
-                40);
-        sprite = s.getSprite(type.ordinal(), 0);
+        initResources(t);
+        initStates();
+        scale = START_SCALE;
+        shadowStatus = ShadowIntensity.UNSHADOWED;
+        type = t;
     }
 
     private void initShape(float x, float y) {
-        shape = new Circle(x, y, RADIUS);
+        shape = new Circle(x, y, RADIUS * START_SCALE);
     }
 
-    public Role getRole() {
-        return Role.MUSHROOM;
+    private void initResources(MushroomType t) throws SlickException {
+        SpriteSheet s = new SpriteSheet("entities/mushroom/mushrooms.png", 40,
+                40);
+        mushroom = s.getSprite(t.ordinal(), 0);
     }
 
-    public void addToLevel(Level l) {
-        level = l;
+    private void initStates() {
+        manager = new StateManager();
+        manager.add(new NormalState());
+        manager.add(new PickedState());
+        manager.add(new CollectedState());
+        manager.add(new DeadState());
     }
 
-    public void removeFromLevel(Level l) {
-        currentStatus = Status.DEAD;
+    private class NormalState implements State {
+
+        public boolean equals(Object state) {
+            return state == MushroomState.NORMAL;
+        }
+
+        public void enter() {
+            // TODO Auto-generated method stub
+
+        }
+
+        public void onCollision(Entity obstacle) {
+            if (obstacle.getRole() == Role.PLAYER) {
+                assert (prev == null);
+                manager.enter(MushroomState.PICKED);
+                ((Linkable) obstacle).attach(Mushroom.this);
+                return;
+            }
+        }
+
+        public void render(Graphics g) {
+            mushroom.draw(getX(), getY(), getWidth(), getHeight());
+        }
+
+        public void update(StateBasedGame game, int delta) {
+            if (scale < MIN_SCALE) {
+                manager.enter(MushroomState.DEAD);
+                detach();
+                return;
+            }
+            if (shadowStatus != ShadowIntensity.UNSHADOWED && scale < MAX_SCALE) {
+                scale += SCALE_INCREMENT;
+                resize();
+                return;
+            }
+            if (shadowStatus == ShadowIntensity.UNSHADOWED) {
+                shrink();
+                resize();
+                return;
+            }
+        }
+
+    }
+
+    private class PickedState implements State {
+
+        public boolean equals(Object state) {
+            return state == MushroomState.PICKED;
+        }
+
+        public void enter() {
+            // TODO Auto-generated method stub
+
+        }
+
+        public void onCollision(Entity obstacle) {
+            // TODO Auto-generated method stub
+
+        }
+
+        public void render(Graphics g) {
+            mushroom.draw(getX(), getY(), getWidth(), getHeight());
+        }
+
+        public void update(StateBasedGame game, int delta) {
+            if (prev == null) {
+                manager.enter(MushroomState.NORMAL);
+                return;
+            }
+
+            if (prev.getRole() == Role.BASKET) {
+                manager.enter(MushroomState.COLLECTED);
+                return;
+            }
+
+            if (scale < MIN_SCALE) {
+                manager.enter(MushroomState.DEAD);
+                detach();
+                return;
+            }
+
+            if (shadowStatus == ShadowIntensity.UNSHADOWED) {
+                shrink();
+                resize();
+            }
+
+            if (overThreshold(prev, 120000)) {
+                detach();
+                manager.enter(MushroomState.NORMAL);
+                return;
+            }
+
+            if (overThreshold(prev, 1200)) {
+                followLeader();
+                testAndWrap();
+                return;
+            }
+        }
+    }
+
+    private class CollectedState implements State {
+
+        public boolean equals(Object state) {
+            return state == MushroomState.COLLECTED;
+        }
+
+        public void enter() {
+            // TODO Auto-generated method stub
+
+        }
+
+        public void onCollision(Entity obstacle) {
+            // TODO Auto-generated method stub
+
+        }
+
+        public void render(Graphics g) {
+            mushroom.draw(getX(), getY(), getWidth(), getHeight());
+        }
+
+        public void update(StateBasedGame game, int delta) {
+            if (prev == null) {
+                manager.enter(MushroomState.NORMAL);
+                return;
+            }
+
+            if (scale < MIN_SCALE) {
+                manager.enter(MushroomState.DEAD);
+                detach();
+                return;
+            }
+
+            if (shadowStatus == ShadowIntensity.UNSHADOWED) {
+                shrink();
+                resize();
+            }
+
+            if (overThreshold(prev, 120000)) {
+                detach();
+                manager.enter(MushroomState.NORMAL);
+                return;
+            }
+
+            followLeader();
+            testAndWrap();
+            return;
+        }
+    }
+
+    private class DeadState implements State {
+
+        public boolean equals(Object state) {
+            return state == MushroomState.DEAD;
+        }
+
+        public void enter() {
+            level.remove(Mushroom.this);
+        }
+
+        public void onCollision(Entity obstacle) {
+            // TODO Auto-generated method stub
+
+        }
+
+        public void render(Graphics g) {
+            // TODO Auto-generated method stub
+
+        }
+
+        public void update(StateBasedGame game, int delta) {
+            // TODO Auto-generated method stub
+
+        }
+
+    }
+
+    private void resize() {
+        float x = shape.getCenterX();
+        float y = shape.getCenterY();
+        ((Circle) shape).setRadius(RADIUS * scale);
+        shape.setCenterX(x);
+        shape.setCenterY(y);
+    }
+
+    /* Move the shape a given amount across two dimensions. */
+    private void move(float magnitude, float direction) {
+        Vector2f d = Geom.calculateVector(magnitude, direction);
+        xVelocity = d.x;
+        yVelocity = d.y;
+        shape.setCenterX(shape.getCenterX() + d.x);
+        shape.setCenterY(shape.getCenterY() + d.y);
+    }
+
+    private void followLeader() {
+        float[] d = new float[3];
+        d[0] = CrashGeom.distance2(prev, Mushroom.this);
+        d[1] = d[0];
+        d[2] = d[0];
+        // if I'm left of my target
+        if (getX() < prev.getX()) {
+            d[1] = CrashGeom.distance2(prev, getCenterX() + 800, getCenterY());
+        } else {
+            d[1] = CrashGeom.distance2(Mushroom.this, prev.getCenterX() + 800,
+                                       prev.getCenterY());
+        }
+
+        // if I'm above my target
+        if (getY() < prev.getY()) {
+            d[2] = CrashGeom.distance2(prev, getCenterX(), getCenterY() + 600);
+        } else {
+            d[2] = CrashGeom.distance2(Mushroom.this, prev.getCenterX(), prev
+                    .getCenterY() + 600);
+        }
+
+        float angle = CrashGeom.calculateAngle(prev, Mushroom.this);
+        if (d[1] < d[0] || d[2] < d[0]) {
+            angle += Math.PI;
+        }
+
+        move(SPEED, angle);
+    }
+
+    public boolean isDead() {
+        return manager.currentState() == MushroomState.DEAD;
+    }
+
+    public int getZIndex() {
+        return 2;
     }
 
     public boolean hasIntensity(ShadowIntensity s) {
@@ -80,192 +306,54 @@ public class Mushroom extends Linkable implements ShadowEntity {
         shadowStatus = s;
     }
 
+    public void addToLevel(Level l) {
+        level = l;
+    }
+
+    public Role getRole() {
+        return Role.MUSHROOM;
+    }
+
     public void onCollision(Entity obstacle) {
-        if (!picked() && !collected() && obstacle.getRole() == Role.PLAYER) {
-            if (!((Player) obstacle).maxedOut()) {
-                detach();
-                ((Linkable) obstacle).attach(this);
-                currentStatus = Status.PICKED;
-            }
-        }
-        if (obstacle.getRole() == Role.MOLE) {
-            Mole m = (Mole) obstacle;
-            if (!m.digging()) {
-                detach();
-                m.attach(this);
-                currentStatus = Status.PICKED;
-            }
-        }
         if (obstacle.getRole() == Role.OBSTACLE) {
             Body b = (Body) obstacle;
             b.repel(this);
         }
+        manager.onCollision(obstacle);
     }
 
-    public boolean isDead() {
-        return currentStatus == Status.DEAD;
+    public void removeFromLevel(Level l) {
+        // TODO Auto-generated method stub
+
     }
 
-    private boolean picked() {
-        return currentStatus == Status.PICKED;
+    public void repel(Entity repellee) {
+        // TODO Auto-generated method stub
+
     }
 
     public void render(StateBasedGame game, Graphics g) {
-        if (isDead()) {
-            return;
-        }
-        sprite.draw(getX(), getY(), getWidth(), getHeight());
-        // g.draw(shape);
-    }
-
-    @Override
-    public void detach() {
-        super.detach();
-        currentStatus = Status.IDLE;
+        manager.render(g);
     }
 
     public void update(StateBasedGame game, int delta) {
-        if (isDead()) {
-            return;
-        }
-
-        if (prev != null && overThreshold(prev, OUT_OF_REACH)) {
-            detach();
-        }
-
-        if (!picked() && shadowStatus != ShadowIntensity.UNSHADOWED
-                && !tooBig()) {
-            scale += SCALE_INCREMENT;
-            resize();
-        }
-
-        if (tooBig()) {
-            /* TODO Turn to a monster. */
-        }
-
-        if (shadowStatus == ShadowIntensity.UNSHADOWED && !tooSmall()) {
-            if (type != Type.RARE) {
-                scale += -SCALE_INCREMENT / 4;
-            } else {
-                scale += -SCALE_INCREMENT / 2;
-            }
-            resize();
-        }
-
-        if (tooSmall()) {
-            currentStatus = Status.DEAD;
-            detach();
-            level.remove(this);
-            return; // Stop execution here
-        }
-
-        if (picked() && overThreshold(prev, MAX_DISTANCE)) {
-            followLeader();
-            testAndWrap();
-        }
-
-        if (collected()) {
-            followLeader();
-        }
-
+        manager.update(game, delta);
     }
 
-    public void collect() {
-        currentStatus = Status.COLLECTED;
-    }
-
-    private boolean collected() {
-        return currentStatus == Status.COLLECTED;
-    }
-
-    private void followLeader() {
-        float[] d = new float[3];
-        d[0] = CrashGeom.distance2(prev, this);
-        d[1] = d[0];
-        d[2] = d[0];
-        // if I'm left of my target
-        if (getX() < prev.getX()) {
-            d[1] = CrashGeom.distance2(prev, getCenterX() + 800, getCenterY());
-        } else {
-            d[1] = CrashGeom.distance2(this, prev.getCenterX() + 800, prev
-                    .getCenterY());
-        }
-
-        // if I'm above my target
-        if (getY() < prev.getY()) {
-            d[2] = CrashGeom.distance2(prev, getCenterX(), getCenterY() + 600);
-        } else {
-            d[2] = CrashGeom.distance2(this, prev.getCenterX(), prev
-                    .getCenterY() + 600);
-        }
-
-        float angle = CrashGeom.calculateAngle(prev, this);
-        if (d[1] < d[0] || d[2] < d[0]) {
-            angle += Math.PI;
-        }
-
-        move(SPEED, angle);
-    }
-
-    private boolean tooSmall() {
-        return scale < MIN_SCALE;
-    }
-
-    private boolean tooBig() {
-        return scale > MAX_SCALE;
-    }
-
-    public void release() {
-        currentStatus = Status.IDLE;
+    public int compareTo(ShadowEntity o) {
+        return getZIndex() - o.getZIndex();
     }
 
     public float getSize() {
         return scale;
     }
 
-    /* Move the shape a given amount across two dimensions. */
-    private void move(float magnitude, float direction) {
-        Vector2f d = Geom.calculateVector(magnitude, direction);
-        xVelocity = d.x;
-        yVelocity = d.y;
-        // Transform t = Transform.createTranslateTransform(d.x, d.y);
-        // shape = shape.transform(t);
-        shape.setCenterX(shape.getCenterX() + d.x);
-        shape.setCenterY(shape.getCenterY() + d.y);
-    }
-
-    private void resize() {
-        float x = shape.getCenterX();
-        float y = shape.getCenterY();
-        ((Circle) shape).setRadius(RADIUS * scale);
-        shape.setCenterX(x);
-        shape.setCenterY(y);
-
-        // // Right way doesn't work due to bug in Slick
-        // Transform t = Transform.createScaleTransform(scale, scale);
-        // shape = shape.transform(t);
-    }
-
-    public void repel(Entity repellee) {
-        Body b = (Body) repellee;
-        double playerx = b.getCenterX();
-        double playery = b.getCenterY();
-        double dist_x = playerx - getCenterX();
-        double dist_y = playery - getCenterY();
-        double mag = Math.sqrt(dist_x * dist_x + dist_y * dist_y);
-        double playradius = b.getWidth() / 2;
-        double obstacleradius = getWidth() / 2;
-        double angle = Math.atan2(dist_y, dist_x);
-        double move = (playradius + obstacleradius - mag) * 1.5;
-        b.move(Math.cos(angle) * move, Math.sin(angle) * move);
-    }
-
-    public int getZIndex() {
-        return 2;
-    }
-
-    public int compareTo(ShadowEntity s) {
-        return getZIndex() - s.getZIndex();
+    private void shrink() {
+        if (type == MushroomType.RARE) {
+            scale -= SCALE_INCREMENT / 2;
+            return;
+        }
+        scale -= SCALE_INCREMENT / 4;
     }
 
 }
