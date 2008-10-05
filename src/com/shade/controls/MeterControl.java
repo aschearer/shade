@@ -6,7 +6,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Animatable;
 import com.shade.entities.Mushroom;
-import com.shade.entities.Mushroom.Type;
+import com.shade.entities.Mushroom.MushroomType;
 
 public class MeterControl implements MushroomCounter, Animatable {
 
@@ -45,16 +45,16 @@ public class MeterControl implements MushroomCounter, Animatable {
     }
 
     private void valueMushroom(Mushroom shroomie) {
-        if (shroomie.type == Type.POISON) {
+        if (shroomie.type == MushroomType.POISON) {
             value -= shroomie.getSize() * score;    
         }
-        if (shroomie.type == Type.NORMAL) {
+        if (shroomie.type == MushroomType.NORMAL) {
             value += shroomie.getSize() * score;
         }
-        if (shroomie.type == Type.GOOD) {
+        if (shroomie.type == MushroomType.GOOD) {
             value += shroomie.getSize() * 2 * score;
         }
-        if (shroomie.type == Type.RARE) {
+        if (shroomie.type == MushroomType.RARE) {
             value += shroomie.getSize() * 10 * score;
         }
     }
