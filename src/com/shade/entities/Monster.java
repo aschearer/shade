@@ -17,7 +17,6 @@ import com.shade.crash.Body;
 import com.shade.crash.util.CrashGeom;
 import com.shade.entities.util.State;
 import com.shade.entities.util.StateManager;
-import com.shade.shadows.ShadowCaster;
 import com.shade.shadows.ShadowEntity;
 import com.shade.shadows.ShadowLevel;
 import com.shade.shadows.ShadowLevel.DayLightStatus;

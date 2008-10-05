@@ -9,7 +9,7 @@ public class MushroomFactory {
     /**
      * Corresponds to the Mushroom.Type enum.
      */
-    private static final double[] distribution = { .2, .62, .15, .3 };
+    private static final double[] distribution = { 0, .75, .20, .05 };
 
     /**
      * Take care of assigning the mushroom a type.

@@ -12,6 +12,8 @@ import com.shade.base.Entity;
 import com.shade.base.Level;
 import com.shade.crash.Body;
 import com.shade.crash.util.CrashGeom;
+import com.shade.entities.util.State;
+import com.shade.entities.util.StateManager;
 import com.shade.shadows.ShadowEntity;
 import com.shade.shadows.ShadowLevel;
 import com.shade.util.Geom;
@@ -21,159 +23,262 @@ public class Mole extends Linkable implements ShadowEntity {
     private static final int RADIUS = 12;
     private static final float SPEED = .7f;
 
-    private enum Status {
+    private enum MoleState {
         DIGGING, WAKING, IDLING, SEEKING, WORKING, CONFUSED
     }
 
-    private ShadowLevel level;
-    private Status status;
+    public ShadowLevel level;
+    private StateManager manager;
     private Mushroom target;
     private float heading;
-    private int timer, cooldown;
-    private Animation sniff, move;
+    private Animation waking, idling, seeking, working;
     private ShadowIntensity shadowStatus;
 
-    public Mole(int cool) throws SlickException {
+    public Mole() throws SlickException {
         initShape();
-        initSprites();
-        status = Status.DIGGING;
-        cooldown = cool;
-        heading = (float) Math.PI;
+        initResources();
+        initStates();
     }
 
     private void initShape() {
         shape = new Circle(0, 0, RADIUS);
     }
 
-    private void initSprites() throws SlickException {
-        SpriteSheet sniffs = new SpriteSheet("entities/mole/sniff.png", 40, 40);
+    private void initResources() throws SlickException {
+        SpriteSheet wakes = new SpriteSheet("entities/mole/sniff.png", 40, 40);
 
-        sniff = new Animation(sniffs, 300);
-        sniff.setAutoUpdate(false);
-        sniff.setPingPong(true);
+        waking = new Animation(wakes, 300);
+        waking.setAutoUpdate(false);
+        waking.setPingPong(true);
 
-        SpriteSheet moves = new SpriteSheet("entities/mole/move.png", 40, 40);
+        idling = waking;
 
-        move = new Animation(moves, 300);
-        move.setAutoUpdate(false);
+        SpriteSheet seeks = new SpriteSheet("entities/mole/move.png", 40, 40);
+
+        seeking = new Animation(seeks, 300);
+        seeking.setAutoUpdate(false);
+
+        working = seeking;
     }
 
-    public void addToLevel(Level l) {
-        level = (ShadowLevel) l;
+    private void initStates() {
+        manager = new StateManager();
+        manager.add(new DiggingState());
+        manager.add(new WakingState());
+        manager.add(new IdlingState());
+        manager.add(new SeekingState());
+        manager.add(new WorkingState());
     }
 
-    public Role getRole() {
-        return Role.MOLE;
-    }
+    private class DiggingState implements State {
 
-    public boolean hasIntensity(ShadowIntensity s) {
-        return s == shadowStatus;
-    }
+        private int timer;
 
-    public void setIntensity(ShadowIntensity s) {
-        shadowStatus = s;
-    }
-
-    public void onCollision(Entity obstacle) {
-        if (status == Status.DIGGING) {
-            return;
+        public boolean equals(Object state) {
+            return state == MoleState.DIGGING;
         }
-        if (status != Status.WORKING && obstacle.getRole() == Role.MUSHROOM) {
-            // start working
-            heading += Math.PI;
-            target = (Mushroom) obstacle;
-            status = Status.WORKING;
+
+        public void enter() {
             timer = 0;
+            if (next != null) {
+                Linkable head = next;
+                while (head != null) {
+                    head.detach();
+                    head = next;
+                }
+                next = null;
+                target = null;
+            }
         }
 
-        if (status == Status.WORKING && obstacle.getRole() == Role.OBSTACLE) {
-            // change direction
-            heading += Math.PI / 2;
+        public void onCollision(Entity obstacle) {
+            // TODO Auto-generated method stub
+
         }
 
-        if (status == Status.SEEKING && obstacle.getRole() == Role.OBSTACLE) {
-            // die
-            stopWork();
+        public void render(Graphics g) {
+            // TODO Auto-generated method stub
+
         }
 
-        if (status == Status.WAKING && obstacle.getRole() == Role.OBSTACLE) {
-            // back underground
-            status = Status.DIGGING;
+        public void update(StateBasedGame game, int delta) {
+            timer += delta;
+            if (timer > 4000) {
+                Vector2f p = level.randomPoint(game.getContainer());
+                shape.setCenterX(p.x);
+                shape.setCenterY(p.y);
+                manager.enter(MoleState.WAKING);
+            }
         }
-        if (obstacle.getRole() == Role.PLAYER) {
-            // he got ya
-            repel(obstacle);
-        }
+
     }
 
-    public void removeFromLevel(Level l) {
-        // TODO Auto-generated method stub
+    private class WakingState implements State {
 
-    }
+        private int timer;
 
-    public void render(StateBasedGame game, Graphics g) {
-        if (status == Status.DIGGING) {
-            return;
+        public boolean equals(Object state) {
+            return state == MoleState.WAKING;
         }
-        g.rotate(getCenterX(), getCenterY(), (float) Math.toDegrees(heading));
-        if (status == Status.WAKING || status == Status.IDLING) {
-            sniff.draw(getX(), getY(), getWidth(), getHeight());
-        }
-        if (status == Status.SEEKING || status == Status.WORKING) {
-            move.draw(getX(), getY(), getWidth(), getHeight());
-        }
-        g.resetTransform();
 
-        // g.draw(shape);
-    }
-
-    public void update(StateBasedGame game, int delta) {
-        timer += delta;
-        sniff.update(delta);
-        move.update(delta);
-        if (status == Status.DIGGING && timer > cooldown) {
-            Vector2f p = level.randomPoint(game.getContainer());
-            shape.setCenterX(p.x);
-            shape.setCenterY(p.y);
-            status = Status.WAKING;
-            sniff.restart();
+        public void enter() {
+            waking.restart();
             timer = 0;
-        }
-        if (status == Status.WAKING && timer > cooldown * 1.5) {
-            // wake up!
-            timer = 0;
-            status = Status.IDLING;
-        }
-        if (status == Status.IDLING && findTarget()) {
-            // target found
-            // status = Status.SEEKING;
-            // move.restart();
-            // TODO figure out where to put state changes
-        }
-        if (status == Status.IDLING && timer > cooldown) {
-            // go back underground start over
-            stopWork();
-        }
-        if (status == Status.SEEKING) {
-            // move towards target
-            seekTarget();
-        }
-        if (status == Status.SEEKING && target.isDead()) {
-            status = Status.WAKING;
             heading = (float) Math.PI;
+        }
+
+        public void onCollision(Entity obstacle) {
+            if (obstacle.getRole() == Role.MUSHROOM) {
+                heading += Math.PI;
+                target = (Mushroom) obstacle;
+                manager.enter(MoleState.WORKING);
+            }
+        }
+
+        public void render(Graphics g) {
+            waking.draw(getX(), getY(), getWidth(), getHeight());
+        }
+
+        public void update(StateBasedGame game, int delta) {
+            waking.update(delta);
+            timer += delta;
+            if (timer > 3000) {
+                manager.enter(MoleState.IDLING);
+            }
+        }
+
+    }
+
+    private class IdlingState implements State {
+
+        private int timer;
+
+        public boolean equals(Object state) {
+            return state == MoleState.IDLING;
+        }
+
+        public void enter() {
+            idling.restart();
             timer = 0;
         }
-        if (status == Status.WORKING) {
-            // move the target
+
+        public void onCollision(Entity obstacle) {
+            if (obstacle.getRole() == Role.MUSHROOM) {
+                heading += Math.PI;
+                target = (Mushroom) obstacle;
+                manager.enter(MoleState.WORKING);
+            }
+        }
+
+        public void render(Graphics g) {
+            idling.draw(getX(), getY(), getWidth(), getHeight());
+        }
+
+        public void update(StateBasedGame game, int delta) {
+            idling.update(delta);
+            timer += delta;
+            if (timer > 2000) {
+                manager.enter(MoleState.DIGGING);
+            }
+
+            if (findTarget()) {
+                manager.enter(MoleState.SEEKING);
+                return;
+            }
+        }
+
+    }
+
+    private class SeekingState implements State {
+
+        public boolean equals(Object state) {
+            return state == MoleState.SEEKING;
+        }
+
+        public void enter() {
+            seeking.restart();
+        }
+
+        public void onCollision(Entity obstacle) {
+            if (obstacle.getRole() == Role.OBSTACLE) {
+                manager.enter(MoleState.DIGGING);
+            }
+
+            if (obstacle.getRole() == Role.MUSHROOM) {
+                heading += Math.PI;
+                target = (Mushroom) obstacle;
+                manager.enter(MoleState.WORKING);
+            }
+        }
+
+        public void render(Graphics g) {
+            seeking.draw(getX(), getY(), getWidth(), getHeight());
+        }
+
+        public void update(StateBasedGame game, int delta) {
+            seeking.update(delta);
+            seekTarget();
+
+            if (target.isDead()) {
+                manager.enter(MoleState.IDLING);
+            }
+        }
+
+    }
+
+    private class WorkingState implements State {
+
+        private int timer;
+
+        public boolean equals(Object state) {
+            return state == MoleState.WORKING;
+        }
+
+        public void enter() {
+            working.restart();
+            timer = 0;
+        }
+
+        public void onCollision(Entity obstacle) {
+            if (obstacle.getRole() == Role.OBSTACLE) {
+                heading += Math.PI / 2;
+            }
+        }
+
+        public void render(Graphics g) {
+            working.draw(getX(), getY(), getWidth(), getHeight());
+        }
+
+        public void update(StateBasedGame game, int delta) {
+            working.update(delta);
+            timer += delta;
             move(SPEED, heading);
+
+            if (timer > 5000 || target.isDead()) {
+                manager.enter(MoleState.DIGGING);
+            }
         }
-        if (status == Status.WORKING && timer > cooldown) {
-            stopWork();
+
+    }
+
+    private boolean findTarget() {
+        ShadowEntity[] entities = level.nearByEntities(this, 300);
+
+        boolean lineOfSight = false;
+        int i = 0;
+        while (!lineOfSight && i < entities.length) {
+            if (((Entity) entities[i]).getRole() == Role.MUSHROOM) {
+                lineOfSight = level.lineOfSight(this, entities[i]);
+            }
+            i++;
         }
-        if (status == Status.WORKING && target.isDead()) {
-            stopWork();
+        i--;
+
+        if (lineOfSight) {
+            target = (Mushroom) entities[i];
+            return true;
         }
-        testAndWrap();
+        return false;
     }
 
     private void seekTarget() {
@@ -207,48 +312,40 @@ public class Mole extends Linkable implements ShadowEntity {
         move(SPEED, heading);
     }
 
-    private boolean findTarget() {
-        ShadowEntity[] entities = level.nearByEntities(this, 300);
-
-        boolean lineOfSight = false;
-        int i = 0;
-        while (!lineOfSight && i < entities.length) {
-            if (((Entity) entities[i]).getRole() == Role.MUSHROOM) {
-                lineOfSight = level.lineOfSight(this, entities[i]);
-            }
-            i++;
-        }
-        i--;
-
-        if (lineOfSight) {
-            target = (Mushroom) entities[i];
-            status = Status.SEEKING;
-            move.restart();
-            return true;
-        }
-        return false;
-    }
-
-    private void stopWork() {
-        status = Status.DIGGING;
-        timer = 0;
-        heading = (float) Math.PI;
-        if (next != null) {
-            Linkable head = next;
-            while (head != null) {
-                head.detach();
-                head = next;
-            }
-            next = null;
-            target = null;
-        }
-    }
-
     /* Move the shape a given amount across two dimensions. */
     private void move(float magnitude, float direction) {
         Vector2f d = Geom.calculateVector(magnitude, direction);
         shape.setCenterX(shape.getCenterX() + d.x);
         shape.setCenterY(shape.getCenterY() + d.y);
+    }
+
+    public int getZIndex() {
+        return 4;
+    }
+
+    public boolean hasIntensity(ShadowIntensity s) {
+        return s == shadowStatus;
+    }
+
+    public void setIntensity(ShadowIntensity s) {
+        shadowStatus = s;
+    }
+
+    public void addToLevel(Level l) {
+        level = (ShadowLevel) l;
+    }
+
+    public Role getRole() {
+        return Role.MOLE;
+    }
+
+    public void onCollision(Entity obstacle) {
+        manager.onCollision(obstacle);
+    }
+
+    public void removeFromLevel(Level l) {
+        // TODO Auto-generated method stub
+
     }
 
     public void repel(Entity repellee) {
@@ -265,16 +362,18 @@ public class Mole extends Linkable implements ShadowEntity {
         b.move(Math.cos(angle) * move, Math.sin(angle) * move);
     }
 
-    public boolean digging() {
-        return status == Status.DIGGING;
+    public void render(StateBasedGame game, Graphics g) {
+        g.rotate(getCenterX(), getCenterY(), (float) Math.toDegrees(heading));
+        manager.render(g);
+        g.resetTransform();
     }
 
-    public int getZIndex() {
-        return 4;
+    public void update(StateBasedGame game, int delta) {
+        manager.update(game, delta);
     }
 
-    public int compareTo(ShadowEntity s) {
-        return getZIndex() - s.getZIndex();
+    public int compareTo(ShadowEntity o) {
+        return getZIndex() - o.getZIndex();
     }
 
 }
