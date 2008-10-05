@@ -80,8 +80,14 @@ public class Mushroom extends Linkable implements ShadowEntity {
         }
 
         public void onCollision(Entity obstacle) {
+            assert (prev == null);
             if (obstacle.getRole() == Role.PLAYER) {
-                assert (prev == null);
+                manager.enter(MushroomState.PICKED);
+                ((Linkable) obstacle).attach(Mushroom.this);
+                return;
+            }
+            
+            if (obstacle.getRole() == Role.MOLE) {
                 manager.enter(MushroomState.PICKED);
                 ((Linkable) obstacle).attach(Mushroom.this);
                 return;
@@ -124,8 +130,12 @@ public class Mushroom extends Linkable implements ShadowEntity {
         }
 
         public void onCollision(Entity obstacle) {
-            // TODO Auto-generated method stub
-
+            if (obstacle.getRole() == Role.MOLE) {
+                manager.enter(MushroomState.PICKED);
+                detach();
+                ((Linkable) obstacle).attach(Mushroom.this);
+                return;
+            }
         }
 
         public void render(Graphics g) {
@@ -154,7 +164,7 @@ public class Mushroom extends Linkable implements ShadowEntity {
                 resize();
             }
 
-            if (overThreshold(prev, 120000)) {
+            if (overThreshold(prev, 12000)) {
                 detach();
                 manager.enter(MushroomState.NORMAL);
                 return;
