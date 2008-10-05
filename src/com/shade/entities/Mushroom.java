@@ -301,7 +301,7 @@ public class Mushroom extends Linkable implements ShadowEntity {
     }
 
     public boolean isDead() {
-        return manager.currentState() == MushroomState.DEAD;
+        return manager.currentState().equals(MushroomState.DEAD);
     }
 
     public int getZIndex() {

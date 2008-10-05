@@ -27,7 +27,7 @@ public class Monster extends Linkable implements ShadowEntity {
     private static final float SPEED = .7f;
     private static final float SIZE = 20;
 
-    public enum MonsterStates {
+    public enum MonsterState {
         SLEEPING, WANDERING, ATTACKING, COOLING
     };
 
@@ -89,7 +89,7 @@ public class Monster extends Linkable implements ShadowEntity {
     private class SleepingState implements State {
 
         public boolean equals(Object state) {
-            return state == MonsterStates.SLEEPING;
+            return state == MonsterState.SLEEPING;
         }
 
         public void enter() {
@@ -100,7 +100,7 @@ public class Monster extends Linkable implements ShadowEntity {
         public void update(StateBasedGame game, int delta) {
             sleeping.update(delta);
             if (level.getDayLight() == DayLightStatus.NIGHT) {
-                manager.enter(MonsterStates.WANDERING);
+                manager.enter(MonsterState.WANDERING);
             }
         }
 
@@ -118,7 +118,7 @@ public class Monster extends Linkable implements ShadowEntity {
         private int timer;
 
         public boolean equals(Object state) {
-            return state == MonsterStates.WANDERING;
+            return state == MonsterState.WANDERING;
         }
 
         public void enter() {
@@ -129,12 +129,12 @@ public class Monster extends Linkable implements ShadowEntity {
         public void update(StateBasedGame game, int delta) {
             wandering.update(delta);
             if (level.getDayLight() != DayLightStatus.NIGHT) {
-                manager.enter(MonsterStates.SLEEPING);
+                manager.enter(MonsterState.SLEEPING);
                 return;
             }
 
             if (findTarget()) {
-                manager.enter(MonsterStates.ATTACKING);
+                manager.enter(MonsterState.ATTACKING);
                 return;
             }
 
@@ -191,7 +191,7 @@ public class Monster extends Linkable implements ShadowEntity {
     private class AttackingState implements State {
 
         public boolean equals(Object state) {
-            return state == MonsterStates.ATTACKING;
+            return state == MonsterState.ATTACKING;
         }
 
         public void enter() {
@@ -201,12 +201,12 @@ public class Monster extends Linkable implements ShadowEntity {
         public void update(StateBasedGame game, int delta) {
             attacking.update(delta);
             if (level.getDayLight() != DayLightStatus.NIGHT) {
-                manager.enter(MonsterStates.SLEEPING);
+                manager.enter(MonsterState.SLEEPING);
                 return;
             }
 
             if (!findTarget()) {
-                manager.enter(MonsterStates.WANDERING);
+                manager.enter(MonsterState.WANDERING);
                 return;
             }
 
@@ -221,7 +221,7 @@ public class Monster extends Linkable implements ShadowEntity {
             if (obstacle.getRole() == Role.PLAYER) {
                 Player p = (Player) obstacle;
                 heading = CrashGeom.calculateAngle(p, Monster.this);
-                manager.enter(MonsterStates.COOLING);
+                manager.enter(MonsterState.COOLING);
                 return;
             }
 
@@ -299,7 +299,7 @@ public class Monster extends Linkable implements ShadowEntity {
         private int timer;
 
         public boolean equals(Object state) {
-            return state == MonsterStates.COOLING;
+            return state == MonsterState.COOLING;
         }
 
         public void enter() {
@@ -311,13 +311,13 @@ public class Monster extends Linkable implements ShadowEntity {
         public void update(StateBasedGame game, int delta) {
             cooling.update(delta);
             if (level.getDayLight() != DayLightStatus.NIGHT) {
-                manager.enter(MonsterStates.SLEEPING);
+                manager.enter(MonsterState.SLEEPING);
                 return;
             }
 
             timer += delta;
             if (timer > 5000) {
-                manager.enter(MonsterStates.WANDERING);
+                manager.enter(MonsterState.WANDERING);
                 return;
             }
         }
@@ -359,6 +359,9 @@ public class Monster extends Linkable implements ShadowEntity {
         if (obstacle.getRole() == Role.OBSTACLE) {
             obstacle.repel(this);
         }
+        if (obstacle.getRole() == Role.PLAYER) {
+            obstacle.repel(this);
+        }
     }
 
     public void removeFromLevel(Level l) {
@@ -378,6 +381,11 @@ public class Monster extends Linkable implements ShadowEntity {
         double angle = Math.atan2(dist_y, dist_x);
         double move = (playradius + obstacleradius - mag) * 1.5;
         b.move(Math.cos(angle) * move, Math.sin(angle) * move);
+    }
+
+    public boolean isActive() {
+        return manager.currentState().equals(MonsterState.ATTACKING)
+                || manager.currentState().equals(MonsterState.WANDERING);
     }
 
     public void render(StateBasedGame game, Graphics g) {

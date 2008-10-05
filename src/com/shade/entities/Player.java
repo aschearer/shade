@@ -60,7 +60,8 @@ public class Player extends Linkable implements ShadowEntity {
         }
 
         public void onCollision(Entity obstacle) {
-            if (obstacle.getRole() == Role.MONSTER) {
+            if (obstacle.getRole() == Role.MONSTER
+                    && ((Monster) obstacle).isActive()) {
                 Body b = (Body) obstacle;
                 double xdiff = getCenterX() - b.getCenterX();
                 double ydiff = getCenterY() - b.getCenterY();
@@ -231,7 +232,7 @@ public class Player extends Linkable implements ShadowEntity {
     }
 
     public boolean isStunned() {
-        return manager.currentState() == PlayerState.STUNNED;
+        return manager.currentState().equals(PlayerState.STUNNED);
     }
 
 }
