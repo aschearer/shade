@@ -190,15 +190,15 @@ public class InGameState extends BasicGameState {
             }
 
             if (counter.value >= 5 && numMoles < 1) {
-                level.add(new Mole(4000));
+                level.add(new Mole());
                 numMoles++;
             }
             if (counter.value > 25 && numMoles < 2) {
-                level.add(new Mole(5000));
+                level.add(new Mole());
                 numMoles++;
             }
             if (counter.value > 50 && numMoles < 3) {
-                level.add(new Mole(6000));
+                level.add(new Mole());
                 numMoles++;
             }
 
@@ -206,7 +206,7 @@ public class InGameState extends BasicGameState {
             counter.update(game, delta);
 
             if (player.hasIntensity(ShadowIntensity.UNSHADOWED)) {
-                meter.decrement(0.1);
+                meter.decrement(0.08);
             }
 
             if (player.isStunned()) {
