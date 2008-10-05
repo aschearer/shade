@@ -370,6 +370,7 @@ public class Mole extends Linkable implements ShadowEntity {
 
     public void update(StateBasedGame game, int delta) {
         manager.update(game, delta);
+        testAndWrap();
     }
 
     public int compareTo(ShadowEntity o) {
