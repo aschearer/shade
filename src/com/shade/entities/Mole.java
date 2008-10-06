@@ -108,6 +108,7 @@ public class Mole extends Linkable implements ShadowEntity {
                 shape.setCenterX(p.x);
                 shape.setCenterY(p.y);
                 manager.enter(MoleState.WAKING);
+                level.add(new MoleHole(p.x, p.y, RADIUS));
             }
         }
 
@@ -243,6 +244,12 @@ public class Mole extends Linkable implements ShadowEntity {
             if (obstacle.getRole() == Role.OBSTACLE) {
                 heading += Math.PI / 2;
             }
+            if (obstacle.getRole() == Role.BASKET && next != null) {
+                next.prev = (Linkable) obstacle;
+                next = null;
+                target = null;
+                manager.enter(MoleState.DIGGING);
+            }
         }
 
         public void render(Graphics g) {
@@ -262,7 +269,7 @@ public class Mole extends Linkable implements ShadowEntity {
     }
 
     private boolean findTarget() {
-        ShadowEntity[] entities = level.nearByEntities(this, 300);
+        ShadowEntity[] entities = level.nearByEntities(this, 10000);
 
         boolean lineOfSight = false;
         int i = 0;

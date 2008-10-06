@@ -80,7 +80,7 @@ public class Player extends Linkable implements ShadowEntity {
             }
 
             if (obstacle.getRole() == Role.BASKET && next != null) {
-                next.prev = (Basket) obstacle;
+                next.prev = (Linkable) obstacle;
                 next = null;
             }
         }
