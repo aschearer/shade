@@ -13,7 +13,6 @@ public class MeterControl implements MushroomCounter, Animatable {
     private static final float MIN_SCORE = 1;
     private static final float SCORE_INCREMENT = .3f;
     private static final float SCORE_MULTIPLE = 4;
-    private static final float BASE_INCREMENT = .1f;
     private static final float WIDTH = 24;
     private static final float HEIGHT = 124;
     private static final Color BORDER = new Color(163, 183, 139);

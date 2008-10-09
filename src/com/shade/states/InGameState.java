@@ -14,7 +14,6 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.*;
 import org.newdawn.slick.util.ResourceLoader;
 
-import com.shade.base.Entity;
 import com.shade.controls.*;
 import com.shade.crash.*;
 import com.shade.entities.*;
@@ -38,6 +37,7 @@ public class InGameState extends BasicGameState {
     private ShadowLevel level;
     private MeterControl meter;
     private CounterControl counter;
+    private InGameControl control;
 
     private Image backgroundSprite, trimSprite;
     private Image counterSprite;
@@ -46,8 +46,6 @@ public class InGameState extends BasicGameState {
     private Player player;
 
     private int timer, totalTimer;
-
-    private int numMoles;
 
     @Override
     public int getID() {
@@ -90,12 +88,13 @@ public class InGameState extends BasicGameState {
         level.clear();
         meter = new MeterControl(20, 456, 100, 100);
         counter = new CounterControl(60, 520, counterSprite, counterFont);
-        numMoles = 0;
 
         initObstacles();
         initBasket();
         initPlayer();
-        level.add(new Monster(500, 300));
+//        level.add(new Monster(500, 300));
+        
+        control = new InGameControl(level, counter, meter, player);
     }
 
     private void initShrooms(GameContainer container) throws SlickException {
@@ -182,32 +181,10 @@ public class InGameState extends BasicGameState {
             if (totalTimer == delta) {
                 initShrooms(container);
             }
-
-            // Randomly plant mushrooms
-            if (Math.random() > .9965 || timer % 5000 + delta > 5000) {
-                Vector2f p = level.randomPoint(container);
-                level.add(MushroomFactory.makeMushroom(p.x, p.y));
-            }
-
-            if (counter.value >= 5 && numMoles < 1) {
-                level.add(new Mole());
-                numMoles++;
-            }
-            if (counter.value > 25 && numMoles < 2) {
-                level.add(new Mole());
-                numMoles++;
-            }
-            if (counter.value > 50 && numMoles < 3) {
-                level.add(new Mole());
-                numMoles++;
-            }
-
+            
             meter.update(game, delta);
             counter.update(game, delta);
-
-            if (player.hasIntensity(ShadowIntensity.UNSHADOWED)) {
-                meter.decrement(0.08);
-            }
+            control.update(game, delta);
 
             if (player.isStunned()) {
                 meter.decrement(0.5);
