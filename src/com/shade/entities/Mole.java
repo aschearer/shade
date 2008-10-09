@@ -269,7 +269,7 @@ public class Mole extends Linkable implements ShadowEntity {
     }
 
     private boolean findTarget() {
-        ShadowEntity[] entities = level.nearByEntities(this, 10000);
+        ShadowEntity[] entities = level.nearByEntities(this, 200);
 
         boolean lineOfSight = false;
         int i = 0;
