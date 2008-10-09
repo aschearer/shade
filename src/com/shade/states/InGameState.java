@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.io.InputStream;
 import java.util.LinkedList;
 
+import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -19,6 +20,9 @@ import com.shade.controls.*;
 import com.shade.crash.*;
 import com.shade.entities.*;
 import com.shade.entities.util.MushroomFactory;
+import com.shade.light.InfiniteLight;
+import com.shade.light.LightMask;
+import com.shade.light.LightSource;
 import com.shade.shadows.*;
 import com.shade.shadows.ShadowEntity.ShadowIntensity;
 
@@ -48,7 +52,8 @@ public class InGameState extends BasicGameState {
     private int timer, totalTimer;
 
     private int numMoles;
-
+    
+    LightMask l;
     @Override
     public int getID() {
         return ID;
@@ -61,6 +66,8 @@ public class InGameState extends BasicGameState {
         currentStatus = Status.NOT_STARTED;
         initSprites();
         initFonts();
+        l = new LightMask(container.getWidth(),container.getHeight());
+
     }
 
     private void initFonts() throws SlickException {
@@ -137,9 +144,13 @@ public class InGameState extends BasicGameState {
     	level.add((Entity)g1);
     	level.add((Entity)g2);
     	level.add((Entity)g3);
+    	
+    	LightSource light = new InfiniteLight();
+    	l.add(light);
 
         for (ShadowCaster c : casters) {
             level.add(c);
+            l.add(c);
         }
     }
 
@@ -158,8 +169,11 @@ public class InGameState extends BasicGameState {
     public void render(GameContainer container, StateBasedGame game, Graphics g)
             throws SlickException {
         backgroundSprite.draw();
+        l.render(g);
         level.render(game, g);
-        trimSprite.draw();
+		trimSprite.draw();
+		GL11.glDisable(GL11.GL_BLEND);
+        
         meter.render(game, g);
         counter.render(game, g);
         if (currentStatus == Status.GAME_OVER) {
@@ -169,7 +183,7 @@ public class InGameState extends BasicGameState {
 
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
-
+    	l.update();
         if (currentStatus == Status.RUNNING) {
             level.update(game, delta);
             timer += delta;

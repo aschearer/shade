@@ -7,6 +7,7 @@ import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.RoundedRectangle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Transform;
+import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Entity;
@@ -112,5 +113,11 @@ public class Dome extends Body implements ShadowCaster {
         double move = (playradius + obstacleradius - mag) * 1.5;
         b.move(Math.cos(angle) * move, Math.sin(angle) * move);
     }
+    
+	@Override
+	public Vector2f getPosition() {
+		// TODO Auto-generated method stub
+		return new Vector2f(getCenterX(),getCenterY());
+	}
 
 }

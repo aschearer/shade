@@ -9,7 +9,11 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Shade/lib/natives"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/slick.jar"/>
+	<classpathentry kind="lib" path="lib/slick.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/D:/My Documents/workspace/Slick/javadoc/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

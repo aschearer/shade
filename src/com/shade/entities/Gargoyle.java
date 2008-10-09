@@ -261,5 +261,11 @@ public class Gargoyle extends Linkable implements ShadowEntity, ShadowCaster {
         RoundedRectangle rr = new RoundedRectangle(getX(), getY(), r * 2, h, r);
         return rr.transform(t);
     }
+    
+	@Override
+	public Vector2f getPosition() {
+		// TODO Auto-generated method stub
+		return new Vector2f(getCenterX(),getCenterY());
+	}
 
 }
