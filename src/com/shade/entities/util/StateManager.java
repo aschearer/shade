@@ -21,6 +21,7 @@ public class StateManager {
         states.add(s);
         if (currentState == null) {
             currentState = s;
+            currentState.enter();
         }
     }
     
