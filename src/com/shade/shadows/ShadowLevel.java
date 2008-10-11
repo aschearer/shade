@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 
+import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -94,11 +95,13 @@ public class ShadowLevel implements Level {
     }
 
     public void render(StateBasedGame game, Graphics g) {
+    	//GL11.glDisable(GL11.GL_BLEND);
+    	GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         for (ShadowEntity e : entities) {
             e.render(game, g);
         }
         shadowscape.render(game, g);
-        renderTimeOfDay(totalTime, game, g);
+       // renderTimeOfDay(totalTime, game, g);
     }
 
     private void renderTimeOfDay(int totaltime, StateBasedGame game, Graphics g) {

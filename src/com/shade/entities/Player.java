@@ -9,47 +9,173 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Entity;
 import com.shade.base.Level;
+import com.shade.base.Entity.Role;
 import com.shade.crash.Body;
+import com.shade.entities.util.State;
+import com.shade.entities.util.StateManager;
 import com.shade.shadows.ShadowEntity;
+import com.shade.shadows.ShadowEntity.ShadowIntensity;
 
 public class Player extends Linkable implements ShadowEntity {
 
     private static final float SPEED = 1.4f;
-
     private static final int MUSHROOM_LIMIT = 3;
 
-    private Image sprite;
+    private enum PlayerState {
+        NORMAL, STUNNED
+    };
 
+    private StateManager manager;
+    private Image normal;
     private ShadowIntensity shadowStatus;
-    
-    //make them stunned
-    private int stunTimer = 0;
 
-    public Player(float x, float y, float r) throws SlickException {
-        initShape(x, y, r);
-        initSprite();
+    public Player(float x, float y) throws SlickException {
+        initShape(x, y);
+        initResources();
+        initStates();
     }
 
-    private void initSprite() throws SlickException {
-        sprite = new Image("entities/player/player.png");
+    private void initShape(float x, float y) {
+        shape = new Circle(x, y, 18);
     }
 
-    private void initShape(float x, float y, float r) {
-        shape = new Circle(x, y, r);
+    private void initResources() throws SlickException {
+        normal = new Image("entities/player/player.png");
     }
 
-    public Role getRole() {
-        return Role.PLAYER;
+    private void initStates() {
+        manager = new StateManager();
+        manager.add(new NormalState());
+        manager.add(new StunnedState());
     }
 
-    public void addToLevel(Level l) {
-        
+    private class NormalState implements State {
+
+        public boolean equals(Object state) {
+            return state == PlayerState.NORMAL;
+        }
+
+        public void enter() {
+            // TODO Auto-generated method stub
+
+        }
+
+        public void onCollision(Entity obstacle) {
+            if (obstacle.getRole() == Role.MONSTER
+                    && ((Monster) obstacle).isActive()) {
+                Body b = (Body) obstacle;
+                double xdiff = getCenterX() - b.getCenterX();
+                double ydiff = getCenterY() - b.getCenterY();
+                move(xdiff / 2, ydiff / 2);
+                Linkable head = next;
+                while (head != null) {
+                    Mushroom m = (Mushroom) head;
+                    int jump = 100;
+                    head.move((Math.random() - 0.5) * jump,
+                              (Math.random() - 0.5) * jump);
+                    head = head.next;
+                    m.detach();
+                }
+                manager.enter(PlayerState.STUNNED);
+            }
+
+            if (obstacle.getRole() == Role.BASKET && next != null) {
+                next.prev = (Linkable) obstacle;
+                next = null;
+            }
+        }
+
+        public void render(Graphics g) {
+            normal.drawCentered(getCenterX(), getCenterY());
+        }
+
+        public void update(StateBasedGame game, int delta) {
+            testAndMove(game.getContainer().getInput(), delta);
+            testAndWrap();
+        }
+
+        private void testAndMove(Input input, int delta) {
+            xVelocity = 0;
+            yVelocity = 0;
+            if (input.isKeyDown(Input.KEY_LEFT)) {
+                xVelocity--;
+            }
+            if (input.isKeyDown(Input.KEY_RIGHT)) {
+                xVelocity++;
+            }
+            if (input.isKeyDown(Input.KEY_UP)) {
+                yVelocity--;
+            }
+            if (input.isKeyDown(Input.KEY_DOWN)) {
+                yVelocity++;
+            }
+            double mag = Math.sqrt(xVelocity * xVelocity + yVelocity
+                    * yVelocity);
+            // make it uniform speed
+            xVelocity = (float) (1.0 * SPEED * xVelocity / mag);
+            yVelocity = (float) (1.0 * SPEED * yVelocity / mag);
+            if (mag != 0) {
+                move(xVelocity, yVelocity);
+            } else {
+                xVelocity = 0;
+                yVelocity = 0;
+            }
+        }
     }
 
-    public void removeFromLevel(Level l) {
-        // TODO Auto-generated method stub
+    private class StunnedState implements State {
+
+        private int timer;
+
+        public boolean equals(Object state) {
+            return state == PlayerState.STUNNED;
+        }
+
+        public void enter() {
+            timer = 0;
+        }
+
+        public void onCollision(Entity obstacle) {
+            // TODO Auto-generated method stub
+
+        }
+
+        public void render(Graphics g) {
+            if (timer % 2 == 0) {
+                normal.drawCentered(getCenterX(), getCenterY());
+            }
+        }
+
+        public void update(StateBasedGame game, int delta) {
+            timer += delta;
+            if (timer > 1000) {
+                manager.enter(PlayerState.NORMAL);
+            }
+        }
+
     }
-    
+
+    @Override
+    public void attach(Linkable l) {
+        if (next == null) {
+            super.attach(l);
+            return;
+        }
+        int i = 1;
+        Linkable head = next;
+        while (head.next != null) {
+            i++;
+            head = head.next;
+        }
+        if (i < MUSHROOM_LIMIT) {
+            super.attach(l);
+        }
+    }
+
+    public int getZIndex() {
+        return 4;
+    }
+
     public boolean hasIntensity(ShadowIntensity s) {
         return s == shadowStatus;
     }
@@ -58,100 +184,31 @@ public class Player extends Linkable implements ShadowEntity {
         shadowStatus = s;
     }
 
-    public void onCollision(Entity obstacle) {
-        collectMushrooms(obstacle);
-        /* Or... */
-        moveOutOfIntersection(obstacle);
+    public void addToLevel(Level l) {
+        // TODO Auto-generated method stub
+
     }
 
-    private void moveOutOfIntersection(Entity obstacle) {
+    public Role getRole() {
+        return Role.PLAYER;
+    }
+
+    public void onCollision(Entity obstacle) {
+        manager.onCollision(obstacle);
         if (obstacle.getRole() == Role.OBSTACLE) {
             Body b = (Body) obstacle;
             b.repel(this);
         }
-    }
-
-    private void collectMushrooms(Entity obstacle) {
-        if (obstacle.getRole() == Role.BASKET && next != null) {
-            next.prev = (Basket) obstacle;
-            Linkable head = next;
-            while (head != null) {
-                ((Mushroom) head).collect();
-                head = head.next;
-            }
-            next = null;
+        if (obstacle.getRole() == Role.MONSTER) {
+            obstacle.repel(this);
         }
     }
 
-    public void render(StateBasedGame game, Graphics g) {
-    	if(stunTimer>0)
-    		if(stunTimer%2==0)
-    		sprite.drawCentered(getCenterX(), getCenterY());
-    		else return;
-        sprite.drawCentered(getCenterX(), getCenterY());
-        // g.draw(shape);
+    public void removeFromLevel(Level l) {
+        // TODO Auto-generated method stub
+
     }
 
-    public void update(StateBasedGame game, int delta) {
-    	if(stunTimer<1)
-        testAndMove(game.getContainer().getInput(), delta);
-    	else stunTimer-=delta;
-        testAndWrap();
-    }
-    
-
-    public boolean maxedOut() {
-        if (next == null) {
-            return false;
-        }
-        int i = 1;
-        Linkable head = next;
-        while (head.next != null) {
-            i++;
-            head = head.next;
-        }
-        return i >= MUSHROOM_LIMIT;
-    }
-
-    private void testAndMove(Input input, int delta) {
-        xVelocity = 0;
-        yVelocity = 0;
-        if (input.isKeyDown(Input.KEY_LEFT)) {
-            xVelocity--;
-        }
-        if (input.isKeyDown(Input.KEY_RIGHT)) {
-            xVelocity++;
-        }
-        if (input.isKeyDown(Input.KEY_UP)) {
-            yVelocity--;
-        }
-        if (input.isKeyDown(Input.KEY_DOWN)) {
-            yVelocity++;
-        }
-        double mag = Math.sqrt(xVelocity * xVelocity + yVelocity * yVelocity);
-        // make it uniform speed
-        xVelocity = (float) (1.0 * SPEED * xVelocity / mag);
-        yVelocity = (float) (1.0 * SPEED * yVelocity / mag);
-        if (mag != 0) {
-            move(xVelocity, yVelocity);
-        } else {
-            xVelocity = 0;
-            yVelocity = 0;
-        }
-        if (getCenterX() <= 0) {
-            shape.setCenterX(799);
-        }
-        if (getCenterX() > 799) {
-            shape.setCenterX(0);
-        }
-        if (getCenterY() <= 0) {
-            shape.setCenterY(599);
-        }
-        if (getCenterY() > 599) {
-            shape.setCenterY(0);
-        }
-    }
-    
     public void repel(Entity repellee) {
         Body b = (Body) repellee;
         double playerx = b.getCenterX();
@@ -165,31 +222,21 @@ public class Player extends Linkable implements ShadowEntity {
         double move = (playradius + obstacleradius - mag) * 1.5;
         b.move(Math.cos(angle) * move, Math.sin(angle) * move);
     }
-    
-    public int getZIndex() {
-        return 4;
+
+    public void render(StateBasedGame game, Graphics g) {
+        manager.render(g);
     }
 
-    public int compareTo(ShadowEntity s) {
-        return getZIndex() - s.getZIndex();
+    public void update(StateBasedGame game, int delta) {
+        manager.update(game, delta);
     }
-    
-    public boolean isStunned(){
-    	return stunTimer>0;
+
+    public int compareTo(ShadowEntity o) {
+        return getZIndex() - o.getZIndex();
     }
-    
-    public void getHit(Body b){
-    	stunTimer = 1000;
-    	double xdiff = getCenterX()-b.getCenterX();
-    	double ydiff = getCenterY()-b.getCenterY();
-    	move(xdiff/2, ydiff/2);
-    	Linkable temp = next;
-    	while(temp!=null){
-    		Mushroom m = (Mushroom) temp;
-    		int jump = 100;
-    		temp.move((Math.random()-0.5)*jump, (Math.random()-0.5)*jump);
-    		temp = temp.next;
-    		m.detach();
-    	}
+
+    public boolean isStunned() {
+        return manager.currentState().equals(PlayerState.STUNNED);
     }
+
 }

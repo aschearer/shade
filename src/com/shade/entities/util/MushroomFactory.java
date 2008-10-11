@@ -9,7 +9,7 @@ public class MushroomFactory {
     /**
      * Corresponds to the Mushroom.Type enum.
      */
-    private static final double[] distribution = { .2, .62, .15, .3 };
+    private static final double[] distribution = { 0, .75, .20, .05 };
 
     /**
      * Take care of assigning the mushroom a type.
@@ -23,8 +23,8 @@ public class MushroomFactory {
         return new Mushroom(x, y, getType(randomType()));
     }
 
-    private static Mushroom.Type getType(int i) {
-        Mushroom.Type[] types = Mushroom.Type.values();
+    private static Mushroom.MushroomType getType(int i) {
+        Mushroom.MushroomType[] types = Mushroom.MushroomType.values();
         return types[i];
     }
 

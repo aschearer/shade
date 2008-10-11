@@ -20,7 +20,7 @@ import com.shade.shadows.ShadowEntity;
 import com.shade.shadows.ShadowLevel;
 import com.shade.util.Geom;
 
-public class Gargoyle extends Linkable implements ShadowEntity, ShadowCaster {
+public class Gargoyle extends Monster implements ShadowEntity, ShadowCaster {
 
     private static final int RADIUS = 12;
     private static final float SPEED = .7f;
@@ -39,6 +39,7 @@ public class Gargoyle extends Linkable implements ShadowEntity, ShadowCaster {
     private ShadowIntensity shadowStatus;
 
     public Gargoyle(int x, int y) throws SlickException {
+    	super(x,y);
         initShape();
         initSprites();
     	shape.setLocation(x, y);
@@ -88,8 +89,7 @@ public class Gargoyle extends Linkable implements ShadowEntity, ShadowCaster {
     public void onCollision(Entity obstacle) {
     	if (obstacle.getRole() == Role.PLAYER && status != Status.ASLEEP) {
             // he got ya
-        	Player p = (Player) obstacle;
-            p.getHit(this);
+    		Body p = (Body) obstacle;
             cooldown = COOLDOWN_TIME;
             wander = 1;
             heading = (float)(Math.atan2(getCenterY()-p.getCenterY(), getCenterX()-p.getCenterX()));

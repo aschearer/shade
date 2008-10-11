@@ -42,6 +42,7 @@ public class InGameState extends BasicGameState {
     private ShadowLevel level;
     private MeterControl meter;
     private CounterControl counter;
+    private InGameControl control;
 
     private Image backgroundSprite, trimSprite;
     private Image counterSprite;
@@ -50,8 +51,6 @@ public class InGameState extends BasicGameState {
     private Player player;
 
     private int timer, totalTimer;
-
-    private int numMoles;
     
     LightMask l;
     @Override
@@ -97,11 +96,13 @@ public class InGameState extends BasicGameState {
         level.clear();
         meter = new MeterControl(20, 456, 100, 100);
         counter = new CounterControl(60, 520, counterSprite, counterFont);
-        numMoles = 0;
 
         initObstacles();
         initBasket();
         initPlayer();
+//        level.add(new Monster(500, 300));
+        
+        control = new InGameControl(level, counter, meter, player);
     }
 
     private void initShrooms(GameContainer container) throws SlickException {
@@ -145,8 +146,10 @@ public class InGameState extends BasicGameState {
     	level.add((Entity)g2);
     	level.add((Entity)g3);
     	
-    	LightSource light = new InfiniteLight();
+    	LightSource light = new InfiniteLight(110,110);
     	l.add(light);
+    	LightSource light2 = new InfiniteLight(400,300);
+    	l.add(light2);
 
         for (ShadowCaster c : casters) {
             level.add(c);
@@ -162,18 +165,16 @@ public class InGameState extends BasicGameState {
     }
 
     private void initPlayer() throws SlickException {
-        player = new Player(400, 350, 18);
+        player = new Player(400, 350);
         level.add(player);
     }
 
     public void render(GameContainer container, StateBasedGame game, Graphics g)
             throws SlickException {
-        backgroundSprite.draw();
-        l.render(g);
-        level.render(game, g);
 		trimSprite.draw();
-		GL11.glDisable(GL11.GL_BLEND);
-        
+        l.render(g);
+        backgroundSprite.draw();
+        level.render(game, g);
         meter.render(game, g);
         counter.render(game, g);
         if (currentStatus == Status.GAME_OVER) {
@@ -183,7 +184,7 @@ public class InGameState extends BasicGameState {
 
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
-    	l.update();
+    	l.update(game, delta);
         if (currentStatus == Status.RUNNING) {
             level.update(game, delta);
             timer += delta;
@@ -193,32 +194,11 @@ public class InGameState extends BasicGameState {
             if (totalTimer == delta) {
                 initShrooms(container);
             }
-
-            // Randomly plant mushrooms
-            if (Math.random() > .9965 || timer % 5000 + delta > 5000) {
-                Vector2f p = level.randomPoint(container);
-                level.add(MushroomFactory.makeMushroom(p.x, p.y));
-            }
-
-            if (counter.value >= 5 && numMoles < 1) {
-                level.add(new Mole(4000));
-                numMoles++;
-            }
-            if (counter.value > 25 && numMoles < 2) {
-                level.add(new Mole(5000));
-                numMoles++;
-            }
-            if (counter.value > 50 && numMoles < 3) {
-                level.add(new Mole(6000));
-                numMoles++;
-            }
-
+            
             meter.update(game, delta);
             counter.update(game, delta);
+            control.update(game, delta);
 
-            if (player.hasIntensity(ShadowIntensity.UNSHADOWED)) {
-               meter.decrement(0.05);
-            }
             
             if(player.isStunned()){
             	meter.decrement(0.5);
