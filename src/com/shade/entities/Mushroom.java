@@ -24,7 +24,7 @@ public class Mushroom extends Linkable implements ShadowEntity {
     private static final float MAX_SCALE = 3.5f;
     private static final float MIN_SCALE = 1.5f;
     private static final float START_SCALE = MIN_SCALE + .5f;
-    private static final float SPEED = 1.4f;
+    private static final float SPEED = 1.6f;
 
     private enum MushroomState {
         NORMAL, PICKED, COLLECTED, DEAD
@@ -101,7 +101,6 @@ public class Mushroom extends Linkable implements ShadowEntity {
         public void update(StateBasedGame game, int delta) {
             if (scale < MIN_SCALE) {
                 manager.enter(MushroomState.DEAD);
-                detach();
                 return;
             }
             if (shadowStatus != ShadowIntensity.UNSHADOWED && scale < MAX_SCALE) {
@@ -155,7 +154,6 @@ public class Mushroom extends Linkable implements ShadowEntity {
 
             if (scale < MIN_SCALE) {
                 manager.enter(MushroomState.DEAD);
-                detach();
                 return;
             }
 
@@ -190,8 +188,10 @@ public class Mushroom extends Linkable implements ShadowEntity {
         }
 
         public void onCollision(Entity obstacle) {
-            // TODO Auto-generated method stub
-
+            if (obstacle.getRole() == Role.BASKET) {
+                manager.enter(MushroomState.DEAD);
+                return;
+            }
         }
 
         public void render(Graphics g) {
@@ -206,7 +206,6 @@ public class Mushroom extends Linkable implements ShadowEntity {
 
             if (scale < MIN_SCALE) {
                 manager.enter(MushroomState.DEAD);
-                detach();
                 return;
             }
 
@@ -234,6 +233,7 @@ public class Mushroom extends Linkable implements ShadowEntity {
         }
 
         public void enter() {
+            detach();
             level.remove(Mushroom.this);
         }
 

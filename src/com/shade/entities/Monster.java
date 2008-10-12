@@ -28,7 +28,7 @@ public class Monster extends Linkable implements ShadowEntity {
     private static final float SIZE = 20;
 
     public enum MonsterState {
-        SLEEPING, WANDERING, ATTACKING, COOLING
+        SLEEPING, IDLING, WANDERING, ATTACKING, COOLING
     };
 
     private float heading;
@@ -36,7 +36,7 @@ public class Monster extends Linkable implements ShadowEntity {
     private Player target;
     private ShadowIntensity shadowStatus;
 
-    private Animation sleeping, wandering, attacking, cooling;
+    private Animation sleeping, idling, wandering, attacking, cooling;
     private StateManager manager;
 
     public Monster(float x, float y) throws SlickException {
@@ -64,6 +64,10 @@ public class Monster extends Linkable implements ShadowEntity {
         cooling = new Animation(sleeps, 300);
         cooling.setAutoUpdate(false);
         cooling.setPingPong(true);
+        
+        idling = new Animation(sleeps, 300);
+        idling.setAutoUpdate(false);
+        idling.setPingPong(true);
 
         attacking = new Animation(moves, 300);
         attacking.setAutoUpdate(false);
@@ -72,6 +76,7 @@ public class Monster extends Linkable implements ShadowEntity {
     private void initStates() {
         manager = new StateManager();
         manager.add(new SleepingState());
+        manager.add(new IdlingState());
         manager.add(new WanderingState());
         manager.add(new AttackingState());
         manager.add(new CoolingState());
@@ -109,7 +114,43 @@ public class Monster extends Linkable implements ShadowEntity {
         }
 
         public void onCollision(Entity obstacle) {
+            
+        }
+    }
+    
+    private class IdlingState implements State {
+        
+        private int timer;
+        
+        public boolean equals(Object state) {
+            return state == MonsterState.IDLING;
+        }
 
+        public void enter() {
+            idling.restart();
+            timer = 0;
+        }
+
+        public void update(StateBasedGame game, int delta) {
+            idling.update(delta);
+            timer += delta;
+            if (level.getDayLight() != DayLightStatus.NIGHT) {
+                manager.enter(MonsterState.SLEEPING);
+                return;
+            }
+            
+            if (timer > 2000) {
+                manager.enter(MonsterState.WANDERING);
+                return;
+            }
+        }
+
+        public void render(Graphics g) {
+            idling.draw(getX(), getY());
+        }
+
+        public void onCollision(Entity obstacle) {
+            
         }
     }
 
@@ -123,11 +164,14 @@ public class Monster extends Linkable implements ShadowEntity {
 
         public void enter() {
             wandering.restart();
+            heading += (float) (Math.random() * Math.PI * 2);
             timer = 0;
         }
 
         public void update(StateBasedGame game, int delta) {
             wandering.update(delta);
+            timer += delta;
+
             if (level.getDayLight() != DayLightStatus.NIGHT) {
                 manager.enter(MonsterState.SLEEPING);
                 return;
@@ -138,7 +182,11 @@ public class Monster extends Linkable implements ShadowEntity {
                 return;
             }
 
-            updateHeading(delta);
+            if (timer > 3000) {
+                manager.enter(MonsterState.IDLING);
+                return;
+            }
+
             move(SPEED, heading);
         }
 
@@ -147,15 +195,14 @@ public class Monster extends Linkable implements ShadowEntity {
         }
 
         public void onCollision(Entity obstacle) {
-
-        }
-
-        private void updateHeading(int delta) {
-            timer += delta;
-            if (timer > 3000) {
-                heading += (float) (Math.random() * Math.PI / 2);
-                heading *= (Math.random() >= .5) ? -1 : 1;
-                timer = 0;
+            if (obstacle.getRole() == Role.OBSTACLE) {
+                heading += Math.PI / 4;
+                return;
+            }
+            if (obstacle.getRole() == Role.MONSTER) {
+                obstacle.repel(Monster.this);
+                heading = -heading;
+                return;
             }
         }
 
@@ -190,23 +237,32 @@ public class Monster extends Linkable implements ShadowEntity {
 
     private class AttackingState implements State {
 
+        private int timer;
+
         public boolean equals(Object state) {
             return state == MonsterState.ATTACKING;
         }
 
         public void enter() {
             attacking.restart();
+            timer = 0;
         }
 
         public void update(StateBasedGame game, int delta) {
             attacking.update(delta);
+            timer += delta;
             if (level.getDayLight() != DayLightStatus.NIGHT) {
                 manager.enter(MonsterState.SLEEPING);
                 return;
             }
 
             if (!findTarget()) {
-                manager.enter(MonsterState.WANDERING);
+                manager.enter(MonsterState.IDLING);
+                return;
+            }
+
+            if (timer > 4000) {
+                manager.enter(MonsterState.IDLING);
                 return;
             }
 
@@ -225,6 +281,17 @@ public class Monster extends Linkable implements ShadowEntity {
                 return;
             }
 
+            if (obstacle.getRole() == Role.OBSTACLE) {
+                obstacle.repel(Monster.this);
+                manager.enter(MonsterState.IDLING);
+                return;
+            }
+
+            if (obstacle.getRole() == Role.MONSTER) {
+                obstacle.repel(Monster.this);
+                manager.enter(MonsterState.IDLING);
+                return;
+            }
         }
 
         /**
@@ -355,10 +422,10 @@ public class Monster extends Linkable implements ShadowEntity {
     }
 
     public void onCollision(Entity obstacle) {
-        manager.onCollision(obstacle);
         if (obstacle.getRole() == Role.OBSTACLE) {
-            obstacle.repel(this);
+            obstacle.repel(Monster.this);
         }
+        manager.onCollision(obstacle);
     }
 
     public void removeFromLevel(Level l) {

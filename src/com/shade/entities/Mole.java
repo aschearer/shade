@@ -21,7 +21,7 @@ import com.shade.util.Geom;
 public class Mole extends Linkable implements ShadowEntity {
 
     private static final int RADIUS = 12;
-    private static final float SPEED = .7f;
+    private static final float SPEED = .9f;
 
     private enum MoleState {
         DIGGING, WAKING, IDLING, SEEKING, WORKING, CONFUSED
@@ -108,7 +108,7 @@ public class Mole extends Linkable implements ShadowEntity {
                 shape.setCenterX(p.x);
                 shape.setCenterY(p.y);
                 manager.enter(MoleState.WAKING);
-                level.add(new MoleHole(p.x, p.y, RADIUS));
+//                level.add(new MoleHole(p.x, p.y, RADIUS));
             }
         }
 

@@ -9,12 +9,10 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Entity;
 import com.shade.base.Level;
-import com.shade.base.Entity.Role;
 import com.shade.crash.Body;
 import com.shade.entities.util.State;
 import com.shade.entities.util.StateManager;
 import com.shade.shadows.ShadowEntity;
-import com.shade.shadows.ShadowEntity.ShadowIntensity;
 
 public class Player extends Linkable implements ShadowEntity {
 

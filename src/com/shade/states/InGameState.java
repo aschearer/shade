@@ -101,7 +101,9 @@ public class InGameState extends BasicGameState {
         initObstacles();
         initBasket();
         initPlayer();
-//        level.add(new Monster(500, 300));
+        level.add(new Monster(450, 80));
+        level.add(new Monster(650, 520));
+        level.add(new Monster(200, 275));
         
         control = new InGameControl(level, counter, meter, player);
     }
@@ -129,7 +131,7 @@ public class InGameState extends BasicGameState {
         casters.add(new Dome(600, 100, 40, 9));
         casters.add(new Dome(680, 220, 60, 13));
         // fences
-        casters.add(new Fence(225, 225, 11, 120, 5));
+        casters.add(new Fence(250, 250, 11, 120, 5));
         casters.add(new Fence(390, 140, 120, 11, 5));
         casters.add(new Fence(715, 368, 11, 120, 5));
         casters.add(new Fence(50, 50, 11, 120, 5));
