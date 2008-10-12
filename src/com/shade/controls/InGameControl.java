@@ -24,6 +24,7 @@ public class InGameControl {
     private CounterControl counter;
     private MeterControl meter;
     private int timer;
+    private int inSunTime;
     private int moles;
     private LinkedList<Trigger> triggers;
 
@@ -66,20 +67,15 @@ public class InGameControl {
         public void update(StateBasedGame game, int delta)
                 throws SlickException {
             if (player.hasIntensity(ShadowIntensity.UNSHADOWED)) {
-                meter.decrement(value);
+            	inSunTime+=delta;
+            	double dec = Math.max(0.01f, Math.pow(1.0*inSunTime/((inSunTime+1000)*2),5));
+            	//meter.decrement(dec);
             }
-            if (value < .07f && counter.value > 15) {
-                value += INCREMENT;
+            else{
+            	//System.out.println("resetting timer");
+            	inSunTime = 0;
             }
-            if (value < .08f && counter.value > 25) {
-                value += INCREMENT;
-            }
-            if (value < .09f && counter.value > 75) {
-                value += INCREMENT;
-            }
-            if (value < .1f && counter.value > 150) {
-                value += INCREMENT; // whoa...
-            }
+
         }
 
     }

@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 
+import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -41,14 +42,13 @@ public class ShadowLevel implements Level {
     private Shadowscape shadowscape;
     private LinkedList<ShadowEntity> in_queue, out_queue;
     private ZBuffer entities;
-    private float direction, depth, rate;
+    private float direction, rate;
     private DayLightStatus daylight;
     private int totalTime;
 
     public ShadowLevel(Grid grid, float direction, float depth, float rate) {
         this.grid = grid;
         this.direction = direction;
-        this.depth = depth;
         this.rate = rate;
         daylight = DayLightStatus.DAY;
         shadowscape = new Shadowscape(daylight, direction, depth);
@@ -94,12 +94,13 @@ public class ShadowLevel implements Level {
     }
 
     public void render(StateBasedGame game, Graphics g) {
+    	//GL11.glDisable(GL11.GL_BLEND);
+    	GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         for (ShadowEntity e : entities) {
             e.render(game, g);
         }
         shadowscape.render(game, g);
-        renderTimeOfDay(totalTime, game, g);
-//        grid.debugDraw(g);
+       // renderTimeOfDay(totalTime, game, g);
     }
 
     private void renderTimeOfDay(int totaltime, StateBasedGame game, Graphics g) {

@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.io.InputStream;
 import java.util.LinkedList;
 
+import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -14,10 +15,15 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.*;
 import org.newdawn.slick.util.ResourceLoader;
 
+import com.shade.base.Entity;
 import com.shade.controls.*;
 import com.shade.crash.*;
 import com.shade.entities.*;
 import com.shade.entities.util.MushroomFactory;
+import com.shade.light.GroundLight;
+import com.shade.light.InfiniteLight;
+import com.shade.light.LightMask;
+import com.shade.light.LightSource;
 import com.shade.shadows.*;
 import com.shade.shadows.ShadowEntity.ShadowIntensity;
 
@@ -46,7 +52,8 @@ public class InGameState extends BasicGameState {
     private Player player;
 
     private int timer, totalTimer;
-
+    
+    LightMask l;
     @Override
     public int getID() {
         return ID;
@@ -59,6 +66,8 @@ public class InGameState extends BasicGameState {
         currentStatus = Status.NOT_STARTED;
         initSprites();
         initFonts();
+        l = new LightMask(container.getWidth(),container.getHeight());
+
     }
 
     private void initFonts() throws SlickException {
@@ -128,22 +137,32 @@ public class InGameState extends BasicGameState {
         casters.add(new Fence(50, 50, 11, 120, 5));
         // shrubs
         // casters.add(new Shrub(300, 300));
-
-        // gargoyles
-        // casters.add(new Monster(500, 300));
-
-        // Gargoyle g1 = new Gargoyle(500,300);
-        // Gargoyle g2 = new Gargoyle(500,200);
-        // Gargoyle g3 = new Gargoyle(500,400);
-        // casters.add(g1);
-        // casters.add(g2);
-        // casters.add(g3);
-        // level.add((Entity)g1);
-        // level.add((Entity)g2);
-        // level.add((Entity)g3);
+        
+        //gargoyles
+        Gargoyle g1 = new Gargoyle(500,300);
+        Gargoyle g2 = new Gargoyle(500,200);
+        Gargoyle g3 = new Gargoyle(500,400);
+    	casters.add(g1);
+    	casters.add(g2);
+    	casters.add(g3);
+    	level.add((Entity)g1);
+    	level.add((Entity)g2);
+    	level.add((Entity)g3);
+    	
+    	LightSource light = new InfiniteLight(110,110,0.2f);
+    	l.add(light);
+    	LightSource light2 = new InfiniteLight(400,300,0.1f);
+    	l.add(light2);
+    	LightSource lightblock = new GroundLight(500,300,20,0.4f,40);
+    	l.add(lightblock);
+    	level.add((ShadowEntity)lightblock);
+    	LightSource lightblock2 = new GroundLight(300,300,20,0.8f,40);
+    	l.add(lightblock2);
+    	level.add((ShadowEntity)lightblock2);
 
         for (ShadowCaster c : casters) {
             level.add(c);
+            l.add(c);
         }
     }
 
@@ -161,10 +180,11 @@ public class InGameState extends BasicGameState {
 
     public void render(GameContainer container, StateBasedGame game, Graphics g)
             throws SlickException {
+		l.render(g);
         backgroundSprite.draw();
         level.render(game, g);
-        trimSprite.draw();
         meter.render(game, g);
+        trimSprite.draw();
         counter.render(game, g);
         if (currentStatus == Status.GAME_OVER) {
             counterFont.drawString(320, 300, "Game Over");
@@ -173,7 +193,7 @@ public class InGameState extends BasicGameState {
 
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
-
+    	l.update(game, delta);
         if (currentStatus == Status.RUNNING) {
             level.update(game, delta);
             timer += delta;
@@ -188,8 +208,9 @@ public class InGameState extends BasicGameState {
             counter.update(game, delta);
             control.update(game, delta);
 
-            if (player.isStunned()) {
-                meter.decrement(0.5);
+            
+            if(player.isStunned()){
+            	meter.decrement(0.5);
             }
 
             // Check for lose condition

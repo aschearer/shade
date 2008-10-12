@@ -1,6 +1,7 @@
 package com.shade.shadows;
 
 import org.newdawn.slick.geom.Shape;
+import org.newdawn.slick.geom.Vector2f;
 
 import com.shade.base.Entity;
 
@@ -36,4 +37,8 @@ public interface ShadowCaster extends Entity {
      * @return the object's shadow.
      */
     public Shape castShadow(float direction, float depth);
+    
+    /** return the underlying shape's coordinates.
+     */
+    public Vector2f getPosition();
 }

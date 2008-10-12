@@ -20,8 +20,10 @@ public class MeterControl implements MushroomCounter, Animatable {
     private static final Color OFF = new Color(163, 191, 95);
 
     private float x, y;
-    private float value, max;
+    private float value, max, adding;
     private float score;
+    
+    private int rate=1;
 
     public MeterControl(float x, float y, float value, float max) {
         this.x = x;
@@ -29,6 +31,7 @@ public class MeterControl implements MushroomCounter, Animatable {
         this.value = value;
         this.max = max;
         score = SCORE_MULTIPLE;
+        adding = 0;
     }
 
     public boolean isEmpty() {
@@ -40,21 +43,22 @@ public class MeterControl implements MushroomCounter, Animatable {
     }
 
     public void onCollect(Mushroom shroomie) {
-        valueMushroom(shroomie);
+        valueMushroom(shroomie);     
+        if (adding > 0)rate++;
     }
 
     private void valueMushroom(Mushroom shroomie) {
         if (shroomie.type == MushroomType.POISON) {
-            value -= shroomie.getSize() * score;    
+            adding -= shroomie.getSize() * score;    
         }
         if (shroomie.type == MushroomType.NORMAL) {
-            value += shroomie.getSize() * score;
+        	adding += shroomie.getSize() * score;
         }
         if (shroomie.type == MushroomType.GOOD) {
-            value += shroomie.getSize() * 2 * score;
+        	adding += shroomie.getSize() * 2 * score;
         }
         if (shroomie.type == MushroomType.RARE) {
-            value += shroomie.getSize() * 10 * score;
+        	adding += shroomie.getSize() * 10 * score;
         }
     }
 
@@ -78,6 +82,11 @@ public class MeterControl implements MushroomCounter, Animatable {
     }
 
     public void update(StateBasedGame game, int delta) {
+        if(adding>0){
+        	value+=0.1f*rate;
+        	adding -= 0.1f*rate;
+        }
+        else rate = 1;
         clamp();
     }
     

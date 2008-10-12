@@ -24,6 +24,7 @@ public abstract class Linkable extends Body {
      * @param l
      */
     protected void attach(Linkable l) {
+    	System.out.println("attaching "+l);
         if (next == null) {
             next = l;
             l.prev = this;

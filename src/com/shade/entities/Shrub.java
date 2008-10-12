@@ -3,6 +3,7 @@ package com.shade.entities;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Shape;
+import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Entity;
@@ -74,5 +75,11 @@ public class Shrub extends Linkable implements ShadowCaster {
         // TODO Auto-generated method stub
         return 0;
     }
+    
+	@Override
+	public Vector2f getPosition() {
+		// TODO Auto-generated method stub
+		return new Vector2f(getCenterX(),getCenterY());
+	}
 
 }

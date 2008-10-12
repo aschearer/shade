@@ -2,9 +2,11 @@ package com.shade.shadows;
 
 import java.util.LinkedList;
 
+import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
+import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
@@ -74,13 +76,15 @@ class Shadowscape implements Animatable {
         g.setColor(SHADOW_COLOR);
         g.setAntiAlias(true);
         for (Shape s : shadows) {
-            g.fill(s);
+           // g.fill(s);
         }
         g.setAntiAlias(false);
         g.setColor(c);
     }
 
     public void renderShadowCasters(StateBasedGame game, Graphics g) {
+    	//GL11.glDisable(GL11.GL_BLEND);
+    	GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         for (ShadowCaster s : casters) {
             s.render(game, g);
         }
@@ -93,7 +97,10 @@ class Shadowscape implements Animatable {
      * render the shadowscape, shadow entities, shadow casters.
      */
     public void render(StateBasedGame game, Graphics g) {
+    	g.setColor(SHADOW_COLOR);
+    	g.draw(new Rectangle(0,0,800,600));
         renderShadowscape(game, g);
+        renderShadowCasters(game, g);
         renderShadowCasters(game, g);
     }
 
