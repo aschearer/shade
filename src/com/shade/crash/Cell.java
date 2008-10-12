@@ -64,10 +64,10 @@ public class Cell {
         for (Body subject : bodies) {
             obstacles.remove(); /* Pop off the current body */
             Collider.testAndAlert(subject, obstacles);
-            /* Check against neighbors */
-            for (Cell neighbor : grid.neighbors(this, subject)) {
-                Collider.testAndAlert(subject, neighbor.bodies);
-            }
+//            /* Check against neighbors */
+//            for (Cell neighbor : grid.neighbors(this, subject)) {
+//                Collider.testAndAlert(subject, neighbor.bodies);
+//            }
         }
     }
 
@@ -80,12 +80,12 @@ public class Cell {
         if (Collider.testAndFlag(b, bodies)) {
             return true;
         }
-        /* Check against neighbors */
-        for (Cell neighbor : grid.neighbors(this, b)) {
-            if (Collider.testAndFlag(b, neighbor.bodies)) {
-                return true;
-            }
-        }
+//        /* Check against neighbors */
+//        for (Cell neighbor : grid.neighbors(this, b)) {
+//            if (Collider.testAndFlag(b, neighbor.bodies)) {
+//                return true;
+//            }
+//        }
         return false;
     }
     

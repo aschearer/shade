@@ -113,6 +113,9 @@ public class Grid {
         for (Body subject : bodies) {
             Cell target = getTargetCell(subject);
             target.add(subject);
+            for (Cell neighbor : neighbors(target, subject)) {
+                neighbor.add(subject);
+            }
         }
     }
 
