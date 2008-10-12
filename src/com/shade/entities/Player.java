@@ -202,6 +202,7 @@ public class Player extends Linkable implements ShadowEntity {
         if (obstacle.getRole() == Role.MONSTER) {
             obstacle.repel(this);
         }
+        obstacle.repel(this);
     }
 
     public void removeFromLevel(Level l) {

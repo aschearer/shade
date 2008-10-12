@@ -42,14 +42,13 @@ public class ShadowLevel implements Level {
     private Shadowscape shadowscape;
     private LinkedList<ShadowEntity> in_queue, out_queue;
     private ZBuffer entities;
-    private float direction, depth, rate;
+    private float direction, rate;
     private DayLightStatus daylight;
     private int totalTime;
 
     public ShadowLevel(Grid grid, float direction, float depth, float rate) {
         this.grid = grid;
         this.direction = direction;
-        this.depth = depth;
         this.rate = rate;
         daylight = DayLightStatus.DAY;
         shadowscape = new Shadowscape(daylight, direction, depth);

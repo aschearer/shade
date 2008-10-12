@@ -20,6 +20,7 @@ import com.shade.controls.*;
 import com.shade.crash.*;
 import com.shade.entities.*;
 import com.shade.entities.util.MushroomFactory;
+import com.shade.light.GroundLight;
 import com.shade.light.InfiniteLight;
 import com.shade.light.LightMask;
 import com.shade.light.LightSource;
@@ -146,10 +147,13 @@ public class InGameState extends BasicGameState {
     	level.add((Entity)g2);
     	level.add((Entity)g3);
     	
-    	LightSource light = new InfiniteLight(110,110);
-    	l.add(light);
-    	LightSource light2 = new InfiniteLight(400,300);
-    	l.add(light2);
+    	LightSource light = new InfiniteLight(110,110,0.9f);
+    	//l.add(light);
+    	LightSource light2 = new InfiniteLight(400,300,0.6f);
+    	//l.add(light2);
+    	LightSource lightblock = new GroundLight(500,300,20,0.5f,40);
+    	l.add(lightblock);
+    	level.add((ShadowEntity)lightblock);
 
         for (ShadowCaster c : casters) {
             level.add(c);
@@ -171,11 +175,11 @@ public class InGameState extends BasicGameState {
 
     public void render(GameContainer container, StateBasedGame game, Graphics g)
             throws SlickException {
-		trimSprite.draw();
-        l.render(g);
+		l.render(g);
         backgroundSprite.draw();
         level.render(game, g);
         meter.render(game, g);
+        trimSprite.draw();
         counter.render(game, g);
         if (currentStatus == Status.GAME_OVER) {
             counterFont.drawString(320, 300, "Game Over");
