@@ -147,13 +147,16 @@ public class InGameState extends BasicGameState {
     	level.add((Entity)g2);
     	level.add((Entity)g3);
     	
-    	LightSource light = new InfiniteLight(110,110,0.9f);
-    	//l.add(light);
-    	LightSource light2 = new InfiniteLight(400,300,0.6f);
-    	//l.add(light2);
-    	LightSource lightblock = new GroundLight(500,300,20,0.5f,40);
+    	LightSource light = new InfiniteLight(110,110,0.2f);
+    	l.add(light);
+    	LightSource light2 = new InfiniteLight(400,300,0.1f);
+    	l.add(light2);
+    	LightSource lightblock = new GroundLight(500,300,20,0.4f,40);
     	l.add(lightblock);
     	level.add((ShadowEntity)lightblock);
+    	LightSource lightblock2 = new GroundLight(300,300,20,0.8f,40);
+    	l.add(lightblock2);
+    	level.add((ShadowEntity)lightblock2);
 
         for (ShadowCaster c : casters) {
             level.add(c);
