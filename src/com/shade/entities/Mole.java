@@ -30,6 +30,7 @@ public class Mole extends Linkable implements ShadowEntity {
     public ShadowLevel level;
     private StateManager manager;
     private Mushroom target;
+    private MoleHole hole;
     private float heading;
     private Animation waking, idling, seeking, working;
     private ShadowIntensity shadowStatus;
@@ -108,7 +109,8 @@ public class Mole extends Linkable implements ShadowEntity {
                 shape.setCenterX(p.x);
                 shape.setCenterY(p.y);
                 manager.enter(MoleState.WAKING);
-//                level.add(new MoleHole(p.x, p.y, RADIUS));
+                hole = new MoleHole(p.x, p.y, RADIUS);
+                level.add(hole);
             }
         }
 
@@ -275,7 +277,7 @@ public class Mole extends Linkable implements ShadowEntity {
         int i = 0;
         while (!lineOfSight && i < entities.length) {
             if (((Entity) entities[i]).getRole() == Role.MUSHROOM) {
-                lineOfSight = level.lineOfSight(this, entities[i]);
+                lineOfSight = level.lineOfSight(this, entities[i], Mole.this, hole);
             }
             i++;
         }

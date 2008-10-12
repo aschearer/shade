@@ -221,7 +221,7 @@ public class Monster extends Linkable implements ShadowEntity {
             int i = 0;
             while (!lineOfSight && i < entities.length) {
                 if (((Entity) entities[i]).getRole() == Role.PLAYER) {
-                    lineOfSight = level.lineOfSight(Monster.this, entities[i]);
+                    lineOfSight = level.lineOfSight(Monster.this, entities[i], Monster.this);
                 }
                 i++;
             }
