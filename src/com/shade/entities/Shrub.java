@@ -76,7 +76,6 @@ public class Shrub extends Linkable implements ShadowCaster {
         return 0;
     }
     
-	@Override
 	public Vector2f getPosition() {
 		// TODO Auto-generated method stub
 		return new Vector2f(getCenterX(),getCenterY());

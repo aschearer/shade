@@ -15,14 +15,13 @@ public abstract class AbstractLight implements LightSource{
 		angle = 0;
 		intensity = intense;
 	}
-	@Override
+	
 	public float getIntensity() {
 		// TODO Auto-generated method stub
 		return intensity;
 	}
 	
 
-	@Override
 	public Vector2f getPosition() {
 		// TODO Auto-generated method stub
 		return myPosition;

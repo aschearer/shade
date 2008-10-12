@@ -262,7 +262,6 @@ public class Gargoyle extends Monster implements ShadowEntity, ShadowCaster {
         return rr.transform(t);
     }
     
-	@Override
 	public Vector2f getPosition() {
 		// TODO Auto-generated method stub
 		return new Vector2f(getCenterX(),getCenterY());
