@@ -195,7 +195,7 @@ public class Grid {
     }
 
     /* Return true if there are no walls between one and two. */
-    public boolean ray(Body one, Body two) {
+    public boolean ray(Body one, Body two, Body ... exceptions) {
         Ray ray = new Ray(one, two);
 //        rays.add(ray);
         Vector2f direction = ray.getDirection();
@@ -240,7 +240,7 @@ public class Grid {
         Body obstacle = null;
         while (obstacle == null && inBounds(currentX, currentY)) {
             obstacle = Collider
-                    .testAndReturn(ray, cells[currentX][currentY].bodies, one);
+                    .testAndReturn(ray, cells[currentX][currentY].bodies, exceptions);
             if (sideX < sideY) {
                 sideX += deltaX * cellWidth;
                 currentX += stepX;

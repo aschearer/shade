@@ -54,37 +54,43 @@ public class Collider {
 
     /**
      * Return the first obstacle the subject intersects with.
+     * 
      * @param subject
      * @param obstacles
      * @param exceptions
      * @return
      */
-    public static Body testAndReturn(Body subject, LinkedList<Body> obstacles, Body ... exceptions) {
+    public static Body testAndReturn(Body subject, LinkedList<Body> obstacles,
+            Body... exceptions) {
         for (Body obstacle : obstacles) {
-            if (!matches(obstacle, exceptions) && intersecting(subject, obstacle)) {
+            if (!subject.equals(obstacle) && !matches(obstacle, exceptions)
+                    && intersecting(subject, obstacle)) {
                 return obstacle;
             }
         }
         return null;
     }
-    
+
     /**
      * Return true if the subject intersects with any of the obstacles.
+     * 
      * @param subject
      * @param obstacles
      * @param exceptions
      * @return
      */
-    public static boolean testAndFlag(Body subject, LinkedList<Body> obstacles, Body ... exceptions) {
+    public static boolean testAndFlag(Body subject, LinkedList<Body> obstacles,
+            Body... exceptions) {
         for (Body obstacle : obstacles) {
-            if (!matches(obstacle, exceptions) && intersecting(subject, obstacle)) {
+            if (subject.equals(obstacle) && !matches(obstacle, exceptions)
+                    && intersecting(subject, obstacle)) {
                 return true;
             }
         }
         return false;
     }
-    
-    private static boolean matches(Body subject, Body ... obstacles) {
+
+    private static boolean matches(Body subject, Body... obstacles) {
         for (Body obstacle : obstacles) {
             if (subject.equals(obstacle)) {
                 return true;
