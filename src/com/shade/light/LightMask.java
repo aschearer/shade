@@ -38,7 +38,6 @@ public class LightMask {
 		lights = light;
 		for(LightSource l:lights)
 			l.update(game, delta);
-		Collections.sort(lights,new LightSorter());
 	}
 	
 	
@@ -48,7 +47,6 @@ public class LightMask {
 	
 	public void add(LightSource l){
 		lights.add(l);
-		Collections.sort(lights,new LightSorter());
 	}
 	
 	public void update(StateBasedGame game, int delta){
@@ -102,7 +100,7 @@ public class LightMask {
 
 			// don't modify the contents of the stencil buffer
 			GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_KEEP);
-			GL11.glDisable(GL11.GL_BLEND);
+			GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
 			l.renderLight(g, width, height);
 			
 			GL11.glDisable(GL11.GL_STENCIL_TEST);

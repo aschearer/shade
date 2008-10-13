@@ -6,7 +6,7 @@ public abstract class AbstractLight implements LightSource{
 	Vector2f myPosition;
 	int myCenterx;
 	int myCentery;
-	int angle;
+	double angle;
 	float intensity;
 	public AbstractLight(int x, int y, float intense){
 		myCenterx = x;

@@ -46,7 +46,7 @@ public class GroundLight extends Body implements LightSource,ShadowEntity {
 	@Override
 	public void renderLight(Graphics g, int width, int height) {
 		g.setColor(new Color(0,0,0,intensity));
-		g.fill(new Circle(getCenterX(),getCenterY(),100)
+		g.fill(new Circle(getCenterX(),getCenterY(),200)
 			/*,new GradientFill(
 						new Vector2f(0,0),new Color(0,0,0,intensity),
 						new Vector2f(myCastLength,0), new Color(0,0,0,0)

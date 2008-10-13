@@ -20,6 +20,7 @@ import com.shade.controls.*;
 import com.shade.crash.*;
 import com.shade.entities.*;
 import com.shade.entities.util.MushroomFactory;
+import com.shade.light.GlobalLight;
 import com.shade.light.GroundLight;
 import com.shade.light.InfiniteLight;
 import com.shade.light.LightMask;
@@ -149,6 +150,10 @@ public class InGameState extends BasicGameState {
     	level.add((Entity)g2);
     	level.add((Entity)g3);
     	
+    	GlobalLight lix = new GlobalLight(1500,0,1.0f,9000);
+    	l.add(lix);
+
+    	/*
     	LightSource light = new InfiniteLight(110,110,0.2f);
     	l.add(light);
     	LightSource light2 = new InfiniteLight(400,300,0.1f);
@@ -156,10 +161,17 @@ public class InGameState extends BasicGameState {
     	LightSource lightblock = new GroundLight(500,300,20,0.4f,40);
     	l.add(lightblock);
     	level.add((ShadowEntity)lightblock);
-    	LightSource lightblock2 = new GroundLight(300,300,20,0.8f,40);
+    	LightSource lightblock2 = new GroundLight(300,300,20,0.7f,40);
     	l.add(lightblock2);
     	level.add((ShadowEntity)lightblock2);
-
+    	LightSource lightblock3 = new GroundLight(300,200,20,0.5f,40);
+    	l.add(lightblock3);
+    	level.add((ShadowEntity)lightblock3);
+    	LightSource lightblock4 = new GroundLight(300,400,20,0.3f,40);
+    	l.add(lightblock4);
+    	level.add((ShadowEntity)lightblock4);
+    	//*/
+    	
         for (ShadowCaster c : casters) {
             level.add(c);
             l.add(c);
