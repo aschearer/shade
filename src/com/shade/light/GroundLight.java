@@ -28,22 +28,22 @@ public class GroundLight extends Body implements LightSource,ShadowEntity {
 		myCastLength = castL;
 	}
 
-	@Override
+	
 	public float getCastLength() {
 		return myCastLength;
 	}
 
-	@Override
+	
 	public float getIntensity() {
 		return intensity;
 	}
 
-	@Override
+	
 	public Vector2f getPosition() {
 		return new Vector2f(getX(), getY());
 	}
 
-	@Override
+	
 	public void renderLight(Graphics g, int width, int height) {
 		g.setColor(new Color(0,0,0,intensity));
 		g.fill(new Circle(getCenterX(),getCenterY(),200)
@@ -56,21 +56,21 @@ public class GroundLight extends Body implements LightSource,ShadowEntity {
 		g.fill(shape);
 	}
 
-	@Override
+	
 	public void update(StateBasedGame game, int delta) {
 	}
 
-	@Override
+	
 	public void addToLevel(Level l) {
 		//l.add(this);
 	}
 
-	@Override
+	
 	public Role getRole() {
 		return Role.MOVEABLE;
 	}
 
-	@Override
+	
 	public void onCollision(Entity obstacle) {
 		//special movement method
 		if(obstacle.getRole() == Role.PLAYER){
@@ -107,11 +107,11 @@ public class GroundLight extends Body implements LightSource,ShadowEntity {
 		
 	}
 
-	@Override
+	
 	public void removeFromLevel(Level l) {
 	}
 
-	@Override
+	
 	public void repel(Entity repellee) {
 		Body b = (Body) repellee;
 		Vector2f vect = b.getVelocity();
@@ -140,35 +140,33 @@ public class GroundLight extends Body implements LightSource,ShadowEntity {
 		}
 	}
 
-	@Override
+	
 	public void render(StateBasedGame game, Graphics g) {
 		g.setColor(new Color(1.0f,1.0f,0,1.0f));
 		g.fill(shape);
 	}
 
-	@Override
+	
 	public int getZIndex() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
+	
 	public boolean hasIntensity(ShadowIntensity s) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
+	
 	public void setIntensity(ShadowIntensity s) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
+	
 	public int compareTo(ShadowEntity arg0) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-
-
 }

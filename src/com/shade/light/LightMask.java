@@ -20,7 +20,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import com.shade.shadows.ShadowCaster;
 
 public class LightMask {
-	
+
 	private int width;
 	private int height;
 	private ArrayList<ShadowCaster> shadowcasters;
@@ -124,7 +124,7 @@ public class LightMask {
 	
 	private class LightSorter implements Comparator<LightSource>{
 
-		@Override
+		
 		public int compare(LightSource arg0, LightSource arg1) {
 			double diff = arg0.getIntensity()-arg1.getIntensity();
 			return (int)(diff/Math.abs(diff));

@@ -5,12 +5,14 @@ import java.io.InputStream;
 import java.util.LinkedList;
 
 import org.lwjgl.opengl.GL11;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.*;
 import org.newdawn.slick.util.ResourceLoader;
@@ -150,8 +152,9 @@ public class InGameState extends BasicGameState {
     	level.add((Entity)g2);
     	level.add((Entity)g3);
     	
-    	GlobalLight lix = new GlobalLight(1500,0,1.0f,9000);
+    	GlobalLight lix = new GlobalLight(1500,0,1.0f,9000,10);
     	l.add(lix);
+
 
     	/*
     	LightSource light = new InfiniteLight(110,110,0.2f);
@@ -193,6 +196,10 @@ public class InGameState extends BasicGameState {
     public void render(GameContainer container, StateBasedGame game, Graphics g)
             throws SlickException {
 		l.render(g);
+		GL11.glBlendFunc(GL11.GL_ONE,GL11.GL_ONE);
+		g.setColor(new Color(0,0,0,0.1f));
+		g.fill(new Rectangle(0, 0, 800, 600));
+		GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE);
         backgroundSprite.draw();
         level.render(game, g);
         meter.render(game, g);

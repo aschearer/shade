@@ -226,8 +226,8 @@ public class ShadowLevel implements Level {
      * @param two
      * @return
      */
-    public boolean lineOfSight(Entity one, Entity two) {
-        return grid.ray((Body) one, (Body) two);
+    public boolean lineOfSight(Entity one, Entity two, Body ... exceptions) {
+        return grid.ray((Body) one, (Body) two, exceptions);
     }
 
     /**

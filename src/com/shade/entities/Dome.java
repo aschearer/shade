@@ -114,7 +114,6 @@ public class Dome extends Body implements ShadowCaster {
         b.move(Math.cos(angle) * move, Math.sin(angle) * move);
     }
     
-	@Override
 	public Vector2f getPosition() {
 		// TODO Auto-generated method stub
 		return new Vector2f(getCenterX(),getCenterY());

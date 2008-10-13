@@ -1,7 +1,6 @@
 package com.shade.crash;
 
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.geom.Line;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Transform;
 import org.newdawn.slick.geom.Vector2f;
@@ -15,7 +14,6 @@ import com.shade.util.Geom;
 public class Ray extends Body {
 
     private Vector2f start, end;
-    private Line line;
 
     public Ray(Body one, Body two) {
         float w = one.getWidth();
@@ -28,8 +26,6 @@ public class Ray extends Body {
                                                       one.getCenterX(), 
                                                       one.getCenterY());
         shape = shape.transform(t);
-        line = new Line(one.getCenterX(), one.getCenterY(), 
-                        two.getCenterX(), two.getCenterY());
     }
 
     public Vector2f getDirection() {
