@@ -100,7 +100,9 @@ public class ShadowLevel implements Level {
             e.render(game, g);
         }
         shadowscape.render(game, g);
-       // renderTimeOfDay(totalTime, game, g);
+        //GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
+        renderTimeOfDay(totalTime, game, g);
+        //GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE);
     }
 
     private void renderTimeOfDay(int totaltime, StateBasedGame game, Graphics g) {

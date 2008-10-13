@@ -197,7 +197,7 @@ public class InGameState extends BasicGameState {
             throws SlickException {
 		l.render(g);
 		GL11.glBlendFunc(GL11.GL_ONE,GL11.GL_ONE);
-		g.setColor(new Color(0,0,0,0.1f));
+		g.setColor(new Color(0,0,0,0.3f));
 		g.fill(new Rectangle(0, 0, 800, 600));
 		GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE);
         backgroundSprite.draw();
