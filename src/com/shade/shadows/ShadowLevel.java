@@ -28,11 +28,12 @@ import com.shade.crash.util.CrashGeom;
  */
 public class ShadowLevel implements Level {
 
-    public static final float TRANSITION_TIME = 1f / 7;
-    public static final float MAX_SHADOW = 0.6f;
-    public static final float SUN_ANGLE_INCREMENT = 0.001f;
-    public static final int SECONDS_PER_DAY = (int) Math.ceil(Math.PI * 32
-            / SUN_ANGLE_INCREMENT);
+	public static final float TRANSITION_TIME = 1f / 7;
+	public static final float MAX_SHADOW = 0.4f;
+	public static final float SUN_ANGLE_INCREMENT = 0.0001f;
+	public static final int SECONDS_PER_DAY = (int) Math.ceil(Math.PI * 2
+			/ SUN_ANGLE_INCREMENT);
+
 
     public enum DayLightStatus {
         DAWN, DAY, DUSK, NIGHT
@@ -97,11 +98,11 @@ public class ShadowLevel implements Level {
     	//GL11.glDisable(GL11.GL_BLEND);
     	GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         for (ShadowEntity e : entities) {
-            e.render(game, g);
+            //e.render(game, g);
         }
-        shadowscape.render(game, g);
+        //shadowscape.render(game, g);
         //GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
-        renderTimeOfDay(totalTime, game, g);
+       // renderTimeOfDay(totalTime, game, g);
         //GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE);
     }
 

@@ -2,6 +2,7 @@ package com.shade.states;
 
 import java.awt.Font;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import org.lwjgl.opengl.GL11;
@@ -22,11 +23,11 @@ import com.shade.controls.*;
 import com.shade.crash.*;
 import com.shade.entities.*;
 import com.shade.entities.util.MushroomFactory;
-import com.shade.light.GlobalLight;
-import com.shade.light.GroundLight;
-import com.shade.light.InfiniteLight;
-import com.shade.light.LightMask;
-import com.shade.light.LightSource;
+import com.shade.lightrender.GlobalLight;
+import com.shade.lightrender.GroundLight;
+import com.shade.lightrender.InfiniteLight;
+import com.shade.lightrender.LightMask;
+import com.shade.lightrender.LightSource;
 import com.shade.shadows.*;
 import com.shade.shadows.ShadowEntity.ShadowIntensity;
 
@@ -67,10 +68,10 @@ public class InGameState extends BasicGameState {
         level = new ShadowLevel(new Grid(8, 6, 200), SUN_START_ANGLE,
                 SUN_START_DEPTH, SUN_ANGLE_INCREMENT);
         currentStatus = Status.NOT_STARTED;
+        l = new LightMask(container.getWidth(),container.getHeight());
         initSprites();
         initFonts();
-        l = new LightMask(container.getWidth(),container.getHeight());
-
+        
     }
 
     private void initFonts() throws SlickException {
@@ -86,7 +87,9 @@ public class InGameState extends BasicGameState {
 
     private void initSprites() throws SlickException {
         backgroundSprite = new Image("states/ingame/background.png");
+        l.add(backgroundSprite);
         trimSprite = new Image("states/ingame/trim.png");
+        l.add(trimSprite);
         counterSprite = new Image("states/ingame/counter.png");
     }
 
@@ -104,9 +107,15 @@ public class InGameState extends BasicGameState {
         initObstacles();
         initBasket();
         initPlayer();
-        level.add(new Monster(450, 80));
-        level.add(new Monster(650, 520));
-        level.add(new Monster(200, 275));
+        ArrayList<Monster> monmon = new ArrayList<Monster>();
+        monmon.add(new Monster(450, 80));
+        monmon.add(new Monster(650, 520));
+        monmon.add(new Monster(200, 275));
+        
+        for(Monster mom:monmon){
+        	l.add(mom);
+        	level.add(mom);
+        }
         
         control = new InGameControl(level, counter, meter, player);
     }
@@ -139,7 +148,7 @@ public class InGameState extends BasicGameState {
         casters.add(new Fence(715, 368, 11, 120, 5));
         casters.add(new Fence(50, 50, 11, 120, 5));
         // shrubs
-        // casters.add(new Shrub(300, 300));
+        //casters.add(new Shrub(300, 300));
         
         //gargoyles
         Gargoyle g1 = new Gargoyle(500,300);
@@ -156,23 +165,23 @@ public class InGameState extends BasicGameState {
     	l.add(lix);
 
 
-    	/*
-    	LightSource light = new InfiniteLight(110,110,0.2f);
-    	l.add(light);
-    	LightSource light2 = new InfiniteLight(400,300,0.1f);
-    	l.add(light2);
-    	LightSource lightblock = new GroundLight(500,300,20,0.4f,40);
+    	///*
+    	LightSource light = new InfiniteLight(110,110,0.2f,100,3);
+    	//l.add(light);
+    	LightSource light2 = new InfiniteLight(400,300,0.1f,400,20);
+    	//l.add(light2);
+    	LightSource lightblock = new GroundLight(500,300,20,0.1f,40);
     	l.add(lightblock);
     	level.add((ShadowEntity)lightblock);
     	LightSource lightblock2 = new GroundLight(300,300,20,0.7f,40);
-    	l.add(lightblock2);
-    	level.add((ShadowEntity)lightblock2);
+    	//l.add(lightblock2);
+    	//level.add((ShadowEntity)lightblock2);
     	LightSource lightblock3 = new GroundLight(300,200,20,0.5f,40);
-    	l.add(lightblock3);
-    	level.add((ShadowEntity)lightblock3);
+    	//l.add(lightblock3);
+    	//level.add((ShadowEntity)lightblock3);
     	LightSource lightblock4 = new GroundLight(300,400,20,0.3f,40);
-    	l.add(lightblock4);
-    	level.add((ShadowEntity)lightblock4);
+    	//l.add(lightblock4);
+    	//level.add((ShadowEntity)lightblock4);
     	//*/
     	
         for (ShadowCaster c : casters) {
@@ -186,22 +195,28 @@ public class InGameState extends BasicGameState {
         b.add(counter);
         b.add(meter);
         level.add(b);
+        l.add(b);
     }
 
     private void initPlayer() throws SlickException {
         player = new Player(400, 350);
         level.add(player);
+        l.add(player);
     }
 
     public void render(GameContainer container, StateBasedGame game, Graphics g)
             throws SlickException {
-		l.render(g);
+    	g.setDrawMode(Graphics.MODE_ADD);
+		l.renderLights(g);
 		GL11.glBlendFunc(GL11.GL_ONE,GL11.GL_ONE);
-		g.setColor(new Color(0,0,0,0.3f));
+		g.setColor(new Color(0,0,0,0.5f));
 		g.fill(new Rectangle(0, 0, 800, 600));
-		GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE);
-        backgroundSprite.draw();
+		GL11.glBlendFunc(GL11.GL_DST_ALPHA,GL11.GL_ONE);
+		backgroundSprite.draw();
+		l.renderEntities(game, g);
+		l.renderCasters(game, g);
         level.render(game, g);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         meter.render(game, g);
         trimSprite.draw();
         counter.render(game, g);
