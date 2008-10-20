@@ -48,9 +48,9 @@ public class MeterControl implements MushroomCounter, Animatable {
     }
 
     private void valueMushroom(Mushroom shroomie) {
-        if (shroomie.type == MushroomType.POISON) {
-            adding -= shroomie.getSize() * score;    
-        }
+    	/*for(MushroomType a : MushroomType.values()){
+    		if(shroomie.type == a) 
+    	}*/
         if (shroomie.type == MushroomType.NORMAL) {
         	adding += shroomie.getSize() * score;
         }
@@ -59,6 +59,9 @@ public class MeterControl implements MushroomCounter, Animatable {
         }
         if (shroomie.type == MushroomType.RARE) {
         	adding += shroomie.getSize() * 10 * score;
+        }
+        if (shroomie.type == MushroomType.EGG) {
+        	adding += shroomie.getSize() * score;
         }
     }
 
