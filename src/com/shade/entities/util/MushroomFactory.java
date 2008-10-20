@@ -9,7 +9,7 @@ public class MushroomFactory {
     /**
      * Corresponds to the Mushroom.Type enum.
      */
-    private static final double[] distribution = { 0, .75, .20, .05 };
+    private static final double[] distribution = { 0, .55,.1, .20, .15 };
 
     /**
      * Take care of assigning the mushroom a type.
@@ -31,22 +31,11 @@ public class MushroomFactory {
     private static int randomType() {
         double r = Math.random();
         
-        double max = distribution[0];
-        if (r <= max) {
-            return 0;
+        double max = 0;
+        for(int i=0;i<distribution.length;i++){
+        	max+= distribution[i];
+        	if(r<= max) return i;
         }
-        
-        max += distribution[1];
-        if (r <= max) {
-            return 1;
-        }
-
-        max += distribution[2];
-        if (r <= max) {
-            return 2;
-        }
-        
-        max += distribution[3];
-        return 3;
+        return 0; //should never reach here
     }
 }

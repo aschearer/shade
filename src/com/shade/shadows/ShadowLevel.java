@@ -12,6 +12,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Entity;
 import com.shade.base.Level;
+import com.shade.base.Entity.Role;
 import com.shade.crash.Body;
 import com.shade.crash.Grid;
 import com.shade.crash.util.CrashGeom;
@@ -61,6 +62,13 @@ public class ShadowLevel implements Level {
         e.addToLevel(this);
         in_queue.add((ShadowEntity) e);
         grid.add((Body) e);
+    }
+    
+    public Entity getByRole(Role r){
+    	for(Entity e : entities){
+    		if(e.getRole().equals(r)) return e;
+    	}
+    	return null;
     }
     
     public DayLightStatus getDayLight(){

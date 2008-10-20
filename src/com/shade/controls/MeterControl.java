@@ -45,18 +45,23 @@ public class MeterControl implements MushroomCounter, Animatable {
     }
 
     private void valueMushroom(Mushroom shroomie) {
+    	/*for(MushroomType a : MushroomType.values()){
+    		if(shroomie.type == a) 
+    	}*/
         if (shroomie.type == MushroomType.POISON) {
             value -= shroomie.getSize() * score;    
         }
-        if (shroomie.type == MushroomType.NORMAL) {
+        else if (shroomie.type == MushroomType.NORMAL) {
             value += shroomie.getSize() * score;
         }
-        if (shroomie.type == MushroomType.GOOD) {
+        else if (shroomie.type == MushroomType.GOOD) {
             value += shroomie.getSize() * 2 * score;
         }
-        if (shroomie.type == MushroomType.RARE) {
+        else if (shroomie.type == MushroomType.RARE) {
             value += shroomie.getSize() * 10 * score;
         }
+        else if (shroomie.type == MushroomType.EGG)
+        	value += shroomie.getSize() * score;
     }
 
     public void decrement(double amt) {

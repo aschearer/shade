@@ -31,7 +31,7 @@ public class Mushroom extends Linkable implements ShadowEntity {
     };
 
     public enum MushroomType {
-        POISON, NORMAL, GOOD, RARE
+        POISON, NORMAL, EGG, GOOD, RARE
     };
 
     public MushroomType type;
@@ -104,13 +104,29 @@ public class Mushroom extends Linkable implements ShadowEntity {
                 detach();
                 return;
             }
+            if (scale > MAX_SCALE && type==MushroomType.EGG){
+            	float x = shape.getCenterX();
+                float y = shape.getCenterY();
+                manager.enter(MushroomState.DEAD);
+                detach();
+                try {
+    				Bird bird = new Bird(x,y);
+    				level.add(bird);
+    			} catch (SlickException e) {
+    				// TODO Auto-generated catch block
+    				e.printStackTrace();
+    			}
+    			return;
+            }
             if (shadowStatus != ShadowIntensity.UNSHADOWED && scale < MAX_SCALE) {
-                scale += SCALE_INCREMENT;
+            	if(type!=MushroomType.EGG)
+            	  scale += SCALE_INCREMENT;
                 resize();
                 return;
             }
             if (shadowStatus == ShadowIntensity.UNSHADOWED) {
-                shrink();
+            	if(type==MushroomType.EGG) scale+= SCALE_INCREMENT/3;
+            	else shrink();
                 resize();
                 return;
             }
@@ -158,9 +174,28 @@ public class Mushroom extends Linkable implements ShadowEntity {
                 detach();
                 return;
             }
+            if (scale > MAX_SCALE && type==MushroomType.EGG){
+            	float x = shape.getCenterX();
+                float y = shape.getCenterY();
+                manager.enter(MushroomState.DEAD);
+                detach();
+                try {
+    				Bird bird = new Bird(x,y);
+    				level.add(bird);
+    			} catch (SlickException e) {
+    				e.printStackTrace();
+    			}
+    			return;
+            }
+            if (shadowStatus != ShadowIntensity.UNSHADOWED && scale < MAX_SCALE) {
+            	if(type!=MushroomType.EGG)
+            	  scale += SCALE_INCREMENT;
+                resize();
+            }
 
             if (shadowStatus == ShadowIntensity.UNSHADOWED) {
-                shrink();
+            	if(type!=MushroomType.EGG) shrink();
+            	else scale += SCALE_INCREMENT/3;
                 resize();
             }
 
@@ -209,9 +244,29 @@ public class Mushroom extends Linkable implements ShadowEntity {
                 detach();
                 return;
             }
+            if (scale > MAX_SCALE && type==MushroomType.EGG){
+            	float x = shape.getCenterX();
+                float y = shape.getCenterY();
+                manager.enter(MushroomState.DEAD);
+                detach();
+                try {
+    				Bird bird = new Bird(x,y);
+    				level.add(bird);
+    			} catch (SlickException e) {
+    				// TODO Auto-generated catch block
+    				e.printStackTrace();
+    			}
+    			return;
+            }
+            if (shadowStatus != ShadowIntensity.UNSHADOWED && scale < MAX_SCALE) {
+            	if(type!=MushroomType.EGG)
+            	  scale += SCALE_INCREMENT;
+                resize();
+            }
 
             if (shadowStatus == ShadowIntensity.UNSHADOWED) {
-                shrink();
+            	if(type!=MushroomType.EGG) shrink();
+            	else scale += SCALE_INCREMENT/3;
                 resize();
             }
 

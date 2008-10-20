@@ -61,8 +61,8 @@ public class Player extends Linkable implements ShadowEntity {
         }
 
         public void onCollision(Entity obstacle) {
-            if (obstacle.getRole() == Role.MONSTER
-                    && ((Monster) obstacle).isActive()) {
+            if ((obstacle.getRole() == Role.MONSTER
+                    && ((Monster) obstacle).isActive()) || (obstacle.getRole()==Role.BIRD && ((Bird) obstacle).isActive())) {
                 Body b = (Body) obstacle;
                 double xdiff = getCenterX() - b.getCenterX();
                 double ydiff = getCenterY() - b.getCenterY();
