@@ -13,7 +13,7 @@ import org.newdawn.slick.state.StateBasedGame;
  */
 public interface LightSource {
 	Vector2f getPosition();
-	float getIntensity();
+	float getShadowIntensity();
 	float getCastLength();
 	void update(StateBasedGame game, int delta);
 	/**

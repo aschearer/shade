@@ -22,6 +22,7 @@ public class Mole extends Linkable implements ShadowEntity {
 
     private static final int RADIUS = 12;
     private static final float SPEED = .9f;
+    
 
     private enum MoleState {
         DIGGING, WAKING, IDLING, SEEKING, WORKING, CONFUSED
@@ -34,6 +35,16 @@ public class Mole extends Linkable implements ShadowEntity {
     private float heading;
     private Animation waking, idling, seeking, working;
     private ShadowIntensity shadowStatus;
+    private float myIntensity;
+    
+	public void updateIntensity(Graphics g) {
+		myIntensity = g.getPixel((int)getCenterX(), (int)getCenterY()).a;
+		
+	}
+	
+	public float getShadowIntensity(){
+		return myIntensity;
+	}
 
     public Mole() throws SlickException {
         initShape();
@@ -375,6 +386,7 @@ public class Mole extends Linkable implements ShadowEntity {
         g.rotate(getCenterX(), getCenterY(), (float) Math.toDegrees(heading));
         manager.render(g);
         g.resetTransform();
+        updateIntensity(g);
     }
 
     public void update(StateBasedGame game, int delta) {
@@ -385,5 +397,7 @@ public class Mole extends Linkable implements ShadowEntity {
     public int compareTo(ShadowEntity o) {
         return getZIndex() - o.getZIndex();
     }
+
+
 
 }

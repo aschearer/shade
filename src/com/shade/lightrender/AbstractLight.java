@@ -16,7 +16,7 @@ public abstract class AbstractLight implements LightSource{
 		intensity = intense;
 	}
 	
-	public float getIntensity() {
+	public float getShadowIntensity() {
 		// TODO Auto-generated method stub
 		return intensity;
 	}

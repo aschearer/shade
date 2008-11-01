@@ -16,6 +16,15 @@ public class MoleHole extends Linkable implements ShadowEntity {
     private int timer;
     private ShadowIntensity shadowStatus;
     private Level level;
+    private float myIntensity;
+    
+	public void updateIntensity(Graphics g) {
+		myIntensity = g.getPixel((int)getCenterX(), (int)getCenterY()).a;
+		
+	}
+	public float getShadowIntensity() {
+		return myIntensity;
+	}
     
     public MoleHole(float x, float y, float r) {
         initShape(x, y, r);

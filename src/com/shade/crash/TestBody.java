@@ -54,4 +54,9 @@ public class TestBody extends Body {
 		
 	}
 
+	public void updateIntensity() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

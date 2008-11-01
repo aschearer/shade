@@ -170,7 +170,7 @@ public class InGameState extends BasicGameState {
     	//l.add(light);
     	LightSource light2 = new InfiniteLight(400,300,0.1f,400,20);
     	//l.add(light2);
-    	LightSource lightblock = new GroundLight(500,300,20,0.1f,40);
+    	LightSource lightblock = new GroundLight(500,300,20,0.6f,40);
     	l.add(lightblock);
     	level.add((ShadowEntity)lightblock);
     	LightSource lightblock2 = new GroundLight(300,300,20,0.7f,40);
@@ -206,10 +206,10 @@ public class InGameState extends BasicGameState {
 
     public void render(GameContainer container, StateBasedGame game, Graphics g)
             throws SlickException {
-    	g.setDrawMode(Graphics.MODE_ADD);
+    	//g.setDrawMode(Graphics.MODE_ADD);
 		l.renderLights(g);
 		GL11.glBlendFunc(GL11.GL_ONE,GL11.GL_ONE);
-		g.setColor(new Color(0,0,0,0.5f));
+		g.setColor(new Color(0,0,0,0.15f));
 		g.fill(new Rectangle(0, 0, 800, 600));
 		GL11.glBlendFunc(GL11.GL_DST_ALPHA,GL11.GL_ONE);
 		backgroundSprite.draw();

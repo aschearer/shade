@@ -26,6 +26,16 @@ public class Player extends Linkable implements ShadowEntity {
     private StateManager manager;
     private Image normal;
     private ShadowIntensity shadowStatus;
+    private float myIntensity;
+    
+	public void updateIntensity(Graphics g) {
+		myIntensity = g.getPixel((int)getCenterX(), (int)getCenterY()).a;
+		
+	}
+	
+	public float getShadowIntensity(){
+		return myIntensity;
+	}
 
     public Player(float x, float y) throws SlickException {
         initShape(x, y);
@@ -224,6 +234,7 @@ public class Player extends Linkable implements ShadowEntity {
 
     public void render(StateBasedGame game, Graphics g) {
         manager.render(g);
+        updateIntensity(g);
     }
 
     public void update(StateBasedGame game, int delta) {

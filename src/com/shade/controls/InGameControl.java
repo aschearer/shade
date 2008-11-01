@@ -66,10 +66,10 @@ public class InGameControl {
 
         public void update(StateBasedGame game, int delta)
                 throws SlickException {
-            if (player.hasIntensity(ShadowIntensity.UNSHADOWED)) {
+            if (player.getShadowIntensity()>0.8) {
             	inSunTime+=delta;
-            	double dec = Math.max(0.01f, Math.pow(1.0*inSunTime/((inSunTime+1000)*2),5));
-            	//meter.decrement(dec);
+            	double dec = Math.max(0.01f, Math.pow(1.0*inSunTime/((inSunTime+100)*2),3));
+            	meter.decrement(dec);
             }
             else{
             	//System.out.println("resetting timer");

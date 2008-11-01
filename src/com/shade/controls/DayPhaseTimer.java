@@ -21,8 +21,39 @@ public class DayPhaseTimer {
     	totaltime = 0;
     }
     
-    public DayLightStatus getDaylightStatus(){
+    public DayLightStatus getDayLightStatus(){
     	return daylight;
+    }
+    
+    public double secondsInPhase(){
+    	
+    	int wholeday = totaltime%secondsPerDay;
+    	switch(daylight){
+    	// day, dusk, and night are long over
+    	case DAWN: 
+    		secondsPerPhase(DayLightStatus.NIGHT);
+    	// day and dusk have passed
+    	case NIGHT: 
+    		wholeday -= secondsPerPhase(DayLightStatus.DUSK);
+        //the day has passed.
+    	case DUSK:
+    		wholeday -= secondsPerPhase(DayLightStatus.DAY);
+    	}
+    	return wholeday;
+    }
+    
+    public double percentPhasePassed(){
+    	return secondsInPhase()/secondsPerPhase(daylight);
+    }
+    
+    public double secondsPerPhase(DayLightStatus whichphase){
+    	switch (whichphase){
+    	case DAWN:
+    	case DUSK:
+    		return TRANSITION_TIME*secondsPerDay;
+    	default:
+    		return (1f/2-TRANSITION_TIME)*secondsPerDay;
+    	}
     }
     
     public void update(int delta){

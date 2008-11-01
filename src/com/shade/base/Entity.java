@@ -58,5 +58,6 @@ public interface Entity extends Animatable {
      * @param vely the y velocity of the caller
      */
     public void repel(Entity repellee);
+    
      
 }

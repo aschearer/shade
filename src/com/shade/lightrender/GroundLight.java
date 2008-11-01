@@ -15,11 +15,21 @@ import com.shade.crash.Body;
 import com.shade.shadows.ShadowEntity;
 import com.shade.util.RadialGradient;
 
-public class GroundLight extends Body implements LightSource,ShadowEntity {
+public class GroundLight extends Body implements LightSource, ShadowEntity {
 	
 	private float myCastLength;
 	private int side;
 	private float intensity;
+    private float myIntensity;
+    
+	public void updateIntensity(Graphics g) {
+		myIntensity = g.getPixel((int)getCenterX(), (int)getCenterY()).a;
+		
+	}
+	
+	public float getShadowIntensity(){
+		return myIntensity;
+	}
 	
 	public GroundLight(int x, int y, int s, float intense, int castL){
 		side = s;
@@ -146,6 +156,7 @@ public class GroundLight extends Body implements LightSource,ShadowEntity {
 	public void render(StateBasedGame game, Graphics g) {
 		g.setColor(new Color(1.0f,1.0f,0,1.0f));
 		g.fill(shape);
+		updateIntensity(g);
 	}
 
 	
@@ -170,5 +181,11 @@ public class GroundLight extends Body implements LightSource,ShadowEntity {
 	public int compareTo(ShadowEntity arg0) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+
+	public void updateIntensity() {
+		// TODO Auto-generated method stub
+		
 	}
 }

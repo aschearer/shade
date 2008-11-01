@@ -98,4 +98,19 @@ public class Basket extends Linkable implements ShadowEntity {
         return getZIndex() - s.getZIndex();
     }
 
+	public void updateIntensity() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public float getShadowIntensity() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public void updateIntensity(Graphics g) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

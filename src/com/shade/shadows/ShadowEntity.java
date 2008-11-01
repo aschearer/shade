@@ -1,5 +1,7 @@
 package com.shade.shadows;
 
+import org.newdawn.slick.Graphics;
+
 import com.shade.base.Entity;
 
 /**
@@ -29,4 +31,16 @@ public interface ShadowEntity extends Entity, Comparable<ShadowEntity> {
      * @return
      */
     public int getZIndex();
+    
+    /**
+     * A method which must be called to ensure that an
+     * entity knows the intensity of the shadow it's 
+     * contained in.
+     */
+    public void updateIntensity(Graphics g);
+    /**
+     * return intensity
+     * @return
+     */
+    public float getShadowIntensity();
 }
