@@ -9,7 +9,7 @@ import com.shade.shadows.ShadowLevel.DayLightStatus;
 
 public class GlobalLight extends InfiniteLight implements LightSource {
 	public static final float TRANSITION_TIME = 1f / 7;
-	public static final float MAX_SHADOW = 0.8f;
+	public static final float MAX_SHADOW = 1f;
 	public static final float SUN_ANGLE_INCREMENT = 0.0001f;
 	public static final int SECONDS_PER_DAY = (int) Math.ceil(Math.PI * 2
 			/ SUN_ANGLE_INCREMENT);

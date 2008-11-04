@@ -167,7 +167,7 @@ public class ShadowLevel implements Level {
         totalTime += delta;
         resolve();
         grid.update();
-        direction += rate;
+        direction += rate*delta;
         shadowscape.setDirection(direction);
         shadowscape.setDayLight(daylight);
         shadowscape.update(game, delta);
