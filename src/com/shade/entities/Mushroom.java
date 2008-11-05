@@ -200,14 +200,8 @@ public class Mushroom extends Linkable implements ShadowEntity {
                 resize();
             }
 
-<<<<<<< HEAD:src/com/shade/entities/Mushroom.java
-            if (shadowStatus == ShadowIntensity.UNSHADOWED) {
-            	if(type!=MushroomType.EGG) shrink();
-            	else scale += SCALE_INCREMENT/3;
-=======
             if (getShadowIntensity()>0.8) {
                 shrink();
->>>>>>> 9930c842850965bcf1bf5f95f741b6b995b939ab:src/com/shade/entities/Mushroom.java
                 resize();
             }
 
@@ -277,14 +271,8 @@ public class Mushroom extends Linkable implements ShadowEntity {
                 resize();
             }
 
-<<<<<<< HEAD:src/com/shade/entities/Mushroom.java
-            if (shadowStatus == ShadowIntensity.UNSHADOWED) {
-            	if(type!=MushroomType.EGG) shrink();
-            	else scale += SCALE_INCREMENT/3;
-=======
             if (getShadowIntensity()>0.8) {
                 shrink();
->>>>>>> 9930c842850965bcf1bf5f95f741b6b995b939ab:src/com/shade/entities/Mushroom.java
                 resize();
             }
 
