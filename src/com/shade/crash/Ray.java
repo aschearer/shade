@@ -67,4 +67,9 @@ public class Ray extends Body {
         // TODO Auto-generated method stub
 
     }
+
+	public void updateIntensity() {
+		// TODO Auto-generated method stub
+		
+	}
 }

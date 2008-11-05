@@ -1,5 +1,6 @@
 package com.shade.lightrender;
 
+import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.fills.GradientFill;
@@ -15,11 +16,21 @@ import com.shade.crash.Body;
 import com.shade.shadows.ShadowEntity;
 import com.shade.util.RadialGradient;
 
-public class GroundLight extends Body implements LightSource,ShadowEntity {
+public class GroundLight extends Body implements LightSource, ShadowEntity {
 	
 	private float myCastLength;
 	private int side;
 	private float intensity;
+    private float myIntensity;
+    
+	public void updateIntensity(Graphics g) {
+		myIntensity = g.getPixel((int)getCenterX(), (int)getCenterY()).a;
+		
+	}
+	
+	public float getShadowIntensity(){
+		return myIntensity;
+	}
 	
 	public GroundLight(int x, int y, int s, float intense, int castL){
 		side = s;
@@ -47,16 +58,34 @@ public class GroundLight extends Body implements LightSource,ShadowEntity {
 
 	
 	public void renderLight(Graphics g, int width, int height) {
-		g.setColor(new Color(0,0,0,intensity));
-		g.fill(new Circle(getCenterX(),getCenterY(),200)
-				/*
-			,new RadialGradient(shape.getCenterX(),shape.getCenterY(),200,
-					new Color(0,0,1.0f,1.0f),
-					new Color(1.0f,0,0,1.0f)
-						)
-						//*/
-						);
+		renderLightAlpha(getIntensity());
 	}
+	public void renderLightAlpha(float intensity)
+	{
+		float radius = myCastLength;
+	  assert (intensity > 0f && intensity <= 1f);
+	    
+	  int numSubdivisions = 32;
+	    
+	  GL11.glBegin(GL11.GL_TRIANGLE_FAN);
+	  {
+		GL11.glColor4f(0f, 0f, 0f,  intensity);
+		GL11.glVertex3f(getCenterX(), getCenterY(), getZIndex());
+	      
+	    // Set edge colour for rest of shape
+		GL11.glColor4f(0f, 0f, 0f, 0f);
+	      
+	    for (float angle=0; angle<=Math.PI*2; angle+=((Math.PI*2)/numSubdivisions) )
+	    {
+	    	GL11.glVertex3f( radius*(float)Math.cos(angle) + getCenterX(),
+	                     radius*(float)Math.sin(angle) + getCenterY(), getZIndex());  
+	    }
+	      
+	    GL11.glVertex3f(getCenterX()+radius, getCenterY(), getZIndex());
+	  }
+	  GL11.glEnd();
+	}
+
 
 	
 	public void update(StateBasedGame game, int delta) {
@@ -146,6 +175,7 @@ public class GroundLight extends Body implements LightSource,ShadowEntity {
 	public void render(StateBasedGame game, Graphics g) {
 		g.setColor(new Color(1.0f,1.0f,0,1.0f));
 		g.fill(shape);
+		updateIntensity(g);
 	}
 
 	
@@ -170,5 +200,11 @@ public class GroundLight extends Body implements LightSource,ShadowEntity {
 	public int compareTo(ShadowEntity arg0) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+
+	public void updateIntensity() {
+		// TODO Auto-generated method stub
+		
 	}
 }

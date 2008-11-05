@@ -170,15 +170,15 @@ public class InGameState extends BasicGameState {
     	//l.add(light);
     	LightSource light2 = new InfiniteLight(400,300,0.1f,400,20);
     	//l.add(light2);
-    	LightSource lightblock = new GroundLight(500,300,20,0.1f,40);
+    	LightSource lightblock = new GroundLight(500,300,20,1.0f,250);
     	l.add(lightblock);
     	level.add((ShadowEntity)lightblock);
-    	LightSource lightblock2 = new GroundLight(300,300,20,0.7f,40);
-    	//l.add(lightblock2);
-    	//level.add((ShadowEntity)lightblock2);
+    	LightSource lightblock2 = new GroundLight(300,300,20,0.7f,100);
+    	l.add(lightblock2);
+    	level.add((ShadowEntity)lightblock2);
     	LightSource lightblock3 = new GroundLight(300,200,20,0.5f,40);
-    	//l.add(lightblock3);
-    	//level.add((ShadowEntity)lightblock3);
+    	l.add(lightblock3);
+    	level.add((ShadowEntity)lightblock3);
     	LightSource lightblock4 = new GroundLight(300,400,20,0.3f,40);
     	//l.add(lightblock4);
     	//level.add((ShadowEntity)lightblock4);
@@ -206,11 +206,11 @@ public class InGameState extends BasicGameState {
 
     public void render(GameContainer container, StateBasedGame game, Graphics g)
             throws SlickException {
-    	g.setDrawMode(Graphics.MODE_ADD);
+    	//g.setDrawMode(Graphics.MODE_ADD);
 		l.renderLights(g);
 		GL11.glBlendFunc(GL11.GL_ONE,GL11.GL_ONE);
-		g.setColor(new Color(0,0,0,0.5f));
-		g.fill(new Rectangle(0, 0, 800, 600));
+		g.setColor(new Color(0,0,0,0.15f));
+		//g.fill(new Rectangle(0, 0, 800, 600));
 		GL11.glBlendFunc(GL11.GL_DST_ALPHA,GL11.GL_ONE);
 		backgroundSprite.draw();
 		l.renderEntities(game, g);

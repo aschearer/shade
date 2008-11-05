@@ -84,7 +84,9 @@ public class LightMask{
 	}
 	
 	public void renderEntities(StateBasedGame game, Graphics g){
-		GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE);
+		GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ZERO);
+		//GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		
 		for(ShadowEntity e:shadowentities)
 			e.render(game, g);
 	}
@@ -156,7 +158,7 @@ public class LightMask{
 
 		
 		public int compare(LightSource arg0, LightSource arg1) {
-			double diff = arg0.getIntensity()-arg1.getIntensity();
+			double diff = arg0.getShadowIntensity()-arg1.getShadowIntensity();
 			return (int)(diff/Math.abs(diff));
 		}
 	

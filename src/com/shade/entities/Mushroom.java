@@ -40,6 +40,16 @@ public class Mushroom extends Linkable implements ShadowEntity {
     private ShadowIntensity shadowStatus;
     private Image mushroom;
     private float scale;
+    private float myIntensity;
+    
+	public void updateIntensity(Graphics g) {
+		myIntensity = g.getPixel((int)getCenterX(), (int)getCenterY()).a;
+		
+	}
+	
+	public float getShadowIntensity(){
+		return myIntensity;
+	}
 
     public Mushroom(float x, float y, MushroomType t) throws SlickException {
         initShape(x, y);
@@ -117,9 +127,8 @@ public class Mushroom extends Linkable implements ShadowEntity {
     			}
     			return;
             }
-            if (shadowStatus != ShadowIntensity.UNSHADOWED && scale < MAX_SCALE) {
-            	if(type!=MushroomType.EGG)
-            	  scale += SCALE_INCREMENT;
+            if (getShadowIntensity()<0.8 && scale < MAX_SCALE) {
+                scale += SCALE_INCREMENT;
                 resize();
                 return;
             }
@@ -191,9 +200,14 @@ public class Mushroom extends Linkable implements ShadowEntity {
                 resize();
             }
 
+<<<<<<< HEAD:src/com/shade/entities/Mushroom.java
             if (shadowStatus == ShadowIntensity.UNSHADOWED) {
             	if(type!=MushroomType.EGG) shrink();
             	else scale += SCALE_INCREMENT/3;
+=======
+            if (getShadowIntensity()>0.8) {
+                shrink();
+>>>>>>> 9930c842850965bcf1bf5f95f741b6b995b939ab:src/com/shade/entities/Mushroom.java
                 resize();
             }
 
@@ -263,9 +277,14 @@ public class Mushroom extends Linkable implements ShadowEntity {
                 resize();
             }
 
+<<<<<<< HEAD:src/com/shade/entities/Mushroom.java
             if (shadowStatus == ShadowIntensity.UNSHADOWED) {
             	if(type!=MushroomType.EGG) shrink();
             	else scale += SCALE_INCREMENT/3;
+=======
+            if (getShadowIntensity()>0.8) {
+                shrink();
+>>>>>>> 9930c842850965bcf1bf5f95f741b6b995b939ab:src/com/shade/entities/Mushroom.java
                 resize();
             }
 
@@ -399,6 +418,7 @@ public class Mushroom extends Linkable implements ShadowEntity {
 
     public void render(StateBasedGame game, Graphics g) {
         manager.render(g);
+        updateIntensity(g);
     }
 
     public void update(StateBasedGame game, int delta) {

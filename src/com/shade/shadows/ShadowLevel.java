@@ -106,7 +106,7 @@ public class ShadowLevel implements Level {
     	//GL11.glDisable(GL11.GL_BLEND);
     	GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         for (ShadowEntity e : entities) {
-            //e.render(game, g);
+            e.render(game, g);
         }
         //shadowscape.render(game, g);
         //GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
@@ -175,7 +175,7 @@ public class ShadowLevel implements Level {
         totalTime += delta;
         resolve();
         grid.update();
-        direction += rate;
+        direction += rate*delta;
         shadowscape.setDirection(direction);
         shadowscape.setDayLight(daylight);
         shadowscape.update(game, delta);

@@ -18,6 +18,8 @@ import com.shade.shadows.ShadowEntity.ShadowIntensity;
  * @author Alexander Schearer <aschearer@gmail.com>
  */
 public class InGameControl {
+	
+	public static final float THRESHHOLD_INTENSITY = 10;//0.99f;
 
     private ShadowLevel level;
     private Player player;
@@ -66,10 +68,10 @@ public class InGameControl {
 
         public void update(StateBasedGame game, int delta)
                 throws SlickException {
-            if (player.hasIntensity(ShadowIntensity.UNSHADOWED)) {
+            if (player.getShadowIntensity()>THRESHHOLD_INTENSITY) {
             	inSunTime+=delta;
-            	double dec = Math.max(0.01f, Math.pow(1.0*inSunTime/((inSunTime+1000)*2),5));
-            	//meter.decrement(dec);
+            	double dec = Math.max(0.01f, Math.pow(1.0*inSunTime/((inSunTime+100)*2),3));
+            	meter.decrement(dec);
             }
             else{
             	//System.out.println("resetting timer");

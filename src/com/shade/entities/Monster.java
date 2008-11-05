@@ -38,6 +38,16 @@ public class Monster extends Linkable implements ShadowEntity {
 
     private Animation sleeping, idling, wandering, attacking, cooling;
     private StateManager manager;
+    private float myIntensity;
+    
+	public void updateIntensity(Graphics g) {
+		myIntensity = g.getPixel((int)getCenterX(), (int)getCenterY()).a;
+		
+	}
+	
+	public float getShadowIntensity(){
+		return myIntensity;
+	}
 
     public Monster(float x, float y) throws SlickException {
         initShape(x, y);
@@ -456,6 +466,7 @@ public class Monster extends Linkable implements ShadowEntity {
         g.rotate(getCenterX(), getCenterY(), (float) Math.toDegrees(heading));
         manager.render(g);
         g.resetTransform();
+        updateIntensity(g);
     }
 
     public void update(StateBasedGame game, int delta) {
