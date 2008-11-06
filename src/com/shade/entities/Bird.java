@@ -271,4 +271,14 @@ public class Bird extends Linkable implements ShadowEntity {
     public int compareTo(ShadowEntity s) {
         return getZIndex() - s.getZIndex();
     }
+
+    public float getShadowIntensity() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    public void updateIntensity(Graphics g) {
+        // TODO Auto-generated method stub
+        
+    }
 }
