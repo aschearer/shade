@@ -11,5 +11,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/slick.jar"/>
+	<classpathentry kind="lib" path="lib/crash.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
