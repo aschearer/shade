@@ -10,27 +10,14 @@ import org.newdawn.slick.geom.Transform;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
+import com.crash.Body;
 import com.shade.base.Entity;
 import com.shade.base.Level;
-import com.shade.crash.Body;
-import com.shade.shadows.ShadowCaster;
+import com.shade.crash.Repelable;
+import com.shade.lighting.LuminousEntity;
 import com.shade.util.Geom;
 
-/**
- * A simple block which can cast a shadow.
- * 
- * Not much to see here. The shadow implementation is pretty clever though if I
- * do say so myself. It projects the block a certain distance based on its depth
- * and then creates a new polygon with three points from the shadow and block.
- * 
- * The shadow algorithm is clearly fast. I have had success running it on each
- * frame! Even with 16-20 blocks and dozens of mushrooms there has been no
- * problems.
- * 
- * @author Alexander Schearer <aschearer@gmail.com>
- */
-public class Block extends Body implements ShadowCaster {
-
+public class Block extends Body implements LuminousEntity, Repelable {
 
 	private Image sprite;
 	private int height;
@@ -114,74 +101,75 @@ public class Block extends Body implements ShadowCaster {
 		return index;
 	}
 
-	public void addToLevel(Level l) {
-
-	}
-
-	public Role getRole() {
-		return Role.OBSTACLE;
-	}
-
-	public void onCollision(Entity obstacle) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void removeFromLevel(Level l) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void render(StateBasedGame game, Graphics g) {
-		sprite.draw(getX(), getY(), getWidth(), getHeight());
-		// g.draw(shape);
-	}
-
-	public void update(StateBasedGame game, int delta) {
-		// TODO Auto-generated method stub
-
+	public float getLuminosity() {
+		return 0; // not really important for blocks...
 	}
 
 	public int getZIndex() {
 		return height;
 	}
 
-	public int compareTo(ShadowCaster s) {
-		return (height - s.getZIndex());
+	public void setLuminosity(float l) {
+		// not really important for blocks...
 	}
 
-	
-	public void repel(Entity repellee) {
-		Body b = (Body) repellee;
-		Vector2f vect = b.getVelocity();
-		double velx = vect.x;
-		double vely = vect.y;
-		double playerx = b.getCenterX();
-		double playery = b.getCenterY();
-		//determine overlap
-		double right = playerx-b.getWidth()/2-(getCenterX()+getWidth()/2);
-		double left = playerx+b.getWidth()/2-(getCenterX()-getWidth()/2);
-		double top = playery-b.getHeight()/2-(getCenterY()+getHeight()/2);
-		double bottom = playery+b.getHeight()/2-(getCenterY()-getHeight()/2);
-		double minx = Math.min(Math.abs(right), Math.abs(left));
-		double miny = Math.min(Math.abs(top), Math.abs(bottom));
-		if(minx<miny){
-			//if we move, move AWAY from the block.
-			if(Math.abs(playerx-getCenterX()-velx)<Math.abs(playerx-getCenterX()))
+	public void addToLevel(Level<?> l) {
+		
+	}
+
+	public int getRole() {
+		return Roles.OBSTACLE.ordinal();
+	}
+
+	public void onCollision(Entity obstacle) {
+		
+	}
+
+	public void repel(Body b) {
+		float velx = b.getXVelocity();
+		float vely = b.getYVelocity();
+		float playerx = b.getXCenter();
+		float playery = b.getYCenter();
+		// determine overlap
+		float right = playerx - b.getWidth() / 2
+				- (getXCenter() + getWidth() / 2);
+		float left = playerx + b.getWidth() / 2
+				- (getXCenter() - getWidth() / 2);
+		float top = playery - b.getHeight() / 2
+				- (getYCenter() + getHeight() / 2);
+		float bottom = playery + b.getHeight() / 2
+				- (getYCenter() - getHeight() / 2);
+		float minx = Math.min(Math.abs(right), Math.abs(left));
+		float miny = Math.min(Math.abs(top), Math.abs(bottom));
+		if (minx < miny) {
+			// if we move, move AWAY from the block.
+			if (Math.abs(playerx - getXCenter() - velx) < Math.abs(playerx
+					- getXCenter()))
 				velx = -velx;
-			b.move(-velx, 0);
-		}
-		else{
-			if(Math.abs(playery-getCenterY()-vely)<Math.abs(playery-getCenterY())){
+			b.nudge(-velx, 0);
+		} else {
+			if (Math.abs(playery - getYCenter() - vely) < Math.abs(playery
+					- getYCenter())) {
 				vely = -vely;
 			}
-			b.move(0,-vely);
+			b.nudge(0, -vely);
 		}
 	}
 
-	public Vector2f getPosition() {
-		// TODO Auto-generated method stub
-		return new Vector2f(getCenterX(),getCenterY());
+	public void removeFromLevel(Level<?> l) {
+		
+	}
+
+	public void render(StateBasedGame game, Graphics g) {
+		sprite.draw(getX(), getY(), getWidth(), getHeight());
+	}
+
+	public void update(StateBasedGame game, int delta) {
+		
+	}
+
+	public int compareTo(LuminousEntity l) {
+		return getZIndex() - l.getZIndex();
 	}
 
 }

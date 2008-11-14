@@ -2,8 +2,8 @@ package com.shade.entities;
 
 import java.util.Arrays;
 
-import com.shade.crash.Body;
-import com.shade.crash.util.CrashGeom;
+import com.crash.Body;
+import com.shade.crash.CrashGeom;
 
 /**
  * Linkables are bodies which form a doubly linked list.
@@ -16,96 +16,96 @@ import com.shade.crash.util.CrashGeom;
  */
 public abstract class Linkable extends Body {
 
-    public Linkable prev, next;
+	public Linkable prev, next;
 
-    /**
-     * Attach the object to the end of this linked list.
-     * 
-     * @param l
-     */
-    protected void attach(Linkable l) {
-    	System.out.println("attaching "+l);
-        if (next == null) {
-            next = l;
-            l.prev = this;
-            return;
-        }
-        Linkable head = next;
-        while (head.next != null) {
-            head = head.next;
-        }
-        head.next = l;
-        l.prev = head;
-    }
+	/**
+	 * Attach the object to the end of this linked list.
+	 * 
+	 * @param l
+	 */
+	protected void attach(Linkable l) {
+		System.out.println("attaching " + l);
+		if (next == null) {
+			next = l;
+			l.prev = this;
+			return;
+		}
+		Linkable head = next;
+		while (head.next != null) {
+			head = head.next;
+		}
+		head.next = l;
+		l.prev = head;
+	}
 
-    /**
-     * Remove this object from its linked list.
-     */
-    protected void detach() {
-        if (prev != null) {
-            prev.next = next;
-        }
-        if (next != null) {
-            next.prev = prev;
-        }
-        prev = null;
-        next = null;
-    }
+	/**
+	 * Remove this object from its linked list.
+	 */
+	protected void detach() {
+		if (prev != null) {
+			prev.next = next;
+		}
+		if (next != null) {
+			next.prev = prev;
+		}
+		prev = null;
+		next = null;
+	}
 
-    /**
-     * Checks whether a linkable is over the edge of the screen and wraps it if
-     * it is.
-     */
-    protected void testAndWrap() {
-        if (getCenterX() <= 5) {
-            shape.setCenterX(795);
-        }
-        if (getCenterX() > 795) {
-            shape.setCenterX(5);
-        }
-        if (getCenterY() <= 5) {
-            shape.setCenterY(595);
-        }
-        if (getCenterY() > 595) {
-            shape.setCenterY(5);
-        }
-    }
+	/**
+	 * Checks whether a linkable is over the edge of the screen and wraps it if
+	 * it is.
+	 */
+	protected void testAndWrap() {
+		if (getXCenter() <= 5) {
+			shape.setCenterX(795);
+		}
+		if (getXCenter() > 795) {
+			shape.setCenterX(5);
+		}
+		if (getYCenter() <= 5) {
+			shape.setCenterY(595);
+		}
+		if (getYCenter() > 595) {
+			shape.setCenterY(5);
+		}
+	}
 
-    /**
-     * Return true if this body and the target are further apart than the
-     * threshold.
-     * 
-     * @param target
-     * @param threshold
-     * @return
-     */
-    protected boolean overThreshold(Body target, float threshold) {
-        float[] d = new float[3];
+	/**
+	 * Return true if this body and the target are further apart than the
+	 * threshold.
+	 * 
+	 * @param target
+	 * @param threshold
+	 * @return
+	 */
+	protected boolean overThreshold(Body target, float threshold) {
+		float[] d = new float[3];
 
-        d[0] = CrashGeom.distance2(target, this);
-        d[1] = d[0];
-        d[2] = d[0];
-        // if I'm left of my target
-        if (getX() < target.getX()) {
-            d[1] = CrashGeom
-                    .distance2(target, getCenterX() + 800, getCenterY());
-        } else {
-            d[1] = CrashGeom.distance2(this, target.getCenterX() + 800, target
-                    .getCenterY());
-        }
+		d[0] = CrashGeom.distance2(target, this);
+		d[1] = d[0];
+		d[2] = d[0];
+		// if I'm left of my target
+		if (getX() < target.getX()) {
+			d[1] = CrashGeom
+					.distance2(target, getXCenter() + 800, getYCenter());
+		} else {
+			d[1] = CrashGeom.distance2(this, target.getXCenter() + 800, target
+					.getYCenter());
+		}
 
-        // if I'm above my target
-        if (getY() < prev.getY()) {
-            d[2] = CrashGeom
-                    .distance2(target, getCenterX(), getCenterY() + 600);
-        } else {
-            d[2] = CrashGeom.distance2(this, target.getCenterX(), target
-                    .getCenterY() + 600);
-        }
+		// if I'm above my target
+		if (getY() < prev.getY()) {
+			d[2] = CrashGeom
+					.distance2(target, getXCenter(), getYCenter() + 600);
+		} else {
+			d[2] = CrashGeom.distance2(this, target.getXCenter(), target
+					.getYCenter() + 600);
+		}
 
-        Arrays.sort(d);
+		Arrays.sort(d);
 
-        return (d[0] > threshold);
-    }
+		return (d[0] > threshold);
+	}
 
 }

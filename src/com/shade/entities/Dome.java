@@ -7,15 +7,15 @@ import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.RoundedRectangle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Transform;
-import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
+import com.crash.Body;
 import com.shade.base.Entity;
 import com.shade.base.Level;
-import com.shade.crash.Body;
-import com.shade.shadows.ShadowCaster;
+import com.shade.crash.Repelable;
+import com.shade.lighting.LuminousEntity;
 
-public class Dome extends Body implements ShadowCaster {
+public class Dome extends Body implements LuminousEntity, Repelable {
 
     private Image sprite;
     private int height;
@@ -44,26 +44,11 @@ public class Dome extends Body implements ShadowCaster {
     private void initShape(float x, float y, float r) {
         shape = new Circle(x, y, r);
     }
-
-    public void addToLevel(Level l) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public Role getRole() {
-        return Role.OBSTACLE;
-    }
-
     public void onCollision(Entity obstacle) {
         // TODO Auto-generated method stub
 
     }
-
-    public void removeFromLevel(Level l) {
-        // TODO Auto-generated method stub
-
-    }
-
+    
     public void render(StateBasedGame game, Graphics g) {
         sprite.draw(getX(), getY(), getWidth(), getHeight());
         // g.draw(shape);
@@ -84,8 +69,8 @@ public class Dome extends Body implements ShadowCaster {
     public Shape castShadow(float direction, float depth) {
         float r = ((Circle) shape).radius;
         float h = height * depth * 1.6f;
-        float x = getCenterX();
-        float y = getCenterY();
+        float x = getXCenter();
+        float y = getYCenter();
         Transform t = Transform.createRotateTransform(direction + 3.14f, x, y);
 
         RoundedRectangle rr = new RoundedRectangle(getX(), getY(), r * 2, h, r);
@@ -96,27 +81,43 @@ public class Dome extends Body implements ShadowCaster {
         return height;
     }
 
-    public int compareTo(ShadowCaster s) {
-        return height - s.getZIndex();
+    public void repel(Body b) {
+        float playerx = b.getXCenter();
+        float playery = b.getYCenter();
+        float dist_x = playerx - getXCenter();
+        float dist_y = playery - getYCenter();
+        float mag = (float) Math.sqrt(dist_x * dist_x + dist_y * dist_y);
+        float playradius = b.getWidth() / 2;
+        float obstacleradius = getWidth() / 2;
+        float angle = (float) Math.atan2(dist_y, dist_x);
+        float move = (playradius + obstacleradius - mag) * 1.5f;
+        float x_move = (float) (Math.cos(angle) * move);
+        float y_move = (float) (Math.sin(angle) * move);
+        b.nudge(x_move, y_move);
     }
 
-    public void repel(Entity repellee) {
-        Body b = (Body) repellee;
-        double playerx = b.getCenterX();
-        double playery = b.getCenterY();
-        double dist_x = playerx - getCenterX();
-        double dist_y = playery - getCenterY();
-        double mag = Math.sqrt(dist_x * dist_x + dist_y * dist_y);
-        double playradius = b.getWidth() / 2;
-        double obstacleradius = getWidth() / 2;
-        double angle = Math.atan2(dist_y, dist_x);
-        double move = (playradius + obstacleradius - mag) * 1.5;
-        b.move(Math.cos(angle) * move, Math.sin(angle) * move);
-    }
-    
-	public Vector2f getPosition() {
-		// TODO Auto-generated method stub
-		return new Vector2f(getCenterX(),getCenterY());
+	public float getLuminosity() {
+		return 0; // not important for domes
+	}
+
+	public void setLuminosity(float l) {
+		// not important for domes
+	}
+
+	public void addToLevel(Level<?> l) {
+		// not important for domes
+	}
+
+	public int getRole() {
+		return Roles.OBSTACLE.ordinal();
+	}
+
+	public void removeFromLevel(Level<?> l) {
+		// not important for domes
+	}
+
+	public int compareTo(LuminousEntity l) {
+		return getZIndex() - l.getZIndex();
 	}
 
 }
