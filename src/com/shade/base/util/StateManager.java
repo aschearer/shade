@@ -1,22 +1,37 @@
-package com.shade.entities.util;
+package com.shade.base.util;
 
 import java.util.LinkedList;
 
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.state.StateBasedGame;
 
+import com.shade.base.Animatable;
 import com.shade.base.Entity;
 
-public class StateManager {
-    
+/**
+ * A utility which manages a set of states and facilitates state transitions.
+ * 
+ * Any entity which is split into a set of states should use a manager to govern
+ * the transition between states. The manager acts like a proxy for each state.
+ * 
+ * @author Alexander Schearer <aschearer@gmail.com>
+ */
+public class StateManager implements Animatable {
+
     private LinkedList<State> states;
     private State currentState;
-    
+
     public StateManager() {
         states = new LinkedList<State>();
         currentState = null;
     }
 
+    /**
+     * Add the state to the manager; assign the first state to be the current
+     * state.
+     * 
+     * @param s
+     */
     public void add(State s) {
         states.add(s);
         if (currentState == null) {
@@ -24,36 +39,44 @@ public class StateManager {
             currentState.enter();
         }
     }
-    
+
     /**
-     * Attempts to enter the target state. Fails silently!!
+     * Attempts to enter the target state.
      * 
-     * TODO have this fail politely but loudly.
      * @param o
+     * @return
      */
-    public void enter(Object o) {
+    public boolean enter(Object o) {
         for (State s : states) {
-            if (s.equals(o)) {
+            if (s.isNamed(o)) {
                 currentState = s;
                 currentState.enter();
+                return true;
             }
         }
+        return false;
     }
-    
+
+    /**
+     * Useful if you want ot know hat state you are currently in; this isn't a
+     * hidden markov model!
+     * 
+     * @return
+     */
+    public State currentState() {
+        return currentState;
+    }
+
     public void update(StateBasedGame game, int delta) {
         currentState.update(game, delta);
     }
-    
+
     public void onCollision(Entity obstacle) {
         currentState.onCollision(obstacle);
     }
 
-    public void render(Graphics g) {
-        currentState.render(g);
-    }
-
-    public Object currentState() {
-        return currentState;
+    public void render(StateBasedGame game, Graphics g) {
+        currentState.render(game, g);
     }
 
 }

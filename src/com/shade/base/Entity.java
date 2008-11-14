@@ -7,17 +7,12 @@ package com.shade.base;
  * @author Alex Schearer <aschearer@gmail.com>
  */
 public interface Entity extends Animatable {
-
+    
     /**
-     * Roles are used to determine how to respond to a collision.
+     * Helps identify an entity; mostly used when responding to a collision.
+     * @return
      */
-    public enum Role {
-        PLAYER, MUSHROOM, OBSTACLE, BASKET, MOLE, RAY, MONSTER, BIRD, MOVEABLE
-    };
-    
-
-    
-    public Role getRole();
+    public int getRole();
 
     /**
      * Add this entity to the given level, perform any necessary set up.
@@ -28,7 +23,7 @@ public interface Entity extends Animatable {
      * 
      * @param l
      */
-    public void addToLevel(Level l);
+	public void addToLevel(Level<?> l);
 
     /**
      * Called when this object is to be removed from the level.
@@ -38,7 +33,7 @@ public interface Entity extends Animatable {
      * pointers.
      * @param l 
      */
-    public void removeFromLevel(Level l);
+    public void removeFromLevel(Level<?> l);
 
     /**
      * Called when this objects collides with the obstacle.
@@ -47,17 +42,7 @@ public interface Entity extends Animatable {
      */
     public void onCollision(Entity obstacle);
     
-    /**
-     * Called to repel any object which collides with it.
-     * Takes the position and velocity, and calculates 
-     * where the shape should be put.
-     * 
-     * @param x the x position of the caller
-     * @param y the y position of the caller
-     * @param velx the x velocity of the caller
-     * @param vely the y velocity of the caller
-     */
-    public void repel(Entity repellee);
-    
+    public float getXCenter();
+    public float getYCenter();
      
 }
