@@ -117,6 +117,8 @@ Alex Schearer
             <src path="${src.dir}" />
             <classpath>
                 <pathelement path="${lib.dir}/slick.jar" />
+                <pathelement path="${lib.dir}/lwjgl.jar" />
+                <pathelement path="${lib.dir}/crash.jar" />
             </classpath>
         </javac>
         <copy todir="${obj.dir}">
