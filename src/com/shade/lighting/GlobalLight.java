@@ -1,88 +1,43 @@
-package com.shade.lightrender;
+package com.shade.lighting;
 
+import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Color;
+import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.geom.Rectangle;
+import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.state.StateBasedGame;
 
-import com.shade.shadows.ShadowLevel.DayLightStatus;
+public class GlobalLight implements LightSource {
 
-public class GlobalLight extends InfiniteLight implements LightSource {
-	public static final float TRANSITION_TIME = 1f / 7;
-	public static final float MAX_SHADOW = 1f;
-	public static final float SUN_ANGLE_INCREMENT = 0.0001f;
-	public static final int SECONDS_PER_DAY = (int) Math.ceil(Math.PI * 2
-			/ SUN_ANGLE_INCREMENT);
+	private float angle, depth;
 
-	int time;
-	Color light;
-	int radius;
+	public GlobalLight(float angle) {
+		depth = 8;
+		this.angle = angle;
+	}
 
-	public GlobalLight(int x, int y, float intense, int rad, int height) {
-		super(x, y, intense, rad, height);
-		intense = MAX_SHADOW;
-		radius = rad;
-		light = new Color(0, 0, 0, MAX_SHADOW);
-		time = SECONDS_PER_DAY/2;
+	public void render(StateBasedGame game, Graphics g,
+			LuminousEntity... entities) {
+		LightMask.enableStencil();
+		for (LuminousEntity entity : entities) {
+			Shape s = entity.castShadow(angle, depth);
+			if (s != null) {
+				g.fill(s);				
+			}
+		}
+		LightMask.disableStencil();
+		
+		GameContainer c = game.getContainer();
+		g.setColor(Color.black);
+		g.fillRect(0, 0, c.getWidth(), c.getHeight());
+		g.setColor(Color.white);
+
+		GL11.glDisable(GL11.GL_STENCIL_TEST);
+		GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
 	}
 
 	public void update(StateBasedGame game, int delta) {
-		time += delta;
-		int timeofday = time % SECONDS_PER_DAY;
-		// is it day or night?
-		if (timeofday > 1.0 * SECONDS_PER_DAY * (1f / 2 - TRANSITION_TIME)) {
-			float factor = MAX_SHADOW;
-			float colorizer = 0;
-			float colorizeg = 0;
-			float colorizeb = 0;
-			float mathstuff = ((timeofday - SECONDS_PER_DAY / 2f)
-					/ (SECONDS_PER_DAY * TRANSITION_TIME) + 1);
-			if (timeofday < 1.0 * SECONDS_PER_DAY / 2) {
-				factor = (float) 1.0
-						* MAX_SHADOW
-						* mathstuff + 0.3f;
-				colorizer = 0.2f * mathstuff;
-				colorizeg = 0.1f * mathstuff;
-
-			}
-			if (timeofday > 1.0 * SECONDS_PER_DAY * (1 - TRANSITION_TIME)) {
-				factor = MAX_SHADOW * (SECONDS_PER_DAY - timeofday)
-						/ (SECONDS_PER_DAY * TRANSITION_TIME);
-				colorizer = 0.1f * (float) Math.abs(Math.cos(Math.PI
-						/ 2
-						* ((timeofday - SECONDS_PER_DAY / 2f)
-								/ (SECONDS_PER_DAY * TRANSITION_TIME) + 1)));
-				colorizeg = 0.1f * (float) Math.abs(Math.cos(Math.PI
-						/ 2
-						* ((timeofday - SECONDS_PER_DAY / 2f)
-								/ (SECONDS_PER_DAY * TRANSITION_TIME) + 1)));
-				colorizeb = 0.05f * (float) Math.abs(Math.cos(Math.PI
-						/ 2
-						* ((timeofday - SECONDS_PER_DAY / 2f)
-								/ (SECONDS_PER_DAY * TRANSITION_TIME) + 1)));
-			}
-			light = new Color(colorizer, colorizeg, colorizeb, factor);
-			//light = new Color(0,0,0, factor);
-		}
-
-		
-		angle += delta*SUN_ANGLE_INCREMENT;
-		double newx = myCenterx + radius
-				* Math.cos(angle);
-		double newy = myCentery + radius
-				* Math.sin(angle);
-		myPosition.set((float) newx, (float) newy);
-	}
-
-	public void renderLight(Graphics g, int width, int height) {
-		g.setColor(light);
-		//g.setColor(new Color(1.0f,1.0f,0,0));
-		g.fill(new Rectangle(0, 0, width, height));
-
-	}
-	
-	public float getShadowIntensity(){
-		return light.a;
+		// TODO have angle change over time
 	}
 
 }
