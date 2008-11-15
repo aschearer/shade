@@ -37,7 +37,7 @@ public class GlobalLight implements LightSource {
 	}
 
 	public void update(StateBasedGame game, int delta) {
-		// TODO have angle change over time
+		angle += .0005f;
 	}
 
 }
