@@ -11,8 +11,8 @@ public class GlobalLight implements LightSource {
 
     private float angle, depth;
 
-    public GlobalLight(float angle) {
-        depth = 8;
+    public GlobalLight(float depth, float angle) {
+        this.depth = depth;
         this.angle = angle;
     }
 

@@ -34,7 +34,7 @@ public class InGameState extends BasicGameState {
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException {
         lights = new LightSourceProxy();
-        lights.add(new GlobalLight((float) (4 * Math.PI / 3)));
+        lights.add(new GlobalLight(18, (float) (4 * Math.PI / 3)));
 
         view = new LightMask(6);
         view.add(lights);
@@ -44,7 +44,7 @@ public class InGameState extends BasicGameState {
         model.add(new Player(300, 200));
         model.add(new Block(50, 50, 100, 100, 6));
         model.add(new Block(400, 100, 150, 150, 9));
-        model.add(new Dome(500, 500, 50, 12));
+        model.add(new Dome(500, 500, 50, 7));
     }
 
     public void render(GameContainer container, StateBasedGame game, Graphics g)

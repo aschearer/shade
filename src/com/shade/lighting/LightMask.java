@@ -21,8 +21,6 @@ import org.newdawn.slick.state.StateBasedGame;
  * <em>Note that calling render will update your entities' luminosity. Please 
  * direct any hate mail to JJ Jou.</em>
  * 
- * TODO order the entities array by z-index.
- * 
  * @author JJ Jou <j.j@duke.edu>
  * @author Alexander Schearer <aschearer@gmail.com>
  */
@@ -84,8 +82,7 @@ public class LightMask {
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         while (i < entities.length) {
             entities[i].render(game, g);
-            // TODO Turning this off because so far obstacles don't need it.
-            // entities[i].setLuminosity(getLuminosityFor(entities[i], g));
+            entities[i].setLuminosity(getLuminosityFor(entities[i], g));
             i++;
         }
     }
