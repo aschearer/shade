@@ -28,100 +28,99 @@ import org.newdawn.slick.state.StateBasedGame;
  */
 public class LightMask {
 
-	protected final static Color SHADE = new Color(0, 0, 0, .5f);
+    protected final static Color SHADE = new Color(0, 0, 0, .5f);
 
-	private int threshold;
-	private LinkedList<LightSource> lights;
+    private int threshold;
+    private LinkedList<LightSource> lights;
 
-	public LightMask(int threshold) {
-		this.threshold = threshold;
-		lights = new LinkedList<LightSource>();
-	}
+    public LightMask(int threshold) {
+        this.threshold = threshold;
+        lights = new LinkedList<LightSource>();
+    }
 
-	public void add(LightSource light) {
-		lights.add(light);
-	}
+    public void add(LightSource light) {
+        lights.add(light);
+    }
 
-	public void render(StateBasedGame game, Graphics g,
-			LuminousEntity[] entities, Image... backgrounds) {
-		renderLights(game, g, entities);
-		renderBackgrounds(game, g, backgrounds);
-		renderEntities(game, g, entities);
-	}
+    public void render(StateBasedGame game, Graphics g,
+            LuminousEntity[] entities, Image... backgrounds) {
+        renderLights(game, g, entities);
+        renderBackgrounds(game, g, backgrounds);
+        renderEntities(game, g, entities);
+    }
 
-	private void renderLights(StateBasedGame game, Graphics g,
-			LuminousEntity... entities) {
-		for (LightSource light : lights) {
-			light.render(game, g, entities);
-		}
-		GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
-		g.setColor(SHADE);
-		GameContainer c = game.getContainer();
-		g.fillRect(0, 0, c.getWidth(), c.getHeight());
-		GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE);
-	}
+    private void renderLights(StateBasedGame game, Graphics g,
+            LuminousEntity... entities) {
+        for (LightSource light : lights) {
+            light.render(game, g, entities);
+        }
+        GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
+        g.setColor(SHADE);
+        GameContainer c = game.getContainer();
+        g.fillRect(0, 0, c.getWidth(), c.getHeight());
+        GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE);
+    }
 
-	private void renderBackgrounds(StateBasedGame game, Graphics g,
-			Image... backgrounds) {
-		GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE);
-		for (Image background : backgrounds) {
-			background.draw();
-		}
-	}
+    private void renderBackgrounds(StateBasedGame game, Graphics g,
+            Image... backgrounds) {
+        GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE);
+        for (Image background : backgrounds) {
+            background.draw();
+        }
+    }
 
-	private void renderEntities(StateBasedGame game, Graphics g,
-			LuminousEntity... entities) {
-		// TODO render according to z-index
-		// TODO render the obstacles over the shadows...
-		Arrays.sort(entities);
-		int i = 0;
-		
-		GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ZERO);
-		while (i < entities.length && entities[i].getZIndex() < threshold) {
-			entities[i].render(game, g);
-			entities[i].setLuminosity(getLuminosityFor(entities[i], g));
-			i++;
-		}
-		
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		while (i < entities.length) {
-			entities[i].render(game, g);
-			entities[i].setLuminosity(getLuminosityFor(entities[i], g));
-			i++;
-		}
-	}
+    private void renderEntities(StateBasedGame game, Graphics g,
+            LuminousEntity... entities) {
+        Arrays.sort(entities);
+        int i = 0;
 
-	private float getLuminosityFor(LuminousEntity entity, Graphics g) {
-		return g.getPixel((int) entity.getXCenter(), (int) entity.getYCenter()).a;
-	}
+        GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE);
+        while (i < entities.length && entities[i].getZIndex() < threshold) {
+            entities[i].render(game, g);
+            entities[i].setLuminosity(getLuminosityFor(entities[i], g));
+            i++;
+        }
 
-	/**
-	 * Called before drawing the shadows cast by a light.
-	 */
-	protected static void enableStencil() {
-		// write only to the stencil buffer
-		GL11.glEnable(GL11.GL_STENCIL_TEST);
-		GL11.glColorMask(false, false, false, false);
-		GL11.glDepthMask(false);
-		GL11.glClearStencil(0);
-		// write a one to the stencil buffer everywhere we are about to draw
-		GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 1);
-		// this is to always pass a one to the stencil buffer where we draw
-		GL11.glStencilOp(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
-	}
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        while (i < entities.length) {
+            entities[i].render(game, g);
+            // TODO Turning this off because so far obstacles don't need it.
+            // entities[i].setLuminosity(getLuminosityFor(entities[i], g));
+            i++;
+        }
+    }
 
-	/**
-	 * Called after drawing the shadows cast by a light.
-	 */
-	protected static void disableStencil() {
-		// resume drawing to everything
-		GL11.glDepthMask(true);
-		GL11.glColorMask(true, true, true, true);
-		GL11.glStencilFunc(GL11.GL_NOTEQUAL, 1, 1);
+    private float getLuminosityFor(LuminousEntity entity, Graphics g) {
+        return g.getPixel((int) entity.getXCenter(), (int) entity.getYCenter()).a;
+    }
 
-		// don't modify the contents of the stencil buffer
-		GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_KEEP);
-		GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
-	}
+    /**
+     * Called before drawing the shadows cast by a light.
+     */
+    protected static void enableStencil() {
+        // write only to the stencil buffer
+        GL11.glEnable(GL11.GL_STENCIL_TEST);
+        GL11.glColorMask(false, false, false, false);
+        GL11.glDepthMask(false);
+        GL11.glClearStencil(0);
+        // write a one to the stencil buffer everywhere we are about to draw
+        GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 1);
+        // this is to always pass a one to the stencil buffer where we draw
+        GL11.glStencilOp(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
+    }
+
+    /**
+     * Called after drawing the shadows cast by a light.
+     */
+    protected static void disableStencil() {
+        // resume drawing to everything
+        GL11.glDepthMask(true);
+        GL11.glColorMask(true, true, true, true);
+        GL11.glStencilFunc(GL11.GL_NOTEQUAL, 1, 1);
+
+        // don't modify the contents of the stencil buffer
+        GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_KEEP);
+        GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
+    }
 
 }

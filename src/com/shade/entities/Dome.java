@@ -44,17 +44,18 @@ public class Dome extends Body implements LuminousEntity, Repelable {
     private void initShape(float x, float y, float r) {
         shape = new Circle(x, y, r);
     }
+
     public void onCollision(Entity obstacle) {
-        
+
     }
-    
+
     public void render(StateBasedGame game, Graphics g) {
         sprite.draw(getX(), getY(), getWidth(), getHeight());
         // g.draw(shape);
     }
 
     public void update(StateBasedGame game, int delta) {
-        
+
     }
 
     /**
@@ -94,28 +95,28 @@ public class Dome extends Body implements LuminousEntity, Repelable {
         b.nudge(x_move, y_move);
     }
 
-	public float getLuminosity() {
-		return 0; // not important for domes
-	}
+    public float getLuminosity() {
+        return 0; // not important for domes
+    }
 
-	public void setLuminosity(float l) {
-		// not important for domes
-	}
+    public void setLuminosity(float l) {
+        // not important for domes
+    }
 
-	public void addToLevel(Level<?> l) {
-		// not important for domes
-	}
+    public void addToLevel(Level<?> l) {
+        // not important for domes
+    }
 
-	public int getRole() {
-		return Roles.OBSTACLE.ordinal();
-	}
+    public int getRole() {
+        return Roles.OBSTACLE.ordinal();
+    }
 
-	public void removeFromLevel(Level<?> l) {
-		// not important for domes
-	}
+    public void removeFromLevel(Level<?> l) {
+        // not important for domes
+    }
 
-	public int compareTo(LuminousEntity l) {
-		return getZIndex() - l.getZIndex();
-	}
+    public int compareTo(LuminousEntity l) {
+        return getZIndex() - l.getZIndex();
+    }
 
 }

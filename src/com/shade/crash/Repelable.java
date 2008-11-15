@@ -14,14 +14,14 @@ import com.crash.Body;
  */
 public interface Repelable {
 
-	/**
-	 * Push b away from this object such that the two are not intersecting.
-	 * 
-	 * This is used when a collision occurs to push the player out of
-	 * intersection. It is also used to allow the player to push certain
-	 * obstacles around.
-	 * 
-	 * @param b
-	 */
-	public void repel(Body b);
+    /**
+     * Push b away from this object such that the two are not intersecting.
+     * 
+     * This is used when a collision occurs to push the player out of
+     * intersection. It is also used to allow the player to push certain
+     * obstacles around.
+     * 
+     * @param b
+     */
+    public void repel(Body b);
 }

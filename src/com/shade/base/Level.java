@@ -10,27 +10,27 @@ import org.newdawn.slick.state.StateBasedGame;
  */
 public interface Level<T extends Entity> {
 
-	/**
-	 * This should call Entity.addToLevel.
-	 * 
-	 * @param e
-	 */
-	public void add(T e);
+    /**
+     * This should call Entity.addToLevel.
+     * 
+     * @param e
+     */
+    public void add(T e);
 
-	/**
-	 * This should call Entity.removeFromLevel.
-	 * 
-	 * @param e
-	 */
-	public void remove(T e);
+    /**
+     * This should call Entity.removeFromLevel.
+     * 
+     * @param e
+     */
+    public void remove(T e);
 
-	/**
-	 * For each entity call Entity.removeFromLevel.
-	 */
-	public void clear();
-	
-	public void update(StateBasedGame game, int delta);
-	
-	public T[] toArray(T[] a);
+    /**
+     * For each entity call Entity.removeFromLevel.
+     */
+    public void clear();
+
+    public void update(StateBasedGame game, int delta);
+
+    public T[] toArray(T[] a);
 
 }

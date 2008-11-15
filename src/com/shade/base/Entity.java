@@ -7,9 +7,10 @@ package com.shade.base;
  * @author Alex Schearer <aschearer@gmail.com>
  */
 public interface Entity extends Animatable {
-    
+
     /**
      * Helps identify an entity; mostly used when responding to a collision.
+     * 
      * @return
      */
     public int getRole();
@@ -23,7 +24,7 @@ public interface Entity extends Animatable {
      * 
      * @param l
      */
-	public void addToLevel(Level<?> l);
+    public void addToLevel(Level<?> l);
 
     /**
      * Called when this object is to be removed from the level.
@@ -31,7 +32,8 @@ public interface Entity extends Animatable {
      * In almost all cases being removed from the level will mean being removed
      * from the game. Therefore the entity should clean up any resources and
      * pointers.
-     * @param l 
+     * 
+     * @param l
      */
     public void removeFromLevel(Level<?> l);
 
@@ -41,8 +43,9 @@ public interface Entity extends Animatable {
      * @param obstacle
      */
     public void onCollision(Entity obstacle);
-    
+
     public float getXCenter();
+
     public float getYCenter();
-     
+
 }

@@ -15,27 +15,27 @@ import org.newdawn.slick.state.StateBasedGame;
  */
 public class LightSourceProxy implements LightSource {
 
-	private LinkedList<LightSource> lights;
+    private LinkedList<LightSource> lights;
 
-	public LightSourceProxy() {
-		lights = new LinkedList<LightSource>();
-	}
+    public LightSourceProxy() {
+        lights = new LinkedList<LightSource>();
+    }
 
-	public void add(LightSource l) {
-		lights.add(l);
-	}
+    public void add(LightSource l) {
+        lights.add(l);
+    }
 
-	public void render(StateBasedGame game, Graphics g,
-			LuminousEntity... entities) {
-		for (LightSource light : lights) {
-			light.render(game, g, entities);
-		}
-	}
+    public void render(StateBasedGame game, Graphics g,
+            LuminousEntity... entities) {
+        for (LightSource light : lights) {
+            light.render(game, g, entities);
+        }
+    }
 
-	public void update(StateBasedGame game, int delta) {
-		for (LightSource light : lights) {
-			light.update(game, delta);
-		}
-	}
+    public void update(StateBasedGame game, int delta) {
+        for (LightSource light : lights) {
+            light.update(game, delta);
+        }
+    }
 
 }

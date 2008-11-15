@@ -21,11 +21,11 @@ public class CrashGeom {
         y = y * y;
         return (x + y);
     }
-    
+
     public static float distance(Body one, Body two) {
         return (float) Math.sqrt(distance2(one, two));
     }
-    
+
     public static float distance(Body one, float x2, float y2) {
         return (float) Math.sqrt(distance2(one, x2, y2));
     }

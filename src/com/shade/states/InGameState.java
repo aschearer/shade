@@ -19,45 +19,43 @@ import com.shade.lighting.LuminousEntity;
 
 public class InGameState extends BasicGameState {
 
-	public static final int ID = 1;
-	
-	private Image background;
-	private LightMask view;
-	private Level<LuminousEntity> model;
-	private LightSourceProxy lights;
+    public static final int ID = 1;
 
-	@Override
-	public int getID() {
-		return ID;
-	}
+    private Image background;
+    private LightMask view;
+    private Level<LuminousEntity> model;
+    private LightSourceProxy lights;
 
-	public void init(GameContainer container,
-			StateBasedGame game) throws SlickException {
-		lights = new LightSourceProxy();
-		lights.add(new GlobalLight((float) (4 * Math.PI / 3)));
-		
-		view = new LightMask(6);
-		view.add(lights);
-		background = new Image("states/ingame/background.png");
-		
-		model = new CrashLevel<LuminousEntity>(8, 6, 100);
-		model.add(new Player(300, 200));
-		model.add(new Block(50, 50, 100, 100, 6));
-		model.add(new Block(400, 100, 150, 150, 9));
-		model.add(new Dome(500, 500, 50, 12));
-	}
+    @Override
+    public int getID() {
+        return ID;
+    }
 
-	public void render(GameContainer container,
-			StateBasedGame game, Graphics g)
-			throws SlickException {
-		view.render(game, g, model.toArray(new LuminousEntity[0]), background);
-	}
+    public void init(GameContainer container, StateBasedGame game)
+            throws SlickException {
+        lights = new LightSourceProxy();
+        lights.add(new GlobalLight((float) (4 * Math.PI / 3)));
 
-	public void update(GameContainer container,
-			StateBasedGame game, int delta)
-			throws SlickException {
-		model.update(game, delta);
-		lights.update(game, delta);
-	}
+        view = new LightMask(6);
+        view.add(lights);
+        background = new Image("states/ingame/background.png");
+
+        model = new CrashLevel<LuminousEntity>(8, 6, 100);
+        model.add(new Player(300, 200));
+        model.add(new Block(50, 50, 100, 100, 6));
+        model.add(new Block(400, 100, 150, 150, 9));
+        model.add(new Dome(500, 500, 50, 12));
+    }
+
+    public void render(GameContainer container, StateBasedGame game, Graphics g)
+            throws SlickException {
+        view.render(game, g, model.toArray(new LuminousEntity[0]), background);
+    }
+
+    public void update(GameContainer container, StateBasedGame game, int delta)
+            throws SlickException {
+        model.update(game, delta);
+        lights.update(game, delta);
+    }
 
 }

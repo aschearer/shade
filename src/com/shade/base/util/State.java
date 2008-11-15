@@ -18,17 +18,20 @@ public interface State extends Animatable {
     /**
      * Returns true if the object equals this state.
      * 
-     * Generally, have each state map to an enum and return true if o equals the enum.
+     * Generally, have each state map to an enum and return true if o equals the
+     * enum.
      */
     public boolean isNamed(Object o);
 
     /**
-     * Called whenever the state is transitioned to; perform any necessary set up here.
+     * Called whenever the state is transitioned to; perform any necessary set
+     * up here.
      */
     public void enter();
 
     /**
      * Completes the Entity interface...
+     * 
      * @param obstacle
      */
     public void onCollision(Entity obstacle);
