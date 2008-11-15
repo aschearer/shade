@@ -14,15 +14,17 @@ import com.shade.entities.Dome;
 import com.shade.entities.Player;
 import com.shade.lighting.GlobalLight;
 import com.shade.lighting.LightMask;
+import com.shade.lighting.LightSourceProxy;
 import com.shade.lighting.LuminousEntity;
 
 public class InGameState extends BasicGameState {
 
-	private static final int ID = 1;
+	public static final int ID = 1;
 	
 	private Image background;
 	private LightMask view;
 	private Level<LuminousEntity> model;
+	private LightSourceProxy lights;
 
 	@Override
 	public int getID() {
@@ -31,8 +33,11 @@ public class InGameState extends BasicGameState {
 
 	public void init(GameContainer container,
 			StateBasedGame game) throws SlickException {
+		lights = new LightSourceProxy();
+		lights.add(new GlobalLight((float) (4 * Math.PI / 3)));
+		
 		view = new LightMask();
-		view.add(new GlobalLight((float) (4 * Math.PI / 3)));
+		view.add(lights);
 		background = new Image("states/ingame/background.png");
 		
 		model = new CrashLevel<LuminousEntity>(8, 6, 100);
@@ -52,6 +57,7 @@ public class InGameState extends BasicGameState {
 			StateBasedGame game, int delta)
 			throws SlickException {
 		model.update(game, delta);
+		lights.update(game, delta);
 	}
 
 }
