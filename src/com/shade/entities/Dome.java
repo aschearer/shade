@@ -27,18 +27,7 @@ public class Dome extends Body implements LuminousEntity, Repelable {
     }
 
     private void initSprite() throws SlickException {
-        String path = "entities/dome/dome.small.png";
-        if (height > 6) {
-            path = "entities/dome/dome.medium.png";
-        }
-        if (height > 9) {
-            path = "entities/dome/dome.big.png";
-        }
-        if (height > 12) {
-            path = "entities/dome/dome.xbig.png";
-        }
-
-        sprite = new Image(path);
+        sprite = new Image("entities/dome/dome.png");
     }
 
     private void initShape(float x, float y, float r) {

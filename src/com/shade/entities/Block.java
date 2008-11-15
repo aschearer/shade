@@ -30,15 +30,7 @@ public class Block extends Body implements LuminousEntity, Repelable {
     }
 
     private void initSprite() throws SlickException {
-        String path = "entities/block/block.small.png";
-        if (height > 6) {
-            path = "entities/block/block.medium.png";
-        }
-        if (height > 10) {
-            path = "entities/block/block.big.png";
-        }
-
-        sprite = new Image(path);
+        sprite = new Image("entities/block/block.png");
     }
 
     private void initShape(float x, float y, float w, float h) {
