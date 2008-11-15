@@ -1,5 +1,6 @@
 package com.shade.lighting;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 
 import org.lwjgl.opengl.GL11;
@@ -29,9 +30,11 @@ public class LightMask {
 
 	protected final static Color SHADE = new Color(0, 0, 0, .5f);
 
+	private int threshold;
 	private LinkedList<LightSource> lights;
 
-	public LightMask() {
+	public LightMask(int threshold) {
+		this.threshold = threshold;
 		lights = new LinkedList<LightSource>();
 	}
 
@@ -60,8 +63,6 @@ public class LightMask {
 
 	private void renderBackgrounds(StateBasedGame game, Graphics g,
 			Image... backgrounds) {
-		// TODO render according to z-index
-		// TODO render the obstacles over the shadows...
 		GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE);
 		for (Image background : backgrounds) {
 			background.draw();
@@ -70,10 +71,23 @@ public class LightMask {
 
 	private void renderEntities(StateBasedGame game, Graphics g,
 			LuminousEntity... entities) {
+		// TODO render according to z-index
+		// TODO render the obstacles over the shadows...
+		Arrays.sort(entities);
+		int i = 0;
+		
 		GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ZERO);
-		for (LuminousEntity entity : entities) {
-			entity.render(game, g);
-			entity.setLuminosity(getLuminosityFor(entity, g));
+		while (i < entities.length && entities[i].getZIndex() < threshold) {
+			entities[i].render(game, g);
+			entities[i].setLuminosity(getLuminosityFor(entities[i], g));
+			i++;
+		}
+		
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		while (i < entities.length) {
+			entities[i].render(game, g);
+			entities[i].setLuminosity(getLuminosityFor(entities[i], g));
+			i++;
 		}
 	}
 

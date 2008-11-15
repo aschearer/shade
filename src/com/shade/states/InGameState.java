@@ -36,7 +36,7 @@ public class InGameState extends BasicGameState {
 		lights = new LightSourceProxy();
 		lights.add(new GlobalLight((float) (4 * Math.PI / 3)));
 		
-		view = new LightMask();
+		view = new LightMask(6);
 		view.add(lights);
 		background = new Image("states/ingame/background.png");
 		
