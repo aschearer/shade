@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import com.crash.Body;
 import com.shade.crash.CrashGeom;
+import com.shade.lighting.LuminousEntity;
 
 /**
  * Linkables are bodies which form a doubly linked list.
@@ -14,7 +15,7 @@ import com.shade.crash.CrashGeom;
  * 
  * @author Alexander Schearer <aschearer@gmail.com>
  */
-public abstract class Linkable extends Body {
+public abstract class Linkable extends Body implements LuminousEntity {
 
 	public Linkable prev, next;
 

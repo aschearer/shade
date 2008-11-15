@@ -15,7 +15,7 @@ import com.shade.base.util.StateManager;
 import com.shade.crash.Repelable;
 import com.shade.lighting.LuminousEntity;
 
-public class Player extends Linkable implements LuminousEntity {
+public class Player extends Linkable {
 
 	private static final float SPEED = 2f;
 	private static final int MUSHROOM_LIMIT = 3;

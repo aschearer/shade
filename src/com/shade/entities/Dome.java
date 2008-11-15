@@ -45,8 +45,7 @@ public class Dome extends Body implements LuminousEntity, Repelable {
         shape = new Circle(x, y, r);
     }
     public void onCollision(Entity obstacle) {
-        // TODO Auto-generated method stub
-
+        
     }
     
     public void render(StateBasedGame game, Graphics g) {
@@ -55,8 +54,7 @@ public class Dome extends Body implements LuminousEntity, Repelable {
     }
 
     public void update(StateBasedGame game, int delta) {
-        // TODO Auto-generated method stub
-
+        
     }
 
     /**
