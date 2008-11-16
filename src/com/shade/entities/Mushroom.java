@@ -26,7 +26,7 @@ public class Mushroom extends Linkable {
     private static final float MAX_SCALE = 3.5f;
     private static final float MIN_SCALE = 1.5f;
     private static final float START_SCALE = MIN_SCALE + .5f;
-    private static final float SPEED = 1.6f;
+    private static final float MOVEMENT_SPEED = 1.6f;
 
     private enum MushroomState {
         SPAWNING, NORMAL, PICKED, COLLECTED, DEAD
@@ -37,6 +37,7 @@ public class Mushroom extends Linkable {
     };
 
     public MushroomType type;
+    private MushroomFactory factory;
     private Level<LuminousEntity> level;
     private StateManager manager;
     private float luminosity;
@@ -44,12 +45,13 @@ public class Mushroom extends Linkable {
     private float scale;
     private float myIntensity;
 
-    public Mushroom(float x, float y, MushroomType t) throws SlickException {
+    public Mushroom(float x, float y, MushroomType t, MushroomFactory f) throws SlickException {
         initShape(x, y);
         initResources(t);
         initStates();
         scale = START_SCALE;
         type = t;
+        factory = f;
     }
 
     private void initShape(float x, float y) {
@@ -58,7 +60,7 @@ public class Mushroom extends Linkable {
 
     private void initResources(MushroomType t) throws SlickException {
         SpriteSheet s = new SpriteSheet("entities/mushroom/mushrooms.png", 40,
-                40);
+                                        40);
         mushroom = s.getSprite(t.ordinal(), 0);
     }
 
@@ -83,7 +85,7 @@ public class Mushroom extends Linkable {
 
         public void onCollision(Entity obstacle) {
             assert (prev == null);
-            enter(MushroomState.DEAD);
+            manager.enter(MushroomState.DEAD);
         }
 
         public void render(StateBasedGame game, Graphics g) {
@@ -93,11 +95,11 @@ public class Mushroom extends Linkable {
         public void update(StateBasedGame game, int delta) {
             // sunny so don't successfully spawn
             if (luminosity >= SHADOW_THRESHOLD) {
-                enter(MushroomState.DEAD);
+                manager.enter(MushroomState.DEAD);
             }
             // shady spawn away
             if (getLuminosity() < SHADOW_THRESHOLD && scale < MAX_SCALE) {
-                enter(MushroomState.NORMAL);
+                manager.enter(MushroomState.NORMAL);
             }
         }
     }
@@ -132,7 +134,7 @@ public class Mushroom extends Linkable {
                 return;
             }
             // TODO implement mushroom monster
-            
+
             // sunny shrink
             if (luminosity >= SHADOW_THRESHOLD) {
                 shrink();
@@ -188,7 +190,7 @@ public class Mushroom extends Linkable {
                 shrink();
                 resize();
             }
-            
+
             // way too far away, break off
             if (overThreshold(prev, 12000)) {
                 detach();
@@ -301,7 +303,7 @@ public class Mushroom extends Linkable {
             d[1] = CrashGeom.distance2(prev, getXCenter() + 800, getYCenter());
         } else {
             d[1] = CrashGeom.distance2(Mushroom.this, prev.getXCenter() + 800,
-                    prev.getYCenter());
+                                       prev.getYCenter());
         }
 
         // if I'm above my target
@@ -309,7 +311,7 @@ public class Mushroom extends Linkable {
             d[2] = CrashGeom.distance2(prev, getXCenter(), getYCenter() + 600);
         } else {
             d[2] = CrashGeom.distance2(Mushroom.this, prev.getXCenter(), prev
-                    .getYCenter() + 600);
+                                       .getYCenter() + 600);
         }
 
         float angle = CrashGeom.calculateAngle(prev, Mushroom.this);
@@ -317,7 +319,7 @@ public class Mushroom extends Linkable {
             angle += Math.PI;
         }
 
-        move(SPEED, angle);
+        move(MOVEMENT_SPEED, angle);
     }
 
     private void move(float magnitude, float angle) {
@@ -384,7 +386,7 @@ public class Mushroom extends Linkable {
      * the level isn't instantiated correctly.
      */
     @SuppressWarnings("unchecked")
-    public void addToLevel(Level<?> l) {
+    public void addToLevel(Level < ? > l) {
         level = (Level<LuminousEntity>) l;
     }
 
@@ -392,8 +394,8 @@ public class Mushroom extends Linkable {
         return Roles.MUSHROOM.ordinal();
     }
 
-    public void removeFromLevel(Level<?> l) {
-
+    public void removeFromLevel(Level < ? > l) {
+        factory.remove(this);
     }
 
     public int compareTo(LuminousEntity l) {
