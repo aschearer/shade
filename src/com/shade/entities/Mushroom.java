@@ -29,7 +29,7 @@ public class Mushroom extends Linkable {
     private static final float SPEED = 1.6f;
 
     private enum MushroomState {
-        NORMAL, PICKED, COLLECTED, DEAD
+        SPAWNING, NORMAL, PICKED, COLLECTED, DEAD
     };
 
     public enum MushroomType {
@@ -64,10 +64,42 @@ public class Mushroom extends Linkable {
 
     private void initStates() {
         manager = new StateManager();
+        manager.add(new SpawningState());
         manager.add(new NormalState());
         manager.add(new PickedState());
         manager.add(new CollectedState());
         manager.add(new DeadState());
+    }
+
+    private class SpawningState implements State {
+
+        public boolean isNamed(Object state) {
+            return state == MushroomState.SPAWNING;
+        }
+
+        public void enter() {
+
+        }
+
+        public void onCollision(Entity obstacle) {
+            assert (prev == null);
+            enter(MushroomState.DEAD);
+        }
+
+        public void render(StateBasedGame game, Graphics g) {
+            // don't render till normal
+        }
+
+        public void update(StateBasedGame game, int delta) {
+            // sunny so don't successfully spawn
+            if (luminosity >= SHADOW_THRESHOLD) {
+                enter(MushroomState.DEAD);
+            }
+            // shady spawn away
+            if (getLuminosity() < SHADOW_THRESHOLD && scale < MAX_SCALE) {
+                enter(MushroomState.NORMAL);
+            }
+        }
     }
 
     private class NormalState implements State {
