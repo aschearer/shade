@@ -93,8 +93,7 @@ public class Player extends Linkable {
             xVelocity = (float) (1.0 * SPEED * xVelocity / mag);
             yVelocity = (float) (1.0 * SPEED * yVelocity / mag);
             if (mag != 0) {
-                shape.setCenterX(getXCenter() + xVelocity);
-                shape.setCenterY(getYCenter() + yVelocity);
+                nudge(xVelocity, yVelocity);
             } else {
                 xVelocity = 0;
                 yVelocity = 0;

@@ -69,7 +69,7 @@ public class Block extends Body implements LuminousEntity, Repelable {
     /**
      * Given two rectangles, a block and its shadow, the key point is the corner
      * on the shadow closest to the block. The second key point is the corner on
-     * the block furthest from the shadow. One can be derived from the other.
+     * the block furtherst from the shadow. One can be derived from the other.
      * 
      * @param v
      * @return

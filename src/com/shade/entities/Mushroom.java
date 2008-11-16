@@ -44,15 +44,6 @@ public class Mushroom extends Linkable {
     private float scale;
     private float myIntensity;
 
-    public void updateIntensity(Graphics g) {
-        myIntensity = g.getPixel((int) getXCenter(), (int) getYCenter()).a;
-
-    }
-
-    public float getShadowIntensity() {
-        return myIntensity;
-    }
-
     public Mushroom(float x, float y, MushroomType t) throws SlickException {
         initShape(x, y);
         initResources(t);
@@ -96,12 +87,7 @@ public class Mushroom extends Linkable {
                 ((Linkable) obstacle).attach(Mushroom.this);
                 return;
             }
-
-            if (obstacle.getRole() == Roles.MOLE.ordinal()) {
-                manager.enter(MushroomState.PICKED);
-                ((Linkable) obstacle).attach(Mushroom.this);
-                return;
-            }
+            // TODO implement mushroom collision
         }
 
         public void render(StateBasedGame game, Graphics g) {
@@ -113,34 +99,21 @@ public class Mushroom extends Linkable {
                 manager.enter(MushroomState.DEAD);
                 return;
             }
-            if (scale > MAX_SCALE && type == MushroomType.EGG) {
-                // float x = shape.getCenterX();
-                // float y = shape.getCenterY();
-                manager.enter(MushroomState.DEAD);
-                detach();
-                // try {
-                // Bird bird = new Bird(x, y);
-                // level.add(bird);
-                // } catch (SlickException e) {
-                // e.printStackTrace();
-                // }
-                return;
-            }
-            if (getShadowIntensity() < 0.8 && scale < MAX_SCALE) {
-                scale += SCALE_INCREMENT;
+            // TODO implement mushroom monster
+            
+            // sunny shrink
+            if (luminosity >= SHADOW_THRESHOLD) {
+                shrink();
                 resize();
                 return;
             }
-            if (luminosity > SHADOW_THRESHOLD) {
-                if (type == MushroomType.EGG)
-                    scale += SCALE_INCREMENT / 3;
-                else
-                    shrink();
+            // shady grow
+            if (getLuminosity() < SHADOW_THRESHOLD && scale < MAX_SCALE) {
+                grow();
                 resize();
                 return;
             }
         }
-
     }
 
     private class PickedState implements State {
@@ -154,12 +127,7 @@ public class Mushroom extends Linkable {
         }
 
         public void onCollision(Entity obstacle) {
-            if (obstacle.getRole() == Roles.MOLE.ordinal()) {
-                manager.enter(MushroomState.PICKED);
-                detach();
-                ((Linkable) obstacle).attach(Mushroom.this);
-                return;
-            }
+            // TODO implement mushroom collision
         }
 
         public void render(StateBasedGame game, Graphics g) {
@@ -181,36 +149,22 @@ public class Mushroom extends Linkable {
                 manager.enter(MushroomState.DEAD);
                 return;
             }
-            if (scale > MAX_SCALE && type == MushroomType.EGG) {
-                // float x = shape.getCenterX();
-                // float y = shape.getCenterY();
-                manager.enter(MushroomState.DEAD);
-                detach();
-                // try {
-                // Bird bird = new Bird(x, y);
-                // level.add(bird);
-                // } catch (SlickException e) {
-                // e.printStackTrace();
-                // }
-                return;
-            }
-            if (luminosity > SHADOW_THRESHOLD && scale < MAX_SCALE) {
-                if (type != MushroomType.EGG)
-                    scale += SCALE_INCREMENT;
-                resize();
-            }
+            // TODO implement mushroom monster
 
-            if (getShadowIntensity() > 0.8) {
+            // sunny shrink
+            if (getLuminosity() >= SHADOW_THRESHOLD) {
                 shrink();
                 resize();
             }
-
+            
+            // way too far away, break off
             if (overThreshold(prev, 12000)) {
                 detach();
                 manager.enter(MushroomState.NORMAL);
                 return;
             }
 
+            // too far away, catch up
             if (overThreshold(prev, 1200)) {
                 followLeader();
                 testAndWrap();
@@ -250,30 +204,16 @@ public class Mushroom extends Linkable {
                 manager.enter(MushroomState.DEAD);
                 return;
             }
-            if (scale > MAX_SCALE && type == MushroomType.EGG) {
-                // float x = shape.getCenterX();
-                // float y = shape.getCenterY();
-                manager.enter(MushroomState.DEAD);
-                detach();
-                // try {
-                // Bird bird = new Bird(x, y);
-                // level.add(bird);
-                // } catch (SlickException e) {
-                // e.printStackTrace();
-                // }
-                return;
-            }
-            if (luminosity > SHADOW_THRESHOLD && scale < MAX_SCALE) {
-                if (type != MushroomType.EGG)
-                    scale += SCALE_INCREMENT;
-                resize();
-            }
 
-            if (getShadowIntensity() > 0.8) {
+            // TODO implement mushroom monster
+
+            // sunny shrink
+            if (getLuminosity() >= SHADOW_THRESHOLD) {
                 shrink();
                 resize();
             }
 
+            // way too far away, break off
             if (overThreshold(prev, 120000)) {
                 detach();
                 manager.enter(MushroomState.NORMAL);
@@ -298,15 +238,15 @@ public class Mushroom extends Linkable {
         }
 
         public void onCollision(Entity obstacle) {
-
+            // I'm dead stupid
         }
 
         public void render(StateBasedGame game, Graphics g) {
-
+            // I'm dead stupid
         }
 
         public void update(StateBasedGame game, int delta) {
-
+            // I'm dead stupid
         }
 
     }
@@ -317,15 +257,6 @@ public class Mushroom extends Linkable {
         ((Circle) shape).setRadius(RADIUS * scale);
         shape.setCenterX(x);
         shape.setCenterY(y);
-    }
-
-    /* Move the shape a given amount across two dimensions. */
-    private void move(float magnitude, float direction) {
-        Vector2f d = Geom.calculateVector(magnitude, direction);
-        xVelocity = d.x;
-        yVelocity = d.y;
-        shape.setCenterX(shape.getCenterX() + d.x);
-        shape.setCenterY(shape.getCenterY() + d.y);
     }
 
     private void followLeader() {
@@ -357,6 +288,13 @@ public class Mushroom extends Linkable {
         move(SPEED, angle);
     }
 
+    private void move(float magnitude, float angle) {
+        Vector2f v = Geom.calculateVector(magnitude, angle);
+        xVelocity = v.x;
+        yVelocity = v.y;
+        nudge(xVelocity, yVelocity);
+    }
+
     public boolean isDead() {
         return manager.currentState().equals(MushroomState.DEAD);
     }
@@ -375,7 +313,6 @@ public class Mushroom extends Linkable {
 
     public void render(StateBasedGame game, Graphics g) {
         manager.render(game, g);
-        updateIntensity(g);
     }
 
     public void update(StateBasedGame game, int delta) {
@@ -384,6 +321,10 @@ public class Mushroom extends Linkable {
 
     public float getSize() {
         return scale;
+    }
+
+    private void grow() {
+        scale += SCALE_INCREMENT;
     }
 
     private void shrink() {
@@ -426,5 +367,4 @@ public class Mushroom extends Linkable {
     public int compareTo(LuminousEntity l) {
         return getZIndex() - l.getZIndex();
     }
-
 }
