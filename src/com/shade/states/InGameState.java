@@ -32,7 +32,7 @@ public class InGameState extends BasicGameState {
     }
 
     public void init(GameContainer container, StateBasedGame game)
-            throws SlickException {
+    throws SlickException {
         lights = new LightSourceProxy();
         lights.add(new GlobalLight(18, (float) (4 * Math.PI / 3)));
 
@@ -42,18 +42,19 @@ public class InGameState extends BasicGameState {
 
         model = new CrashLevel<LuminousEntity>(8, 6, 100);
         model.add(new Player(300, 200));
-        model.add(new Block(50, 50, 100, 100, 6));
+        model.add(new Block(250, 350, 100, 100, 6));
         model.add(new Block(400, 100, 150, 150, 9));
-        model.add(new Dome(500, 500, 50, 7));
+        model.add(new Block(450, 300, 125, 100, 7));
+        model.add(new Dome(150, 150, 50, 7));
     }
 
     public void render(GameContainer container, StateBasedGame game, Graphics g)
-            throws SlickException {
+    throws SlickException {
         view.render(game, g, model.toArray(new LuminousEntity[0]), background);
     }
 
     public void update(GameContainer container, StateBasedGame game, int delta)
-            throws SlickException {
+    throws SlickException {
         model.update(game, delta);
         lights.update(game, delta);
     }

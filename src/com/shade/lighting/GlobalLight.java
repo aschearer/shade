@@ -17,7 +17,7 @@ public class GlobalLight implements LightSource {
     }
 
     public void render(StateBasedGame game, Graphics g,
-            LuminousEntity... entities) {
+                       LuminousEntity... entities) {
         LightMask.enableStencil();
         for (LuminousEntity entity : entities) {
             Shape s = entity.castShadow(angle, depth);
@@ -37,7 +37,7 @@ public class GlobalLight implements LightSource {
     }
 
     public void update(StateBasedGame game, int delta) {
-        angle += .0005f;
+        angle += .005f;
     }
 
 }

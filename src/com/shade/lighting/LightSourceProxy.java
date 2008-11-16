@@ -7,10 +7,10 @@ import org.newdawn.slick.state.StateBasedGame;
 
 /**
  * A collection of lights wrapped up behind a single interface.
- * 
+ *
  * Create this alongside a LightMask. Pass this to the mask for rendering and
  * call update here. This class acts as a model for lights.
- * 
+ *
  * @author Alexander Schearer <aschearer@gmail.com>
  */
 public class LightSourceProxy implements LightSource {
@@ -26,7 +26,7 @@ public class LightSourceProxy implements LightSource {
     }
 
     public void render(StateBasedGame game, Graphics g,
-            LuminousEntity... entities) {
+                       LuminousEntity... entities) {
         for (LightSource light : lights) {
             light.render(game, g, entities);
         }

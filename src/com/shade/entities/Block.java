@@ -23,7 +23,7 @@ public class Block extends Body implements LuminousEntity, Repelable {
     private int height;
 
     public Block(float x, float y, float w, float h, int d)
-            throws SlickException {
+    throws SlickException {
         initShape(x, y, w, h);
         height = d;
         initSprite();
@@ -70,7 +70,7 @@ public class Block extends Body implements LuminousEntity, Repelable {
      * Given two rectangles, a block and its shadow, the key point is the corner
      * on the shadow closest to the block. The second key point is the corner on
      * the block furtherst from the shadow. One can be derived from the other.
-     * 
+     *
      * @param v
      * @return
      */
@@ -105,7 +105,7 @@ public class Block extends Body implements LuminousEntity, Repelable {
         // not really important for blocks...
     }
 
-    public void addToLevel(Level<?> l) {
+    public void addToLevel(Level < ? > l) {
 
     }
 
@@ -124,13 +124,13 @@ public class Block extends Body implements LuminousEntity, Repelable {
         float playery = b.getYCenter();
         // determine overlap
         float right = playerx - b.getWidth() / 2
-                - (getXCenter() + getWidth() / 2);
+                      - (getXCenter() + getWidth() / 2);
         float left = playerx + b.getWidth() / 2
-                - (getXCenter() - getWidth() / 2);
+                     - (getXCenter() - getWidth() / 2);
         float top = playery - b.getHeight() / 2
-                - (getYCenter() + getHeight() / 2);
+                    - (getYCenter() + getHeight() / 2);
         float bottom = playery + b.getHeight() / 2
-                - (getYCenter() - getHeight() / 2);
+                       - (getYCenter() - getHeight() / 2);
         float minx = Math.min(Math.abs(right), Math.abs(left));
         float miny = Math.min(Math.abs(top), Math.abs(bottom));
         if (minx < miny) {
@@ -148,7 +148,7 @@ public class Block extends Body implements LuminousEntity, Repelable {
         }
     }
 
-    public void removeFromLevel(Level<?> l) {
+    public void removeFromLevel(Level < ? > l) {
 
     }
 

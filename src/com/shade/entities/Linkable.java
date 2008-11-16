@@ -8,11 +8,11 @@ import com.shade.lighting.LuminousEntity;
 
 /**
  * Linkables are bodies which form a doubly linked list.
- * 
+ *
  * This is the pattern used to implement the mushrooms-player following
  * behavior. Mushrooms should follow the player but stay a certain distance
  * away.
- * 
+ *
  * @author Alexander Schearer <aschearer@gmail.com>
  */
 public abstract class Linkable extends Body implements LuminousEntity {
@@ -21,7 +21,7 @@ public abstract class Linkable extends Body implements LuminousEntity {
 
     /**
      * Attach the object to the end of this linked list.
-     * 
+     *
      * @param l
      */
     protected void attach(Linkable l) {
@@ -75,7 +75,7 @@ public abstract class Linkable extends Body implements LuminousEntity {
     /**
      * Return true if this body and the target are further apart than the
      * threshold.
-     * 
+     *
      * @param target
      * @param threshold
      * @return
@@ -89,19 +89,19 @@ public abstract class Linkable extends Body implements LuminousEntity {
         // if I'm left of my target
         if (getX() < target.getX()) {
             d[1] = CrashGeom
-                    .distance2(target, getXCenter() + 800, getYCenter());
+                   .distance2(target, getXCenter() + 800, getYCenter());
         } else {
             d[1] = CrashGeom.distance2(this, target.getXCenter() + 800, target
-                    .getYCenter());
+                                       .getYCenter());
         }
 
         // if I'm above my target
         if (getY() < prev.getY()) {
             d[2] = CrashGeom
-                    .distance2(target, getXCenter(), getYCenter() + 600);
+                   .distance2(target, getXCenter(), getYCenter() + 600);
         } else {
             d[2] = CrashGeom.distance2(this, target.getXCenter(), target
-                    .getYCenter() + 600);
+                                       .getYCenter() + 600);
         }
 
         Arrays.sort(d);
