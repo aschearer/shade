@@ -45,9 +45,9 @@ public class MushroomFactory {
     }
 
     public Mushroom getMushroom(GameContainer c) throws SlickException {
-        float x = c.getWidth() * Math.random();
-        float y = c.getHeight() * Math.random();
-        float t = randomType();
+        float x = (float) (c.getWidth() * Math.random());
+        float y = (float) (c.getHeight() * Math.random());
+        int t = randomType();
         Mushroom m = new Mushroom(x, y, getType(t), this);
         mushrooms.add(m);
         return m;

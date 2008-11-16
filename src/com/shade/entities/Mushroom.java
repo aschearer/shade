@@ -15,6 +15,7 @@ import com.shade.base.util.State;
 import com.shade.base.util.StateManager;
 import com.shade.crash.CrashGeom;
 import com.shade.crash.Repelable;
+import com.shade.entities.util.MushroomFactory;
 import com.shade.lighting.LuminousEntity;
 import com.shade.util.Geom;
 
