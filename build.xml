@@ -12,7 +12,7 @@ ant clean Removes products of the build process, etc.
 
 Alex Schearer
 -->
-<project name="Shade">
+<project name="Shade" default="compile">
 
     <property name="src.dir" value="src" />
     <property name="res.dir" value="res" />
