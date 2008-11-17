@@ -60,6 +60,7 @@ Alex Schearer
         <exec executable="${script.dir}/astyle">
             <arg value="-p" />
             <arg value="-r" />
+            <arg value="-c" />
             <arg value="--style=java" />
             <arg value="${src.dir}/*" />
         </exec>
