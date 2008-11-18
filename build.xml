@@ -5,8 +5,8 @@
 Shade build file.
 
 ant setup Initialize Shade environment.
-ant build Run to compile the code.
-ant run Run to launch Shade (should be run after ant build...)
+ant compile Run to compile the code.
+ant run Run to launch Shade 
 ant webstart Deploy shade as a webstart.
 ant clean Removes products of the build process, etc.
 
@@ -32,14 +32,20 @@ Alex Schearer
     </target>
 
     <!-- Compile and archive Shade. -->
-    <target name="build">
+    <target name="jar">
         <antcall target="compile" />
         <antcall target="archive" />
     </target>
 
     <!-- Run Shade. -->
-    <target name="run" depends="setup,build">
-        <java jar="${target.dir}/shade.jar" fork="true" failonerror="true">
+    <target name="run" depends="setup,compile">
+        <java fork="true" classname="com.shade.Shade">
+            <classpath>
+                <pathelement path="${obj.dir}" />
+                <fileset dir="${lib.dir}">
+                    <include name="**/*.jar" />
+                </fileset>
+            </classpath>
             <jvmarg value="-Djava.library.path=lib/natives" />
         </java>
     </target>
@@ -67,7 +73,7 @@ Alex Schearer
     </target>
 
     <!-- Create a webstart directory in order to deploy Shade. -->
-    <target name="webstart" depends="build">
+    <target name="webstart" depends="jar">
         <input message="Web server url:" addproperty="codebase" />
         <delete dir="${webstart.dir}" />
         <mkdir dir="${webstart.dir}" />
