@@ -1,13 +1,20 @@
 package com.shade.states;
 
+import java.awt.Font;
+import java.io.InputStream;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.util.ResourceLoader;
 
 import com.shade.base.Level;
+import com.shade.controls.CounterControl;
+import com.shade.controls.MeterControl;
 import com.shade.crash.CrashLevel;
 import com.shade.entities.Basket;
 import com.shade.entities.Block;
@@ -24,7 +31,10 @@ public class InGameState extends BasicGameState {
 
     public static final int ID = 1;
 
-    private Image background;
+    private Image background, trim, counterSprite;
+    private TrueTypeFont counterFont;
+    private MeterControl meter;
+    private CounterControl counter;
     private LightMask view;
     private Level<LuminousEntity> model;
     private LightSourceProxy lights;
@@ -37,12 +47,15 @@ public class InGameState extends BasicGameState {
 
     public void init(GameContainer container, StateBasedGame game)
     throws SlickException {
+        initFonts();
+        initSprites();
+        initControls();
+
         lights = new LightSourceProxy();
         lights.add(new GlobalLight(12, (float) (4 * Math.PI / 3)));
 
         view = new LightMask(6);
         view.add(lights);
-        background = new Image("states/ingame/background.png");
 
         model = new CrashLevel<LuminousEntity>(8, 6, 100);
         model.add(new Player(300, 200));
@@ -70,15 +83,44 @@ public class InGameState extends BasicGameState {
         factory = new MushroomFactory(8, .001);
     }
 
+    private void initFonts() throws SlickException {
+        try {
+            InputStream oi = ResourceLoader
+                .getResourceAsStream("states/ingame/jekyll.ttf");
+            Font jekyll = Font.createFont(Font.TRUETYPE_FONT, oi);
+            counterFont = new TrueTypeFont(jekyll.deriveFont(36f),
+                    true);
+        } catch (Exception e) {
+            throw new SlickException("Failed to load font.",
+                    e);
+        }
+    }
+
+    private void initSprites() throws SlickException {
+        background = new Image("states/ingame/background.png");
+        trim = new Image("states/ingame/trim.png");
+        counterSprite = new Image("states/ingame/counter.png");
+    }
+
+    private void initControls() throws SlickException {
+        meter = new MeterControl(20, 456, 100, 100);
+        counter = new CounterControl(60, 520, counterSprite, counterFont);
+    }
+
     public void render(GameContainer container, StateBasedGame game, Graphics g)
     throws SlickException {
         view.render(game, g, model.toArray(new LuminousEntity[0]), background);
+        trim.draw();
+        counter.render(game, g);
+        meter.render(game, g);
     }
 
     public void update(GameContainer container, StateBasedGame game, int delta)
     throws SlickException {
         model.update(game, delta);
         lights.update(game, delta);
+        counter.update(game, delta);
+        meter.update(game, delta);
         if (factory.active()) {
             //model.add(factory.getMushroom(container));
         }
