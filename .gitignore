@@ -7,4 +7,5 @@
 bin
 .classpath
 .class
+*.swp
 .DS*

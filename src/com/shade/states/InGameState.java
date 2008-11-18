@@ -45,11 +45,7 @@ public class InGameState extends BasicGameState {
 
         model = new CrashLevel<LuminousEntity>(8, 6, 100);
         model.add(new Player(300, 200));
-        //model.add(new Block(250, 350, 100, 100, 6));
-        //model.add(new Block(400, 100, 150, 150, 9));
-        //model.add(new Block(450, 300, 125, 100, 7));
-        //model.add(new Dome(150, 150, 50, 7));
-        //model.add(new Fence(100, 50, 80, 20, 6));
+        // blocks
         model.add(new Block(55, 355, 125, 125, 16));
         model.add(new Block(224, 424, 56, 56, 6));
         model.add(new Block(324, 424, 56, 56, 6));
