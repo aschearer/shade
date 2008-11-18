@@ -9,6 +9,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Level;
 import com.shade.crash.CrashLevel;
+import com.shade.entities.Basket;
 import com.shade.entities.Block;
 import com.shade.entities.Dome;
 import com.shade.entities.Fence;
@@ -45,6 +46,7 @@ public class InGameState extends BasicGameState {
 
         model = new CrashLevel<LuminousEntity>(8, 6, 100);
         model.add(new Player(300, 200));
+        model.add(new Basket(400, 250, 65, 40));
         // blocks
         model.add(new Block(55, 355, 125, 125, 16));
         model.add(new Block(224, 424, 56, 56, 6));
@@ -65,7 +67,7 @@ public class InGameState extends BasicGameState {
         model.add(new Fence(715, 368, 11, 120, 5));
         model.add(new Fence(50, 50, 11, 120, 5));
 
-        factory = new MushroomFactory(8, .01);
+        factory = new MushroomFactory(8, .001);
     }
 
     public void render(GameContainer container, StateBasedGame game, Graphics g)
@@ -78,7 +80,7 @@ public class InGameState extends BasicGameState {
         model.update(game, delta);
         lights.update(game, delta);
         if (factory.active()) {
-            model.add(factory.getMushroom(container));
+            //model.add(factory.getMushroom(container));
         }
     }
 

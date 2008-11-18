@@ -44,7 +44,6 @@ public class Mushroom extends Linkable {
     private float luminosity;
     private Image mushroom;
     private float scale;
-    private float myIntensity;
 
     public Mushroom(float x, float y, MushroomType t, MushroomFactory f) throws SlickException {
         initShape(x, y);
