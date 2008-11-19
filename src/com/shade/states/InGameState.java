@@ -22,6 +22,7 @@ import com.shade.entities.Block;
 import com.shade.entities.Dome;
 import com.shade.entities.Fence;
 import com.shade.entities.Player;
+import com.shade.entities.Mushroom;
 import com.shade.entities.util.MushroomFactory;
 import com.shade.lighting.GlobalLight;
 import com.shade.lighting.LightMask;
@@ -125,7 +126,10 @@ public class InGameState extends BasicGameState {
         counter.update(game, delta);
         meter.update(game, delta);
         if (factory.active()) {
-            model.add(factory.getMushroom(randomShadow()));
+            Mushroom m = factory.getMushroom(container, randomShadow());
+            if (m != null) {
+                model.add(m);
+            }
         }
     }
 

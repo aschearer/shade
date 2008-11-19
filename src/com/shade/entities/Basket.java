@@ -60,7 +60,7 @@ public class Basket extends Linkable {
         return Roles.BASKET.ordinal();
     }
 
-    
+
     @SuppressWarnings("unchecked")
     public void removeFromLevel(Level l) {
         // basket doesn't need this

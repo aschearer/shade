@@ -3,6 +3,7 @@ package com.shade.entities.util;
 import java.util.LinkedList;
 
 import org.newdawn.slick.geom.Shape;
+import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 
 import com.shade.entities.Mushroom;
@@ -44,16 +45,45 @@ public class MushroomFactory {
         return (Math.random() <= propensity);
     }
 
-    public Mushroom getMushroom(Shape shadow) throws SlickException {
-        float x = (float) (shadow.getMaxX() - shadow.getX() * Math.random());
-        x += shadow.getX();
-        float y = (float) (shadow.getMaxY() - shadow.getY() * Math.random());
-        y += shadow.getY();
-        System.out.println(x + ", " + y);
-        int t = randomType();
-        Mushroom m = new Mushroom(x, y, getType(t), this);
-        mushrooms.add(m);
-        return m;
+    public Mushroom getMushroom(GameContainer c, Shape shadow) throws SlickException {
+        try {
+            float x = randomX(c, shadow);
+            float y = randomY(c, shadow);
+            int t = randomType();
+            Mushroom m = new Mushroom(x, y, getType(t), this);
+            mushrooms.add(m);
+            return m;
+        } catch (MushroomFactoryException e) {
+            return null;
+        }
+    }
+
+    private float randomX(GameContainer c, Shape s) throws MushroomFactoryException {
+        float x = -1;
+        int numTries = 0;
+        while (x < 0 || x >= c.getWidth()) {
+            x = (float) (s.getMaxX() - s.getX() * Math.random());
+            x += s.getX();
+            numTries++;
+            if (numTries > 6) {
+                throw new MushroomFactoryException("Can't find valid point.");
+            }
+        }
+        return x;
+    }
+
+    private float randomY(GameContainer c, Shape s) throws MushroomFactoryException {
+        float y = -1;
+        int numTries = 0;
+        while (y < 0 || y >= c.getHeight()) {
+            y = (float) (s.getMaxY() - s.getY() * Math.random());
+            y += s.getY();
+            numTries++;
+            if (numTries > 6) {
+                throw new MushroomFactoryException("Can't find valid point.");
+            }
+        }
+        return y;
     }
 
     public void remove(Mushroom m) {
@@ -74,5 +104,12 @@ public class MushroomFactory {
             if (r <= max) return i;
         }
         return 0; //should never reach here
+    }
+
+    private class MushroomFactoryException extends Exception {
+
+        public MushroomFactoryException(String message) {
+            super(message);
+        }
     }
 }
