@@ -8,6 +8,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.ResourceLoader;
@@ -37,6 +38,7 @@ public class InGameState extends BasicGameState {
     private CounterControl counter;
     private LightMask view;
     private Level<LuminousEntity> model;
+    private GlobalLight globalLight;
     private LightSourceProxy lights;
     private MushroomFactory factory;
 
@@ -52,7 +54,8 @@ public class InGameState extends BasicGameState {
         initControls();
 
         lights = new LightSourceProxy();
-        lights.add(new GlobalLight(12, (float) (4 * Math.PI / 3)));
+        globalLight = new GlobalLight(12, (float) (4 * Math.PI / 3));
+        lights.add(globalLight);
 
         view = new LightMask(5);
         view.add(lights);
@@ -122,8 +125,24 @@ public class InGameState extends BasicGameState {
         counter.update(game, delta);
         meter.update(game, delta);
         if (factory.active()) {
-            //model.add(factory.getMushroom(container));
+            model.add(factory.getMushroom(randomShadow()));
         }
+    }
+
+    private LuminousEntity randomEntity() {
+        LuminousEntity[] entities = model.toArray(new LuminousEntity[0]);
+        int i = (int) (Math.random() * entities.length);
+        return entities[i];
+    }
+
+    private Shape randomShadow() {
+        LuminousEntity e = randomEntity();
+
+        while (globalLight.castShadow(e) == null) {
+            e = randomEntity();
+        }
+
+        return globalLight.castShadow(e);
     }
 
 }

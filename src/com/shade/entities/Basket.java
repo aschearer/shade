@@ -1,7 +1,5 @@
 package com.shade.entities;
 
-import java.util.LinkedList;
-
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
@@ -62,6 +60,8 @@ public class Basket extends Linkable {
         return Roles.BASKET.ordinal();
     }
 
+    
+    @SuppressWarnings("unchecked")
     public void removeFromLevel(Level l) {
         // basket doesn't need this
     }

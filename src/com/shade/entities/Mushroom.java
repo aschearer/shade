@@ -21,7 +21,7 @@ import com.shade.util.Geom;
 
 public class Mushroom extends Linkable {
 
-    private static final float SHADOW_THRESHOLD = .5f;
+    private static final float SHADOW_THRESHOLD = .6f;
     private static final float RADIUS = 3f;
     private static final float SCALE_INCREMENT = .005f;
     private static final float MAX_SCALE = 3.5f;

@@ -2,8 +2,8 @@ package com.shade.entities.util;
 
 import java.util.LinkedList;
 
+import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.GameContainer;
 
 import com.shade.entities.Mushroom;
 
@@ -44,9 +44,12 @@ public class MushroomFactory {
         return (Math.random() <= propensity);
     }
 
-    public Mushroom getMushroom(GameContainer c) throws SlickException {
-        float x = (float) (c.getWidth() * Math.random());
-        float y = (float) (c.getHeight() * Math.random());
+    public Mushroom getMushroom(Shape shadow) throws SlickException {
+        float x = (float) (shadow.getMaxX() - shadow.getX() * Math.random());
+        x += shadow.getX();
+        float y = (float) (shadow.getMaxY() - shadow.getY() * Math.random());
+        y += shadow.getY();
+        System.out.println(x + ", " + y);
         int t = randomType();
         Mushroom m = new Mushroom(x, y, getType(t), this);
         mushrooms.add(m);

@@ -41,4 +41,8 @@ public class GlobalLight implements LightSource {
         angle += .005f;
     }
 
+    public Shape castShadow(LuminousEntity e) {
+        return e.castShadow(angle, depth);
+    }
+
 }
