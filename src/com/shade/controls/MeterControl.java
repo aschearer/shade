@@ -22,8 +22,8 @@ public class MeterControl implements MushroomCounter, Animatable {
     private float x, y;
     private float value, max, adding;
     private float score;
-    
-    private int rate=1;
+
+    private int rate = 1;
 
     public MeterControl(float x, float y, float value, float max) {
         this.x = x;
@@ -43,25 +43,27 @@ public class MeterControl implements MushroomCounter, Animatable {
     }
 
     public void onCollect(Mushroom shroomie) {
-        valueMushroom(shroomie);     
-        if (adding > 0)rate++;
+        valueMushroom(shroomie);
+        if (adding > 0) {
+            rate++;
+        }
     }
 
     private void valueMushroom(Mushroom shroomie) {
-    	/*for(MushroomType a : MushroomType.values()){
-    		if(shroomie.type == a) 
-    	}*/
+        /*for(MushroomType a : MushroomType.values()){
+         if(shroomie.type == a)
+        }*/
         if (shroomie.type == MushroomType.NORMAL) {
-        	adding += shroomie.getSize() * score;
+            adding += shroomie.getSize() * score;
         }
         if (shroomie.type == MushroomType.GOOD) {
-        	adding += shroomie.getSize() * 2 * score;
+            adding += shroomie.getSize() * 2 * score;
         }
         if (shroomie.type == MushroomType.RARE) {
-        	adding += shroomie.getSize() * 10 * score;
+            adding += shroomie.getSize() * 10 * score;
         }
         if (shroomie.type == MushroomType.EGG) {
-        	adding += shroomie.getSize() * score;
+            adding += shroomie.getSize() * score;
         }
     }
 
@@ -85,14 +87,15 @@ public class MeterControl implements MushroomCounter, Animatable {
     }
 
     public void update(StateBasedGame game, int delta) {
-        if(adding>0){
-        	value+=0.1f*rate;
-        	adding -= 0.1f*rate;
+        if (adding > 0) {
+            value += 0.1f * rate;
+            adding -= 0.1f * rate;
+        } else {
+            rate = 1;
         }
-        else rate = 1;
         clamp();
     }
-    
+
 
     private void clamp() {
         if (value < 0) {

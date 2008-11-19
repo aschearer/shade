@@ -6,7 +6,7 @@ public interface MushroomCounter {
 
     /**
      * Called when the player collects a shroomie.
-     * 
+     *
      * @param shroomie
      */
     public void onCollect(Mushroom shroomie);

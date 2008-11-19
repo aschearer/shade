@@ -14,7 +14,7 @@ import com.shade.base.Level;
 import com.shade.lighting.LuminousEntity;
 
 public class Basket extends Linkable {
-    
+
     private Image sprite;
     private float luminosity;
     // TODO implement the counter functionality again
@@ -34,7 +34,7 @@ public class Basket extends Linkable {
     }
 
     @SuppressWarnings("unchecked")
-    public void addToLevel(Level<?> l) {
+    public void addToLevel(Level < ? > l) {
         level = (Level<LuminousEntity>) l;
     }
 
@@ -45,7 +45,7 @@ public class Basket extends Linkable {
             level.remove(m);
         }
     }
-    
+
     public Shape castShadow(float direction, float depth) {
         return null;
     }

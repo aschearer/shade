@@ -12,13 +12,13 @@ public class CounterControl implements MushroomCounter, Animatable {
 
     private static final int X_OFFSET = 10;
     private static final int Y_OFFSET = 10;
-    
+
     public int value;
-    
+
     private float x, y;
     private Image sprite;
     private TrueTypeFont font;
-    
+
     public CounterControl(float x, float y, Image s, TrueTypeFont f) {
         this.x = x;
         this.y = y;

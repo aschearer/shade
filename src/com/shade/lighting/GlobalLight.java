@@ -19,6 +19,7 @@ public class GlobalLight implements LightSource {
     public void render(StateBasedGame game, Graphics g,
                        LuminousEntity... entities) {
         LightMask.enableStencil();
+        g.setColor(Color.black);
         for (LuminousEntity entity : entities) {
             Shape s = entity.castShadow(angle, depth);
             if (s != null) {
@@ -28,10 +29,10 @@ public class GlobalLight implements LightSource {
         LightMask.disableStencil();
 
         GameContainer c = game.getContainer();
-        g.setColor(Color.black);
         g.fillRect(0, 0, c.getWidth(), c.getHeight());
         g.setColor(Color.white);
 
+        // TODO where should these lines go??
         GL11.glDisable(GL11.GL_STENCIL_TEST);
         GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
     }

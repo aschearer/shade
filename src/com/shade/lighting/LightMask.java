@@ -26,7 +26,7 @@ import org.newdawn.slick.state.StateBasedGame;
  */
 public class LightMask {
 
-    protected final static Color SHADE = new Color(0, 0, 0, .5f);
+    protected final static Color SHADE = new Color(0, 0, 0, .3f);
 
     private int threshold;
     private LinkedList<LightSource> lights;
@@ -52,11 +52,11 @@ public class LightMask {
         for (LightSource light : lights) {
             light.render(game, g, entities);
         }
+
         GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
         g.setColor(SHADE);
         GameContainer c = game.getContainer();
         g.fillRect(0, 0, c.getWidth(), c.getHeight());
-        GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE);
         g.setColor(Color.white);
     }
 
@@ -73,7 +73,7 @@ public class LightMask {
         Arrays.sort(entities);
         int i = 0;
 
-        GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE);
+        GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ZERO);
         while (i < entities.length && entities[i].getZIndex() < threshold) {
             entities[i].render(game, g);
             entities[i].setLuminosity(getLuminosityFor(entities[i], g));

@@ -54,7 +54,7 @@ public class InGameState extends BasicGameState {
         lights = new LightSourceProxy();
         lights.add(new GlobalLight(12, (float) (4 * Math.PI / 3)));
 
-        view = new LightMask(6);
+        view = new LightMask(5);
         view.add(lights);
 
         model = new CrashLevel<LuminousEntity>(8, 6, 100);
@@ -86,13 +86,13 @@ public class InGameState extends BasicGameState {
     private void initFonts() throws SlickException {
         try {
             InputStream oi = ResourceLoader
-                .getResourceAsStream("states/ingame/jekyll.ttf");
+                             .getResourceAsStream("states/ingame/jekyll.ttf");
             Font jekyll = Font.createFont(Font.TRUETYPE_FONT, oi);
             counterFont = new TrueTypeFont(jekyll.deriveFont(36f),
-                    true);
+                                           true);
         } catch (Exception e) {
             throw new SlickException("Failed to load font.",
-                    e);
+                                     e);
         }
     }
 
