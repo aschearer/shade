@@ -59,6 +59,11 @@ Alex Schearer
         <delete>
             <fileset dir="${src.dir}" includes="**/*.orig" />
         </delete>
+        <delete>
+            <fileset dir="." defaultExcludes="no">
+                <include name="**/*.DS_Store"/>
+            </fileset>
+        </delete>
         <delete dir="${webstart.dir}" />
     </target>
 
