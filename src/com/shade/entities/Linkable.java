@@ -25,7 +25,6 @@ public abstract class Linkable extends Body implements LuminousEntity {
      * @param l
      */
     protected void attach(Linkable l) {
-        System.out.println("attaching " + l);
         if (next == null) {
             next = l;
             l.prev = this;

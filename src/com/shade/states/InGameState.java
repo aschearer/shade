@@ -38,6 +38,7 @@ public class InGameState extends BasicGameState {
     private MeterControl meter;
     private CounterControl counter;
     private LightMask view;
+    private Player player;
     private Level<LuminousEntity> model;
     private GlobalLight globalLight;
     private LightSourceProxy lights;
@@ -62,8 +63,14 @@ public class InGameState extends BasicGameState {
         view.add(lights);
 
         model = new CrashLevel<LuminousEntity>(8, 6, 100);
-        model.add(new Player(300, 200));
-        model.add(new Basket(400, 250, 65, 40));
+
+        player = new Player(300, 200);
+        model.add(player);
+
+        Basket b = new Basket(400, 250, 65, 40);
+        b.add(counter);
+        b.add(meter);
+        model.add(b);
         // blocks
         model.add(new Block(55, 355, 125, 125, 16));
         model.add(new Block(224, 424, 56, 56, 6));
@@ -130,6 +137,10 @@ public class InGameState extends BasicGameState {
             if (m != null) {
                 model.add(m);
             }
+        }
+
+        if (player.getLuminosity() > .6) {
+            meter.decrement(.1f);
         }
     }
 

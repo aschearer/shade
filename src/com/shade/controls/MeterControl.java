@@ -50,9 +50,6 @@ public class MeterControl implements MushroomCounter, Animatable {
     }
 
     private void valueMushroom(Mushroom shroomie) {
-        /*for(MushroomType a : MushroomType.values()){
-         if(shroomie.type == a)
-        }*/
         if (shroomie.type == MushroomType.NORMAL) {
             adding += shroomie.getSize() * score;
         }

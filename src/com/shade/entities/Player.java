@@ -60,7 +60,13 @@ public class Player extends Linkable {
         }
 
         public void onCollision(Entity obstacle) {
-
+            if (obstacle.getRole() == Roles.BASKET.ordinal() &&
+                    next != null) {
+                Linkable m = next;
+                next = null;
+                Linkable l = (Linkable) obstacle;
+                l.attach(m);
+            }
         }
 
         public void render(StateBasedGame game, Graphics g) {
