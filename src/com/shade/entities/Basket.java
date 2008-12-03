@@ -18,7 +18,6 @@ public class Basket extends Linkable {
 
     private Image sprite;
     private float luminosity;
-    // TODO implement the counter functionality again
     private LinkedList<MushroomCounter> counters;
     private Level<LuminousEntity> level;
 

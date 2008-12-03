@@ -52,6 +52,16 @@ public class CrashLevel<T extends Entity> implements Level<T> {
         grid.remove((Body) e);
     }
 
+    public Object[] getEntitiesByRole(int role) {
+        LinkedList<T> roleplayers = new LinkedList<T>();
+        for (T e : entities) {
+            if (e.getRole() == role) {
+                roleplayers.add(e);
+            }
+        }
+        return roleplayers.toArray();
+    }
+
     public void clear() {
         for (Entity e : entities) {
             e.removeFromLevel(this);

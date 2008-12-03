@@ -106,6 +106,7 @@ public class MushroomFactory {
         return 0; //should never reach here
     }
 
+    @SuppressWarnings("serial")
     private class MushroomFactoryException extends Exception {
 
         public MushroomFactoryException(String message) {

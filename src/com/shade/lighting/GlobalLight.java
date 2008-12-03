@@ -9,6 +9,12 @@ import org.newdawn.slick.state.StateBasedGame;
 
 public class GlobalLight implements LightSource {
 
+    private static final float TRANSITION_TIME = 1 / 7f;
+    private static final float TRANSITION_ANGLE = .0001f;
+    private static final int SECONDS_PER_DAY = (int) Math.ceil(Math.PI * 2
+            / TRANSITION_ANGLE);
+
+    private int timeOfDay;
     private float angle, depth;
 
     public GlobalLight(float depth, float angle) {
@@ -38,7 +44,15 @@ public class GlobalLight implements LightSource {
     }
 
     public void update(StateBasedGame game, int delta) {
+        timeOfDay = (timeOfDay + delta) % SECONDS_PER_DAY;
+        if (dayOrNight()) {
+
+        }
         angle += .005f;
+    }
+
+    private boolean dayOrNight() {
+        return (timeOfDay > 1f * SECONDS_PER_DAY * (1 / 2 - TRANSITION_TIME));
     }
 
     public Shape castShadow(LuminousEntity e) {

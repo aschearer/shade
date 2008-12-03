@@ -16,14 +16,12 @@ import org.newdawn.slick.util.ResourceLoader;
 import com.shade.base.Level;
 import com.shade.controls.CounterControl;
 import com.shade.controls.MeterControl;
-import com.shade.crash.CrashLevel;
 import com.shade.entities.Basket;
-import com.shade.entities.Block;
-import com.shade.entities.Dome;
-import com.shade.entities.Fence;
 import com.shade.entities.Player;
 import com.shade.entities.Mushroom;
+import com.shade.entities.Roles;
 import com.shade.entities.util.MushroomFactory;
+import com.shade.levels.LevelManager;
 import com.shade.lighting.GlobalLight;
 import com.shade.lighting.LightMask;
 import com.shade.lighting.LightSourceProxy;
@@ -39,6 +37,7 @@ public class InGameState extends BasicGameState {
     private CounterControl counter;
     private LightMask view;
     private Player player;
+    private LevelManager manager;
     private Level<LuminousEntity> model;
     private GlobalLight globalLight;
     private LightSourceProxy lights;
@@ -62,34 +61,15 @@ public class InGameState extends BasicGameState {
         view = new LightMask(5);
         view.add(lights);
 
-        model = new CrashLevel<LuminousEntity>(8, 6, 100);
+        manager = new LevelManager(8, 6, 100);
 
-        player = new Player(300, 200);
-        model.add(player);
+        model = manager.next();
 
-        Basket b = new Basket(400, 250, 65, 40);
+        player = (Player) model.getEntitiesByRole(Roles.PLAYER.ordinal())[0];
+
+        Basket b = (Basket) model.getEntitiesByRole(Roles.BASKET.ordinal())[0];
         b.add(counter);
         b.add(meter);
-        model.add(b);
-        // blocks
-        model.add(new Block(55, 355, 125, 125, 16));
-        model.add(new Block(224, 424, 56, 56, 6));
-        model.add(new Block(324, 424, 56, 56, 6));
-        model.add(new Block(75, 225, 56, 56, 6));
-        model.add(new Block(545, 330, 80, 80, 10));
-        model.add(new Block(445, 460, 80, 80, 10));
-        // domes
-        model.add(new Dome(288, 165, 32, 7));
-        model.add(new Dome(180, 95, 44, 10));
-        model.add(new Dome(300, 65, 25, 6));
-        model.add(new Dome(710, 80, 28, 6));
-        model.add(new Dome(600, 100, 40, 9));
-        model.add(new Dome(680, 220, 60, 13));
-        // fences
-        model.add(new Fence(250, 250, 11, 120, 5));
-        model.add(new Fence(390, 140, 120, 11, 5));
-        model.add(new Fence(715, 368, 11, 120, 5));
-        model.add(new Fence(50, 50, 11, 120, 5));
 
         factory = new MushroomFactory(8, .001);
     }
@@ -99,11 +79,9 @@ public class InGameState extends BasicGameState {
             InputStream oi = ResourceLoader
                              .getResourceAsStream("states/ingame/jekyll.ttf");
             Font jekyll = Font.createFont(Font.TRUETYPE_FONT, oi);
-            counterFont = new TrueTypeFont(jekyll.deriveFont(36f),
-                                           true);
+            counterFont = new TrueTypeFont(jekyll.deriveFont(36f), true);
         } catch (Exception e) {
-            throw new SlickException("Failed to load font.",
-                                     e);
+            throw new SlickException("Failed to load font.", e);
         }
     }
 

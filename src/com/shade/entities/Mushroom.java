@@ -121,7 +121,6 @@ public class Mushroom extends Linkable {
                 ((Linkable) obstacle).attach(Mushroom.this);
                 return;
             }
-            // TODO implement mushroom collision
         }
 
         public void render(StateBasedGame game, Graphics g) {
@@ -133,7 +132,6 @@ public class Mushroom extends Linkable {
                 manager.enter(MushroomState.DEAD);
                 return;
             }
-            // TODO implement mushroom monster
 
             // sunny shrink
             if (luminosity >= SHADOW_THRESHOLD) {
@@ -161,7 +159,7 @@ public class Mushroom extends Linkable {
         }
 
         public void onCollision(Entity obstacle) {
-            // TODO implement mushroom collision
+            // TODO implement mushroom theft
         }
 
         public void render(StateBasedGame game, Graphics g) {
@@ -183,7 +181,6 @@ public class Mushroom extends Linkable {
                 manager.enter(MushroomState.DEAD);
                 return;
             }
-            // TODO implement mushroom monster
 
             // sunny shrink
             if (getLuminosity() >= SHADOW_THRESHOLD) {

@@ -25,6 +25,13 @@ public interface Level<T extends Entity> {
     public void remove(T e);
 
     /**
+     * Return an array of entities which perform the given role.
+     * @param role
+     * @return
+     */
+    public Object[] getEntitiesByRole(int role);
+
+    /**
      * For each entity call Entity.removeFromLevel.
      */
     public void clear();
