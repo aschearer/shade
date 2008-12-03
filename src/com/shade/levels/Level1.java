@@ -8,9 +8,8 @@ import com.shade.entities.Block;
 import com.shade.entities.Dome;
 import com.shade.entities.Fence;
 import com.shade.entities.Player;
-import com.shade.lighting.LuminousEntity;
 
-public class Level1 extends CrashLevel<LuminousEntity> {
+public class Level1 extends CrashLevel {
 
     public Level1(int w, int h, int c) throws SlickException {
         super(w, h, c);
