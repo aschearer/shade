@@ -10,10 +10,10 @@ import com.shade.base.Entity;
 
 /**
  * A utility which manages a set of states and facilitates state transitions.
- * 
+ *
  * Any entity which is split into a set of states should use a manager to govern
  * the transition between states. The manager acts like a proxy for each state.
- * 
+ *
  * @author Alexander Schearer <aschearer@gmail.com>
  */
 public class StateManager implements Animatable {
@@ -29,7 +29,7 @@ public class StateManager implements Animatable {
     /**
      * Add the state to the manager; assign the first state to be the current
      * state.
-     * 
+     *
      * @param s
      */
     public void add(State s) {
@@ -42,7 +42,7 @@ public class StateManager implements Animatable {
 
     /**
      * Attempts to enter the target state.
-     * 
+     *
      * @param o
      * @return
      */
@@ -60,7 +60,7 @@ public class StateManager implements Animatable {
     /**
      * Useful if you want ot know hat state you are currently in; this isn't a
      * hidden markov model!
-     * 
+     *
      * @return
      */
     public State currentState() {

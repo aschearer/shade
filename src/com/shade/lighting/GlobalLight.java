@@ -9,35 +9,55 @@ import org.newdawn.slick.state.StateBasedGame;
 
 public class GlobalLight implements LightSource {
 
-	private float angle, depth;
 
-	public GlobalLight(float angle) {
-		depth = 8;
-		this.angle = angle;
-	}
+    private static final float TRANSITION_TIME = 1 / 7f;
+    private static final float TRANSITION_ANGLE = .0001f;
+    private static final int SECONDS_PER_DAY = (int) Math.ceil(Math.PI * 2
+            / TRANSITION_ANGLE);
 
-	public void render(StateBasedGame game, Graphics g,
-			LuminousEntity... entities) {
-		LightMask.enableStencil();
-		for (LuminousEntity entity : entities) {
-			Shape s = entity.castShadow(angle, depth);
-			if (s != null) {
-				g.fill(s);				
-			}
-		}
-		LightMask.disableStencil();
-		
-		GameContainer c = game.getContainer();
-		g.setColor(Color.black);
-		g.fillRect(0, 0, c.getWidth(), c.getHeight());
-		g.setColor(Color.white);
+    private int timeOfDay;
+    private float angle, depth;
 
-		GL11.glDisable(GL11.GL_STENCIL_TEST);
-		GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
-	}
+    public GlobalLight(float depth, float angle) {
+        this.depth = depth;
+        this.angle = angle;
+    }
 
-	public void update(StateBasedGame game, int delta) {
-		angle+=0.001f*delta;
-	}
+    public void render(StateBasedGame game, Graphics g,
+                       LuminousEntity... entities) {
+        LightMask.enableStencil();
+        g.setColor(Color.black);
+        for (LuminousEntity entity : entities) {
+            Shape s = entity.castShadow(angle, depth);
+            if (s != null) {
+                g.fill(s);
+            }
+        }
+        LightMask.disableStencil();
+
+        GameContainer c = game.getContainer();
+        g.fillRect(0, 0, c.getWidth(), c.getHeight());
+        g.setColor(Color.white);
+
+        // TODO where should these lines go??
+        GL11.glDisable(GL11.GL_STENCIL_TEST);
+        GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
+    }
+
+    public void update(StateBasedGame game, int delta) {
+        timeOfDay = (timeOfDay + delta) % SECONDS_PER_DAY;
+        if (dayOrNight()) {
+
+        }
+        angle += .005f;
+    }
+
+    private boolean dayOrNight() {
+        return (timeOfDay > 1f * SECONDS_PER_DAY * (1 / 2 - TRANSITION_TIME));
+    }
+
+    public Shape castShadow(LuminousEntity e) {
+        return e.castShadow(angle, depth);
+    }
 
 }

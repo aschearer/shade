@@ -27,41 +27,29 @@ public class Dome extends Body implements LuminousEntity, Repelable {
     }
 
     private void initSprite() throws SlickException {
-        String path = "entities/dome/dome.small.png";
-        if (height > 6) {
-            path = "entities/dome/dome.medium.png";
-        }
-        if (height > 9) {
-            path = "entities/dome/dome.big.png";
-        }
-        if (height > 12) {
-            path = "entities/dome/dome.xbig.png";
-        }
-
-        sprite = new Image(path);
+        sprite = new Image("entities/dome/dome.png");
     }
 
     private void initShape(float x, float y, float r) {
         shape = new Circle(x, y, r);
     }
+
     public void onCollision(Entity obstacle) {
-        // TODO Auto-generated method stub
 
     }
-    
+
     public void render(StateBasedGame game, Graphics g) {
         sprite.draw(getX(), getY(), getWidth(), getHeight());
         // g.draw(shape);
     }
 
     public void update(StateBasedGame game, int delta) {
-        // TODO Auto-generated method stub
 
     }
 
     /**
      * Return a round rectangle as the shadow.
-     * 
+     *
      * Note that this means there is some shadow underneath the dome. This
      * obviously will impact the odds of a mushroom being placed in said shadow.
      * But it's performant so I'm willing to accept that.
@@ -96,28 +84,28 @@ public class Dome extends Body implements LuminousEntity, Repelable {
         b.nudge(x_move, y_move);
     }
 
-	public float getLuminosity() {
-		return 0; // not important for domes
-	}
+    public float getLuminosity() {
+        return 0; // not important for domes
+    }
 
-	public void setLuminosity(float l) {
-		// not important for domes
-	}
+    public void setLuminosity(float l) {
+        // not important for domes
+    }
 
-	public void addToLevel(Level<?> l) {
-		// not important for domes
-	}
+    public void addToLevel(Level < ? > l) {
+        // not important for domes
+    }
 
-	public int getRole() {
-		return Roles.OBSTACLE.ordinal();
-	}
+    public int getRole() {
+        return Roles.OBSTACLE.ordinal();
+    }
 
-	public void removeFromLevel(Level<?> l) {
-		// not important for domes
-	}
+    public void removeFromLevel(Level < ? > l) {
+        // not important for domes
+    }
 
-	public int compareTo(LuminousEntity l) {
-		return getZIndex() - l.getZIndex();
-	}
+    public int compareTo(LuminousEntity l) {
+        return getZIndex() - l.getZIndex();
+    }
 
 }

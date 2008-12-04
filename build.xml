@@ -5,14 +5,14 @@
 Shade build file.
 
 ant setup Initialize Shade environment.
-ant build Run to compile the code.
-ant run Run to launch Shade (should be run after ant build...)
+ant compile Run to compile the code.
+ant run Run to launch Shade 
 ant webstart Deploy shade as a webstart.
 ant clean Removes products of the build process, etc.
 
 Alex Schearer
 -->
-<project name="Shade">
+<project name="Shade" default="compile">
 
     <property name="src.dir" value="src" />
     <property name="res.dir" value="res" />
@@ -32,27 +32,53 @@ Alex Schearer
     </target>
 
     <!-- Compile and archive Shade. -->
-    <target name="build">
+    <target name="jar">
         <antcall target="compile" />
         <antcall target="archive" />
     </target>
 
     <!-- Run Shade. -->
-    <target name="run" depends="setup,build">
-        <java jar="${target.dir}/shade.jar" fork="true" failonerror="true">
+    <target name="run" depends="setup,compile">
+        <java fork="true" classname="com.shade.Shade">
+            <classpath>
+                <pathelement path="${obj.dir}" />
+                <fileset dir="${lib.dir}">
+                    <include name="**/*.jar" />
+                </fileset>
+            </classpath>
             <jvmarg value="-Djava.library.path=lib/natives" />
         </java>
     </target>
 
     <!-- Clean up the environment. -->
     <target name="clean">
-        <delete dir="${obj.dir}" />
+        <delete includeEmptyDirs="true">
+            <fileset dir="${obj.dir}" includes="**/*" defaultExcludes="no" />
+        </delete>
         <delete file="${target.dir}/shade.jar" />
+        <delete>
+            <fileset dir="${src.dir}" includes="**/*.orig" />
+        </delete>
+        <delete>
+            <fileset dir="." defaultExcludes="no">
+                <include name="**/*.DS_Store"/>
+            </fileset>
+        </delete>
         <delete dir="${webstart.dir}" />
     </target>
 
+    <target name="format">
+        <exec executable="${script.dir}/astyle">
+            <arg value="-p" />
+            <arg value="-r" />
+            <arg value="-c" />
+            <arg value="--style=java" />
+            <arg value="${src.dir}/*" />
+        </exec>
+    </target>
+
     <!-- Create a webstart directory in order to deploy Shade. -->
-    <target name="webstart" depends="build">
+    <target name="webstart" depends="jar">
         <input message="Web server url:" addproperty="codebase" />
         <delete dir="${webstart.dir}" />
         <mkdir dir="${webstart.dir}" />
