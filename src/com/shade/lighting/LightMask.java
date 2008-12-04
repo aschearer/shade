@@ -70,7 +70,7 @@ public class LightMask {
 
 	private void renderEntities(StateBasedGame game, Graphics g,
 			LuminousEntity... entities) {
-		GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ZERO);
+		GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE);
 		for (LuminousEntity entity : entities) {
 			entity.render(game, g);
 			entity.setLuminosity(getLuminosityFor(entity, g));
