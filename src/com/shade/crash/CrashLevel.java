@@ -1,5 +1,7 @@
 package com.shade.crash;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 
 import org.newdawn.slick.state.StateBasedGame;
@@ -84,6 +86,32 @@ public class CrashLevel implements Level<LuminousEntity> {
 
     public LuminousEntity[] toArray() {
         return entities.toArray(new LuminousEntity[0]);
+    }
+
+    public boolean lineOfSight(Entity one, Entity two, Body... exceptions) {
+        return grid.ray((Body) one, (Body) two, exceptions);
+    }
+
+    public LuminousEntity[] nearbyEntities(final Entity subject, int threshold) {
+        int threshold2 = threshold * threshold;
+        LinkedList<LuminousEntity> neighbors = new LinkedList<LuminousEntity>();
+        for (LuminousEntity e : entities) {
+            if (CrashGeom.distance2((Body) subject, (Body) e) < threshold2) {
+                neighbors.add(e);
+            }
+        }
+
+        Collections.sort(neighbors, new Comparator<LuminousEntity>() {
+
+            public int compare(LuminousEntity e1, LuminousEntity e2) {
+                float d1 = CrashGeom.distance2((Body) subject, (Body) e1);
+                float d2 = CrashGeom.distance2((Body) subject, (Body) e2);
+                return (int) (d1 - d2);
+            }
+
+        });
+
+        return neighbors.toArray(new LuminousEntity[0]);
     }
 
 }

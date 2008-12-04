@@ -17,9 +17,11 @@ import com.shade.base.Level;
 import com.shade.controls.CounterControl;
 import com.shade.controls.MeterControl;
 import com.shade.entities.Basket;
+import com.shade.entities.Mole;
 import com.shade.entities.Player;
 import com.shade.entities.Mushroom;
 import com.shade.entities.Roles;
+import com.shade.entities.util.MoleFactory;
 import com.shade.entities.util.MushroomFactory;
 import com.shade.levels.LevelManager;
 import com.shade.lighting.GlobalLight;
@@ -42,6 +44,7 @@ public class InGameState extends BasicGameState {
     private GlobalLight globalLight;
     private LightSourceProxy lights;
     private MushroomFactory factory;
+    private MoleFactory mfactory;
 
     @Override
     public int getID() {
@@ -72,6 +75,7 @@ public class InGameState extends BasicGameState {
         b.add(meter);
 
         factory = new MushroomFactory(8, .001);
+        mfactory = new MoleFactory(5);
     }
 
     private void initFonts() throws SlickException {
@@ -112,6 +116,13 @@ public class InGameState extends BasicGameState {
         meter.update(game, delta);
         if (factory.active()) {
             Mushroom m = factory.getMushroom(container, randomShadow());
+            if (m != null) {
+                model.add(m);
+            }
+        }
+        
+        if (mfactory.active()) {
+            Mole m = mfactory.getMole(container, randomShadow());
             if (m != null) {
                 model.add(m);
             }

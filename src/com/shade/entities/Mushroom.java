@@ -21,6 +21,7 @@ import com.shade.util.Geom;
 
 public class Mushroom extends Linkable {
 
+    private static final int MUSHROOM_HEIGHT = 1;
     private static final float SHADOW_THRESHOLD = .6f;
     private static final float RADIUS = 3f;
     private static final float SCALE_INCREMENT = .005f;
@@ -45,7 +46,8 @@ public class Mushroom extends Linkable {
     private Image mushroom;
     private float scale;
 
-    public Mushroom(float x, float y, MushroomType t, MushroomFactory f) throws SlickException {
+    public Mushroom(float x, float y, MushroomType t, MushroomFactory f)
+            throws SlickException {
         initShape(x, y);
         initResources(t);
         initStates();
@@ -60,7 +62,7 @@ public class Mushroom extends Linkable {
 
     private void initResources(MushroomType t) throws SlickException {
         SpriteSheet s = new SpriteSheet("entities/mushroom/mushrooms.png", 40,
-                                        40);
+                40);
         mushroom = s.getSprite(t.ordinal(), 0);
     }
 
@@ -121,6 +123,12 @@ public class Mushroom extends Linkable {
                 ((Linkable) obstacle).attach(Mushroom.this);
                 return;
             }
+
+            if (obstacle.getRole() == Roles.MOLE.ordinal()) {
+                manager.enter(MushroomState.PICKED);
+                ((Linkable) obstacle).attach(Mushroom.this);
+                return;
+            }
         }
 
         public void render(StateBasedGame game, Graphics g) {
@@ -159,7 +167,12 @@ public class Mushroom extends Linkable {
         }
 
         public void onCollision(Entity obstacle) {
-            // TODO implement mushroom theft
+            if (obstacle.getRole() == Roles.MOLE.ordinal()) {
+                manager.enter(MushroomState.PICKED);
+                detach();
+                ((Linkable) obstacle).attach(Mushroom.this);
+                return;
+            }
         }
 
         public void render(StateBasedGame game, Graphics g) {
@@ -300,7 +313,7 @@ public class Mushroom extends Linkable {
             d[1] = CrashGeom.distance2(prev, getXCenter() + 800, getYCenter());
         } else {
             d[1] = CrashGeom.distance2(Mushroom.this, prev.getXCenter() + 800,
-                                       prev.getYCenter());
+                    prev.getYCenter());
         }
 
         // if I'm above my target
@@ -308,7 +321,7 @@ public class Mushroom extends Linkable {
             d[2] = CrashGeom.distance2(prev, getXCenter(), getYCenter() + 600);
         } else {
             d[2] = CrashGeom.distance2(Mushroom.this, prev.getXCenter(), prev
-                                       .getYCenter() + 600);
+                    .getYCenter() + 600);
         }
 
         float angle = CrashGeom.calculateAngle(prev, Mushroom.this);
@@ -327,11 +340,12 @@ public class Mushroom extends Linkable {
     }
 
     public boolean isDead() {
-        return manager.currentState().equals(MushroomState.DEAD);
+        return manager.currentState().isNamed(MushroomState.DEAD)
+                || manager.currentState().isNamed(MushroomState.SPAWNING);
     }
 
     public int getZIndex() {
-        return 2;
+        return MUSHROOM_HEIGHT;
     }
 
     public void onCollision(Entity obstacle) {
@@ -383,15 +397,18 @@ public class Mushroom extends Linkable {
      * the level isn't instantiated correctly.
      */
     @SuppressWarnings("unchecked")
-    public void addToLevel(Level < ? > l) {
+    public void addToLevel(Level<?> l) {
         level = (Level<LuminousEntity>) l;
     }
 
     public int getRole() {
+        if (isDead()) {
+            return Roles.SPAWNLING.ordinal();
+        }
         return Roles.MUSHROOM.ordinal();
     }
 
-    public void removeFromLevel(Level < ? > l) {
+    public void removeFromLevel(Level<?> l) {
         factory.remove(this);
     }
 

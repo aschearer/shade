@@ -16,6 +16,7 @@ import com.shade.lighting.LuminousEntity;
 
 public class Basket extends Linkable {
 
+    private static final int BASKET_HEIGHT = 0;
     private Image sprite;
     private float luminosity;
     private LinkedList<MushroomCounter> counters;
@@ -91,7 +92,7 @@ public class Basket extends Linkable {
     }
 
     public int getZIndex() {
-        return 1;
+        return BASKET_HEIGHT;
     }
 
     public int compareTo(LuminousEntity l) {
