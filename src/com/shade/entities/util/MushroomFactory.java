@@ -6,14 +6,14 @@ import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 
-import com.shade.entities.Mushroom;
+import com.shade.entities.mushroom.Mushroom;
 
 public class MushroomFactory {
 
     /**
      * Corresponds to the Mushroom.Type enum.
      */
-    private static final double[] distribution = { 0, .55, .1, .20, .15 };
+//    private static final double[] distribution = { 0, .55, .1, .20, .15 };
 
     /* Minimum number of mushrooms alive at any one time. */
     private int floor;
@@ -49,8 +49,8 @@ public class MushroomFactory {
         try {
             float x = randomX(c, shadow);
             float y = randomY(c, shadow);
-            int t = randomType();
-            Mushroom m = new Mushroom(x, y, getType(t), this);
+//            int t = randomType();
+            Mushroom m = new Mushroom(x, y, this);
             mushrooms.add(m);
             return m;
         } catch (MushroomFactoryException e) {
@@ -90,21 +90,21 @@ public class MushroomFactory {
         mushrooms.remove(m);
     }
 
-    private Mushroom.MushroomType getType(int i) {
-        Mushroom.MushroomType[] types = Mushroom.MushroomType.values();
-        return types[i];
-    }
+//    private Mushroom.MushroomType getType(int i) {
+//        Mushroom.MushroomType[] types = Mushroom.MushroomType.values();
+//        return types[i];
+//    }
 
-    private int randomType() {
-        double r = Math.random();
-
-        double max = 0;
-        for (int i = 0;i < distribution.length;i++) {
-            max += distribution[i];
-            if (r <= max) return i;
-        }
-        return 0; //should never reach here
-    }
+//    private int randomType() {
+//        double r = Math.random();
+//
+//        double max = 0;
+//        for (int i = 0;i < distribution.length;i++) {
+//            max += distribution[i];
+//            if (r <= max) return i;
+//        }
+//        return 0; //should never reach here
+//    }
 
     @SuppressWarnings("serial")
     private class MushroomFactoryException extends Exception {

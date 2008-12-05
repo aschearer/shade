@@ -1,9 +1,7 @@
 package com.shade.entities;
 
-import java.util.Arrays;
 
 import com.crash.Body;
-import com.shade.crash.CrashGeom;
 import com.shade.lighting.LuminousEntity;
 
 /**
@@ -24,7 +22,7 @@ public abstract class Linkable extends Body implements LuminousEntity {
      *
      * @param l
      */
-    protected void attach(Linkable l) {
+    public void attach(Linkable l) {
         if (next == null) {
             next = l;
             l.prev = this;
@@ -41,7 +39,7 @@ public abstract class Linkable extends Body implements LuminousEntity {
     /**
      * Remove this object from its linked list.
      */
-    protected void detach() {
+    public void detach() {
         if (prev != null) {
             prev.next = next;
         }
@@ -50,6 +48,22 @@ public abstract class Linkable extends Body implements LuminousEntity {
         }
         prev = null;
         next = null;
+    }
+
+    /**
+     * Return true if the given linkable is behind the current on in the list.
+     * @param l
+     * @return
+     */
+    protected boolean contains(Linkable l) {
+        Linkable head = next;
+        while (head != null) {
+            if (head.equals(l)) {
+                return true;
+            }
+            head = head.next;
+        }
+        return false;
     }
 
     /**
@@ -69,43 +83,6 @@ public abstract class Linkable extends Body implements LuminousEntity {
         if (getYCenter() > 595) {
             shape.setCenterY(5);
         }
-    }
-
-    /**
-     * Return true if this body and the target are further apart than the
-     * threshold.
-     *
-     * @param target
-     * @param threshold
-     * @return
-     */
-    protected boolean overThreshold(Body target, float threshold) {
-        float[] d = new float[3];
-
-        d[0] = CrashGeom.distance2(target, this);
-        d[1] = d[0];
-        d[2] = d[0];
-        // if I'm left of my target
-        if (getX() < target.getX()) {
-            d[1] = CrashGeom
-                   .distance2(target, getXCenter() + 800, getYCenter());
-        } else {
-            d[1] = CrashGeom.distance2(this, target.getXCenter() + 800, target
-                                       .getYCenter());
-        }
-
-        // if I'm above my target
-        if (getY() < prev.getY()) {
-            d[2] = CrashGeom
-                   .distance2(target, getXCenter(), getYCenter() + 600);
-        } else {
-            d[2] = CrashGeom.distance2(this, target.getXCenter(), target
-                                       .getYCenter() + 600);
-        }
-
-        Arrays.sort(d);
-
-        return (d[0] > threshold);
     }
 
 }
