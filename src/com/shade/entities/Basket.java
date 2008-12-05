@@ -12,6 +12,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import com.shade.base.Entity;
 import com.shade.base.Level;
 import com.shade.controls.MushroomCounter;
+import com.shade.entities.mushroom.Mushroom;
 import com.shade.lighting.LuminousEntity;
 
 public class Basket extends Linkable {

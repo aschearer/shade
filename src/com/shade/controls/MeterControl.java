@@ -5,8 +5,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Animatable;
-import com.shade.entities.Mushroom;
-import com.shade.entities.Mushroom.MushroomType;
+import com.shade.entities.mushroom.Mushroom;
 
 public class MeterControl implements MushroomCounter, Animatable {
 
@@ -50,18 +49,18 @@ public class MeterControl implements MushroomCounter, Animatable {
     }
 
     private void valueMushroom(Mushroom shroomie) {
-        if (shroomie.type == MushroomType.NORMAL) {
-            adding += shroomie.getSize() * score;
-        }
-        if (shroomie.type == MushroomType.GOOD) {
-            adding += shroomie.getSize() * 2 * score;
-        }
-        if (shroomie.type == MushroomType.RARE) {
-            adding += shroomie.getSize() * 10 * score;
-        }
-        if (shroomie.type == MushroomType.EGG) {
-            adding += shroomie.getSize() * score;
-        }
+//        if (shroomie.type == MushroomType.NORMAL) {
+//            adding += shroomie.getSize() * score;
+//        }
+//        if (shroomie.type == MushroomType.GOOD) {
+//            adding += shroomie.getSize() * 2 * score;
+//        }
+//        if (shroomie.type == MushroomType.RARE) {
+//            adding += shroomie.getSize() * 10 * score;
+//        }
+//        if (shroomie.type == MushroomType.EGG) {
+//            adding += shroomie.getSize() * score;
+//        }
     }
 
     public void decrement(double amt) {

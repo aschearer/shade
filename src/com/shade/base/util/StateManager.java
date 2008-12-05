@@ -79,4 +79,8 @@ public class StateManager implements Animatable {
         currentState.render(game, g);
     }
 
+    public int getRole() {
+        return currentState.getRole();
+    }
+
 }

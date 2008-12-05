@@ -16,10 +16,10 @@ import com.shade.lighting.LuminousEntity;
 /**
  * Concrete instance of the Level interface which has a grid underlying it for
  * collision detection.
- * 
+ *
  * Note that all entities added to this level must extend the com.crash.Body
  * class or a class cast exception will occur.
- * 
+ *
  * @author Alexander Schearer <aschearer@gmail.com>
  */
 public class CrashLevel implements Level<LuminousEntity> {

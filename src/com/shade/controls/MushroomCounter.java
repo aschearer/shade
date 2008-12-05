@@ -1,6 +1,6 @@
 package com.shade.controls;
 
-import com.shade.entities.Mushroom;
+import com.shade.entities.mushroom.Mushroom;
 
 public interface MushroomCounter {
 

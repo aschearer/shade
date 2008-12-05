@@ -6,7 +6,7 @@ import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Animatable;
-import com.shade.entities.Mushroom;
+import com.shade.entities.mushroom.Mushroom;
 
 public class CounterControl implements MushroomCounter, Animatable {
 

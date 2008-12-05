@@ -29,6 +29,8 @@ public interface State extends Animatable {
      */
     public void enter();
 
+    public int getRole();
+
     /**
      * Completes the Entity interface...
      *

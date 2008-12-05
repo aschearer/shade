@@ -1,39 +1,39 @@
 package com.shade.entities.util;
 
+import java.util.LinkedList;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Shape;
 
-import com.shade.entities.Mole;
+import com.shade.entities.mole.Mole;
 
 public class MoleFactory {
-    
+
     private int limit;
-    private int current;
-    
+    private LinkedList<Mole> moles;
+
     public MoleFactory(int limit) {
         this.limit = limit;
-        current = 0;
+        moles = new LinkedList<Mole>();
     }
 
     public boolean active() {
-        assert(current > 0);
-        assert(current >= limit);
-        return current < limit;
+        return moles.size() < limit;
     }
-    
+
     public Mole getMole(GameContainer c, Shape shadow) throws SlickException {
         try {
             float x = randomX(c, shadow);
             float y = randomY(c, shadow);
             Mole m = new Mole(x, y, this);
-            current++;
+            moles.add(m);
             return m;
         } catch (MoleFactoryException e) {
             return null;
         }
     }
-    
+
     private float randomX(GameContainer c, Shape s) throws MoleFactoryException {
         float x = -1;
         int numTries = 0;
@@ -61,12 +61,11 @@ public class MoleFactory {
         }
         return y;
     }
-    
+
     public void remove(Mole m) {
-        current--;
-        assert(current > 0);
+        moles.remove(m);
     }
-    
+
     @SuppressWarnings("serial")
     private class MoleFactoryException extends Exception {
 

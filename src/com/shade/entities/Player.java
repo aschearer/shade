@@ -59,6 +59,11 @@ public class Player extends Linkable {
 
         }
 
+        public int getRole() {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
         public void onCollision(Entity obstacle) {
             if (obstacle.getRole() == Roles.BASKET.ordinal() &&
                     next != null) {
@@ -117,6 +122,11 @@ public class Player extends Linkable {
 
         public void enter() {
             timer = 0;
+        }
+
+        public int getRole() {
+            // TODO Auto-generated method stub
+            return 0;
         }
 
         public void onCollision(Entity obstacle) {
