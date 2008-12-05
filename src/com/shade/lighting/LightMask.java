@@ -50,9 +50,11 @@ public class LightMask {
 
     private void renderLights(StateBasedGame game, Graphics g,
                               LuminousEntity... entities) {
+    	enableStencil();
         for (LightSource light : lights) {
             light.render(game, g, entities);
         }
+        disableStencil();
 
         GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
         g.setColor(SHADE);
@@ -73,7 +75,8 @@ public class LightMask {
                                 LuminousEntity... entities) {
         Arrays.sort(entities);
         int i = 0;
-
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        GL11.glAlphaFunc(GL11.GL_GREATER, 0);
         GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ZERO);
         while (i < entities.length && entities[i].getZIndex() < threshold) {
             entities[i].render(game, g);
@@ -87,6 +90,7 @@ public class LightMask {
             entities[i].setLuminosity(getLuminosityFor(entities[i], g));
             i++;
         }
+        GL11.glDisable(GL11.GL_ALPHA_TEST);
     }
 
     private float getLuminosityFor(LuminousEntity entity, Graphics g) {
@@ -101,17 +105,20 @@ public class LightMask {
         GL11.glEnable(GL11.GL_STENCIL_TEST);
         GL11.glColorMask(false, false, false, false);
         GL11.glDepthMask(false);
-        GL11.glClearStencil(0);
+    }
+    
+    protected static void resetStencil(){
+    	GL11.glClearStencil(0);
         // write a one to the stencil buffer everywhere we are about to draw
         GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 1);
         // this is to always pass a one to the stencil buffer where we draw
         GL11.glStencilOp(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
     }
-
+    
     /**
      * Called after drawing the shadows cast by a light.
      */
-    protected static void disableStencil() {
+    protected static void keepStencil() {
         // resume drawing to everything
         GL11.glDepthMask(true);
         GL11.glColorMask(true, true, true, true);
@@ -120,6 +127,11 @@ public class LightMask {
         // don't modify the contents of the stencil buffer
         GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_KEEP);
         GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
+    }
+    
+    protected static void disableStencil(){
+        GL11.glDisable(GL11.GL_STENCIL_TEST);
+        GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
     }
 
 }
