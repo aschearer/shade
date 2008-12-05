@@ -17,9 +17,9 @@ import com.shade.lighting.LuminousEntity;
 
 /**
  * The real deal; this mole is the sum of different mole states.
- * 
+ *
  * No I haven't heard of encapsulation.
- * 
+ *
  * @author Alexander Schearer <aschearer@gmail.com>
  */
 public final class Mole extends Linkable {
@@ -80,11 +80,11 @@ public final class Mole extends Linkable {
         luminosity = l;
     }
 
-    public void addToLevel(Level<?> l) {
+    public void addToLevel(Level < ? > l) {
         level = (CrashLevel) l;
     }
 
-    public void removeFromLevel(Level<?> l) {
+    public void removeFromLevel(Level < ? > l) {
         factory.remove(this);
     }
 

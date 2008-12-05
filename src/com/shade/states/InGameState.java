@@ -75,7 +75,7 @@ public class InGameState extends BasicGameState {
         b.add(meter);
 
         factory = new MushroomFactory(8, .001);
-        mfactory = new MoleFactory(2);
+        mfactory = new MoleFactory(1);
     }
 
     private void initFonts() throws SlickException {

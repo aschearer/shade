@@ -24,7 +24,7 @@ public class IdleMole implements State {
     private Mole mole;
     private Animation idling;
     private int timer;
-    
+
     public IdleMole(Mole mole) throws SlickException {
         this.mole = mole;
         initResources();

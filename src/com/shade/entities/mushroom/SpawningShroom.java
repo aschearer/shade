@@ -9,11 +9,11 @@ import com.shade.entities.Roles;
 
 /**
  * A mushroom which hasn't sprouted and is determining whether to sprout.
- * 
+ *
  * Spawning mushrooms: + Are not rendered on screen + Should play the
  * "spawnling" role + Only surface in the shadows + Only surface on clear ground +
  * Wait to surface a set amount of time
- * 
+ *
  * @author Alexander Schearer <aschearer@gmail.com>
  */
 public class SpawningShroom implements State {

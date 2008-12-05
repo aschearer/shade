@@ -19,11 +19,11 @@ import com.shade.entities.Roles;
  * @author Alexander Schearer <aschearer@gmail.com>
  */
 public class SpawningMole implements State {
-    
+
     private Mole mole;
     private int timer;
     private boolean clear;
-    
+
     public SpawningMole(Mole mole) {
         this.mole = mole;
     }

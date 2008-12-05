@@ -10,7 +10,6 @@ import org.newdawn.slick.state.StateBasedGame;
 import com.shade.base.Entity;
 import com.shade.base.util.State;
 import com.shade.crash.CrashGeom;
-import com.shade.crash.Repelable;
 import com.shade.entities.Roles;
 import com.shade.entities.mushroom.Mushroom;
 import com.shade.util.Geom;
@@ -18,11 +17,11 @@ import com.shade.util.Geom;
 /**
  * A mole who has zero or more mushrooms in toe but hasn't yet returned
  * underground.
- * 
+ *
  * Working moles: + Have identified a target mushroom + Have zero or more
  * mushrooms attached + Will try to grab the nearest uncollected mushroom +
  * Return underground after a set amount of time
- * 
+ *
  * @author Alexander Schearer <aschearer@gmail.com>
  */
 public class WorkerMole implements State {
@@ -30,7 +29,7 @@ public class WorkerMole implements State {
     private Mole mole;
     private Animation working;
     private int timer;
-    
+
     public WorkerMole(Mole mole) throws SlickException {
         this.mole = mole;
         initResources();
@@ -60,10 +59,9 @@ public class WorkerMole implements State {
             mole.target = null;
             timer = 0;
         }
-        
+
         if (obstacle.getRole() == Roles.OBSTACLE.ordinal()) {
-            Repelable b = (Repelable) obstacle;
-            b.repel(mole);
+            mole.kill(); 
         }
     }
 
@@ -94,6 +92,7 @@ public class WorkerMole implements State {
 
     private void testForTarget(Mole mole) {
         if (mole.target == null || !aMushroom(mole.target)) {
+            mole.target = null;
             Util.foundTarget(mole);
         }
     }
@@ -118,19 +117,19 @@ public class WorkerMole implements State {
         // if I'm left of my target
         if (mole.getX() < mole.target.getX()) {
             d[1] = CrashGeom.distance2(mole.target, mole.getXCenter() + 800,
-                    mole.getYCenter());
+                                       mole.getYCenter());
         } else {
             d[1] = CrashGeom.distance2(mole, mole.target.getXCenter() + 800,
-                    mole.target.getYCenter());
+                                       mole.target.getYCenter());
         }
 
         // if I'm above my target
         if (mole.getY() < mole.target.getY()) {
             d[2] = CrashGeom.distance2(mole.target, mole.getXCenter(), mole
-                    .getYCenter() + 600);
+                                       .getYCenter() + 600);
         } else {
             d[2] = CrashGeom.distance2(mole, mole.target.getXCenter(),
-                    mole.target.getYCenter() + 600);
+                                       mole.target.getYCenter() + 600);
         }
 
         mole.heading = CrashGeom.calculateAngle(mole.target, mole);

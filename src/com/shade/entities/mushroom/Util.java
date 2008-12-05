@@ -11,13 +11,13 @@ public class Util {
     /**
      * Return true if this body and the target are further apart than the
      * threshold.
-     * 
+     *
      * @param target
      * @param threshold
      * @return
      */
     protected static boolean overThreshold(Mushroom shroom, Body target,
-            float threshold) {
+                                           float threshold) {
         float[] d = new float[3];
 
         d[0] = CrashGeom.distance2(target, shroom);
@@ -26,19 +26,19 @@ public class Util {
         // if I'm left of my target
         if (shroom.getX() < target.getX()) {
             d[1] = CrashGeom.distance2(target, shroom.getXCenter() + 800,
-                    shroom.getYCenter());
+                                       shroom.getYCenter());
         } else {
             d[1] = CrashGeom.distance2(shroom, target.getXCenter() + 800,
-                    target.getYCenter());
+                                       target.getYCenter());
         }
 
         // if I'm above my target
         if (shroom.getY() < target.getY()) {
             d[2] = CrashGeom.distance2(target, shroom.getXCenter(), shroom
-                    .getYCenter() + 600);
+                                       .getYCenter() + 600);
         } else {
             d[2] = CrashGeom.distance2(shroom, target.getXCenter(), target
-                    .getYCenter() + 600);
+                                       .getYCenter() + 600);
         }
 
         Arrays.sort(d);
@@ -49,7 +49,7 @@ public class Util {
     /**
      * Return the angle the shroom must move to reach the target accounting for
      * wrapping.
-     * 
+     *
      * @param shroom
      * @param target
      * @return
@@ -62,19 +62,19 @@ public class Util {
         // if I'm left of my target
         if (shroom.getX() < target.getX()) {
             d[1] = CrashGeom.distance2(target, shroom.getXCenter() + 800,
-                    shroom.getYCenter());
+                                       shroom.getYCenter());
         } else {
             d[1] = CrashGeom.distance2(shroom, target.getXCenter() + 800,
-                    target.getYCenter());
+                                       target.getYCenter());
         }
 
         // if I'm above my target
         if (shroom.getY() < target.getY()) {
             d[2] = CrashGeom.distance2(target, shroom.getXCenter(), shroom
-                    .getYCenter() + 600);
+                                       .getYCenter() + 600);
         } else {
             d[2] = CrashGeom.distance2(shroom, target.getXCenter(), target
-                    .getYCenter() + 600);
+                                       .getYCenter() + 600);
         }
 
         float angle = CrashGeom.calculateAngle(target, shroom);

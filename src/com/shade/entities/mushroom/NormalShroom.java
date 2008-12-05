@@ -37,7 +37,7 @@ public class NormalShroom implements State {
 
     private boolean isPicker(Entity obstacle) {
         return obstacle.getRole() == Roles.PLAYER.ordinal()
-                || obstacle.getRole() == Roles.MOLE.ordinal();
+               || obstacle.getRole() == Roles.MOLE.ordinal();
     }
 
     public void render(StateBasedGame game, Graphics g) {

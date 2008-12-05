@@ -39,7 +39,7 @@ public class Mushroom extends Linkable {
     private CrashLevel level;
 
     public Mushroom(float x, float y, MushroomFactory factory)
-            throws SlickException {
+    throws SlickException {
         this.factory = factory;
         scale = 2;
         initShape(x, y);
@@ -100,7 +100,7 @@ public class Mushroom extends Linkable {
         shape.setCenterX(x);
         shape.setCenterY(y);
     }
-    
+
     protected void draw() {
         mushroom.draw(getX(), getY(), getWidth(), getHeight());
     }
@@ -121,11 +121,11 @@ public class Mushroom extends Linkable {
         luminosity = l;
     }
 
-    public void addToLevel(Level<?> l) {
+    public void addToLevel(Level < ? > l) {
         level = (CrashLevel) l;
     }
 
-    public void removeFromLevel(Level<?> l) {
+    public void removeFromLevel(Level < ? > l) {
         // do nothing
     }
 

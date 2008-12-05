@@ -1,9 +1,7 @@
 package com.shade.entities;
 
-import java.util.Arrays;
 
 import com.crash.Body;
-import com.shade.crash.CrashGeom;
 import com.shade.lighting.LuminousEntity;
 
 /**
