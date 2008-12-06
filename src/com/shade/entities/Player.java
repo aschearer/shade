@@ -40,7 +40,7 @@ public class Player extends Linkable {
     }
 
     private void initResources() throws SlickException {
-        normal = new Image("entities/player/player2.png");
+        normal = new Image("entities/player/player.png");
     }
 
     private void initStates() {
