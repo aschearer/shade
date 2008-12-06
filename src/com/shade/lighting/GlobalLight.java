@@ -9,6 +9,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 public class GlobalLight implements LightSource {
 
+
     private static final float TRANSITION_TIME = 1 / 7f;
     private static final float TRANSITION_ANGLE = .0001f;
     private static final int SECONDS_PER_DAY = (int) Math.ceil(Math.PI * 2
@@ -24,7 +25,7 @@ public class GlobalLight implements LightSource {
 
     public void render(StateBasedGame game, Graphics g,
                        LuminousEntity... entities) {
-        LightMask.enableStencil();
+        LightMask.resetStencil();
         g.setColor(Color.black);
         for (LuminousEntity entity : entities) {
             Shape s = entity.castShadow(angle, depth);
@@ -32,15 +33,13 @@ public class GlobalLight implements LightSource {
                 g.fill(s);
             }
         }
-        LightMask.disableStencil();
+        LightMask.keepStencil();
 
         GameContainer c = game.getContainer();
         g.fillRect(0, 0, c.getWidth(), c.getHeight());
         g.setColor(Color.white);
 
-        // TODO where should these lines go??
-        GL11.glDisable(GL11.GL_STENCIL_TEST);
-        GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
+        //LightMask.disableStencil();
     }
 
     public void update(StateBasedGame game, int delta) {
