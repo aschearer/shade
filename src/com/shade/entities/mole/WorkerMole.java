@@ -17,15 +17,16 @@ import com.shade.util.Geom;
 /**
  * A mole who has zero or more mushrooms in toe but hasn't yet returned
  * underground.
- *
+ * 
  * Working moles: + Have identified a target mushroom + Have zero or more
  * mushrooms attached + Will try to grab the nearest uncollected mushroom +
  * Return underground after a set amount of time
- *
+ * 
  * @author Alexander Schearer <aschearer@gmail.com>
  */
 public class WorkerMole implements State {
 
+    private static final int WORK_TIME = 5000;
     private Mole mole;
     private Animation working;
     private int timer;
@@ -61,12 +62,13 @@ public class WorkerMole implements State {
         }
 
         if (obstacle.getRole() == Roles.OBSTACLE.ordinal()) {
-            mole.kill(); 
+            mole.kill();
         }
     }
 
     public void render(StateBasedGame game, Graphics g) {
-        working.draw(mole.getX(), mole.getY(), mole.getWidth(), mole.getHeight());
+        working.draw(mole.getX(), mole.getY(), mole.getWidth(), mole
+                .getHeight());
     }
 
     public void update(StateBasedGame game, int delta) {
@@ -74,27 +76,26 @@ public class WorkerMole implements State {
         testTimer(delta);
         testForTarget(mole);
         testAndMove(mole);
-        testAndFlee(mole);
-    }
-
-    private void testAndFlee(Mole mole2) {
-        if (mole.mushroomsCollected() > 2) {
-            mole.kill();
-        }
     }
 
     private void testTimer(int delta) {
         timer += delta;
-        if (timer > 5000) {
+        if (timer > WORK_TIME) {
             mole.kill();
+            // TODO dig a hole and escape w/ your catch
         }
     }
 
     private void testForTarget(Mole mole) {
-        if (mole.target == null || !aMushroom(mole.target)) {
+        if (eligibleForWork(mole)) {
             mole.target = null;
             Util.foundTarget(mole);
         }
+    }
+
+    private boolean eligibleForWork(Mole mole2) {
+        return (mole.target == null || !aMushroom(mole.target))
+                && mole.mushroomsCollected() < 3;
     }
 
     private boolean aMushroom(Mushroom target) {
@@ -117,19 +118,19 @@ public class WorkerMole implements State {
         // if I'm left of my target
         if (mole.getX() < mole.target.getX()) {
             d[1] = CrashGeom.distance2(mole.target, mole.getXCenter() + 800,
-                                       mole.getYCenter());
+                    mole.getYCenter());
         } else {
             d[1] = CrashGeom.distance2(mole, mole.target.getXCenter() + 800,
-                                       mole.target.getYCenter());
+                    mole.target.getYCenter());
         }
 
         // if I'm above my target
         if (mole.getY() < mole.target.getY()) {
             d[2] = CrashGeom.distance2(mole.target, mole.getXCenter(), mole
-                                       .getYCenter() + 600);
+                    .getYCenter() + 600);
         } else {
             d[2] = CrashGeom.distance2(mole, mole.target.getXCenter(),
-                                       mole.target.getYCenter() + 600);
+                    mole.target.getYCenter() + 600);
         }
 
         mole.heading = CrashGeom.calculateAngle(mole.target, mole);

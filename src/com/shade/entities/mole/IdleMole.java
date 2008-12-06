@@ -68,13 +68,13 @@ public class IdleMole implements State {
 
     private void testTimer(int delta) {
         timer += delta;
-        if (timer > 5000) {
+        if (timer > 10000) {
             mole.kill();
         }
     }
 
     private void testForTarget(Mole mole) {
-        if (Util.foundTarget(mole)) {
+        if (timer > 5000 && Util.foundTarget(mole)) {
             mole.manager.enter(Mole.States.WORKING);
         }
     }

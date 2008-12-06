@@ -47,10 +47,9 @@ public class Basket extends Linkable {
     }
 
     public void onCollision(Entity obstacle) {
-        if (obstacle.getRole() == Roles.MUSHROOM.ordinal()) {
+        if (obstacle.getRole() == Roles.PICKED_MUSHROOM.ordinal()) {
             Mushroom m = (Mushroom) obstacle;
             m.detach();
-            level.remove(m);
             notifyCounters(m);
         }
     }
