@@ -4,8 +4,6 @@ import java.util.Iterator;
 
 import org.newdawn.slick.SlickException;
 
-import com.shade.base.Level;
-import com.shade.lighting.LuminousEntity;
 import com.shade.util.Reflection;
 
 /**
@@ -13,7 +11,7 @@ import com.shade.util.Reflection;
  *
  * @author Alexander Schearer <aschearer@gmail.com>
  */
-public class LevelManager implements Iterator<Level<LuminousEntity>> {
+public class LevelManager implements Iterator<Model> {
 
     /* The dimensions for the grid underlying each level. */
     private int width, height, cell;
@@ -38,7 +36,7 @@ public class LevelManager implements Iterator<Level<LuminousEntity>> {
     }
 
     @SuppressWarnings("unchecked")
-    public Level<LuminousEntity> next() {
+    public Model next() {
         String classname = levels[currentLevel];
         Object o = null;
         try {
@@ -47,7 +45,7 @@ public class LevelManager implements Iterator<Level<LuminousEntity>> {
             e.printStackTrace();
         }
         currentLevel++;
-        return (Level<LuminousEntity>) o;
+        return (Model) o;
     }
 
     public void remove() {

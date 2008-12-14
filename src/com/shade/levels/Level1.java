@@ -2,14 +2,15 @@ package com.shade.levels;
 
 import org.newdawn.slick.SlickException;
 
-import com.shade.crash.CrashLevel;
 import com.shade.entities.Basket;
 import com.shade.entities.Block;
 import com.shade.entities.Dome;
 import com.shade.entities.Fence;
 import com.shade.entities.Player;
+import com.shade.entities.util.MushroomFactory;
+import com.shade.lighting.GlobalLight;
 
-public class Level1 extends CrashLevel {
+public class Level1 extends Model {
 
     public Level1(int w, int h, int c) throws SlickException {
         super(w, h, c);
@@ -35,6 +36,16 @@ public class Level1 extends CrashLevel {
         add(new Fence(390, 140, 120, 11, 5));
         add(new Fence(715, 368, 11, 120, 5));
         add(new Fence(50, 50, 11, 120, 5));
+    }
+    
+    @Override
+    public GlobalLight getGlobalLight() {
+        return new GlobalLight(12, (float) (4 * Math.PI / 3));
+    }
+
+    @Override
+    public MushroomFactory getMushroomFactory() {
+        return new MushroomFactory(8, .001);
     }
 
 }

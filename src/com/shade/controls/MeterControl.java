@@ -6,6 +6,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Animatable;
 import com.shade.entities.mushroom.Mushroom;
+import com.shade.lighting.LuminousEntity;
 
 public class MeterControl implements MushroomCounter, Animatable {
 
@@ -18,6 +19,7 @@ public class MeterControl implements MushroomCounter, Animatable {
     private static final Color ON = new Color(99, 125, 88);
     private static final Color OFF = new Color(163, 191, 95);
 
+    private LuminousEntity target;
     private float x, y;
     private float value, max, adding;
     private float score;
@@ -31,6 +33,10 @@ public class MeterControl implements MushroomCounter, Animatable {
         this.max = max;
         score = SCORE_MULTIPLE;
         adding = 0;
+    }
+    
+    public void track(LuminousEntity t) {
+        target = t;
     }
 
     public boolean isEmpty() {
@@ -49,18 +55,18 @@ public class MeterControl implements MushroomCounter, Animatable {
     }
 
     private void valueMushroom(Mushroom shroomie) {
-//        if (shroomie.type == MushroomType.NORMAL) {
-//            adding += shroomie.getSize() * score;
-//        }
-//        if (shroomie.type == MushroomType.GOOD) {
-//            adding += shroomie.getSize() * 2 * score;
-//        }
-//        if (shroomie.type == MushroomType.RARE) {
-//            adding += shroomie.getSize() * 10 * score;
-//        }
-//        if (shroomie.type == MushroomType.EGG) {
-//            adding += shroomie.getSize() * score;
-//        }
+        // if (shroomie.type == MushroomType.NORMAL) {
+        // adding += shroomie.getSize() * score;
+        // }
+        // if (shroomie.type == MushroomType.GOOD) {
+        // adding += shroomie.getSize() * 2 * score;
+        // }
+        // if (shroomie.type == MushroomType.RARE) {
+        // adding += shroomie.getSize() * 10 * score;
+        // }
+        // if (shroomie.type == MushroomType.EGG) {
+        // adding += shroomie.getSize() * score;
+        // }
     }
 
     public void decrement(double amt) {
@@ -83,6 +89,10 @@ public class MeterControl implements MushroomCounter, Animatable {
     }
 
     public void update(StateBasedGame game, int delta) {
+        // TODO should this really stay here?
+        if (target.getLuminosity() > .6) {
+            decrement(.1f);
+        }
         if (adding > 0) {
             value += 0.1f * rate;
             adding -= 0.1f * rate;
@@ -91,7 +101,6 @@ public class MeterControl implements MushroomCounter, Animatable {
         }
         clamp();
     }
-
 
     private void clamp() {
         if (value < 0) {
@@ -104,6 +113,7 @@ public class MeterControl implements MushroomCounter, Animatable {
 
     /**
      * It is no longer possible to reduce the amount to reward a player.
+     * 
      * @return
      */
     public boolean tappedOut() {

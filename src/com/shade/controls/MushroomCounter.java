@@ -1,8 +1,9 @@
 package com.shade.controls;
 
+import com.shade.base.Animatable;
 import com.shade.entities.mushroom.Mushroom;
 
-public interface MushroomCounter {
+public interface MushroomCounter extends Animatable {
 
     /**
      * Called when the player collects a shroomie.
