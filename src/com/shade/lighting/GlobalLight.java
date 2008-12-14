@@ -1,6 +1,5 @@
 package com.shade.lighting;
 
-import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -11,16 +10,17 @@ public class GlobalLight implements LightSource {
 
 
     private static final float TRANSITION_TIME = 1 / 7f;
-    private static final float TRANSITION_ANGLE = .0001f;
-    private static final int SECONDS_PER_DAY = (int) Math.ceil(Math.PI * 2
-            / TRANSITION_ANGLE);
 
+    private final float transitionAngle;
+    private final int secondsPerDay;
     private int timeOfDay;
     private float angle, depth;
 
-    public GlobalLight(float depth, float angle) {
+    public GlobalLight(float depth, float angle, int duration) {
         this.depth = depth;
         this.angle = angle;
+        secondsPerDay = duration;
+        transitionAngle = (float) (2 * Math.PI / secondsPerDay);
     }
 
     public void render(StateBasedGame game, Graphics g,
@@ -43,15 +43,15 @@ public class GlobalLight implements LightSource {
     }
 
     public void update(StateBasedGame game, int delta) {
-        timeOfDay = (timeOfDay + delta) % SECONDS_PER_DAY;
+        timeOfDay = (timeOfDay + delta) % secondsPerDay;
         if (dayOrNight()) {
 
         }
-        angle += .005f;
+        angle += transitionAngle * delta;
     }
 
     private boolean dayOrNight() {
-        return (timeOfDay > 1f * SECONDS_PER_DAY * (1 / 2 - TRANSITION_TIME));
+        return (timeOfDay > 1f * secondsPerDay * (1 / 2 - TRANSITION_TIME));
     }
 
     public Shape castShadow(LuminousEntity e) {

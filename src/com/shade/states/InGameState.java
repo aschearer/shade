@@ -3,6 +3,7 @@ package com.shade.states;
 import java.awt.Font;
 import java.io.InputStream;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -10,6 +11,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.state.transition.FadeOutTransition;
 import org.newdawn.slick.util.ResourceLoader;
 
 import com.shade.controls.CounterControl;
@@ -28,6 +30,11 @@ public class InGameState extends BasicGameState {
     private LevelManager manager;
     private GameControl control;
 
+    private MeterControl meter;
+    private CounterControl counter;
+
+    private int timer;
+
     @Override
     public int getID() {
         return ID;
@@ -40,14 +47,16 @@ public class InGameState extends BasicGameState {
 
         manager = new LevelManager(8, 6, 100);
 
-        Model model = manager.next();
-        LightMask view = new LightMask(5);
+        meter = new MeterControl(20, 456, 100, 100);
+        counter = new CounterControl(60, 520, counterSprite, counterFont);
+    }
 
-        MeterControl meter = new MeterControl(20, 456, 100, 100);
-        CounterControl counter = new CounterControl(60, 520, counterSprite,
-                counterFont);
-
-        control = new GameControl(model, view, meter, counter);
+    @Override
+    public void enter(GameContainer container, StateBasedGame game)
+            throws SlickException {
+        super.enter(container, game);
+        nextLevel(game);
+        timer = 0;
     }
 
     private void initFonts() throws SlickException {
@@ -71,11 +80,47 @@ public class InGameState extends BasicGameState {
             throws SlickException {
         control.render(game, g, background);
         trim.draw();
+        if (timer < 4000) {
+            drawCenteredBanner(container, g, 100);
+            if (timer < 3500) {
+                writeCentered(container, "Get Ready...");
+            } else {
+                writeCentered(container, "Go!");
+            }
+        }
+    }
+    
+    private void drawCenteredBanner(GameContainer c, Graphics g, int height) { 
+        g.fillRect(0, c.getHeight() / 2 - height / 2, c.getWidth(), height);
+    }
+
+    private void writeCentered(GameContainer c, String m) {
+        int w = counterFont.getWidth(m);
+        int h = counterFont.getHeight();
+        int x = c.getWidth() / 2 - w / 2;
+        int y = c.getHeight() / 2 - h / 2;
+        counterFont.drawString(x, y, m, Color.black);
     }
 
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
-        control.update(game, delta);
+        timer += delta;
+        if (timer > 4000) {
+            control.update(game, delta);
+            if (control.levelClear()) {
+                game.enterState(InGameState.ID, new FadeOutTransition(), null);
+            }
+        }
+    }
+
+    private void nextLevel(StateBasedGame game) {
+        if (manager.hasNext()) {
+            LightMask view = new LightMask(5);
+            Model model = manager.next();
+            control = new GameControl(model, view, meter, counter);
+        } else {
+            // TODO go to credits state.
+        }
     }
 
 }

@@ -11,35 +11,38 @@ import com.shade.entities.Player;
 import com.shade.entities.util.MushroomFactory;
 import com.shade.lighting.GlobalLight;
 
-public class Level1 extends Model {
-    
+public class Level3 extends Model {
+
     private static final int SECONDS_PER_DAY = 60000;
     private int timer;
 
-    public Level1(int w, int h, int c) throws SlickException {
+    public Level3(int w, int h, int c) throws SlickException {
         super(w, h, c);
 
-        add(new Player(350, 250));
-        add(new Basket(400, 250, 65, 40));
+        add(new Player(520, 150));
+        add(new Basket(480, 100, 65, 40));
 
-        add(new Block(55, 355, 125, 125, 16));
-        add(new Block(224, 424, 56, 56, 6));
-        add(new Block(324, 424, 56, 56, 6));
-        add(new Block(75, 225, 56, 56, 6));
-        add(new Block(545, 330, 80, 80, 10));
-        add(new Block(445, 460, 80, 80, 10));
-        // domes
-        add(new Dome(288, 165, 32, 7));
-        add(new Dome(180, 95, 44, 10));
-        add(new Dome(300, 65, 25, 6));
-        add(new Dome(710, 80, 28, 6));
-        add(new Dome(600, 100, 40, 9));
-        add(new Dome(680, 220, 60, 13));
-        // fences
-        add(new Fence(250, 250, 11, 120, 5));
-        add(new Fence(390, 140, 120, 11, 5));
-        add(new Fence(715, 368, 11, 120, 5));
-        add(new Fence(50, 50, 11, 120, 5));
+        add(new Fence(720, 50, 11, 120, 5));
+        add(new Fence(720, 190, 11, 120, 5));
+
+        add(new Dome(600, 425, 25, 6));
+        add(new Dome(650, 350, 25, 6));
+        add(new Dome(710, 460, 50, 10));
+        add(new Dome(550, 250, 60, 13));
+        add(new Block(385, 350, 100, 100, 14));
+        
+        add(new Dome(320, 225, 35, 7));
+        add(new Dome(260, 360, 50, 10));
+
+        add(new Fence(150, 500, 120, 11, 5));
+        add(new Fence(300, 500, 120, 11, 5));
+        add(new Fence(450, 500, 120, 11, 5));
+
+        add(new Block(75, 75, 125, 125, 15));
+        add(new Block(250, 100, 50, 50, 5));
+        add(new Block(100, 250, 50, 50, 5));
+        add(new Block(100, 350, 50, 50, 5));
+
     }
     
     @Override
@@ -47,7 +50,7 @@ public class Level1 extends Model {
         super.update(game, delta);
         timer += delta;
     }
-    
+
     @Override
     public GlobalLight getGlobalLight() {
         return new GlobalLight(12, (float) (4 * Math.PI / 3), SECONDS_PER_DAY);

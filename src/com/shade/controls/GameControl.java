@@ -91,4 +91,8 @@ public class GameControl {
 
         return globalLight.castShadow(e);
     }
+
+    public boolean levelClear() {
+        return model.levelClear();
+    }
 }

@@ -11,35 +11,37 @@ import com.shade.entities.Player;
 import com.shade.entities.util.MushroomFactory;
 import com.shade.lighting.GlobalLight;
 
-public class Level1 extends Model {
+public class Level2 extends Model {
     
     private static final int SECONDS_PER_DAY = 60000;
     private int timer;
 
-    public Level1(int w, int h, int c) throws SlickException {
+    public Level2(int w, int h, int c) throws SlickException {
         super(w, h, c);
-
-        add(new Player(350, 250));
-        add(new Basket(400, 250, 65, 40));
-
-        add(new Block(55, 355, 125, 125, 16));
-        add(new Block(224, 424, 56, 56, 6));
-        add(new Block(324, 424, 56, 56, 6));
-        add(new Block(75, 225, 56, 56, 6));
-        add(new Block(545, 330, 80, 80, 10));
-        add(new Block(445, 460, 80, 80, 10));
-        // domes
-        add(new Dome(288, 165, 32, 7));
-        add(new Dome(180, 95, 44, 10));
-        add(new Dome(300, 65, 25, 6));
-        add(new Dome(710, 80, 28, 6));
-        add(new Dome(600, 100, 40, 9));
-        add(new Dome(680, 220, 60, 13));
-        // fences
-        add(new Fence(250, 250, 11, 120, 5));
-        add(new Fence(390, 140, 120, 11, 5));
-        add(new Fence(715, 368, 11, 120, 5));
-        add(new Fence(50, 50, 11, 120, 5));
+        
+        add(new Player(150, 150));
+        add(new Basket(100, 100, 65, 40));
+        
+        add(new Fence(250, 100, 120, 11, 5));
+        add(new Block(430, 75, 56, 56, 6));
+        add(new Fence(550, 100, 120, 11, 5));
+        
+        add(new Fence(150, 500, 120, 11, 5));
+        add(new Block(330, 475, 56, 56, 6));
+        add(new Fence(450, 500, 120, 11, 5));
+        
+        add(new Fence(75, 190, 11, 120, 5));
+        add(new Block(75, 325, 125, 125, 16));
+        
+        add(new Block(200, 190, 56, 56, 6));
+        add(new Block(300, 190, 56, 56, 6));
+        add(new Block(300, 315, 56, 56, 6));
+        add(new Block(400, 315, 56, 56, 6));
+        
+        add(new Dome(600, 425, 25, 6));
+        add(new Dome(650, 350, 25, 6));
+        add(new Dome(710, 460, 44, 10));
+        add(new Dome(550, 250, 60, 13));
     }
     
     @Override

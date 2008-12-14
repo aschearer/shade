@@ -13,4 +13,6 @@ public abstract class Model extends CrashLevel {
     public abstract GlobalLight getGlobalLight();
 
     public abstract MushroomFactory getMushroomFactory();
+    
+    public abstract boolean levelClear();
 }

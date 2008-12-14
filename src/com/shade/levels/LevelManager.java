@@ -18,7 +18,9 @@ public class LevelManager implements Iterator<Model> {
 
     /* List of levels to create using reflection. */
     private String[] levels = {
-        "com.shade.levels.Level1"
+        "com.shade.levels.Level1",
+        "com.shade.levels.Level2",
+        "com.shade.levels.Level3"
     };
 
     /* Pointer into the list of levels. */
