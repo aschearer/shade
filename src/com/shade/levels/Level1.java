@@ -8,11 +8,11 @@ import com.shade.entities.Block;
 import com.shade.entities.Dome;
 import com.shade.entities.Fence;
 import com.shade.entities.Player;
-import com.shade.entities.util.MushroomFactory;
+import com.shade.entities.mushroom.MushroomFactory;
 import com.shade.lighting.GlobalLight;
 
 public class Level1 extends Model {
-    
+
     private static final int SECONDS_PER_DAY = 60000;
     private int timer;
 
@@ -41,13 +41,13 @@ public class Level1 extends Model {
         add(new Fence(715, 368, 11, 120, 5));
         add(new Fence(50, 50, 11, 120, 5));
     }
-    
+
     @Override
     public void update(StateBasedGame game, int delta) {
         super.update(game, delta);
         timer += delta;
     }
-    
+
     @Override
     public GlobalLight getGlobalLight() {
         return new GlobalLight(12, (float) (4 * Math.PI / 3), SECONDS_PER_DAY);
@@ -55,7 +55,7 @@ public class Level1 extends Model {
 
     @Override
     public MushroomFactory getMushroomFactory() {
-        return new MushroomFactory(8, .001);
+        return new MushroomFactory(8, .002);
     }
 
     @Override

@@ -11,7 +11,7 @@ import com.shade.entities.Basket;
 import com.shade.entities.Player;
 import com.shade.entities.Roles;
 import com.shade.entities.mushroom.Mushroom;
-import com.shade.entities.util.MushroomFactory;
+import com.shade.entities.mushroom.MushroomFactory;
 import com.shade.levels.Model;
 import com.shade.lighting.GlobalLight;
 import com.shade.lighting.LightMask;
