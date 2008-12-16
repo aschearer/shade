@@ -1,22 +1,17 @@
 package com.shade.states;
 
-import java.awt.Font;
-import java.io.InputStream;
-
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-import org.newdawn.slick.util.ResourceLoader;
 
 import com.shade.controls.Button;
 import com.shade.controls.ClickListener;
 import com.shade.controls.GameControl;
 import com.shade.controls.SlickButton;
+import com.shade.levels.Level0;
 import com.shade.levels.Level1;
 import com.shade.levels.Model;
 import com.shade.lighting.LightMask;
@@ -41,7 +36,7 @@ public class TitleState extends BasicGameState {
         initButtons();
 
         LightMask view = new LightMask(5);
-        Model model = new Level1(8, 6, 100);
+        Model model = new Level0(8, 6, 100);
         control = new GameControl(model, view);
     }
 

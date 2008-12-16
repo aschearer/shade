@@ -39,7 +39,11 @@ public class GameControl {
     }
 
     private void initPlayer() {
-        Player p = (Player) model.getEntitiesByRole(Roles.PLAYER.ordinal())[0];
+        Object[] players = model.getEntitiesByRole(Roles.PLAYER.ordinal());
+        if (players.length == 0) {
+            return;
+        }
+        Player p = (Player) players[0];
         for (MushroomCounter counter : controls) {
             if (counter instanceof MeterControl) {
                 ((MeterControl) counter).track(p);
@@ -48,7 +52,11 @@ public class GameControl {
     }
 
     private void initBasket() {
-        Basket b = (Basket) model.getEntitiesByRole(Roles.BASKET.ordinal())[0];
+        Object[] baskets = model.getEntitiesByRole(Roles.BASKET.ordinal());
+        if (baskets.length == 0) {
+            return;
+        }
+        Basket b = (Basket) baskets[0];
         for (MushroomCounter counter : controls) {
             b.add(counter);
         }
