@@ -126,6 +126,10 @@ public class SlickButton implements SizeEntity, Animatable, Button {
         timeline.setRange(1, 2);
         timeline.restart();
     }
+    
+    public void reset() {
+        timeline.rewind();
+    }
 
     public void addListener(ClickListener l) {
         listener = l;
