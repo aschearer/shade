@@ -49,12 +49,12 @@ public class SpawningShroom implements State {
 
     public void update(StateBasedGame game, int delta) {
         timer += delta;
-        // it was clear for a half second so spawn
-        if (timer > 500 && clear && shroom.inShadows()) {
+        // it was clear so spawn
+        if (clear && shroom.inShadows()) {
             shroom.manager.enter(Mushroom.States.NORMAL);
         }
         // it was not clear, you waited, so respawn
-        if (timer > 1000 && !clear) {
+        if (timer > 500 && !clear) {
             shroom.kill();
         }
     }

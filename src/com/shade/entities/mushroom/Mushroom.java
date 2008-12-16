@@ -17,7 +17,7 @@ import com.shade.lighting.LuminousEntity;
 
 public class Mushroom extends Linkable {
 
-    protected static final float SPEED = 1.6f;
+    protected static final float SPEED = 1.8f;
 
     private static final float THRESHOLD = .6f;
     private static final float RADIUS = 3f;
