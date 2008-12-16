@@ -28,11 +28,13 @@ public class Player extends Linkable {
     private StateManager manager;
     private Image normal;
     private float luminosity;
+    private boolean active;
 
-    public Player(float x, float y) throws SlickException {
+    public Player(float x, float y, boolean on) throws SlickException {
         initShape(x, y);
         initResources();
         initStates();
+        active = on;
     }
 
     private void initShape(float x, float y) {
@@ -65,8 +67,7 @@ public class Player extends Linkable {
         }
 
         public void onCollision(Entity obstacle) {
-            if (obstacle.getRole() == Roles.BASKET.ordinal() &&
-                    next != null) {
+            if (obstacle.getRole() == Roles.BASKET.ordinal() && next != null) {
                 Linkable m = next;
                 next = null;
                 Linkable l = (Linkable) obstacle;
@@ -99,7 +100,7 @@ public class Player extends Linkable {
                 yVelocity++;
             }
             double mag = Math.sqrt(xVelocity * xVelocity + yVelocity
-                                   * yVelocity);
+                    * yVelocity);
             // make it uniform speed
             xVelocity = (float) (1.0 * SPEED * xVelocity / mag);
             yVelocity = (float) (1.0 * SPEED * yVelocity / mag);
@@ -181,12 +182,16 @@ public class Player extends Linkable {
         luminosity = l;
     }
 
-    public void addToLevel(Level < ? > l) {
+    public void addToLevel(Level<?> l) {
 
     }
 
     public int getRole() {
         return Roles.PLAYER.ordinal();
+    }
+
+    public void activate(boolean t) {
+        active = t;
     }
 
     public void onCollision(Entity obstacle) {
@@ -197,7 +202,7 @@ public class Player extends Linkable {
         }
     }
 
-    public void removeFromLevel(Level < ? > l) {
+    public void removeFromLevel(Level<?> l) {
 
     }
 
@@ -206,7 +211,9 @@ public class Player extends Linkable {
     }
 
     public void update(StateBasedGame game, int delta) {
-        manager.update(game, delta);
+        if (active) {
+            manager.update(game, delta);
+        }
     }
 
     public int compareTo(LuminousEntity e) {

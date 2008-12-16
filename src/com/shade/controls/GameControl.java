@@ -61,6 +61,17 @@ public class GameControl {
             b.add(counter);
         }
     }
+    
+    /**
+     * Turn the player on or off.
+     */
+    public void togglePlayer(boolean t) {
+        Object[] players = model.getEntitiesByRole(Roles.PLAYER.ordinal());
+        if (players.length == 0) {
+            return;
+        }
+        ((Player) players[0]).activate(t);
+    }
 
     public void update(StateBasedGame game, int delta) throws SlickException {
         model.update(game, delta);
@@ -102,5 +113,9 @@ public class GameControl {
 
     public boolean levelClear() {
         return model.levelClear();
+    }
+
+    public Model getModel() {
+        return model;
     }
 }

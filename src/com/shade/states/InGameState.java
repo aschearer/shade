@@ -11,7 +11,6 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-import org.newdawn.slick.state.transition.FadeOutTransition;
 import org.newdawn.slick.util.ResourceLoader;
 
 import com.shade.controls.CounterControl;
@@ -54,8 +53,10 @@ public class InGameState extends BasicGameState {
     @Override
     public void enter(GameContainer container, StateBasedGame game)
             throws SlickException {
-        super.enter(container, game);
-        nextLevel(game);
+        LightMask v = new LightMask(5);
+        Model m = ((TitleState) game.getState(TitleState.ID)).control.getModel();
+        control = new GameControl(m, v, meter, counter);
+        control.togglePlayer(true);
         timer = 0;
     }
 
@@ -108,7 +109,8 @@ public class InGameState extends BasicGameState {
         if (timer > 4000) {
             control.update(game, delta);
             if (control.levelClear()) {
-                game.enterState(InGameState.ID, new FadeOutTransition(), null);
+                nextLevel(game);
+                timer = 0;
             }
         }
     }

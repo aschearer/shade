@@ -7,7 +7,7 @@ import com.shade.entities.Basket;
 import com.shade.entities.Block;
 import com.shade.entities.Dome;
 import com.shade.entities.Fence;
-import com.shade.entities.MockPlayer;
+import com.shade.entities.Player;
 import com.shade.entities.mushroom.MushroomFactory;
 import com.shade.lighting.GlobalLight;
 
@@ -19,7 +19,7 @@ public class Level0 extends Model {
     public Level0(int w, int h, int c) throws SlickException {
         super(w, h, c);
 
-        add(new MockPlayer(450, 300));
+        add(new Player(450, 300, false));
         add(new Basket(400, 250, 65, 40));
 
         add(new Block(55, 355, 125, 125, 16));

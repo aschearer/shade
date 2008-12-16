@@ -12,7 +12,7 @@ import com.shade.controls.Button;
 import com.shade.controls.ClickListener;
 import com.shade.controls.GameControl;
 import com.shade.controls.SlickButton;
-import com.shade.levels.Level0;
+import com.shade.levels.Level1;
 import com.shade.levels.Model;
 import com.shade.lighting.LightMask;
 
@@ -42,7 +42,7 @@ public class TitleState extends BasicGameState {
         initButtons();
 
         LightMask view = new LightMask(5);
-        Model model = new Level0(8, 6, 100);
+        Model model = new Level1(8, 6, 100);
         control = new GameControl(model, view);
     }
 

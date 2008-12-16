@@ -19,7 +19,7 @@ public class Level3 extends Model {
     public Level3(int w, int h, int c) throws SlickException {
         super(w, h, c);
 
-        add(new Player(520, 150));
+        add(new Player(520, 150, true));
         add(new Basket(480, 100, 65, 40));
 
         add(new Fence(720, 50, 11, 120, 5));
