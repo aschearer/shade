@@ -15,7 +15,7 @@ import org.newdawn.slick.util.ResourceLoader;
 
 import com.shade.controls.CounterControl;
 import com.shade.controls.MeterControl;
-import com.shade.controls.MushroomCounter;
+import com.shade.controls.ScoreControl;
 import com.shade.levels.LevelManager;
 import com.shade.resource.ResourceManager;
 
@@ -26,7 +26,8 @@ public class InGameState extends BasicGameState {
     private LevelManager manager;
     private MasterState master;
     private ResourceManager resource;
-    private MushroomCounter counter, meter;
+    private CounterControl counter;
+    private MeterControl meter;
     private int timer;
 
     public InGameState(MasterState m) throws SlickException {
@@ -51,6 +52,9 @@ public class InGameState extends BasicGameState {
     @Override
     public void enter(GameContainer container, StateBasedGame game)
             throws SlickException {
+        counter.reset();
+        meter.reset();
+        master.scorecard.reset();
         master.control.add(counter);
         master.control.add(meter);
         master.control.load(manager.next());
@@ -61,6 +65,7 @@ public class InGameState extends BasicGameState {
     public void render(GameContainer container, StateBasedGame game, Graphics g)
             throws SlickException {
         master.control.render(game, g, resource.get("background"));
+        master.scorecard.render(game, g);
         resource.get("trim").draw();
     }
 
@@ -68,6 +73,7 @@ public class InGameState extends BasicGameState {
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
         master.control.update(game, delta);
+        master.scorecard.update(game, delta);
         if (container.getInput().isKeyPressed(Input.KEY_ESCAPE)) {
             exit(game);
         }
@@ -109,5 +115,9 @@ public class InGameState extends BasicGameState {
         TrueTypeFont f = loadFont();
         Image c = resource.get("counter");
         counter = new CounterControl(60, 520, c, f);
+
+        master.scorecard = new ScoreControl(10, 10, f);
+        meter.register(master.scorecard);
+        counter.register(master.scorecard);
     }
 }

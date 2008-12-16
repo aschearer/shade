@@ -7,6 +7,7 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.controls.GameSlice;
+import com.shade.controls.ScoreControl;
 import com.shade.lighting.GlobalLight;
 import com.shade.lighting.LightMask;
 import com.shade.resource.ResourceManager;
@@ -20,6 +21,7 @@ public class MasterState extends BasicGameState {
 
     public ResourceManager resource;
     public GameSlice control;
+    public ScoreControl scorecard;
 
     @Override
     public int getID() {
@@ -48,7 +50,7 @@ public class MasterState extends BasicGameState {
         game.addState(new TitleState(this));
         game.addState(new InGameState(this));
         game.addState(new HighscoreState(this));
-//        game.addState(new CreditState());
+// game.addState(new CreditState());
 
     }
 
