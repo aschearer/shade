@@ -1,5 +1,7 @@
 package com.shade.controls;
 
+import java.util.LinkedList;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -17,65 +19,39 @@ import com.shade.lighting.GlobalLight;
 import com.shade.lighting.LightMask;
 import com.shade.lighting.LuminousEntity;
 
-public class GameControl {
+public class GameSlice {
 
+    private GlobalLight light;
     private Model model;
-    private LightMask view;
-    private GlobalLight globalLight;
-    private MushroomCounter[] controls;
-
     private MushroomFactory factory;
+    private LightMask view;
+    private LinkedList<MushroomCounter> controls;
 
-    public GameControl(Model m, LightMask v, MushroomCounter... c) {
-        model = m;
+    public GameSlice(LightMask v, GlobalLight l) {
         view = v;
-        controls = c;
+        light = l;
+        view.add(light);
+        controls = new LinkedList<MushroomCounter>();
+    }
+    
+    public void add(MushroomCounter c) {
+        controls.add(c);
+    }
+    
+    public void flushControls() {
+        controls.clear();
+    }
 
-        factory = model.getMushroomFactory();
-        globalLight = model.getGlobalLight();
-        view.add(globalLight);
+    public void load(Model m) {
+        model = m;
+        factory = m.getMushroomFactory();
         initPlayer();
         initBasket();
     }
-
-    private void initPlayer() {
-        Object[] players = model.getEntitiesByRole(Roles.PLAYER.ordinal());
-        if (players.length == 0) {
-            return;
-        }
-        Player p = (Player) players[0];
-        for (MushroomCounter counter : controls) {
-            if (counter instanceof MeterControl) {
-                ((MeterControl) counter).track(p);
-            }
-        }
-    }
-
-    private void initBasket() {
-        Object[] baskets = model.getEntitiesByRole(Roles.BASKET.ordinal());
-        if (baskets.length == 0) {
-            return;
-        }
-        Basket b = (Basket) baskets[0];
-        for (MushroomCounter counter : controls) {
-            b.add(counter);
-        }
-    }
     
-    /**
-     * Turn the player on or off.
-     */
-    public void togglePlayer(boolean t) {
-        Object[] players = model.getEntitiesByRole(Roles.PLAYER.ordinal());
-        if (players.length == 0) {
-            return;
-        }
-        ((Player) players[0]).activate(t);
-    }
-
     public void update(StateBasedGame game, int delta) throws SlickException {
         model.update(game, delta);
-        globalLight.update(game, delta);
+        light.update(game, delta);
         for (MushroomCounter c : controls) {
             c.update(game, delta);
         }
@@ -104,18 +80,34 @@ public class GameControl {
     private Shape randomShadow() {
         LuminousEntity e = randomEntity();
 
-        while (globalLight.castShadow(e) == null) {
+        while (light.castShadow(e) == null) {
             e = randomEntity();
         }
 
-        return globalLight.castShadow(e);
+        return light.castShadow(e);
     }
 
-    public boolean levelClear() {
-        return model.levelClear();
+    private void initPlayer() {
+        Object[] players = model.getEntitiesByRole(Roles.PLAYER.ordinal());
+        if (players.length == 0) {
+            return;
+        }
+        Player p = (Player) players[0];
+        for (MushroomCounter counter : controls) {
+            if (counter instanceof MeterControl) {
+                ((MeterControl) counter).track(p);
+            }
+        }
     }
 
-    public Model getModel() {
-        return model;
+    private void initBasket() {
+        Object[] baskets = model.getEntitiesByRole(Roles.BASKET.ordinal());
+        if (baskets.length == 0) {
+            return;
+        }
+        Basket b = (Basket) baskets[0];
+        for (MushroomCounter counter : controls) {
+            b.add(counter);
+        }
     }
 }

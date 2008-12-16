@@ -5,10 +5,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
-import com.shade.states.CreditState;
-import com.shade.states.HighscoreState;
-import com.shade.states.InGameState;
-import com.shade.states.TitleState;
+import com.shade.states.MasterState;
 
 public class Shade extends StateBasedGame {
 
@@ -20,10 +17,7 @@ public class Shade extends StateBasedGame {
 
     @Override
     public void initStatesList(GameContainer container) throws SlickException {
-        addState(new TitleState());
-        addState(new InGameState());
-        addState(new HighscoreState());
-        addState(new CreditState());
+        addState(new MasterState());
     }
 
     public static void main(String[] args) {

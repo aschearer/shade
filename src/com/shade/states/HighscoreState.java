@@ -2,29 +2,34 @@ package com.shade.states;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.state.transition.FadeOutTransition;
 
 import com.shade.controls.Button;
 import com.shade.controls.ClickListener;
 import com.shade.controls.SlickButton;
+import com.shade.resource.ResourceManager;
 
 public class HighscoreState extends BasicGameState {
+    
+    public static final int ID = 4;
 
-    public static final int ID = 3;
-
-    private Image header, background, trim;
-    private TitleState title;
-
-    private SlickButton play, more, back;
-
+    private MasterState master;
+    private ResourceManager resource;
+    private SlickButton play, morescores, back;
     private int timer;
 
-    private Image highscoreUp, highscoreDown;
-    private Image playUp, playDown;
-    private Image backUp, backDown;
+    public HighscoreState(MasterState m) throws SlickException {
+        master = m;
+        resource = m.resource;
+        
+        resource.register("more-up", "states/highscore/more-up.png");
+        resource.register("more-down", "states/highscore/more-down.png");
+        resource.register("back-up", "states/common/back-up.png");
+        resource.register("back-down", "states/common/back-down.png");
+    }
 
     @Override
     public int getID() {
@@ -33,45 +38,61 @@ public class HighscoreState extends BasicGameState {
 
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException {
-        initSprites();
-        initButtons();
+        throw new RuntimeException("HighscoreState was init'd!");
     }
 
-    private void initSprites() throws SlickException {
-        header = new Image("states/common/header.png");
-        background = new Image("states/common/background.png");
-        trim = new Image("states/common/trim.png");
-        
-        playUp = new Image("states/common/play-up.png");
-        playDown = new Image("states/common/play-down.png");
+    @Override
+    public void enter(GameContainer container, StateBasedGame game)
+            throws SlickException {
+        initButtons();
+        timer = 0;
+    }
 
-        highscoreUp = new Image("states/highscore/more-up.png");
-        highscoreDown = new Image("states/highscore/more-down.png");
+    // render the aquarium
+    public void render(GameContainer container, StateBasedGame game, Graphics g)
+            throws SlickException {
+        master.control.render(game, g, resource.get("background"));
+        resource.get("header").draw(400, 0);
+        play.render(game, g);
+        morescores.render(game, g);
+        back.render(game, g);
+        resource.get("trim").draw();
+    }
 
-        backUp = new Image("states/common/back-up.png");
-        backDown = new Image("states/common/back-down.png");
+    // render the aquarium
+    public void update(GameContainer container, StateBasedGame game, int delta)
+            throws SlickException {
+        master.control.update(game, delta);
+        timer += delta;
+        if (timer > MasterState.STATE_TRANSITION_DELAY) {
+            play.update(game, delta);
+            morescores.update(game, delta);
+            back.update(game, delta);
+        }
     }
 
     private void initButtons() throws SlickException {
         initPlayButton();
-        initMoreButton();
+        initMoreScoresButton();
         initBackButton();
     }
 
     private void initPlayButton() throws SlickException {
-        play = new SlickButton(620, 110, playUp, playDown);
+        play = new SlickButton(620, 110, resource.get("play-up"), resource
+                .get("play-down"));
         play.addListener(new ClickListener() {
 
             public void onClick(StateBasedGame game, Button clicked) {
-                game.enterState(InGameState.ID);
+                game.enterState(InGameState.ID, new FadeOutTransition(), null);
             }
 
         });
     }
 
-    private void initMoreButton() throws SlickException {
-        more = new SlickButton(620, 130, highscoreUp, highscoreDown);
-        more.addListener(new ClickListener() {
+    private void initMoreScoresButton() throws SlickException {
+        morescores = new SlickButton(620, 130, resource.get("more-up"),
+                resource.get("more-down"));
+        morescores.addListener(new ClickListener() {
 
             public void onClick(StateBasedGame game, Button clicked) {
                 // TODO launch browser
@@ -81,7 +102,8 @@ public class HighscoreState extends BasicGameState {
     }
 
     private void initBackButton() throws SlickException {
-        back = new SlickButton(620, 150, backUp, backDown);
+        back = new SlickButton(620, 150, resource.get("back-up"),
+                resource.get("back-down"));
         back.addListener(new ClickListener() {
 
             public void onClick(StateBasedGame game, Button clicked) {
@@ -90,35 +112,4 @@ public class HighscoreState extends BasicGameState {
 
         });
     }
-
-    @Override
-    public void enter(GameContainer container, StateBasedGame game)
-            throws SlickException {
-        timer = 0;
-        title = (TitleState) game.getState(TitleState.ID);
-        // TODO see TitleState for this bug... (hammer time?)
-        initButtons();
-    }
-
-    public void render(GameContainer container, StateBasedGame game, Graphics g)
-            throws SlickException {
-        title.control.render(game, g, background);
-        header.draw(400, 0);
-        trim.draw();
-        play.render(game, g);
-        more.render(game, g);
-        back.render(game, g);
-    }
-
-    public void update(GameContainer container, StateBasedGame game, int delta)
-            throws SlickException {
-        timer += delta;
-        title.control.update(game, delta);
-        if (timer > 200) {
-            play.update(game, delta);
-            more.update(game, delta);
-            back.update(game, delta);
-        }
-    }
-
 }

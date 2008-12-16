@@ -2,7 +2,6 @@ package com.shade.states;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
@@ -10,26 +9,25 @@ import org.newdawn.slick.state.transition.FadeOutTransition;
 
 import com.shade.controls.Button;
 import com.shade.controls.ClickListener;
-import com.shade.controls.GameControl;
 import com.shade.controls.SlickButton;
-import com.shade.levels.Level1;
-import com.shade.levels.Model;
-import com.shade.lighting.LightMask;
+import com.shade.levels.Level0;
+import com.shade.resource.ResourceManager;
+import com.shade.states.CreditState;
 
 public class TitleState extends BasicGameState {
 
     public static final int ID = 2;
 
-    private Image header, background, trim;
-    
-    private Image playUp, playDown;
-    private Image highscoreUp, highscoreDown;
-    private Image creditsUp, creditsDown;
-
+    private MasterState master;
+    private ResourceManager resource;
     private SlickButton play, highscores, credits;
-    protected GameControl control;
-
     private int timer;
+
+    public TitleState(MasterState m) throws SlickException {
+        master = m;
+        resource = m.resource;
+        reset();
+    }
 
     @Override
     public int getID() {
@@ -38,27 +36,41 @@ public class TitleState extends BasicGameState {
 
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException {
-        initSprites();
-        initButtons();
-
-        LightMask view = new LightMask(5);
-        Model model = new Level1(8, 6, 100);
-        control = new GameControl(model, view);
+        throw new RuntimeException("TitleState was init'd!");
+    }
+    
+    public void reset() throws SlickException {
+        master.control.load(new Level0(8, 6, 100));
     }
 
-    private void initSprites() throws SlickException {
-        header = new Image("states/common/header.png");
-        background = new Image("states/common/background.png");
-        trim = new Image("states/common/trim.png");
+    @Override
+    public void enter(GameContainer container, StateBasedGame game)
+            throws SlickException {
+        initButtons();
+        timer = 0;
+    }
 
-        playUp = new Image("states/common/play-up.png");
-        playDown = new Image("states/common/play-down.png");
+    // render the aquarium
+    public void render(GameContainer container, StateBasedGame game, Graphics g)
+            throws SlickException {
+        master.control.render(game, g, resource.get("background"));
+        resource.get("header").draw(400, 0);
+        play.render(game, g);
+        highscores.render(game, g);
+        credits.render(game, g);
+        resource.get("trim").draw();
+    }
 
-        highscoreUp = new Image("states/title/highscores-up.png");
-        highscoreDown = new Image("states/title/highscores-down.png");
-
-        creditsUp = new Image("states/title/credits-up.png");
-        creditsDown = new Image("states/title/credits-down.png");
+    // render the aquarium
+    public void update(GameContainer container, StateBasedGame game, int delta)
+            throws SlickException {
+        master.control.update(game, delta);
+        timer += delta;
+        if (timer > MasterState.STATE_TRANSITION_DELAY) {
+            play.update(game, delta);
+            highscores.update(game, delta);
+            credits.update(game, delta);
+        }
     }
 
     private void initButtons() throws SlickException {
@@ -68,7 +80,8 @@ public class TitleState extends BasicGameState {
     }
 
     private void initPlayButton() throws SlickException {
-        play = new SlickButton(620, 110, playUp, playDown);
+        play = new SlickButton(620, 110, resource.get("play-up"), resource
+                .get("play-down"));
         play.addListener(new ClickListener() {
 
             public void onClick(StateBasedGame game, Button clicked) {
@@ -79,7 +92,8 @@ public class TitleState extends BasicGameState {
     }
 
     private void initHighscoresButton() throws SlickException {
-        highscores = new SlickButton(620, 130, highscoreUp, highscoreDown);
+        highscores = new SlickButton(620, 130, resource.get("highscore-up"),
+                resource.get("highscore-down"));
         highscores.addListener(new ClickListener() {
 
             public void onClick(StateBasedGame game, Button clicked) {
@@ -90,7 +104,8 @@ public class TitleState extends BasicGameState {
     }
 
     private void initCreditsButton() throws SlickException {
-        credits = new SlickButton(620, 150, creditsUp, creditsDown);
+        credits = new SlickButton(620, 150, resource.get("credits-up"),
+                resource.get("credits-down"));
         credits.addListener(new ClickListener() {
 
             public void onClick(StateBasedGame game, Button clicked) {
@@ -99,34 +114,4 @@ public class TitleState extends BasicGameState {
 
         });
     }
-
-    @Override
-    public void enter(GameContainer container, StateBasedGame game)
-            throws SlickException {
-        timer = 0;
-        // TODO some wierd bug if you just reset, hammer time!
-        initButtons();
-    }
-
-    public void render(GameContainer container, StateBasedGame game, Graphics g)
-            throws SlickException {
-        control.render(game, g, background);
-        header.draw(400, 0);
-        play.render(game, g);
-        highscores.render(game, g);
-        credits.render(game, g);
-        trim.draw();
-    }
-
-    public void update(GameContainer container, StateBasedGame game, int delta)
-            throws SlickException {
-        control.update(game, delta);
-        timer += delta;
-        if (timer > 200) {
-            play.update(game, delta);
-            highscores.update(game, delta);
-            credits.update(game, delta);
-        }
-    }
-
 }

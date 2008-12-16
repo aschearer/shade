@@ -79,7 +79,7 @@ public class MeterControl implements MushroomCounter, Animatable {
 
     public void update(StateBasedGame game, int delta) {
         // TODO should this really stay here?
-        if (target.getLuminosity() > .6) {
+        if (target != null && target.getLuminosity() > .6) {
             decrement(.1f);
         }
         if (adding > 0) {

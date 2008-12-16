@@ -28,13 +28,11 @@ public class Player extends Linkable {
     private StateManager manager;
     private Image normal;
     private float luminosity;
-    private boolean active;
 
-    public Player(float x, float y, boolean on) throws SlickException {
+    public Player(float x, float y) throws SlickException {
         initShape(x, y);
         initResources();
         initStates();
-        active = on;
     }
 
     private void initShape(float x, float y) {
@@ -190,10 +188,6 @@ public class Player extends Linkable {
         return Roles.PLAYER.ordinal();
     }
 
-    public void activate(boolean t) {
-        active = t;
-    }
-
     public void onCollision(Entity obstacle) {
         manager.onCollision(obstacle);
         if (obstacle.getRole() == Roles.OBSTACLE.ordinal()) {
@@ -211,9 +205,7 @@ public class Player extends Linkable {
     }
 
     public void update(StateBasedGame game, int delta) {
-        if (active) {
-            manager.update(game, delta);
-        }
+        manager.update(game, delta);
     }
 
     public int compareTo(LuminousEntity e) {

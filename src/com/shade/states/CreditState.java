@@ -8,7 +8,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 public class CreditState extends BasicGameState {
 
-    public static final int ID = 4;
+    public static final int ID = 5;
 
     @Override
     public int getID() {
