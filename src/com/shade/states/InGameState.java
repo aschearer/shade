@@ -62,7 +62,7 @@ public class InGameState extends BasicGameState {
     private void initFonts() throws SlickException {
         try {
             InputStream oi = ResourceLoader
-                    .getResourceAsStream("states/ingame/jekyll.ttf");
+                    .getResourceAsStream("states/common/jekyll.ttf");
             Font jekyll = Font.createFont(Font.TRUETYPE_FONT, oi);
             counterFont = new TrueTypeFont(jekyll.deriveFont(36f), true);
         } catch (Exception e) {
@@ -71,8 +71,8 @@ public class InGameState extends BasicGameState {
     }
 
     private void initSprites() throws SlickException {
-        background = new Image("states/ingame/background.png");
-        trim = new Image("states/ingame/trim.png");
+        background = new Image("states/common/background.png");
+        trim = new Image("states/common/trim.png");
         counterSprite = new Image("states/ingame/counter.png");
     }
 
