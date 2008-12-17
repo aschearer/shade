@@ -146,6 +146,7 @@ Alex Schearer
                 <pathelement path="${lib.dir}/lwjgl.jar" />
                 <pathelement path="${lib.dir}/crash.jar" />
                 <pathelement path="${lib.dir}/slickfx.jar" />
+                <pathelement path="${lib.dir}/BareBonesBrowserLaunch.jar" />
             </classpath>
         </javac>
         <copy todir="${obj.dir}">
