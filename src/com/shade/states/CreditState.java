@@ -1,7 +1,5 @@
 package com.shade.states;
 
-import java.awt.Font;
-import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.Scanner;
 
@@ -44,7 +42,7 @@ public class CreditState extends BasicGameState {
         resource.register("feedback-up", "states/credits/feedback-up.png");
         resource.register("feedback-down", "states/credits/feedback-down.png");
         dimmer = new Dimmer(.6f);
-        initCredits(loadFont());
+        initCredits(master.daisySmall);
 
     }
 
@@ -155,16 +153,5 @@ public class CreditState extends BasicGameState {
             }
 
         });
-    }
-
-    private TrueTypeFont loadFont() throws SlickException {
-        try {
-            InputStream oi = ResourceLoader
-                    .getResourceAsStream("states/common/daisymf.ttf");
-            Font jekyll = Font.createFont(Font.TRUETYPE_FONT, oi);
-            return new TrueTypeFont(jekyll.deriveFont(16f), true);
-        } catch (Exception e) {
-            throw new SlickException("Failed to load font.", e);
-        }
     }
 }

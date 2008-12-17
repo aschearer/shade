@@ -42,6 +42,7 @@ public class TitleState extends BasicGameState {
     
     public void reset() throws SlickException {
         master.control.load(new Level0(8, 6, 100));
+        master.scorecard.reset();
     }
 
     @Override
