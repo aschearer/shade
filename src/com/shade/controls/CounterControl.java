@@ -12,12 +12,14 @@ public class CounterControl implements MushroomCounter, Animatable {
 
     private static final int X_OFFSET = 10;
     private static final int Y_OFFSET = 10;
+    private static final int MUSHROOM_SCORE = 20;
 
     public int value;
 
     private float x, y;
     private Image sprite;
     private TrueTypeFont font;
+    private ScoreControl scorecard;
 
     public CounterControl(float x, float y, Image s, TrueTypeFont f) {
         this.x = x;
@@ -26,7 +28,12 @@ public class CounterControl implements MushroomCounter, Animatable {
         font = f;
     }
 
+    public void register(ScoreControl c) {
+        scorecard = c;
+    }
+
     public void onCollect(Mushroom shroomie) {
+        scorecard.add(MUSHROOM_SCORE);
         value++;
     }
 
@@ -39,6 +46,10 @@ public class CounterControl implements MushroomCounter, Animatable {
 
     public void update(StateBasedGame game, int delta) {
         // doesn't need to be updated
+    }
+
+    public void reset() {
+        value = 0;
     }
 
 }

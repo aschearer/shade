@@ -21,22 +21,28 @@ public class MeterControl implements MushroomCounter, Animatable {
 
     private LuminousEntity target;
     private float x, y;
+    private float startValue, startMax;
     private float value, max, adding;
     private float score;
+    private ScoreControl scorecard;
 
     private int rate = 1;
 
     public MeterControl(float x, float y, float value, float max) {
         this.x = x;
         this.y = y;
-        this.value = value;
-        this.max = max;
+        this.value = startValue = value;
+        this.max = startMax = max;
         score = SCORE_MULTIPLE;
         adding = 0;
     }
-    
+
     public void track(LuminousEntity t) {
         target = t;
+    }
+    
+    public void register(ScoreControl c) {
+        scorecard = c;
     }
 
     public boolean isEmpty() {
@@ -96,6 +102,7 @@ public class MeterControl implements MushroomCounter, Animatable {
             value = 0;
         }
         if (value > max) {
+            scorecard.add(value - max);
             value = max;
         }
     }
@@ -114,5 +121,10 @@ public class MeterControl implements MushroomCounter, Animatable {
      */
     public void tap() {
         score -= SCORE_INCREMENT;
+    }
+
+    public void reset() {
+        value = startValue;
+        max = startMax;
     }
 }
