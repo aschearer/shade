@@ -24,6 +24,14 @@ import com.shade.states.util.Dimmer;
 public class EnterScoreState extends BasicGameState {
 
     private static final String PROMPT_NAME = "Way to go! Er... what's your name?";
+    private static final String[] RESPONSES = {
+        "(Is that really a name?)",
+        "Never heard of ya.",
+        "Bet you can't beat me!",
+        "Buffer Overflow at line 6.",
+        "Cool guy, huh?",
+        "You have officially impressed your friends."
+    };
 
     public static final int ID = 6;
 
@@ -104,17 +112,22 @@ public class EnterScoreState extends BasicGameState {
         int x = (container.getWidth() - w) / 2;
         int y = (container.getHeight() - h) / 2;
         input = new TextField(container, loadJekyllFont(), x, y, w, h);
-        input.setMaxLength(24);
+        input.setMaxLength(20);
         
         input.addListener(new ComponentListener() {
 
             public void componentActivated(AbstractComponent c) {
                 System.out.println(input.getText() + "\t" + master.scorecard.read());
                 input.setAcceptingInput(false);
-                message = "Way to go " + input.getText() + "!! ... (Is that really a name?)";
+                message = "Way to go " + input.getText() + "!! ... " + randomResponse();
             }
             
         });
+    }
+    
+    private String randomResponse() {
+        int r = (int) (Math.floor(Math.random() * RESPONSES.length));
+        return RESPONSES[r];
     }
 
     private void initButtons() throws SlickException {

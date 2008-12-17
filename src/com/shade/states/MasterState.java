@@ -2,6 +2,7 @@ package com.shade.states;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
@@ -22,6 +23,8 @@ public class MasterState extends BasicGameState {
     public ResourceManager resource;
     public GameSlice control;
     public ScoreControl scorecard;
+
+    public Music music;
 
     @Override
     public int getID() {
@@ -53,6 +56,8 @@ public class MasterState extends BasicGameState {
         game.addState(new CreditState(this));
         game.addState(new EnterScoreState(this));
 
+        music = new Music("states/common/snake-music-2.mod");
+        music.loop();
     }
 
     private GlobalLight createLight() {
