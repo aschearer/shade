@@ -14,5 +14,6 @@
 	<classpathentry kind="lib" path="lib/crash.jar"/>
 	<classpathentry kind="lib" path="lib/slickfx.jar"/>
 	<classpathentry kind="lib" path="lib/BareBonesBrowserLaunch.jar"/>
+	<classpathentry kind="lib" path="lib/ibxm.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

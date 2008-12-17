@@ -1,4 +1,5 @@
 Manifest-Version: 1.0
 Created-By: Alex Schearer (http://anotherearlymorning.com)
 Main-Class: com.shade.Shade
-Class-Path: lib/slick.jar lib/lwjgl.jar lib/jorbis-0.0.15.jar lib/jogg-0.0.7.jar lib/slickfx.jar lib/BareBonesBrowserLaunch.jar
+Class-Path: lib/slick.jar lib/lwjgl.jar lib/jorbis-0.0.15.jar \
+lib/jogg-0.0.7.jar lib/slickfx.jar lib/BareBonesBrowserLaunch.jar lib/ibxm.jar
