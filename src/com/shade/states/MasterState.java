@@ -51,6 +51,7 @@ public class MasterState extends BasicGameState {
         game.addState(new InGameState(this));
         game.addState(new HighscoreState(this));
         game.addState(new CreditState(this));
+        game.addState(new EnterScoreState(this));
 
     }
 

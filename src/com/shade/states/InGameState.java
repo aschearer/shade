@@ -61,6 +61,7 @@ public class InGameState extends BasicGameState {
         counter.reset();
         meter.reset();
         master.scorecard.reset();
+        manager.rewind();
         master.control.add(counter);
         master.control.add(meter);
         master.control.load(manager.next());
@@ -95,6 +96,7 @@ public class InGameState extends BasicGameState {
             transition.update(game, container, delta);
             if (transition.isComplete()) {
                 transitioning = false;
+                timer = 0;
                 loadNextLevel(game);
             }
         }
@@ -111,6 +113,7 @@ public class InGameState extends BasicGameState {
         if (manager.hasNext()) {
             master.control.load(manager.next());
         } else {
+            master.control.killPlayer();
             game.enterState(EnterScoreState.ID);
         }
     }
