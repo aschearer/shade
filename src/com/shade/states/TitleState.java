@@ -26,6 +26,7 @@ public class TitleState extends BasicGameState {
     public TitleState(MasterState m) throws SlickException {
         master = m;
         resource = m.resource;
+        initButtons();
         reset();
     }
 
@@ -46,8 +47,8 @@ public class TitleState extends BasicGameState {
     @Override
     public void enter(GameContainer container, StateBasedGame game)
             throws SlickException {
-        initButtons();
         timer = 0;
+        initButtons();
     }
 
     // render the aquarium

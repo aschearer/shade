@@ -6,6 +6,7 @@ import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.state.transition.FadeInTransition;
 
 import com.shade.controls.GameSlice;
 import com.shade.controls.ScoreControl;
@@ -74,7 +75,7 @@ public class MasterState extends BasicGameState {
     // render splash and loading screens
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
-        game.enterState(TitleState.ID);
+        game.enterState(TitleState.ID, null, new FadeInTransition());
     }
 
 }
