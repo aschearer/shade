@@ -45,12 +45,12 @@ public class MasterState extends BasicGameState {
 
         // create controller
         control = new GameSlice(new LightMask(5), createLight());
-        
+
         // register states
         game.addState(new TitleState(this));
         game.addState(new InGameState(this));
         game.addState(new HighscoreState(this));
-// game.addState(new CreditState());
+        game.addState(new CreditState(this));
 
     }
 

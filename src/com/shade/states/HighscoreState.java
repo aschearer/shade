@@ -7,6 +7,7 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.state.transition.FadeOutTransition;
 
+import com.centerkey.utils.BareBonesBrowserLaunch;
 import com.shade.controls.Button;
 import com.shade.controls.ClickListener;
 import com.shade.controls.SlickButton;
@@ -15,6 +16,8 @@ import com.shade.resource.ResourceManager;
 public class HighscoreState extends BasicGameState {
     
     public static final int ID = 4;
+    
+    private static final String HIGHSCORE_URL = "http://anotherearlymorning.com/";
 
     private MasterState master;
     private ResourceManager resource;
@@ -95,7 +98,7 @@ public class HighscoreState extends BasicGameState {
         morescores.addListener(new ClickListener() {
 
             public void onClick(StateBasedGame game, Button clicked) {
-                // TODO launch browser
+                BareBonesBrowserLaunch.openURL(HIGHSCORE_URL);
             }
 
         });

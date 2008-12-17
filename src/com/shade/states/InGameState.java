@@ -11,6 +11,8 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.state.transition.FadeOutTransition;
+import org.newdawn.slick.state.transition.Transition;
 import org.newdawn.slick.util.ResourceLoader;
 
 import com.shade.controls.CounterControl;
@@ -29,12 +31,16 @@ public class InGameState extends BasicGameState {
     private CounterControl counter;
     private MeterControl meter;
     private int timer;
+    private Transition transition;
+
+    private boolean transitioning;
 
     public InGameState(MasterState m) throws SlickException {
         manager = new LevelManager(8, 6, 100);
         master = m;
         resource = m.resource;
         resource.register("counter", "states/ingame/counter.png");
+        transition = new FadeOutTransition();
 
         initControls();
     }
@@ -59,6 +65,7 @@ public class InGameState extends BasicGameState {
         master.control.add(meter);
         master.control.load(manager.next());
         timer = 0;
+        transitioning = false;
     }
 
     // render the gameplay
@@ -66,6 +73,9 @@ public class InGameState extends BasicGameState {
             throws SlickException {
         master.control.render(game, g, resource.get("background"));
         master.scorecard.render(game, g);
+        if (transitioning) {
+            transition.postRender(game, container, g);
+        }
         resource.get("trim").draw();
     }
 
@@ -79,8 +89,14 @@ public class InGameState extends BasicGameState {
         }
         timer += delta;
         if (timer > MasterState.SECONDS_PER_DAY / 2) {
-            loadNextLevel(game);
-            timer = 0;
+            transitioning = true;
+        }
+        if (transitioning) {
+            transition.update(game, container, delta);
+            if (transition.isComplete()) {
+                transitioning = false;
+                loadNextLevel(game);
+            }
         }
     }
 
@@ -95,7 +111,7 @@ public class InGameState extends BasicGameState {
         if (manager.hasNext()) {
             master.control.load(manager.next());
         } else {
-            // TODO go to credits state.
+            game.enterState(EnterScoreState.ID);
         }
     }
 
