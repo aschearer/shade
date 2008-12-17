@@ -85,7 +85,7 @@ public class TitleState extends BasicGameState {
         play.addListener(new ClickListener() {
 
             public void onClick(StateBasedGame game, Button clicked) {
-                game.enterState(InGameState.ID, new FadeOutTransition(), null);
+                game.enterState(6, new FadeOutTransition(), null);
             }
 
         });

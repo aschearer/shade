@@ -110,4 +110,9 @@ public class GameSlice {
             b.add(counter);
         }
     }
+
+    public void killPlayer() {
+        Object[] players = model.getEntitiesByRole(Roles.PLAYER.ordinal());
+        model.remove((LuminousEntity) players[0]);
+    }
 }

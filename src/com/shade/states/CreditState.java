@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.Scanner;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -21,8 +20,11 @@ import com.shade.controls.ClickListener;
 import com.shade.controls.ScrollingText;
 import com.shade.controls.SlickButton;
 import com.shade.resource.ResourceManager;
+import com.shade.states.util.Dimmer;
 
 public class CreditState extends BasicGameState {
+
+    private static final int CREDIT_DELAY = 3000;
 
     public static final int ID = 5;
 
@@ -32,9 +34,7 @@ public class CreditState extends BasicGameState {
     private ResourceManager resource;
     private SlickButton play, feedback, back;
     private int timer;
-    private Color screen;
-
-    private int fadeTimer;
+    private Dimmer dimmer;
 
     private LinkedList<ScrollingText> credits;
 
@@ -43,7 +43,7 @@ public class CreditState extends BasicGameState {
         resource = m.resource;
         resource.register("feedback-up", "states/credits/feedback-up.png");
         resource.register("feedback-down", "states/credits/feedback-down.png");
-        screen = new Color(Color.black);
+        dimmer = new Dimmer(.6f);
         initCredits(loadFont());
 
     }
@@ -75,8 +75,7 @@ public class CreditState extends BasicGameState {
             throws SlickException {
         initButtons();
         timer = 0;
-        fadeTimer = 0;
-        screen.a = 0f;
+        dimmer.reset();
     }
 
     // render the aquarium
@@ -87,10 +86,8 @@ public class CreditState extends BasicGameState {
         play.render(game, g);
         feedback.render(game, g);
         back.render(game, g);
-        g.setColor(screen);
-        g.fillRect(0, 0, container.getWidth(), container.getHeight());
-        g.setColor(Color.white);
-        if (screen.a >= .6f && fadeTimer > 1000) {
+        dimmer.render(game, g);
+        if (timer > CREDIT_DELAY) {
             for (ScrollingText s : credits) {
                 s.render(game, g);
             }
@@ -102,21 +99,17 @@ public class CreditState extends BasicGameState {
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
         master.control.update(game, delta);
+        dimmer.update(game, delta);
         timer += delta;
-        fadeTimer += delta;
-        if (screen.a < .6f && fadeTimer > 100) {
-            screen.a += .05f;
-            fadeTimer = 0;
-        }
         if (timer > MasterState.STATE_TRANSITION_DELAY) {
             play.update(game, delta);
             feedback.update(game, delta);
             back.update(game, delta);
         }
-        // see what I'm doing here, I'm co-opting the fadeTimer
+        
         for (ScrollingText s : credits) {
             s.update(game, delta);            
-            if (screen.a >= .6f && fadeTimer > 1000) {
+            if (timer > CREDIT_DELAY) {
                 s.start();
             }
         }

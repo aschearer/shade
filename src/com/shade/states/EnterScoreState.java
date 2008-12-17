@@ -1,18 +1,29 @@
 package com.shade.states;
 
+import java.awt.Font;
+import java.io.InputStream;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.gui.AbstractComponent;
+import org.newdawn.slick.gui.ComponentListener;
+import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.state.transition.FadeOutTransition;
+import org.newdawn.slick.util.ResourceLoader;
 
 import com.shade.controls.Button;
 import com.shade.controls.ClickListener;
 import com.shade.controls.SlickButton;
 import com.shade.resource.ResourceManager;
+import com.shade.states.util.Dimmer;
 
 public class EnterScoreState extends BasicGameState {
+
+    private static final String PROMPT_NAME = "Way to go! Er... what's your name?";
 
     public static final int ID = 6;
 
@@ -20,13 +31,19 @@ public class EnterScoreState extends BasicGameState {
     private ResourceManager resource;
     private SlickButton play, highscores, back;
     private int timer;
+    private Dimmer dimmer;
+    private TextField input;
+    private TrueTypeFont daisy;
+    private String message;
 
     public EnterScoreState(MasterState m) throws SlickException {
         master = m;
         resource = m.resource;
-        
         resource.register("playagain-up", "states/enter/playagain-up.png");
         resource.register("playagain-down", "states/enter/playagain-down.png");
+        
+        dimmer = new Dimmer(.6f);
+        daisy = loadDaisyFont();
     }
 
     @Override
@@ -44,6 +61,9 @@ public class EnterScoreState extends BasicGameState {
             throws SlickException {
         initButtons();
         timer = 0;
+        dimmer.reset();
+        initTextField(container);
+        message = PROMPT_NAME;
     }
 
     // render the aquarium
@@ -54,19 +74,47 @@ public class EnterScoreState extends BasicGameState {
         play.render(game, g);
         highscores.render(game, g);
         back.render(game, g);
+        dimmer.render(game, g);
+        input.render(container, g);
+        drawCentered(container, message, 340);
         resource.get("trim").draw();
+    }
+
+    private void drawCentered(GameContainer c, String s, int y) {
+        int x = (c.getWidth() - daisy.getWidth(s)) / 2;
+        daisy.drawString(x, y, s);
     }
 
     // render the aquarium
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
         master.control.update(game, delta);
+        dimmer.update(game, delta);
         timer += delta;
         if (timer > MasterState.STATE_TRANSITION_DELAY) {
             play.update(game, delta);
             highscores.update(game, delta);
             back.update(game, delta);
         }
+    }
+
+    private void initTextField(GameContainer container) throws SlickException {
+        int w = 320;
+        int h = 40;
+        int x = (container.getWidth() - w) / 2;
+        int y = (container.getHeight() - h) / 2;
+        input = new TextField(container, loadJekyllFont(), x, y, w, h);
+        input.setMaxLength(24);
+        
+        input.addListener(new ComponentListener() {
+
+            public void componentActivated(AbstractComponent c) {
+                System.out.println(input.getText() + "\t" + master.scorecard.read());
+                input.setAcceptingInput(false);
+                message = "Way to go " + input.getText() + "!! ... (Is that really a name?)";
+            }
+            
+        });
     }
 
     private void initButtons() throws SlickException {
@@ -109,5 +157,27 @@ public class EnterScoreState extends BasicGameState {
             }
 
         });
+    }
+    
+    private TrueTypeFont loadJekyllFont() throws SlickException {
+        try {
+            InputStream oi = ResourceLoader
+                    .getResourceAsStream("states/common/jekyll.ttf");
+            Font jekyll = Font.createFont(Font.TRUETYPE_FONT, oi);
+            return new TrueTypeFont(jekyll.deriveFont(36f), true);
+        } catch (Exception e) {
+            throw new SlickException("Failed to load font.", e);
+        }
+    }
+    
+    private TrueTypeFont loadDaisyFont() throws SlickException {
+        try {
+            InputStream oi = ResourceLoader
+                    .getResourceAsStream("states/common/daisymf.ttf");
+            Font jekyll = Font.createFont(Font.TRUETYPE_FONT, oi);
+            return new TrueTypeFont(jekyll.deriveFont(18f), true);
+        } catch (Exception e) {
+            throw new SlickException("Failed to load font.", e);
+        }
     }
 }

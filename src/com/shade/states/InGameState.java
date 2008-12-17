@@ -113,6 +113,7 @@ public class InGameState extends BasicGameState {
         if (manager.hasNext()) {
             master.control.load(manager.next());
         } else {
+            master.control.flushControls();
             master.control.killPlayer();
             game.enterState(EnterScoreState.ID);
         }
