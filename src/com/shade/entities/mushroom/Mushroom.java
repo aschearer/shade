@@ -13,12 +13,11 @@ import com.shade.base.Level;
 import com.shade.base.util.StateManager;
 import com.shade.crash.CrashLevel;
 import com.shade.entities.Linkable;
-import com.shade.entities.util.MushroomFactory;
 import com.shade.lighting.LuminousEntity;
 
 public class Mushroom extends Linkable {
 
-    protected static final float SPEED = 1.6f;
+    protected static final float SPEED = 1.8f;
 
     private static final float THRESHOLD = .6f;
     private static final float RADIUS = 3f;
@@ -30,17 +29,23 @@ public class Mushroom extends Linkable {
         SPAWNING, NORMAL, PICKED, COLLECTED
     };
 
+    protected enum Types {
+        POISON, NORMAL, GOOD, RARE
+    };
+
     protected StateManager manager;
     protected float scale;
 
+    private Types type;
     private Image mushroom;
     private float luminosity;
     private MushroomFactory factory;
     private CrashLevel level;
 
-    public Mushroom(float x, float y, MushroomFactory factory)
-    throws SlickException {
+    public Mushroom(float x, float y, Types t, MushroomFactory factory)
+            throws SlickException {
         this.factory = factory;
+        type = t;
         scale = 2;
         initShape(x, y);
         initResources();
@@ -54,7 +59,7 @@ public class Mushroom extends Linkable {
     private void initResources() throws SlickException {
         SpriteSheet s;
         s = new SpriteSheet("entities/mushroom/mushrooms.png", 40, 40);
-        mushroom = s.getSprite(0, 0);
+        mushroom = s.getSprite(type.ordinal(), 0);
     }
 
     private void initStates() {
@@ -121,12 +126,28 @@ public class Mushroom extends Linkable {
         luminosity = l;
     }
 
-    public void addToLevel(Level < ? > l) {
+    public void addToLevel(Level<?> l) {
         level = (CrashLevel) l;
     }
 
-    public void removeFromLevel(Level < ? > l) {
+    public void removeFromLevel(Level<?> l) {
         // do nothing
+    }
+
+    public float getValue() {
+        if (type == Types.POISON) {
+            return -scale;
+        }
+        if (type == Types.NORMAL) {
+            return scale;
+        }
+        if (type == Types.GOOD) {
+            return scale * 2;
+        }
+        if (type == Types.RARE) {
+            return scale * 10;
+        }
+        return 0;
     }
 
     public int getRole() {

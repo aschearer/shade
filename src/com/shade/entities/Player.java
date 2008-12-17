@@ -65,8 +65,7 @@ public class Player extends Linkable {
         }
 
         public void onCollision(Entity obstacle) {
-            if (obstacle.getRole() == Roles.BASKET.ordinal() &&
-                    next != null) {
+            if (obstacle.getRole() == Roles.BASKET.ordinal() && next != null) {
                 Linkable m = next;
                 next = null;
                 Linkable l = (Linkable) obstacle;
@@ -99,7 +98,7 @@ public class Player extends Linkable {
                 yVelocity++;
             }
             double mag = Math.sqrt(xVelocity * xVelocity + yVelocity
-                                   * yVelocity);
+                    * yVelocity);
             // make it uniform speed
             xVelocity = (float) (1.0 * SPEED * xVelocity / mag);
             yVelocity = (float) (1.0 * SPEED * yVelocity / mag);
@@ -181,7 +180,7 @@ public class Player extends Linkable {
         luminosity = l;
     }
 
-    public void addToLevel(Level < ? > l) {
+    public void addToLevel(Level<?> l) {
 
     }
 
@@ -197,7 +196,7 @@ public class Player extends Linkable {
         }
     }
 
-    public void removeFromLevel(Level < ? > l) {
+    public void removeFromLevel(Level<?> l) {
 
     }
 

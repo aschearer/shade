@@ -8,7 +8,7 @@ import com.shade.entities.Block;
 import com.shade.entities.Dome;
 import com.shade.entities.Fence;
 import com.shade.entities.Player;
-import com.shade.entities.util.MushroomFactory;
+import com.shade.entities.mushroom.MushroomFactory;
 import com.shade.lighting.GlobalLight;
 
 public class Level2 extends Model {
@@ -57,7 +57,7 @@ public class Level2 extends Model {
 
     @Override
     public MushroomFactory getMushroomFactory() {
-        return new MushroomFactory(8, .001);
+        return new MushroomFactory(16, .002);
     }
 
     @Override

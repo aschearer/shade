@@ -1,4 +1,4 @@
-package com.shade.entities.util;
+package com.shade.entities.mushroom;
 
 import java.util.LinkedList;
 
@@ -6,26 +6,27 @@ import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 
-import com.shade.entities.mushroom.Mushroom;
-
 public class MushroomFactory {
 
     /**
      * Corresponds to the Mushroom.Type enum.
      */
-//    private static final double[] distribution = { 0, .55, .1, .20, .15 };
+    private static final double[] distribution = { .06, .64, .25, .05 };
 
     /* Minimum number of mushrooms alive at any one time. */
     private int floor;
     private double propensity;
-    /* List of existing mushrooms. Mushrooms should remove themselves when
+    /*
+     * List of existing mushrooms. Mushrooms should remove themselves when
      * removed from the level.
      */
     private LinkedList<Mushroom> mushrooms;
 
     /**
-     * @param floor The baseline number of mushrooms on the field.
-     * @param propensity The likelihood to add a mushroom over the baseline.
+     * @param floor
+     *            The baseline number of mushrooms on the field.
+     * @param propensity
+     *            The likelihood to add a mushroom over the baseline.
      */
     public MushroomFactory(int floor, double propensity) {
         this.floor = floor;
@@ -35,7 +36,7 @@ public class MushroomFactory {
 
     /**
      * Return true you should create a new mushroom.
-     *
+     * 
      * @return
      */
     public boolean active() {
@@ -45,12 +46,13 @@ public class MushroomFactory {
         return (Math.random() <= propensity);
     }
 
-    public Mushroom getMushroom(GameContainer c, Shape shadow) throws SlickException {
+    public Mushroom getMushroom(GameContainer c, Shape shadow)
+            throws SlickException {
         try {
             float x = randomX(c, shadow);
             float y = randomY(c, shadow);
-//            int t = randomType();
-            Mushroom m = new Mushroom(x, y, this);
+            int t = randomType();
+            Mushroom m = new Mushroom(x, y, getType(t), this);
             mushrooms.add(m);
             return m;
         } catch (MushroomFactoryException e) {
@@ -58,7 +60,8 @@ public class MushroomFactory {
         }
     }
 
-    private float randomX(GameContainer c, Shape s) throws MushroomFactoryException {
+    private float randomX(GameContainer c, Shape s)
+            throws MushroomFactoryException {
         float x = -1;
         int numTries = 0;
         while (x < 0 || x >= c.getWidth()) {
@@ -72,7 +75,8 @@ public class MushroomFactory {
         return x;
     }
 
-    private float randomY(GameContainer c, Shape s) throws MushroomFactoryException {
+    private float randomY(GameContainer c, Shape s)
+            throws MushroomFactoryException {
         float y = -1;
         int numTries = 0;
         while (y < 0 || y >= c.getHeight()) {
@@ -90,21 +94,22 @@ public class MushroomFactory {
         mushrooms.remove(m);
     }
 
-//    private Mushroom.MushroomType getType(int i) {
-//        Mushroom.MushroomType[] types = Mushroom.MushroomType.values();
-//        return types[i];
-//    }
+    private Mushroom.Types getType(int i) {
+        Mushroom.Types[] types = Mushroom.Types.values();
+        return types[i];
+    }
 
-//    private int randomType() {
-//        double r = Math.random();
-//
-//        double max = 0;
-//        for (int i = 0;i < distribution.length;i++) {
-//            max += distribution[i];
-//            if (r <= max) return i;
-//        }
-//        return 0; //should never reach here
-//    }
+    private int randomType() {
+        double r = Math.random();
+
+        double max = 0;
+        for (int i = 0; i < distribution.length; i++) {
+            max += distribution[i];
+            if (r <= max)
+                return i;
+        }
+        return 0; // should never reach here
+    }
 
     @SuppressWarnings("serial")
     private class MushroomFactoryException extends Exception {

@@ -1,7 +1,7 @@
 package com.shade.levels;
 
 import com.shade.crash.CrashLevel;
-import com.shade.entities.util.MushroomFactory;
+import com.shade.entities.mushroom.MushroomFactory;
 import com.shade.lighting.GlobalLight;
 
 public abstract class Model extends CrashLevel {

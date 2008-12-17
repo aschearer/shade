@@ -54,5 +54,9 @@ public class LevelManager implements Iterator<Model> {
         throw new RuntimeException("Method not supported.");
     }
 
+    public void rewind() {
+        currentLevel = 0;
+    }
+
 
 }

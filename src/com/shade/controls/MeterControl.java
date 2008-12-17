@@ -55,18 +55,7 @@ public class MeterControl implements MushroomCounter, Animatable {
     }
 
     private void valueMushroom(Mushroom shroomie) {
-        // if (shroomie.type == MushroomType.NORMAL) {
-        // adding += shroomie.getSize() * score;
-        // }
-        // if (shroomie.type == MushroomType.GOOD) {
-        // adding += shroomie.getSize() * 2 * score;
-        // }
-        // if (shroomie.type == MushroomType.RARE) {
-        // adding += shroomie.getSize() * 10 * score;
-        // }
-        // if (shroomie.type == MushroomType.EGG) {
-        // adding += shroomie.getSize() * score;
-        // }
+        adding += shroomie.getValue() * score;
     }
 
     public void decrement(double amt) {
@@ -90,7 +79,7 @@ public class MeterControl implements MushroomCounter, Animatable {
 
     public void update(StateBasedGame game, int delta) {
         // TODO should this really stay here?
-        if (target.getLuminosity() > .6) {
+        if (target != null && target.getLuminosity() > .6) {
             decrement(.1f);
         }
         if (adding > 0) {

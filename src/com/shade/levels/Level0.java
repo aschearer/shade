@@ -7,23 +7,23 @@ import com.shade.entities.Basket;
 import com.shade.entities.Block;
 import com.shade.entities.Dome;
 import com.shade.entities.Fence;
-import com.shade.entities.Player;
+import com.shade.entities.MockPlayer;
 import com.shade.entities.mushroom.MushroomFactory;
 import com.shade.lighting.GlobalLight;
 
-public class Level1 extends Model {
+public class Level0 extends Model {
 
     private static final int SECONDS_PER_DAY = 60000;
     private int timer;
     private GlobalLight light;
 
-    public Level1(int w, int h, int c) throws SlickException {
+    public Level0(int w, int h, int c) throws SlickException {
         super(w, h, c);
 
         light = new GlobalLight(12, (float) (4 * Math.PI / 3),
                 SECONDS_PER_DAY);
 
-        add(new Player(450, 300));
+        add(new MockPlayer(450, 300));
         add(new Basket(400, 250, 65, 40));
 
         add(new Block(55, 355, 125, 125, 16));

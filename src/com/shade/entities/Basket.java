@@ -21,7 +21,6 @@ public class Basket extends Linkable {
     private Image sprite;
     private float luminosity;
     private LinkedList<MushroomCounter> counters;
-    private Level<LuminousEntity> level;
 
     public Basket(float x, float y, float w, float h) throws SlickException {
         initShape(x, y, w, h);
@@ -43,7 +42,7 @@ public class Basket extends Linkable {
 
     @SuppressWarnings("unchecked")
     public void addToLevel(Level < ? > l) {
-        level = (Level<LuminousEntity>) l;
+        
     }
 
     public void onCollision(Entity obstacle) {
