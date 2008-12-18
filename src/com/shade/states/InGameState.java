@@ -148,7 +148,7 @@ public class InGameState extends BasicGameState {
     }
 
     private void initControls() throws SlickException {
-        meter = new MeterControl(20, 456);
+        meter = new MeterControl(20, 480);
         meter.register(new ControlListener() {
 
             public void fire() {
@@ -159,7 +159,7 @@ public class InGameState extends BasicGameState {
         });
         
         Image c = resource.get("counter");
-        counter = new CounterControl(60, 520, c, master.jekyllLarge);
+        counter = new CounterControl(140, 520, c, master.jekyllLarge);
 
         master.scorecard = new ScoreControl(10, 10, master.jekyllLarge);
         meter.pass(master.scorecard);
