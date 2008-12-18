@@ -142,6 +142,7 @@ public class EnterScoreState extends BasicGameState {
             public void onClick(StateBasedGame game, Button clicked) {
                 exit();
                 game.enterState(InGameState.ID, new FadeOutTransition(), null);
+                master.dimmer.reset();
             }
 
         });
@@ -168,6 +169,7 @@ public class EnterScoreState extends BasicGameState {
             public void onClick(StateBasedGame game, Button clicked) {
                 exit();
                 game.enterState(TitleState.ID);
+                master.dimmer.reverse();
             }
 
         });
@@ -175,6 +177,5 @@ public class EnterScoreState extends BasicGameState {
     
     private void exit() {
         master.scorecard.reset();
-        master.dimmer.reverse();
     }
 }
