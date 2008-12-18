@@ -12,6 +12,7 @@ import com.shade.base.Entity;
 import com.shade.base.Level;
 import com.shade.base.util.State;
 import com.shade.base.util.StateManager;
+import com.shade.crash.CrashLevel;
 import com.shade.crash.Repelable;
 import com.shade.lighting.LuminousEntity;
 
@@ -197,7 +198,12 @@ public class Player extends Linkable {
     }
 
     public void removeFromLevel(Level<?> l) {
-
+        CrashLevel level = (CrashLevel) l;
+        try {
+            level.add(new MockPlayer(getXCenter(), getYCenter()));
+        } catch (SlickException e) {
+            e.printStackTrace();
+        }
     }
 
     public void render(StateBasedGame game, Graphics g) {

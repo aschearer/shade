@@ -40,6 +40,7 @@ public class LightMask {
     public LightMask(int threshold, DayPhaseTimer time) {
         this.threshold = threshold;
         lights = new LinkedList<LightSource>();
+        timer = time;
     }
 
     public void add(LightSource light) {
@@ -52,11 +53,24 @@ public class LightMask {
         renderBackgrounds(game, g, backgrounds);
         renderEntities(game, g, entities);
         //RENDER NIGHT! WHEEE
-        renderTimeOfDay();
+        renderTimeOfDay(game, g);
     }
     
-    public void renderTimeOfDay(){
-    	
+    public void renderTimeOfDay(StateBasedGame game, Graphics g){
+    	Color c = g.getColor();
+    	if(timer.getDaylightStatus()==DayPhaseTimer.DayLightStatus.DUSK){
+    		g.setColor(new Color(1-timer.timeLeft(),1-timer.timeLeft(),0f,0.3f));
+    		g.fillRect(0, 0, game.getContainer().getWidth(), game.getContainer().getHeight());
+    	}
+    	else if(timer.getDaylightStatus()==DayPhaseTimer.DayLightStatus.NIGHT){
+    		g.setColor(SHADE);
+    		g.fillRect(0, 0, game.getContainer().getWidth(), game.getContainer().getHeight());
+    	}
+    	else if(timer.getDaylightStatus()==DayPhaseTimer.DayLightStatus.DAWN){
+    		g.setColor(new Color(timer.timeLeft(),timer.timeLeft(),0,0.5f*(1-timer.timeLeft())));
+    		g.fillRect(0, 0, game.getContainer().getWidth(), game.getContainer().getHeight());
+    	}
+    	g.setColor(c);
     
     }
 

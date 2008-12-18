@@ -23,7 +23,7 @@ public class Mushroom extends Linkable {
     private static final float RADIUS = 3f;
     private static final float SCALE_INCREMENT = .005f;
     private static final float MAX_SCALE = 3.5f;
-    private static final float MIN_SCALE = 1.5f;
+    private static final float MIN_SCALE = 2f;
 
     protected enum States {
         SPAWNING, NORMAL, PICKED, COLLECTED
@@ -94,7 +94,7 @@ public class Mushroom extends Linkable {
     }
 
     protected void shrink() {
-        scale -= SCALE_INCREMENT / 4;
+        scale -= SCALE_INCREMENT / 2;
         resize();
     }
 

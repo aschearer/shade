@@ -26,10 +26,15 @@ public class GameSlice {
     private MushroomFactory factory;
     private LightMask view;
     private LinkedList<MushroomCounter> controls;
+    private boolean flushControls;
+    
+    //TIMER!
+    private DayPhaseTimer timer;
 
-    public GameSlice(LightMask v, GlobalLight l) {
+    public GameSlice(LightMask v, GlobalLight l, DayPhaseTimer t) {
         view = v;
         light = l;
+        timer = t;
         view.add(light);
         controls = new LinkedList<MushroomCounter>();
     }
@@ -39,7 +44,7 @@ public class GameSlice {
     }
     
     public void flushControls() {
-        controls.clear();
+        flushControls = true;
     }
 
     public void load(Model m) {
@@ -52,6 +57,10 @@ public class GameSlice {
     public void update(StateBasedGame game, int delta) throws SlickException {
         model.update(game, delta);
         light.update(game, delta);
+        if (flushControls) {
+            controls.clear();
+            flushControls = false;
+        }
         for (MushroomCounter c : controls) {
             c.update(game, delta);
         }
@@ -62,6 +71,7 @@ public class GameSlice {
                 model.add(m);
             }
         }
+        timer.update(delta);
     }
 
     public void render(StateBasedGame game, Graphics g, Image ... backgrounds) {
@@ -109,5 +119,10 @@ public class GameSlice {
         for (MushroomCounter counter : controls) {
             b.add(counter);
         }
+    }
+
+    public void killPlayer() {
+        Object[] players = model.getEntitiesByRole(Roles.PLAYER.ordinal());
+        model.remove((LuminousEntity) players[0]);
     }
 }
