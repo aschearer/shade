@@ -80,16 +80,16 @@ public class CreditState extends BasicGameState {
     public void render(GameContainer container, StateBasedGame game, Graphics g)
             throws SlickException {
         master.control.render(game, g, resource.get("background"));
-        resource.get("header").draw(400, 0);
-        play.render(game, g);
-        feedback.render(game, g);
-        back.render(game, g);
         dimmer.render(game, g);
         if (timer > CREDIT_DELAY) {
             for (ScrollingText s : credits) {
                 s.render(game, g);
             }
         }
+        resource.get("header").draw(400, 0);
+        play.render(game, g);
+        feedback.render(game, g);
+        back.render(game, g);
         resource.get("trim").draw();
     }
 

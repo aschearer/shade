@@ -43,6 +43,7 @@ public class EnterScoreState extends BasicGameState {
         resource = m.resource;
         resource.register("playagain-up", "states/enter/playagain-up.png");
         resource.register("playagain-down", "states/enter/playagain-down.png");
+        resource.register("wreath", "states/enter/wreath.png");
         
         dimmer = new Dimmer(.6f);
     }
@@ -71,13 +72,15 @@ public class EnterScoreState extends BasicGameState {
     public void render(GameContainer container, StateBasedGame game, Graphics g)
             throws SlickException {
         master.control.render(game, g, resource.get("background"));
+        dimmer.render(game, g);
+        resource.get("wreath").drawCentered(400, 260);
+        input.render(container, g);
+        drawScore(container, master.scorecard.read() + "", 208);
+        drawCentered(container, message, 440);
         resource.get("header").draw(400, 0);
         play.render(game, g);
         highscores.render(game, g);
         back.render(game, g);
-        dimmer.render(game, g);
-        input.render(container, g);
-        drawCentered(container, message, 340);
         resource.get("trim").draw();
     }
 
@@ -98,12 +101,17 @@ public class EnterScoreState extends BasicGameState {
         int x = (c.getWidth() - master.daisyMedium.getWidth(s)) / 2;
         master.daisyMedium.drawString(x, y, s);
     }
+    
+    private void drawScore(GameContainer c, String s, int y) {
+        int x = (c.getWidth() - master.daisyLarge.getWidth(s)) / 2;
+        master.daisyLarge.drawString(x, y, s);
+    }
 
     private void initTextField(GameContainer container) throws SlickException {
         int w = 320;
         int h = 40;
         int x = (container.getWidth() - w) / 2;
-        int y = (container.getHeight() - h) / 2;
+        int y = (container.getHeight() - h) / 2 + 100;
         input = new TextField(container, master.jekyllLarge, x, y, w, h);
         input.setMaxLength(20);
         input.setFocus(true);

@@ -31,7 +31,7 @@ public class MasterState extends BasicGameState {
     public ScoreControl scorecard;
     
     public TrueTypeFont jekyllSmall, jekyllLarge;
-    public TrueTypeFont daisySmall, daisyMedium;
+    public TrueTypeFont daisySmall, daisyMedium, daisyLarge;
 
     public Music music;
 
@@ -109,6 +109,7 @@ public class MasterState extends BasicGameState {
             Font f = Font.createFont(Font.TRUETYPE_FONT, oi);
             daisySmall = new TrueTypeFont(f.deriveFont(16f), true);
             daisyMedium = new TrueTypeFont(f.deriveFont(18f), true);
+            daisyLarge = new TrueTypeFont(f.deriveFont(24f), true);
         } catch (Exception e) {
             throw new SlickException("Failed to load font.", e);
         }
