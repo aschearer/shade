@@ -17,37 +17,51 @@ import com.shade.crash.Repelable;
 import com.shade.lighting.LuminousEntity;
 import com.shade.util.Geom;
 
-public class Block extends Body implements LuminousEntity, Repelable {
+public class HFence extends Body implements LuminousEntity, Repelable {
 
-    private Image sprite;
     private int height;
+    private Image sprite;
 
-    public Block(int x, int y, int z, int d)
+    public HFence(int x, int y, int z, int d)
     throws SlickException {
-        initShape(x, y, d, d);
+        initShape(x, y, 120, 11);
         height = z;
-        initSprite();
+        initSprite(120, 11);
     }
 
-    private void initSprite() throws SlickException {
-        sprite = new Image("entities/block/block.png");
-    }
-
-    private void initShape(int x, int y, int w, int h) {
+    private void initShape(float x, float y, float w, float h) {
         shape = new Rectangle(x, y, w, h);
     }
 
-    /**
-     * Determine which corner points between the block and its shadow are
-     * closest and then build a new polygon from the resulting points.
-     */
+    private void initSprite(float w, float h) throws SlickException {
+        String path = "entities/fence/fence.vertical.png";
+        if (w > h) {
+            path = "entities/fence/fence.horizontal.png";
+        }
+        sprite = new Image(path);
+    }
+
     public Shape castShadow(float direction, float depth) {
         Vector2f v = Geom.calculateVector(height * depth, direction);
 
         Transform t = Transform.createTranslateTransform(v.x, v.y);
         Polygon extent = (Polygon) shape.transform(t);
 
-        int index = findKeyPoint(v);
+        int index = 0;
+
+        if (v.y > 0) { // bottom
+            if (v.x > 0) { // right
+                index = 0;
+            } else { // left
+                index = 1;
+            }
+        } else { // top
+            if (v.x > 0) { // right
+                index = 3;
+            } else { // left
+                index = 2;
+            }
+        }
 
         Polygon shade = new Polygon();
 
@@ -66,55 +80,21 @@ public class Block extends Body implements LuminousEntity, Repelable {
         return shade;
     }
 
-    /**
-     * Given two rectangles, a block and its shadow, the key point is the corner
-     * on the shadow closest to the block. The second key point is the corner on
-     * the block furtherst from the shadow. One can be derived from the other.
-     *
-     * @param v
-     * @return
-     */
-    private int findKeyPoint(Vector2f v) {
-        int index = 0;
+    public void onCollision(Entity obstacle) {
 
-        if (v.y > 0) { // bottom
-            if (v.x > 0) { // right
-                index = 0;
-            } else { // left
-                index = 1;
-            }
-        } else { // top
-            if (v.x > 0) { // right
-                index = 3;
-            } else { // left
-                index = 2;
-            }
-        }
-        return index;
     }
 
-    public float getLuminosity() {
-        return 0; // not really important for blocks...
+    public void render(StateBasedGame game, Graphics g) {
+        sprite.draw(getX(), getY(), getWidth(), getHeight());
+        // g.draw(shape);
+    }
+
+    public void update(StateBasedGame game, int delta) {
+
     }
 
     public int getZIndex() {
         return height;
-    }
-
-    public void setLuminosity(float l) {
-        // not really important for blocks...
-    }
-
-    public void addToLevel(Level < ? > l) {
-
-    }
-
-    public int getRole() {
-        return Roles.OBSTACLE.ordinal();
-    }
-
-    public void onCollision(Entity obstacle) {
-
     }
 
     public void repel(Body b) {
@@ -146,18 +126,28 @@ public class Block extends Body implements LuminousEntity, Repelable {
             }
             b.nudge(0, -vely);
         }
+
+    }
+
+    public float getLuminosity() {
+        // not important for a fence
+        return 0;
+    }
+
+    public void setLuminosity(float l) {
+        // not important for a fence
+    }
+
+    public void addToLevel(Level < ? > l) {
+        // not important for a fence
+    }
+
+    public int getRole() {
+        return Roles.OBSTACLE.ordinal();
     }
 
     public void removeFromLevel(Level < ? > l) {
-
-    }
-
-    public void render(StateBasedGame game, Graphics g) {
-        sprite.draw(getX(), getY(), getWidth(), getHeight());
-    }
-
-    public void update(StateBasedGame game, int delta) {
-
+        // not important for a fence
     }
 
     public int compareTo(LuminousEntity l) {

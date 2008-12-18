@@ -5,8 +5,12 @@ import org.newdawn.slick.state.StateBasedGame;
 
 public class MockPlayer extends Player {
 
+    public MockPlayer(int x, int y, int z, int d) throws SlickException {
+        super(x, y, z, d);
+    }
+
     public MockPlayer(float x, float y) throws SlickException {
-        super(x, y);
+        super((int) x, (int) y, 0, 0);
     }
 
     @Override

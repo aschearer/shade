@@ -10,9 +10,6 @@ import com.shade.controls.DayPhaseTimer;
 
 public class GlobalLight implements LightSource {
 
-
-    private static final float TRANSITION_TIME = 1 / 7f;
-
     private final float transitionAngle;
     private final int secondsPerDay;
     private int timeOfDay;

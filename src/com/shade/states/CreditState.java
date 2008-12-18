@@ -123,7 +123,7 @@ public class CreditState extends BasicGameState {
 
             public void onClick(StateBasedGame game, Button clicked) {
                 game.enterState(InGameState.ID, new FadeOutTransition(), null);
-                exit();
+                master.dimmer.reset();
             }
 
         });
@@ -148,14 +148,10 @@ public class CreditState extends BasicGameState {
 
             public void onClick(StateBasedGame game, Button clicked) {
                 game.enterState(TitleState.ID);
-                exit();
+                master.dimmer.reverse();
             }
 
         });
-    }
-    
-    private void exit() {
-        master.dimmer.reverse();
     }
     
 }

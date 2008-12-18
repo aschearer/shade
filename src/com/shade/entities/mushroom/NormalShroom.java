@@ -30,14 +30,17 @@ public class NormalShroom implements State {
 
     public void onCollision(Entity obstacle) {
         if (isPicker(obstacle)) {
-            shroom.manager.enter(Mushroom.States.PICKED);
             ((Linkable) obstacle).attach(shroom);
+            if (shroom.prev != null) {
+                shroom.manager.enter(Mushroom.States.PICKED);
+//                Mushroom.picked.play();
+            }
         }
     }
 
     private boolean isPicker(Entity obstacle) {
         return obstacle.getRole() == Roles.PLAYER.ordinal()
-               || obstacle.getRole() == Roles.MOLE.ordinal();
+                || obstacle.getRole() == Roles.MOLE.ordinal();
     }
 
     public void render(StateBasedGame game, Graphics g) {
