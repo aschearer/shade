@@ -30,6 +30,7 @@ public class LightMask {
 
 
     protected final static Color SHADE = new Color(0, 0, 0, .3f);
+    public static final float MAX_DARKNESS = 0.4f;
     private DayPhaseTimer timer;
     
     /**======================END CONSTANTS=======================*/
@@ -59,15 +60,15 @@ public class LightMask {
     public void renderTimeOfDay(StateBasedGame game, Graphics g){
     	Color c = g.getColor();
     	if(timer.getDaylightStatus()==DayPhaseTimer.DayLightStatus.DUSK){
-    		g.setColor(new Color(1-timer.timeLeft(),1-timer.timeLeft(),0f,0.3f));
+    		g.setColor(new Color(1-timer.timeLeft(),1-timer.timeLeft(),0f,MAX_DARKNESS*timer.timeLeft()));
     		g.fillRect(0, 0, game.getContainer().getWidth(), game.getContainer().getHeight());
     	}
     	else if(timer.getDaylightStatus()==DayPhaseTimer.DayLightStatus.NIGHT){
-    		g.setColor(SHADE);
+    		g.setColor(new Color(0,0,0,MAX_DARKNESS));
     		g.fillRect(0, 0, game.getContainer().getWidth(), game.getContainer().getHeight());
     	}
     	else if(timer.getDaylightStatus()==DayPhaseTimer.DayLightStatus.DAWN){
-    		g.setColor(new Color(timer.timeLeft(),timer.timeLeft(),0,0.5f*(1-timer.timeLeft())));
+    		g.setColor(new Color(timer.timeLeft(),timer.timeLeft(),0,MAX_DARKNESS*(1-timer.timeLeft())));
     		g.fillRect(0, 0, game.getContainer().getWidth(), game.getContainer().getHeight());
     	}
     	g.setColor(c);

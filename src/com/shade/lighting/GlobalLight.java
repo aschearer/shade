@@ -36,6 +36,14 @@ public class GlobalLight implements LightSource {
         LightMask.keepStencil();
 
         GameContainer c = game.getContainer();
+        if(isDay())
+        {
+        g.setColor(new Color(0,0,0,1f));
+        }
+        else
+        {
+        	g.setColor(new Color(0,0,0,0.6f));
+        }
         g.fillRect(0, 0, c.getWidth(), c.getHeight());
         g.setColor(Color.white);
 
@@ -44,14 +52,15 @@ public class GlobalLight implements LightSource {
 
     public void update(StateBasedGame game, int delta) {
         timeOfDay = (timeOfDay + delta) % secondsPerDay;
-        if (dayOrNight()) {
+        if (isDay()) {
 
         }
+        //System.out.println("timeOfDay "+timeOfDay);
         angle += transitionAngle * delta;
     }
 
-    private boolean dayOrNight() {
-        return (timeOfDay > 1f * secondsPerDay * (1 / 2 - TRANSITION_TIME));
+    private boolean isDay() {
+    	return (timeOfDay < 1f * secondsPerDay * (1f / 2 - TRANSITION_TIME));
     }
 
     public Shape castShadow(LuminousEntity e) {
