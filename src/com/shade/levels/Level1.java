@@ -3,6 +3,7 @@ package com.shade.levels;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
+import com.shade.controls.DayPhaseTimer;
 import com.shade.entities.Basket;
 import com.shade.entities.Block;
 import com.shade.entities.Dome;
@@ -15,13 +16,15 @@ public class Level1 extends Model {
 
     private static final int SECONDS_PER_DAY = 60000;
     private int timer;
+    public DayPhaseTimer dayTimer;
+    
     private GlobalLight light;
 
     public Level1(int w, int h, int c) throws SlickException {
         super(w, h, c);
-
+        dayTimer = new DayPhaseTimer(SECONDS_PER_DAY);
         light = new GlobalLight(12, (float) (4 * Math.PI / 3),
-                SECONDS_PER_DAY);
+                SECONDS_PER_DAY,dayTimer);
 
         add(new Player(450, 300));
         add(new Basket(400, 250, 65, 40));
