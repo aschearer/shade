@@ -26,6 +26,7 @@ public class GameSlice {
     private MushroomFactory factory;
     private LightMask view;
     private LinkedList<MushroomCounter> controls;
+    private boolean flushControls;
 
     public GameSlice(LightMask v, GlobalLight l) {
         view = v;
@@ -39,7 +40,7 @@ public class GameSlice {
     }
     
     public void flushControls() {
-        controls.clear();
+        flushControls = true;
     }
 
     public void load(Model m) {
@@ -52,6 +53,10 @@ public class GameSlice {
     public void update(StateBasedGame game, int delta) throws SlickException {
         model.update(game, delta);
         light.update(game, delta);
+        if (flushControls) {
+            controls.clear();
+            flushControls = false;
+        }
         for (MushroomCounter c : controls) {
             c.update(game, delta);
         }

@@ -10,6 +10,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.state.transition.FadeOutTransition;
 import org.newdawn.slick.state.transition.Transition;
 
+import com.shade.controls.ControlListener;
 import com.shade.controls.CounterControl;
 import com.shade.controls.MeterControl;
 import com.shade.controls.ScoreControl;
@@ -29,7 +30,7 @@ public class InGameState extends BasicGameState {
     private int timer;
     private boolean transitioning;
     private Transition transition;
-    private GameContainer container;
+    private StateBasedGame game;
     private Dimmer dimmer;
 
 
@@ -56,7 +57,7 @@ public class InGameState extends BasicGameState {
     @Override
     public void enter(GameContainer container, StateBasedGame game)
             throws SlickException {
-        this.container = container;
+        this.game = game;
         counter.reset();
         meter.reset();
         master.scorecard.reset();
@@ -93,7 +94,8 @@ public class InGameState extends BasicGameState {
         master.control.update(game, delta);
         master.scorecard.update(game, delta);
         if (container.getInput().isKeyPressed(Input.KEY_ESCAPE)) {
-            exit(game);
+            manager.rewind();
+            exit(game, TitleState.ID);
         }
         timer += delta;
         if (timer > MasterState.SECONDS_PER_DAY / 2) {
@@ -112,10 +114,10 @@ public class InGameState extends BasicGameState {
     @Override
     public void keyPressed(int key, char c) {
         if (key == Input.KEY_P) {
-            if (container.isPaused()) {
-                container.resume();
+            if (game.getContainer().isPaused()) {
+                game.getContainer().resume();
             } else {
-                container.pause();
+                game.getContainer().pause();
                 dimmer.reset();
             }
         }
@@ -125,31 +127,37 @@ public class InGameState extends BasicGameState {
         int x = (c.getWidth() - master.daisyMedium.getWidth(s)) / 2;
         master.daisyMedium.drawString(x, y, s);
     }
-
-    private void exit(StateBasedGame game) throws SlickException {
-        manager.rewind();
+    
+    private void exit(StateBasedGame game, int state) {
         master.control.flushControls();
-        ((TitleState) game.getState(TitleState.ID)).reset();
-        game.enterState(TitleState.ID);
+        master.control.killPlayer();
+        game.enterState(state);
     }
 
     private void loadNextLevel(StateBasedGame game) {
         if (manager.hasNext()) {
             master.control.load(manager.next());
         } else {
-            master.control.flushControls();
-            master.control.killPlayer();
-            game.enterState(EnterScoreState.ID);
+            exit(game, EnterScoreState.ID);
         }
     }
 
     private void initControls() throws SlickException {
-        meter = new MeterControl(20, 456, 100, 100);
+        meter = new MeterControl(20, 456);
+        meter.register(new ControlListener() {
+
+            public void fire() {
+                // The player lost
+                exit(game, EnterScoreState.ID);
+            }
+            
+        });
+        
         Image c = resource.get("counter");
         counter = new CounterControl(60, 520, c, master.jekyllLarge);
 
         master.scorecard = new ScoreControl(10, 10, master.jekyllLarge);
-        meter.register(master.scorecard);
+        meter.pass(master.scorecard);
         counter.register(master.scorecard);
     }
 }

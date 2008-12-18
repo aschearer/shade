@@ -40,7 +40,7 @@ public class TitleState extends BasicGameState {
         throw new RuntimeException("TitleState was init'd!");
     }
     
-    public void reset() throws SlickException {
+    private void reset() throws SlickException {
         master.control.load(new Level0(8, 6, 100));
     }
 
