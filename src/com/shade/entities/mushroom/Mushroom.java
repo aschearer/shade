@@ -3,6 +3,7 @@ package com.shade.entities.mushroom;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.Sound;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Shape;
@@ -42,6 +43,19 @@ public class Mushroom extends Linkable {
     private MushroomFactory factory;
     private CrashLevel level;
 
+    private static SpriteSheet sheet;
+    protected static Sound spawning, picked;
+
+    static {
+        try {
+            sheet = new SpriteSheet("entities/mushroom/mushrooms.png", 40, 40);
+            spawning = new Sound("entities/mushroom/sprout.ogg");
+            // picked = new Sound("entities/mushroom/picked.ogg");
+        } catch (SlickException e) {
+            e.printStackTrace();
+        }
+    }
+
     public Mushroom(float x, float y, Types t, MushroomFactory factory)
             throws SlickException {
         this.factory = factory;
@@ -57,9 +71,7 @@ public class Mushroom extends Linkable {
     }
 
     private void initResources() throws SlickException {
-        SpriteSheet s;
-        s = new SpriteSheet("entities/mushroom/mushrooms.png", 40, 40);
-        mushroom = s.getSprite(type.ordinal(), 0);
+        mushroom = sheet.getSprite(type.ordinal(), 0);
     }
 
     private void initStates() {

@@ -17,16 +17,15 @@ import com.shade.crash.Repelable;
 import com.shade.lighting.LuminousEntity;
 import com.shade.util.Geom;
 
-public class Fence extends Body implements LuminousEntity, Repelable {
+public class VFence extends Body implements LuminousEntity, Repelable {
 
     private int height;
     private Image sprite;
 
-    public Fence(float x, float y, float w, float h, int d)
-    throws SlickException {
-        initShape(x, y, w, h);
-        height = d;
-        initSprite(w, h);
+    public VFence(int x, int y, int z, int d) throws SlickException {
+        initShape(x, y, 11, 120);
+        height = z;
+        initSprite(11, 120);
     }
 
     private void initShape(float x, float y, float w, float h) {
@@ -104,13 +103,13 @@ public class Fence extends Body implements LuminousEntity, Repelable {
         float playery = b.getYCenter();
         // determine overlap
         float right = playerx - b.getWidth() / 2
-                      - (getXCenter() + getWidth() / 2);
+                - (getXCenter() + getWidth() / 2);
         float left = playerx + b.getWidth() / 2
-                     - (getXCenter() - getWidth() / 2);
+                - (getXCenter() - getWidth() / 2);
         float top = playery - b.getHeight() / 2
-                    - (getYCenter() + getHeight() / 2);
+                - (getYCenter() + getHeight() / 2);
         float bottom = playery + b.getHeight() / 2
-                       - (getYCenter() - getHeight() / 2);
+                - (getYCenter() - getHeight() / 2);
         float minx = Math.min(Math.abs(right), Math.abs(left));
         float miny = Math.min(Math.abs(top), Math.abs(bottom));
         if (minx < miny) {
@@ -138,7 +137,7 @@ public class Fence extends Body implements LuminousEntity, Repelable {
         // not important for a fence
     }
 
-    public void addToLevel(Level < ? > l) {
+    public void addToLevel(Level<?> l) {
         // not important for a fence
     }
 
@@ -146,7 +145,7 @@ public class Fence extends Body implements LuminousEntity, Repelable {
         return Roles.OBSTACLE.ordinal();
     }
 
-    public void removeFromLevel(Level < ? > l) {
+    public void removeFromLevel(Level<?> l) {
         // not important for a fence
     }
 

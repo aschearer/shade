@@ -30,13 +30,13 @@ public class Player extends Linkable {
     private Image normal;
     private float luminosity;
 
-    public Player(float x, float y) throws SlickException {
+    public Player(int x, int y, int z, int d) throws SlickException {
         initShape(x, y);
         initResources();
         initStates();
     }
 
-    private void initShape(float x, float y) {
+    private void initShape(int x, int y) {
         shape = new Circle(x, y, 18);
     }
 

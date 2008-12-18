@@ -20,9 +20,9 @@ public class Dome extends Body implements LuminousEntity, Repelable {
     private Image sprite;
     private int height;
 
-    public Dome(float x, float y, float r, int d) throws SlickException {
-        initShape(x, y, r);
-        height = d;
+    public Dome(int x, int y, int z, int d) throws SlickException {
+        initShape(x, y, d);
+        height = z;
         initSprite();
     }
 
@@ -30,7 +30,7 @@ public class Dome extends Body implements LuminousEntity, Repelable {
         sprite = new Image("entities/dome/dome.png");
     }
 
-    private void initShape(float x, float y, float r) {
+    private void initShape(int x, int y, int r) {
         shape = new Circle(x, y, r);
     }
 

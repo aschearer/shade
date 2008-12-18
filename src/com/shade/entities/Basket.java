@@ -17,13 +17,15 @@ import com.shade.lighting.LuminousEntity;
 
 public class Basket extends Linkable {
 
-    private static final int BASKET_HEIGHT = 0;
+    private static final int BASKET_WIDTH = 65;
+    private static final int BASKET_HEIGHT = 40;
+    private static final int BASKET_DEPTH = 0;
     private Image sprite;
     private float luminosity;
     private LinkedList<MushroomCounter> counters;
 
-    public Basket(float x, float y, float w, float h) throws SlickException {
-        initShape(x, y, w, h);
+    public Basket(int x, int y, int z, int d) throws SlickException {
+        initShape(x, y, BASKET_WIDTH, BASKET_HEIGHT);
         initSprite();
         counters = new LinkedList<MushroomCounter>();
     }
@@ -91,7 +93,7 @@ public class Basket extends Linkable {
     }
 
     public int getZIndex() {
-        return BASKET_HEIGHT;
+        return BASKET_DEPTH;
     }
 
     public int compareTo(LuminousEntity l) {
