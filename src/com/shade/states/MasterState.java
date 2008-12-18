@@ -23,6 +23,7 @@ public class MasterState extends BasicGameState {
     public GameSlice control;
     public ScoreControl scorecard;
 
+    
     @Override
     public int getID() {
         return ID;

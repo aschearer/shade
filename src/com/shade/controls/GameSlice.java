@@ -51,8 +51,6 @@ public class GameSlice {
     
     public void update(StateBasedGame game, int delta) throws SlickException {
         model.update(game, delta);
-        //TODO: figure out where this goes. Alex, I leave it to you.
-        view.addTime(delta);
         light.update(game, delta);
         for (MushroomCounter c : controls) {
             c.update(game, delta);

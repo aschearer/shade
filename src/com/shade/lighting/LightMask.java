@@ -11,6 +11,8 @@ import org.newdawn.slick.Image;
 
 import org.newdawn.slick.state.StateBasedGame;
 
+import com.shade.controls.DayPhaseTimer;
+
 /**
  * A view which renders a set of entities, lights, and background images in such
  * a way as to generate dynamic lighting.
@@ -28,26 +30,14 @@ public class LightMask {
 
 
     protected final static Color SHADE = new Color(0, 0, 0, .3f);
-    
-    /********************************************************
-     * HERE ARE A BUNCH OF CONSTANTS I TRIED HARD TO KEEP
-     * IN A DAYPHASETIMER. And then it got deleted! So here
-     * they are again!
-     *********************************************************/
-    //seconds in a day, in milliseconds.
-    public static final int SECONDS_PER_DAY = 30000;
-    //amount of time in the day spent between day and night
-    public static final int TRANSITION_TIME = 1/7;
-    // the game state won't let us see this so let's make another
-    //one!
-    private int timer;
+    private DayPhaseTimer timer;
     
     /**======================END CONSTANTS=======================*/
 
     private int threshold;
     private LinkedList<LightSource> lights;
 
-    public LightMask(int threshold) {
+    public LightMask(int threshold, DayPhaseTimer time) {
         this.threshold = threshold;
         lights = new LinkedList<LightSource>();
     }
@@ -63,10 +53,6 @@ public class LightMask {
         renderEntities(game, g, entities);
         //RENDER NIGHT! WHEEE
         renderTimeOfDay();
-    }
-    
-    public void addTime(int delta){
-    	timer+=delta;
     }
     
     public void renderTimeOfDay(){
