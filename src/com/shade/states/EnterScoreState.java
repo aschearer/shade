@@ -14,7 +14,6 @@ import com.shade.controls.Button;
 import com.shade.controls.ClickListener;
 import com.shade.controls.SlickButton;
 import com.shade.resource.ResourceManager;
-import com.shade.states.util.Dimmer;
 
 public class EnterScoreState extends BasicGameState {
 
@@ -34,7 +33,6 @@ public class EnterScoreState extends BasicGameState {
     private ResourceManager resource;
     private SlickButton play, highscores, back;
     private int timer;
-    private Dimmer dimmer;
     private TextField input;
     private String message;
 
@@ -44,8 +42,6 @@ public class EnterScoreState extends BasicGameState {
         resource.register("playagain-up", "states/enter/playagain-up.png");
         resource.register("playagain-down", "states/enter/playagain-down.png");
         resource.register("wreath", "states/enter/wreath.png");
-        
-        dimmer = new Dimmer(.6f);
     }
 
     @Override
@@ -63,7 +59,7 @@ public class EnterScoreState extends BasicGameState {
             throws SlickException {
         initButtons();
         timer = 0;
-        dimmer.reset();
+        master.dimmer.reset();
         initTextField(container);
         message = PROMPT_NAME;
     }
@@ -72,7 +68,7 @@ public class EnterScoreState extends BasicGameState {
     public void render(GameContainer container, StateBasedGame game, Graphics g)
             throws SlickException {
         master.control.render(game, g, resource.get("background"));
-        dimmer.render(game, g);
+        master.dimmer.render(game, g);
         resource.get("wreath").drawCentered(400, 260);
         input.render(container, g);
         drawScore(container, master.scorecard.read() + "", 208);
@@ -88,7 +84,7 @@ public class EnterScoreState extends BasicGameState {
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
         master.control.update(game, delta);
-        dimmer.update(game, delta);
+        master.dimmer.update(game, delta);
         timer += delta;
         if (timer > MasterState.STATE_TRANSITION_DELAY) {
             play.update(game, delta);
@@ -179,5 +175,6 @@ public class EnterScoreState extends BasicGameState {
     
     private void exit() {
         master.scorecard.reset();
+        master.dimmer.reverse();
     }
 }

@@ -106,6 +106,7 @@ public class InGameState extends BasicGameState {
             if (transition.isComplete()) {
                 transitioning = false;
                 timer = 0;
+                meter.awardBonus();
                 loadNextLevel(game);
             }
         }

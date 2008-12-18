@@ -39,7 +39,7 @@ public class TitleState extends BasicGameState {
             throws SlickException {
         throw new RuntimeException("TitleState was init'd!");
     }
-    
+
     private void reset() throws SlickException {
         master.control.load(new Level0(8, 6, 100));
     }
@@ -55,6 +55,7 @@ public class TitleState extends BasicGameState {
     public void render(GameContainer container, StateBasedGame game, Graphics g)
             throws SlickException {
         master.control.render(game, g, resource.get("background"));
+        master.dimmer.render(game, g);
         resource.get("header").draw(400, 0);
         play.render(game, g);
         highscores.render(game, g);
@@ -66,6 +67,9 @@ public class TitleState extends BasicGameState {
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
         master.control.update(game, delta);
+        if (master.dimmer.reversed()) {
+            master.dimmer.update(game, delta);
+        }
         timer += delta;
         if (timer > MasterState.STATE_TRANSITION_DELAY) {
             play.update(game, delta);

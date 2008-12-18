@@ -18,6 +18,7 @@ import com.shade.controls.ScoreControl;
 import com.shade.lighting.GlobalLight;
 import com.shade.lighting.LightMask;
 import com.shade.resource.ResourceManager;
+import com.shade.states.util.Dimmer;
 
 public class MasterState extends BasicGameState {
 
@@ -29,6 +30,7 @@ public class MasterState extends BasicGameState {
     public ResourceManager resource;
     public GameSlice control;
     public ScoreControl scorecard;
+    public Dimmer dimmer;
     
     public TrueTypeFont jekyllSmall, jekyllLarge;
     public TrueTypeFont daisySmall, daisyMedium, daisyLarge;
@@ -60,6 +62,7 @@ public class MasterState extends BasicGameState {
 
         // create controller
         control = new GameSlice(new LightMask(5), createLight());
+        dimmer = new Dimmer(.6f);
 
         // register states
         game.addState(new TitleState(this));

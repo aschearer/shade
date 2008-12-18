@@ -80,6 +80,10 @@ public class MeterControl implements ControlSlice, MushroomCounter {
         }
         clamp();
     }
+    
+    public void awardBonus() {
+        totalAmountToAdd += 20;
+    }
 
     public void onCollect(Mushroom shroomie) {
         valueMushroom(shroomie);

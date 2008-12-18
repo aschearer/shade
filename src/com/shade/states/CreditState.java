@@ -18,7 +18,6 @@ import com.shade.controls.ClickListener;
 import com.shade.controls.ScrollingText;
 import com.shade.controls.SlickButton;
 import com.shade.resource.ResourceManager;
-import com.shade.states.util.Dimmer;
 
 public class CreditState extends BasicGameState {
 
@@ -32,7 +31,6 @@ public class CreditState extends BasicGameState {
     private ResourceManager resource;
     private SlickButton play, feedback, back;
     private int timer;
-    private Dimmer dimmer;
 
     private LinkedList<ScrollingText> credits;
 
@@ -41,7 +39,6 @@ public class CreditState extends BasicGameState {
         resource = m.resource;
         resource.register("feedback-up", "states/credits/feedback-up.png");
         resource.register("feedback-down", "states/credits/feedback-down.png");
-        dimmer = new Dimmer(.6f);
         initCredits(master.daisySmall);
 
     }
@@ -73,14 +70,14 @@ public class CreditState extends BasicGameState {
             throws SlickException {
         initButtons();
         timer = 0;
-        dimmer.reset();
+        master.dimmer.reset();
     }
 
     // render the aquarium
     public void render(GameContainer container, StateBasedGame game, Graphics g)
             throws SlickException {
         master.control.render(game, g, resource.get("background"));
-        dimmer.render(game, g);
+        master.dimmer.render(game, g);
         if (timer > CREDIT_DELAY) {
             for (ScrollingText s : credits) {
                 s.render(game, g);
@@ -97,7 +94,7 @@ public class CreditState extends BasicGameState {
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
         master.control.update(game, delta);
-        dimmer.update(game, delta);
+        master.dimmer.update(game, delta);
         timer += delta;
         if (timer > MasterState.STATE_TRANSITION_DELAY) {
             play.update(game, delta);
@@ -126,6 +123,7 @@ public class CreditState extends BasicGameState {
 
             public void onClick(StateBasedGame game, Button clicked) {
                 game.enterState(InGameState.ID, new FadeOutTransition(), null);
+                exit();
             }
 
         });
@@ -150,8 +148,14 @@ public class CreditState extends BasicGameState {
 
             public void onClick(StateBasedGame game, Button clicked) {
                 game.enterState(TitleState.ID);
+                exit();
             }
 
         });
     }
+    
+    private void exit() {
+        master.dimmer.reverse();
+    }
+    
 }
