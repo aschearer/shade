@@ -24,8 +24,9 @@ public class Shade extends StateBasedGame {
         try {
             Shade s = new Shade();
             AppGameContainer c = new AppGameContainer(s, 800, 600, false);
-            // container.setTargetFrameRate(60);
-            // container.setVSync(true);
+            c.setShowFPS(false);
+            c.setTargetFrameRate(60);
+            c.setVSync(true);
             c.start();
         } catch (SlickException e) {
             e.printStackTrace();
