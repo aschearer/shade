@@ -61,6 +61,7 @@ public class Dome extends Body implements LuminousEntity, Repelable {
         float y = getYCenter();
         Transform t = Transform.createRotateTransform(direction + 3.14f, x, y);
 
+        // TODO cache the rectangle and just rotate it
         RoundedRectangle rr = new RoundedRectangle(getX(), getY(), r * 2, h, r);
         return rr.transform(t);
     }
