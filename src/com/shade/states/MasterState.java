@@ -26,7 +26,7 @@ public class MasterState extends BasicGameState {
     public static final int ID = 1;
 
     public static final int STATE_TRANSITION_DELAY = 200;
-    public static final int SECONDS_PER_DAY = 60000;
+    public static final int SECONDS_PER_DAY = 30000;
 
     public ResourceManager resource;
     public GameSlice control;
@@ -64,7 +64,7 @@ public class MasterState extends BasicGameState {
         loadDaisyFont();
 
         // create controller
-        timer = new DayPhaseTimer(60000);
+        timer = new DayPhaseTimer(SECONDS_PER_DAY);
         //TODO: HOW DO WE MODIFY THE LENGTH OF THE DAY AHHH
         control = new GameSlice(new LightMask(5, timer), createLight(), timer);
         dimmer = new Dimmer(.6f);
