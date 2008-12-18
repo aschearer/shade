@@ -8,18 +8,18 @@ import com.shade.entities.mushroom.MushroomFactory;
 import com.shade.lighting.GlobalLight;
 import com.shade.lighting.LuminousEntity;
 
-public class Level3 extends Model {
+public class Level4 extends Model {
 
     private static final int SECONDS_PER_DAY = 60000;
     private int timer;
     public DayPhaseTimer dayTimer;
 
-    public Level3(int w, int h, int c) throws SlickException {
+    public Level4(int w, int h, int c) throws SlickException {
         super(w, h, c);
         dayTimer = new DayPhaseTimer(SECONDS_PER_DAY);
 
         LevelSerial l = new LevelSerial();
-        for (LuminousEntity e : l.deserialize("levels/level-3.xml")) {
+        for (LuminousEntity e : l.deserialize("levels/level-4.xml")) {
             add(e);
         }
     }

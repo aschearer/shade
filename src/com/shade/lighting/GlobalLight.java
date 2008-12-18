@@ -6,21 +6,22 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.state.StateBasedGame;
 
+import com.shade.controls.DayPhaseTimer;
+
 public class GlobalLight implements LightSource {
-
-
-    private static final float TRANSITION_TIME = 1 / 7f;
 
     private final float transitionAngle;
     private final int secondsPerDay;
     private int timeOfDay;
     private float angle, depth;
+    private DayPhaseTimer timer;
 
-    public GlobalLight(float depth, float angle, int duration) {
+    public GlobalLight(float depth, float angle, int duration, DayPhaseTimer t) {
         this.depth = depth;
         this.angle = angle;
         secondsPerDay = duration;
         transitionAngle = (float) (2 * Math.PI / secondsPerDay);
+        timer = t;
     }
 
     public void render(StateBasedGame game, Graphics g,
@@ -36,13 +37,16 @@ public class GlobalLight implements LightSource {
         LightMask.keepStencil();
 
         GameContainer c = game.getContainer();
-        if(isDay())
+        if(timer.getDaylightStatus()==DayPhaseTimer.DayLightStatus.DAY)
         {
         g.setColor(new Color(0,0,0,1f));
         }
         else
         {
-        	g.setColor(new Color(0,0,0,0.6f));
+        	float factor = (1-timer.timeLeft())*0.4f;
+        	if(timer.getDaylightStatus()==DayPhaseTimer.DayLightStatus.NIGHT) factor = 0;
+        	if(timer.getDaylightStatus()==DayPhaseTimer.DayLightStatus.DAWN) factor = timer.timeLeft()*0.4f;
+        	g.setColor(new Color(0,0,0,0.6f+factor));
         }
         g.fillRect(0, 0, c.getWidth(), c.getHeight());
         g.setColor(Color.white);
@@ -52,16 +56,10 @@ public class GlobalLight implements LightSource {
 
     public void update(StateBasedGame game, int delta) {
         timeOfDay = (timeOfDay + delta) % secondsPerDay;
-        if (isDay()) {
-
-        }
         //System.out.println("timeOfDay "+timeOfDay);
         angle += transitionAngle * delta;
     }
 
-    private boolean isDay() {
-    	return (timeOfDay < 1f * secondsPerDay * (1f / 2 - TRANSITION_TIME));
-    }
 
     public Shape castShadow(LuminousEntity e) {
         return e.castShadow(angle, depth);

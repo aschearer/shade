@@ -81,7 +81,7 @@ public class MasterState extends BasicGameState {
     }
 
     private GlobalLight createLight() {
-        return new GlobalLight(12, (float) (4 * Math.PI / 3), SECONDS_PER_DAY);
+        return new GlobalLight(12, (float) (4 * Math.PI / 3), SECONDS_PER_DAY, timer);
     }
 
     // render splash and loading screens

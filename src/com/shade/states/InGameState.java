@@ -79,7 +79,7 @@ public class InGameState extends BasicGameState {
         }
         if (container.isPaused()) {
             dimmer.render(game, g);
-            drawCentered(container, "Paused (p)", 320);
+            drawCentered(container, "Paused (p)", 240);
         }
         resource.get("trim").draw();
     }
@@ -97,6 +97,10 @@ public class InGameState extends BasicGameState {
             manager.rewind();
             exit(game, TitleState.ID);
         }
+//        if (container.getInput().isKeyPressed(Input.KEY_R)) {
+//            manager.rewind();
+//            loadNextLevel(game);
+//        }
         timer += delta;
         if (timer > MasterState.SECONDS_PER_DAY / 2) {
             transitioning = true;
