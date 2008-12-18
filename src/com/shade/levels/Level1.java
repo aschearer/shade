@@ -21,7 +21,7 @@ public class Level1 extends Model {
         dayTimer = new DayPhaseTimer(SECONDS_PER_DAY);
         light = new GlobalLight(12, (float) (4 * Math.PI / 3),
                 SECONDS_PER_DAY,dayTimer);
-
+        
         LevelSerial l = new LevelSerial();
         for (LuminousEntity e : l.deserialize("levels/level-1.xml")) {
             add(e);
