@@ -27,10 +27,14 @@ public class GameSlice {
     private LightMask view;
     private LinkedList<MushroomCounter> controls;
     private boolean flushControls;
+    
+    //TIMER!
+    private DayPhaseTimer timer;
 
-    public GameSlice(LightMask v, GlobalLight l) {
+    public GameSlice(LightMask v, GlobalLight l, DayPhaseTimer t) {
         view = v;
         light = l;
+        timer = t;
         view.add(light);
         controls = new LinkedList<MushroomCounter>();
     }
@@ -67,6 +71,7 @@ public class GameSlice {
                 model.add(m);
             }
         }
+        timer.update(delta);
     }
 
     public void render(StateBasedGame game, Graphics g, Image ... backgrounds) {

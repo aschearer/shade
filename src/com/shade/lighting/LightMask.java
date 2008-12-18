@@ -11,6 +11,8 @@ import org.newdawn.slick.Image;
 
 import org.newdawn.slick.state.StateBasedGame;
 
+import com.shade.controls.DayPhaseTimer;
+
 /**
  * A view which renders a set of entities, lights, and background images in such
  * a way as to generate dynamic lighting.
@@ -28,13 +30,17 @@ public class LightMask {
 
 
     protected final static Color SHADE = new Color(0, 0, 0, .3f);
+    private DayPhaseTimer timer;
+    
+    /**======================END CONSTANTS=======================*/
 
     private int threshold;
     private LinkedList<LightSource> lights;
 
-    public LightMask(int threshold) {
+    public LightMask(int threshold, DayPhaseTimer time) {
         this.threshold = threshold;
         lights = new LinkedList<LightSource>();
+        timer = time;
     }
 
     public void add(LightSource light) {
@@ -46,6 +52,26 @@ public class LightMask {
         renderLights(game, g, entities);
         renderBackgrounds(game, g, backgrounds);
         renderEntities(game, g, entities);
+        //RENDER NIGHT! WHEEE
+        renderTimeOfDay(game, g);
+    }
+    
+    public void renderTimeOfDay(StateBasedGame game, Graphics g){
+    	Color c = g.getColor();
+    	if(timer.getDaylightStatus()==DayPhaseTimer.DayLightStatus.DUSK){
+    		g.setColor(new Color(1-timer.timeLeft(),1-timer.timeLeft(),0f,0.3f));
+    		g.fillRect(0, 0, game.getContainer().getWidth(), game.getContainer().getHeight());
+    	}
+    	else if(timer.getDaylightStatus()==DayPhaseTimer.DayLightStatus.NIGHT){
+    		g.setColor(SHADE);
+    		g.fillRect(0, 0, game.getContainer().getWidth(), game.getContainer().getHeight());
+    	}
+    	else if(timer.getDaylightStatus()==DayPhaseTimer.DayLightStatus.DAWN){
+    		g.setColor(new Color(timer.timeLeft(),timer.timeLeft(),0,0.5f*(1-timer.timeLeft())));
+    		g.fillRect(0, 0, game.getContainer().getWidth(), game.getContainer().getHeight());
+    	}
+    	g.setColor(c);
+    
     }
 
     private void renderLights(StateBasedGame game, Graphics g,

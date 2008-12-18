@@ -23,6 +23,14 @@ public class DayPhaseTimer {
     public DayLightStatus getDaylightStatus() {
         return daylight;
     }
+    
+    public float timeLeft(){
+    	int timeofday = totaltime % (secondsPerDay/2);
+        if(daylight == DayLightStatus.DUSK || daylight == DayLightStatus.DAWN){
+        	return (timeofday-secondsPerDay * (1f / 2 - TRANSITION_TIME))/(0.5f*secondsPerDay*TRANSITION_TIME);
+        }
+        else return timeofday/(0.5f*secondsPerDay*(1-TRANSITION_TIME));
+    }
 
     public void update(int delta) {
         totaltime += delta;
@@ -37,6 +45,8 @@ public class DayPhaseTimer {
                 daylight = DayLightStatus.DAWN;
             }
         }
+        else
+        daylight = DayLightStatus.DAY;
     }
 
 }

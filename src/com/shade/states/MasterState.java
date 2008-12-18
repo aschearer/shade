@@ -13,6 +13,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.state.transition.FadeInTransition;
 import org.newdawn.slick.util.ResourceLoader;
 
+import com.shade.controls.DayPhaseTimer;
 import com.shade.controls.GameSlice;
 import com.shade.controls.ScoreControl;
 import com.shade.lighting.GlobalLight;
@@ -31,12 +32,14 @@ public class MasterState extends BasicGameState {
     public GameSlice control;
     public ScoreControl scorecard;
     public Dimmer dimmer;
+    public DayPhaseTimer timer;
     
     public TrueTypeFont jekyllSmall, jekyllLarge;
     public TrueTypeFont daisySmall, daisyMedium, daisyLarge;
 
     public Music music;
 
+    
     @Override
     public int getID() {
         return ID;
@@ -61,7 +64,9 @@ public class MasterState extends BasicGameState {
         loadDaisyFont();
 
         // create controller
-        control = new GameSlice(new LightMask(5), createLight());
+        timer = new DayPhaseTimer(60000);
+        //TODO: HOW DO WE MODIFY THE LENGTH OF THE DAY AHHH
+        control = new GameSlice(new LightMask(5, timer), createLight(), timer);
         dimmer = new Dimmer(.6f);
 
         // register states
