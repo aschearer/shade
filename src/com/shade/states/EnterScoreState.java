@@ -14,6 +14,8 @@ import com.shade.controls.Button;
 import com.shade.controls.ClickListener;
 import com.shade.controls.SlickButton;
 import com.shade.resource.ResourceManager;
+import com.shade.score.HighScoreWriter;
+import com.shade.score.RemoteHighScoreWriter;
 
 public class EnterScoreState extends BasicGameState {
 
@@ -34,6 +36,7 @@ public class EnterScoreState extends BasicGameState {
     private int timer;
     private TextField input;
     private String message;
+    private HighScoreWriter writer;
 
     public EnterScoreState(MasterState m) throws SlickException {
         master = m;
@@ -41,6 +44,7 @@ public class EnterScoreState extends BasicGameState {
         resource.register("playagain-up", "states/enter/playagain-up.png");
         resource.register("playagain-down", "states/enter/playagain-down.png");
         resource.register("wreath", "states/enter/wreath.png");
+        writer = new RemoteHighScoreWriter("http://www.anotherearlymorning.com/games/shade/post.php");
     }
 
     @Override
@@ -114,9 +118,16 @@ public class EnterScoreState extends BasicGameState {
         input.addListener(new ComponentListener() {
 
             public void componentActivated(AbstractComponent c) {
-                System.out.println(input.getText() + "\t" + master.scorecard.read());
-                input.setAcceptingInput(false);
-                message = "Way to go " + input.getText() + "!! ... " + randomResponse();
+                try {
+                    boolean written = false;
+                    while (!written) {
+                        written = writer.write(input.getText(), master.scorecard.read());
+                    }
+                    input.setAcceptingInput(false);
+                    message = "Way to go " + input.getText() + "!! ... " + randomResponse();
+                } catch (SlickException e) {
+                    e.printStackTrace();
+                }
             }
             
         });
