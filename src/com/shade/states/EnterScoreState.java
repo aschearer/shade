@@ -112,7 +112,7 @@ public class EnterScoreState extends BasicGameState {
         int x = (container.getWidth() - w) / 2;
         int y = (container.getHeight() - h) / 2 + 100;
         input = new TextField(container, master.jekyllLarge, x, y, w, h);
-        input.setMaxLength(20);
+        input.setMaxLength(12);
         input.setFocus(true);
         
         input.addListener(new ComponentListener() {

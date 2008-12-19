@@ -50,7 +50,11 @@ public class CreditState extends BasicGameState {
         float y = 0;
         float d = f.getHeight() * 1.5f;
         while (s.hasNextLine()) {
-            credits.add(new ScrollingText(s.nextLine(), f, 600 + y * d, 40));
+            String[] credit = s.nextLine().split(",");
+            credits.add(new ScrollingText(credit[0], f, 40, 600 + y * d));
+            if (credit.length > 1) {
+                credits.add(new ScrollingText(credit[1], f, 300, 600 + y * d));
+            }
             y++;
         }
     }
