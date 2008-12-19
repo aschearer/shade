@@ -21,7 +21,10 @@ public class LevelManager implements Iterator<Model> {
         "com.shade.levels.Level1",
         "com.shade.levels.Level2",
         "com.shade.levels.Level3",
-        "com.shade.levels.Level4"
+        "com.shade.levels.Level4",
+        "com.shade.levels.Level5",
+        "com.shade.levels.Level6",
+        "com.shade.levels.Level7"
     };
 
     /* Pointer into the list of levels. */
