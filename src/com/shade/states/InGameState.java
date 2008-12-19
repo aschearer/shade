@@ -14,9 +14,11 @@ import com.shade.controls.Button;
 import com.shade.controls.ClickListener;
 import com.shade.controls.ControlListener;
 import com.shade.controls.CounterControl;
+import com.shade.controls.DayPhaseTimer;
 import com.shade.controls.MeterControl;
 import com.shade.controls.ScoreControl;
 import com.shade.controls.SlickButton;
+import com.shade.controls.DayPhaseTimer.DayLightStatus;
 import com.shade.levels.LevelManager;
 import com.shade.resource.ResourceManager;
 
@@ -66,6 +68,7 @@ public class InGameState extends BasicGameState {
         counter.reset();
         meter.reset();
         master.scorecard.reset();
+        master.timer.reset();
         manager.rewind();
         master.control.add(counter);
         master.control.add(meter);
@@ -115,7 +118,7 @@ public class InGameState extends BasicGameState {
         // loadNextLevel(game);
         // }
         timer += delta;
-        if (timer > MasterState.SECONDS_PER_DAY / 2) {
+        if (master.timer.getDaylightStatus() == DayLightStatus.NIGHT) {
             transitioning = true;
         }
         if (transitioning) {
@@ -125,6 +128,7 @@ public class InGameState extends BasicGameState {
                 timer = 0;
                 meter.awardBonus();
                 loadNextLevel(game);
+                master.timer.reset();
             }
         }
     }
