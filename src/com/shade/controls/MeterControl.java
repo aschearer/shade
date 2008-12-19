@@ -1,7 +1,8 @@
 package com.shade.controls;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.entities.mushroom.Mushroom;
@@ -17,25 +18,34 @@ import com.shade.lighting.LuminousEntity;
  */
 public class MeterControl implements ControlSlice, MushroomCounter {
 
-    private static final float WIDTH = 24;
-    private static final float HEIGHT = 124;
-    private static final Color BORDER = new Color(163, 183, 139);
-    private static final Color ON = new Color(99, 125, 88);
-    private static final Color OFF = new Color(163, 191, 95);
-
     private LuminousEntity target;
     private ControlListener listener;
     private ScoreControl scorecard;
 
     private float x, y;
     private float value, totalAmountToAdd, rateOfChange;
+    private static Image front, back;
+    
+    static {
+        try {
+            front = new Image("states/ingame/meter-front.png");
+            back = new Image("states/ingame/meter-back.png");
+        } catch (SlickException e) {
+            e.printStackTrace();
+        }
+    }
 
-    public MeterControl(float x, float y) {
+    public MeterControl(float x, float y) throws SlickException {
         this.x = x;
         this.y = y;
         value = 100;
         totalAmountToAdd = 0;
         rateOfChange = 1;
+        initResources();
+    }
+
+    private void initResources() throws SlickException {
+        
     }
 
     public void track(LuminousEntity e) {
@@ -51,17 +61,12 @@ public class MeterControl implements ControlSlice, MushroomCounter {
     }
 
     public void render(StateBasedGame game, Graphics g) {
-        g.setColor(OFF);
-        g.fillRect(x, y, WIDTH, HEIGHT);
-
-        g.setColor(ON);
-        float adjustment = HEIGHT * (value / 100);
-        g.fillRect(x, y + (HEIGHT - adjustment), WIDTH, adjustment);
-
-        g.setColor(BORDER);
-        g.drawRect(x, y, WIDTH, HEIGHT);
-
-        g.setColor(Color.white);
+        back.draw(x, y);
+        
+        float w = front.getWidth();
+        float h = front.getHeight();
+        float adjustment = h - (h * (value / 100));
+        front.draw(x, y + adjustment, x + w, y + h, 0, adjustment, w, h);
     }
 
     public void update(StateBasedGame game, int delta) {
@@ -112,7 +117,8 @@ public class MeterControl implements ControlSlice, MushroomCounter {
     }
 
     public void reset() {
-        // TODO Auto-generated method stub
-
+        value = 100;
+        totalAmountToAdd = 0;
+        rateOfChange = 1;
     }
 }
