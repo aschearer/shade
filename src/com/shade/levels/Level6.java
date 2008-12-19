@@ -37,7 +37,7 @@ public class Level6 extends Model {
 
     @Override
     public MushroomFactory getMushroomFactory() {
-        return new MushroomFactory(4, .003);
+        return new MushroomFactory(6, .007);
     }
 
     @Override
