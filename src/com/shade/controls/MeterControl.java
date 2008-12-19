@@ -25,6 +25,8 @@ public class MeterControl implements ControlSlice, MushroomCounter {
     private float x, y;
     private float value, totalAmountToAdd, rateOfChange;
     private static Image front, back;
+    private float[] damages = { .15f, .3f, .6f };
+    private int timeInSun;
     
     static {
         try {
@@ -74,7 +76,9 @@ public class MeterControl implements ControlSlice, MushroomCounter {
             listener.fire();
         }
         if (target != null && target.getLuminosity() > .6) {
-            decrement(.1f);
+            decrement(delta);
+        } else {
+            timeInSun = 0;
         }
         
         if (totalAmountToAdd > 0) {
@@ -111,8 +115,17 @@ public class MeterControl implements ControlSlice, MushroomCounter {
         totalAmountToAdd += shroomie.getValue() * 4;
     }
 
-    private void decrement(double amt) {
-        value -= amt;
+    private void decrement(int delta) {
+        timeInSun += delta;
+        float damage = damages[0];
+        if (timeInSun > 500) {
+           damage = damages[1];
+        }
+        if (timeInSun > 3000) {
+           damage = damages[2];
+        }
+
+        value -= damage;
         clamp();
     }
 
