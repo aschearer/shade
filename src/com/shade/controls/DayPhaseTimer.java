@@ -8,6 +8,7 @@ public class DayPhaseTimer {
     int secondsPerDay;
     int timeofday;
     int totaltime;
+    int starttime;
     DayLightStatus daylight;
 
     public enum DayLightStatus {
@@ -15,6 +16,7 @@ public class DayPhaseTimer {
     }
 
     public DayPhaseTimer(int seconds) {
+    	starttime = 0;
         secondsPerDay = seconds;
         timeofday = 0;
         totaltime = 0;
@@ -34,7 +36,7 @@ public class DayPhaseTimer {
 
     public void update(int delta) {
         totaltime += delta;
-        int timeofday = totaltime % secondsPerDay;
+        int timeofday = (totaltime-starttime) % secondsPerDay;
         // is it day or night?
         if (timeofday > 1.0 * secondsPerDay * (1f / 2 - TRANSITION_TIME)) {
             daylight = DayLightStatus.NIGHT;
@@ -47,6 +49,10 @@ public class DayPhaseTimer {
         }
         else
         daylight = DayLightStatus.DAY;
+    }
+    
+    public void reset(){
+    	starttime = totaltime;
     }
 
 }
