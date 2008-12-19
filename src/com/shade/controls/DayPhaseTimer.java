@@ -5,10 +5,9 @@ public class DayPhaseTimer {
     public static final float TRANSITION_TIME = 1f / 7;
     public static final float MAX_SHADOW = 0.4f;
 
-    int secondsPerDay;
-    int timeofday;
-    int totaltime;
-    int starttime;
+    private int secondsPerDay;
+    private int timeOfDay;
+    private int startTime, runningTime;
     DayLightStatus daylight;
 
     public enum DayLightStatus {
@@ -16,10 +15,10 @@ public class DayPhaseTimer {
     }
 
     public DayPhaseTimer(int seconds) {
-    	starttime = 0;
+    	startTime = 0;
+    	runningTime = 0;
         secondsPerDay = seconds;
-        timeofday = 0;
-        totaltime = 0;
+        timeOfDay = 0;
     }
 
     public DayLightStatus getDaylightStatus() {
@@ -27,16 +26,16 @@ public class DayPhaseTimer {
     }
     
     public float timeLeft(){
-    	int timeofday = totaltime % (secondsPerDay/2);
+    	timeOfDay = runningTime % (secondsPerDay/2);
         if(daylight == DayLightStatus.DUSK || daylight == DayLightStatus.DAWN){
-        	return (timeofday-secondsPerDay * (1f / 2 - TRANSITION_TIME))/(secondsPerDay*TRANSITION_TIME);
+        	return (timeOfDay-secondsPerDay * (1f / 2 - TRANSITION_TIME))/(secondsPerDay*TRANSITION_TIME);
         }
-        else return timeofday/(0.5f*secondsPerDay*(1-TRANSITION_TIME));
+        else return timeOfDay/(0.5f*secondsPerDay*(1-TRANSITION_TIME));
     }
 
     public void update(int delta) {
-        totaltime += delta;
-        int timeofday = (totaltime-starttime) % secondsPerDay;
+        runningTime += delta;
+        int timeofday = (runningTime-startTime) % secondsPerDay;
         // is it day or night?
         if (timeofday > 1.0 * secondsPerDay * (1f / 2 - TRANSITION_TIME)) {
             daylight = DayLightStatus.NIGHT;
@@ -52,7 +51,8 @@ public class DayPhaseTimer {
     }
     
     public void reset(){
-    	starttime = totaltime;
+        runningTime = 0;
+    	startTime = 0;
     }
 
 }

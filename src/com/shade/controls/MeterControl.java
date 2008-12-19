@@ -25,7 +25,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
     private float x, y;
     private float value, totalAmountToAdd, rateOfChange;
     private static Image front, back;
-    private float[] damages = { .15f, .3f, .6f };
+    private float[] damages = { .15f, .2f, .4f };
     private int timeInSun;
     
     static {

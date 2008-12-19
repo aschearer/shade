@@ -70,7 +70,6 @@ public class GameSlice {
             if (m != null) {
                 model.add(m);
             }
-            else System.out.println("we got null, shocking");
         }
         timer.update(delta);
     }
