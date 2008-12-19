@@ -30,7 +30,7 @@ public class Player extends Linkable {
     private Image normal;
     private float luminosity;
 
-    public Player(int x, int y, int z, int d) throws SlickException {
+    public Player(int x, int y) throws SlickException {
         initShape(x, y);
         initResources();
         initStates();
@@ -200,7 +200,7 @@ public class Player extends Linkable {
     public void removeFromLevel(Level<?> l) {
         CrashLevel level = (CrashLevel) l;
         try {
-            level.add(new MockPlayer(getXCenter(), getYCenter()));
+            level.add(new MockPlayer((int) getXCenter(), (int) getYCenter()));
         } catch (SlickException e) {
             e.printStackTrace();
         }

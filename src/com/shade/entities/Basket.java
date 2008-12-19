@@ -24,7 +24,7 @@ public class Basket extends Linkable {
     private float luminosity;
     private LinkedList<MushroomCounter> counters;
 
-    public Basket(int x, int y, int z, int d) throws SlickException {
+    public Basket(int x, int y) throws SlickException {
         initShape(x, y, BASKET_WIDTH, BASKET_HEIGHT);
         initSprite();
         counters = new LinkedList<MushroomCounter>();

@@ -22,8 +22,7 @@ public class LevelSerial {
         mappings.put("Basket", "com.shade.entities.Basket");
         mappings.put("Player", "com.shade.entities.Player");
         mappings.put("MockPlayer", "com.shade.entities.MockPlayer");
-        mappings.put("HFence", "com.shade.entities.HFence");
-        mappings.put("VFence", "com.shade.entities.VFence");
+        mappings.put("Fence", "com.shade.entities.Fence");
     }
 
     public LuminousEntity[] deserialize(String level) throws SlickException {
@@ -41,10 +40,18 @@ public class LevelSerial {
 
     private LuminousEntity getEntityFrom(XMLElement element) throws SlickException {
         String c = mappings.get(element.getName());
-        int x = Integer.parseInt(element.getAttribute("x"));
-        int y = Integer.parseInt(element.getAttribute("y"));
-        int z = Integer.parseInt(element.getAttribute("z"));
-        int d = Integer.parseInt(element.getAttribute("d"));
-        return (LuminousEntity) Reflection.getInstance(c, x, y, z, d);
+        ArrayList<Integer> args = new ArrayList<Integer>();
+        args.add(element.getIntAttribute("x"));
+        args.add(element.getIntAttribute("y"));
+        if (!element.getAttribute("z", "NULL").equals("NULL")) {
+            args.add(element.getIntAttribute("z"));
+        }
+        if (!element.getAttribute("d", "NULL").equals("NULL")) {
+            args.add(element.getIntAttribute("d"));
+        }if (!element.getAttribute("r", "NULL").equals("NULL")) {
+            args.add(element.getIntAttribute("r"));
+        }
+        System.out.println(c);
+        return (LuminousEntity) Reflection.getInstance(c, args.toArray());
     }
 }
