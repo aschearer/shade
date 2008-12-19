@@ -14,7 +14,6 @@ import com.shade.controls.Button;
 import com.shade.controls.ClickListener;
 import com.shade.controls.ControlListener;
 import com.shade.controls.CounterControl;
-import com.shade.controls.DayPhaseTimer;
 import com.shade.controls.MeterControl;
 import com.shade.controls.ScoreControl;
 import com.shade.controls.SlickButton;
@@ -99,9 +98,9 @@ public class InGameState extends BasicGameState {
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
         if (container.isPaused()) {
-            master.dimmer.update(game, 15);
-            play.update(game, 15);
-            back.update(game, 15);
+            master.dimmer.update(game, 25);
+            play.update(game, 25);
+            back.update(game, 25);
             return;
         }
         if (master.dimmer.reversed()) {
@@ -127,8 +126,9 @@ public class InGameState extends BasicGameState {
                 transitioning = false;
                 timer = 0;
                 meter.awardBonus();
-                loadNextLevel(game);
                 master.timer.reset();
+                master.dimmer.fastforward();
+                loadNextLevel(game);
             }
         }
     }

@@ -69,4 +69,10 @@ public class Dimmer implements Animatable {
         return reverse;
     }
 
+    public void fastforward() {
+        timer = 0;
+        color.a = targetAlpha;
+        reverse = true;
+    }
+
 }
