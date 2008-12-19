@@ -65,7 +65,7 @@ public class MushroomFactory {
         float x = -1;
         int numTries = 0;
         while (x < 0 || x >= c.getWidth()) {
-            x = (float) (s.getMaxX() - s.getX() * Math.random());
+            x = (float) (s.getMaxX() - s.getMinX() * Math.random()*0.5);
             x += s.getX();
             numTries++;
             if (numTries > 6) {
@@ -80,7 +80,7 @@ public class MushroomFactory {
         float y = -1;
         int numTries = 0;
         while (y < 0 || y >= c.getHeight()) {
-            y = (float) (s.getMaxY() - s.getY() * Math.random());
+            y = (float) (s.getMaxY() - s.getMinY() * Math.random()*0.5);
             y += s.getY();
             numTries++;
             if (numTries > 6) {
