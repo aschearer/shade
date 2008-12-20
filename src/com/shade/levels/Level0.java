@@ -10,7 +10,7 @@ import com.shade.lighting.LuminousEntity;
 
 public class Level0 extends Model {
 
-    private static final int SECONDS_PER_DAY = 60000;
+    private static final int SECONDS_PER_DAY = 120000;
     private int timer;
     public DayPhaseTimer dayTimer;
     private GlobalLight light;
