@@ -33,7 +33,7 @@ public class NormalShroom implements State {
             ((Linkable) obstacle).attach(shroom);
             if (shroom.prev != null) {
                 shroom.manager.enter(Mushroom.States.PICKED);
-//                Mushroom.picked.play();
+                Mushroom.picked.play();
             }
         }
     }

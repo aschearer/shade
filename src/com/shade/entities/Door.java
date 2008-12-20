@@ -4,6 +4,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.Sound;
 import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
@@ -20,6 +21,13 @@ import com.shade.util.Geom;
 
 public class Door extends Body implements LuminousEntity, Repelable {
 
+    private enum ActiveSide {
+        TOP, RIGHT, BOTTOM, LEFT
+    };
+
+    private static Sound open;
+
+    private ActiveSide softspot;
     private int zindex;
     private float luminosity;
     private int times, timer;
@@ -29,11 +37,13 @@ public class Door extends Body implements LuminousEntity, Repelable {
     private float xPivot, yPivot;
     private Image door, arrow;
 
-    private enum ActiveSide {
-        TOP, RIGHT, BOTTOM, LEFT
-    };
-
-    private ActiveSide softspot;
+    static {
+        try {
+            open = new Sound("entities/door/open.ogg");
+        } catch (SlickException e) {
+            e.printStackTrace();
+        }
+    }
 
     public Door(int x, int y, int z, int r) throws SlickException {
         softspot = ActiveSide.values()[r];
@@ -203,6 +213,7 @@ public class Door extends Body implements LuminousEntity, Repelable {
     }
 
     private void activate() {
+        open.play();
         timer = 0;
         active = true;
     }
