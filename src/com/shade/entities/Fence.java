@@ -17,15 +17,17 @@ import com.shade.crash.Repelable;
 import com.shade.lighting.LuminousEntity;
 import com.shade.util.Geom;
 
-public class VFence extends Body implements LuminousEntity, Repelable {
+public class Fence extends Body implements LuminousEntity, Repelable {
 
     private int height;
     private Image sprite;
 
-    public VFence(int x, int y, int z, int d) throws SlickException {
-        initShape(x, y, 11, 120);
+    public Fence(int x, int y, int z, int r) throws SlickException {
+        int w = (r == 0) ? 120 : 11;
+        int h = (r == 0) ? 11 : 120;
+        initShape(x, y, w, h);
         height = z;
-        initSprite(11, 120);
+        initSprite(120, h);
     }
 
     private void initShape(float x, float y, float w, float h) {

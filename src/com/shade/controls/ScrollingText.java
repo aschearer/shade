@@ -20,7 +20,7 @@ public class ScrollingText implements Animatable {
 	private float target;
 	private Status status;
 
-	public ScrollingText(String text, TrueTypeFont font, float y, float x) {
+	public ScrollingText(String text, TrueTypeFont font, float x, float y) {
 		this.text = text;
 		this.font = font;
 		this.x = x;

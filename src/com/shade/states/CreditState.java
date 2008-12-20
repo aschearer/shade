@@ -43,18 +43,6 @@ public class CreditState extends BasicGameState {
 
     }
 
-    private void initCredits(TrueTypeFont f) {
-        credits = new LinkedList<ScrollingText>();
-        Scanner s = new Scanner(ResourceLoader
-                .getResourceAsStream("states/credits/credits.txt"));
-        float y = 0;
-        float d = f.getHeight() * 1.5f;
-        while (s.hasNextLine()) {
-            credits.add(new ScrollingText(s.nextLine(), f, 600 + y * d, 40));
-            y++;
-        }
-    }
-
     @Override
     public int getID() {
         return ID;
@@ -69,6 +57,7 @@ public class CreditState extends BasicGameState {
     public void enter(GameContainer container, StateBasedGame game)
             throws SlickException {
         initButtons();
+        initCredits(master.daisySmall);
         timer = 0;
         master.dimmer.reset();
     }
@@ -152,6 +141,22 @@ public class CreditState extends BasicGameState {
             }
 
         });
+    }
+
+    private void initCredits(TrueTypeFont f) {
+        credits = new LinkedList<ScrollingText>();
+        Scanner s = new Scanner(ResourceLoader
+                .getResourceAsStream("states/credits/credits.txt"));
+        float y = 0;
+        float d = f.getHeight() * 1.5f;
+        while (s.hasNextLine()) {
+            String[] credit = s.nextLine().split(",");
+            credits.add(new ScrollingText(credit[0], f, 40, 600 + y * d));
+            if (credit.length > 1) {
+                credits.add(new ScrollingText(credit[1], f, 300, 600 + y * d));
+            }
+            y++;
+        }
     }
     
 }

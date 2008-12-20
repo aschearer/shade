@@ -49,7 +49,7 @@ public class Dome extends Body implements LuminousEntity, Repelable {
 
     /**
      * Return a round rectangle as the shadow.
-     *
+     * 
      * Note that this means there is some shadow underneath the dome. This
      * obviously will impact the odds of a mushroom being placed in said shadow.
      * But it's performant so I'm willing to accept that.
@@ -93,7 +93,7 @@ public class Dome extends Body implements LuminousEntity, Repelable {
         // not important for domes
     }
 
-    public void addToLevel(Level < ? > l) {
+    public void addToLevel(Level<?> l) {
         // not important for domes
     }
 
@@ -101,7 +101,7 @@ public class Dome extends Body implements LuminousEntity, Repelable {
         return Roles.OBSTACLE.ordinal();
     }
 
-    public void removeFromLevel(Level < ? > l) {
+    public void removeFromLevel(Level<?> l) {
         // not important for domes
     }
 

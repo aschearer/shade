@@ -1,5 +1,7 @@
 package com.shade.states;
 
+import java.util.ArrayList;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -10,8 +12,11 @@ import org.newdawn.slick.state.transition.FadeOutTransition;
 import com.centerkey.utils.BareBonesBrowserLaunch;
 import com.shade.controls.Button;
 import com.shade.controls.ClickListener;
+import com.shade.controls.FadeInText;
 import com.shade.controls.SlickButton;
 import com.shade.resource.ResourceManager;
+import com.shade.score.HighScoreReader;
+import com.shade.score.RemoteHighScoreReader;
 
 public class HighscoreState extends BasicGameState {
     
@@ -23,6 +28,9 @@ public class HighscoreState extends BasicGameState {
     private ResourceManager resource;
     private SlickButton play, morescores, back;
     private int timer;
+    private HighScoreReader reader;
+    private ArrayList<FadeInText> scores;
+    
 
     public HighscoreState(MasterState m) throws SlickException {
         master = m;
@@ -32,6 +40,9 @@ public class HighscoreState extends BasicGameState {
         resource.register("more-down", "states/highscore/more-down.png");
         resource.register("back-up", "states/common/back-up.png");
         resource.register("back-down", "states/common/back-down.png");
+        
+        scores = new ArrayList<FadeInText>();
+        reader = new RemoteHighScoreReader("http://anotherearlymorning.com/games/shade/board.php");
     }
 
     @Override
@@ -49,17 +60,36 @@ public class HighscoreState extends BasicGameState {
             throws SlickException {
         initButtons();
         timer = 0;
+        scores.clear();
+        master.dimmer.reset();
+        
+        String[] scoress = reader.getScores(10);
+        int x = 50;
+        int y = 100;
+        int n = 0;
+        for (String s : scoress) {
+            String[] score = s.split(",");
+            scores.add(new FadeInText(score[0], master.jekyllLarge, x, y + (40 * n), 1000 + 400 * n));
+            scores.add(new FadeInText(score[1], master.jekyllLarge, x + 300, y + (40 * n), 1000 + 400 * n));
+            n++;
+        }
+        
+        
     }
 
     // render the aquarium
     public void render(GameContainer container, StateBasedGame game, Graphics g)
             throws SlickException {
         master.control.render(game, g, resource.get("background"));
+        master.dimmer.render(game, g);
         resource.get("header").draw(400, 0);
         play.render(game, g);
         morescores.render(game, g);
         back.render(game, g);
         resource.get("trim").draw();
+        for (FadeInText t : scores) {
+            t.render(game, g);
+        }
     }
 
     // render the aquarium
@@ -71,6 +101,10 @@ public class HighscoreState extends BasicGameState {
             play.update(game, delta);
             morescores.update(game, delta);
             back.update(game, delta);
+        }
+        master.dimmer.update(game, delta);
+        for (FadeInText t : scores) {
+            t.update(game, delta);
         }
     }
 
@@ -87,6 +121,7 @@ public class HighscoreState extends BasicGameState {
 
             public void onClick(StateBasedGame game, Button clicked) {
                 game.enterState(InGameState.ID, new FadeOutTransition(), null);
+                master.dimmer.reset();
             }
 
         });
@@ -111,6 +146,7 @@ public class HighscoreState extends BasicGameState {
 
             public void onClick(StateBasedGame game, Button clicked) {
                 game.enterState(TitleState.ID);
+                master.dimmer.reverse();
             }
 
         });
