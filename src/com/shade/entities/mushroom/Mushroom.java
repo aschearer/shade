@@ -68,7 +68,7 @@ public class Mushroom extends Linkable {
     }
 
     private void initShape(float x, float y) {
-        shape = new Circle(x, y, RADIUS);
+        shape = new Circle(x, y, RADIUS * MAX_SCALE);
     }
 
     private void initResources() throws SlickException {
@@ -99,6 +99,10 @@ public class Mushroom extends Linkable {
 
     protected boolean tooSmall() {
         return scale < MIN_SCALE;
+    }
+
+    protected void unsize() {
+        ((Circle) shape).setRadius(RADIUS);
     }
 
     protected void grow() {

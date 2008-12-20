@@ -51,6 +51,7 @@ public class SpawningShroom implements State {
         timer += delta;
         // it was clear so spawn
         if (clear&& shroom.inShadows()) {
+            shroom.unsize();
             shroom.manager.enter(Mushroom.States.NORMAL);
             Mushroom.spawning.play();
         }
