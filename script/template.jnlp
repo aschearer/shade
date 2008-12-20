@@ -13,6 +13,9 @@
    <resources>
        <j2se version="1.5+"/>
        <jar href="shade.jar"/>
+       <jar href="crash.jar"/>
+       <jar href="slickfx.jar"/>
+       <jar href="BareBonesBrowserLaunch.jar"/>
        <extension href="http://anotherearlymorning.com/games/slick/Slick.jnlp" />
    </resources> 
    <application-desc main-class="com.shade.Shade"/>

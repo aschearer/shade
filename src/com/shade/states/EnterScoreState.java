@@ -23,8 +23,7 @@ public class EnterScoreState extends BasicGameState {
         "Never heard of ya.",
         "Bet you can't beat me!",
         "Buffer Overflow at line 6.",
-        "Cool guy, huh?",
-        "You have officially impressed your friends."
+        "Cool guy, huh?"
     };
 
     public static final int ID = 6;

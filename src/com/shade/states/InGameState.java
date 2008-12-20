@@ -10,13 +10,16 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.state.transition.FadeOutTransition;
 import org.newdawn.slick.state.transition.Transition;
 
+import com.shade.controls.Button;
+import com.shade.controls.ClickListener;
 import com.shade.controls.ControlListener;
 import com.shade.controls.CounterControl;
 import com.shade.controls.MeterControl;
 import com.shade.controls.ScoreControl;
+import com.shade.controls.SlickButton;
+import com.shade.controls.DayPhaseTimer.DayLightStatus;
 import com.shade.levels.LevelManager;
 import com.shade.resource.ResourceManager;
-import com.shade.states.util.Dimmer;
 
 public class InGameState extends BasicGameState {
 
@@ -31,17 +34,20 @@ public class InGameState extends BasicGameState {
     private boolean transitioning;
     private Transition transition;
     private StateBasedGame game;
-    private Dimmer dimmer;
-
+    private SlickButton play, back;
 
     public InGameState(MasterState m) throws SlickException {
         manager = new LevelManager(8, 6, 100);
         master = m;
         resource = m.resource;
         resource.register("counter", "states/ingame/counter.png");
+        resource.register("resume-up", "states/ingame/resume-up.png");
+        resource.register("resume-down", "states/ingame/resume-down.png");
+        resource.register("back-up", "states/common/back-up.png");
+        resource.register("back-down", "states/common/back-down.png");
         transition = new FadeOutTransition();
-        dimmer = new Dimmer(.6f);
         initControls();
+        initButtons();
     }
 
     @Override
@@ -61,6 +67,7 @@ public class InGameState extends BasicGameState {
         counter.reset();
         meter.reset();
         master.scorecard.reset();
+        master.timer.reset();
         manager.rewind();
         master.control.add(counter);
         master.control.add(meter);
@@ -77,9 +84,12 @@ public class InGameState extends BasicGameState {
         if (transitioning) {
             transition.postRender(game, container, g);
         }
+        master.dimmer.render(game, g);
         if (container.isPaused()) {
-            dimmer.render(game, g);
-            drawCentered(container, "Paused (p)", 240);
+            resource.get("header").draw(400, 0);
+            play.render(game, g);
+            back.render(game, g);
+            drawCentered(container, "Paused (p)");
         }
         resource.get("trim").draw();
     }
@@ -88,8 +98,13 @@ public class InGameState extends BasicGameState {
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
         if (container.isPaused()) {
-            dimmer.update(game, 15);
+            master.dimmer.update(game, 25);
+            play.update(game, 25);
+            back.update(game, 25);
             return;
+        }
+        if (master.dimmer.reversed()) {
+            master.dimmer.update(game, delta);
         }
         master.control.update(game, delta);
         master.scorecard.update(game, delta);
@@ -97,12 +112,12 @@ public class InGameState extends BasicGameState {
             manager.rewind();
             exit(game, TitleState.ID);
         }
-//        if (container.getInput().isKeyPressed(Input.KEY_R)) {
-//            manager.rewind();
-//            loadNextLevel(game);
-//        }
+        // if (container.getInput().isKeyPressed(Input.KEY_R)) {
+        // manager.rewind();
+        // loadNextLevel(game);
+        // }
         timer += delta;
-        if (timer > MasterState.SECONDS_PER_DAY / 2) {
+        if (master.timer.getDaylightStatus() == DayLightStatus.NIGHT) {
             transitioning = true;
         }
         if (transitioning) {
@@ -111,6 +126,8 @@ public class InGameState extends BasicGameState {
                 transitioning = false;
                 timer = 0;
                 meter.awardBonus();
+                master.timer.reset();
+                master.dimmer.fastforward();
                 loadNextLevel(game);
             }
         }
@@ -121,18 +138,20 @@ public class InGameState extends BasicGameState {
         if (key == Input.KEY_P) {
             if (game.getContainer().isPaused()) {
                 game.getContainer().resume();
+                master.dimmer.reverse();
             } else {
                 game.getContainer().pause();
-                dimmer.reset();
+                master.dimmer.reset();
             }
         }
     }
-    
-    private void drawCentered(GameContainer c, String s, int y) {
-        int x = (c.getWidth() - master.daisyMedium.getWidth(s)) / 2;
-        master.daisyMedium.drawString(x, y, s);
+
+    private void drawCentered(GameContainer c, String s) {
+        int x = (c.getWidth() - master.daisyLarge.getWidth(s)) / 2;
+        int y = (c.getHeight() - master.daisyLarge.getHeight()) / 2;
+        master.daisyLarge.drawString(x, y, s);
     }
-    
+
     private void exit(StateBasedGame game, int state) {
         master.control.flushControls();
         master.control.killPlayer();
@@ -155,14 +174,47 @@ public class InGameState extends BasicGameState {
                 // The player lost
                 exit(game, EnterScoreState.ID);
             }
-            
+
         });
-        
+
         Image c = resource.get("counter");
         counter = new CounterControl(140, 520, c, master.jekyllLarge);
 
         master.scorecard = new ScoreControl(10, 10, master.jekyllLarge);
         meter.pass(master.scorecard);
         counter.register(master.scorecard);
+    }
+
+    private void initButtons() throws SlickException {
+        initPlayButton();
+        initBackButton();
+    }
+
+    private void initPlayButton() throws SlickException {
+        play = new SlickButton(620, 110, resource.get("resume-up"), resource
+                .get("resume-down"));
+        play.addListener(new ClickListener() {
+
+            public void onClick(StateBasedGame game, Button clicked) {
+                game.getContainer().resume();
+                master.dimmer.reverse();
+            }
+
+        });
+    }
+
+    private void initBackButton() throws SlickException {
+        back = new SlickButton(620, 130, resource.get("back-up"), resource
+                .get("back-down"));
+        back.addListener(new ClickListener() {
+
+            public void onClick(StateBasedGame game, Button clicked) {
+                game.getContainer().resume();
+                master.dimmer.reverse();
+                manager.rewind();
+                exit(game, TitleState.ID);
+            }
+
+        });
     }
 }
