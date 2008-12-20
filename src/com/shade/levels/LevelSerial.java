@@ -23,6 +23,7 @@ public class LevelSerial {
         mappings.put("Player", "com.shade.entities.Player");
         mappings.put("MockPlayer", "com.shade.entities.MockPlayer");
         mappings.put("Fence", "com.shade.entities.Fence");
+        mappings.put("Door", "com.shade.entities.Door");
     }
 
     public LuminousEntity[] deserialize(String level) throws SlickException {

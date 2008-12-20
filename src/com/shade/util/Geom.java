@@ -38,4 +38,8 @@ public class Geom {
         y = (float) Math.pow(y - y1, 2);
         return (x + y);
     }
+    
+    public static float distance2(float[] p1, float x, float y) {
+        return distance2(p1[0], p1[1], x, y);
+    }
 }
