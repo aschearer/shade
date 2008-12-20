@@ -4,6 +4,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.Sound;
 import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.state.StateBasedGame;
@@ -29,6 +30,7 @@ public class Player extends Linkable {
     private StateManager manager;
     private Image normal;
     private float luminosity;
+    private Sound register;
 
     public Player(int x, int y) throws SlickException {
         initShape(x, y);
@@ -42,6 +44,7 @@ public class Player extends Linkable {
 
     private void initResources() throws SlickException {
         normal = new Image("entities/player/player.png");
+        register = new Sound("entities/player/register.ogg");
     }
 
     private void initStates() {
@@ -71,6 +74,7 @@ public class Player extends Linkable {
                 next = null;
                 Linkable l = (Linkable) obstacle;
                 l.attach(m);
+                register.play();
             }
         }
 

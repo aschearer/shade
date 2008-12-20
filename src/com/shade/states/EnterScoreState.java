@@ -150,7 +150,6 @@ public class EnterScoreState extends BasicGameState {
         play.addListener(new ClickListener() {
 
             public void onClick(StateBasedGame game, Button clicked) {
-                exit();
                 game.enterState(InGameState.ID, new FadeOutTransition(), null);
                 master.dimmer.reset();
             }
@@ -164,7 +163,6 @@ public class EnterScoreState extends BasicGameState {
         highscores.addListener(new ClickListener() {
 
             public void onClick(StateBasedGame game, Button clicked) {
-                exit();
                 game.enterState(HighscoreState.ID);
             }
 
@@ -177,15 +175,10 @@ public class EnterScoreState extends BasicGameState {
         back.addListener(new ClickListener() {
 
             public void onClick(StateBasedGame game, Button clicked) {
-                exit();
                 game.enterState(TitleState.ID);
                 master.dimmer.reverse();
             }
 
         });
-    }
-    
-    private void exit() {
-        master.scorecard.reset();
     }
 }

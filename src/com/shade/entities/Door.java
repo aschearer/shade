@@ -213,7 +213,9 @@ public class Door extends Body implements LuminousEntity, Repelable {
     }
 
     private void activate() {
-        open.play();
+        if (!active) {
+            open.play();
+        }
         timer = 0;
         active = true;
     }
