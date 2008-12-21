@@ -1,4 +1,4 @@
-1:Move about the stage using the arrow keys.
+1:Move about the stage using the arrow keys. Don't fret about moving offscreen.
 2:Run over mushrooms to collect them, they'll follow behind you.
 3:Once you've collected three mushrooms it's time to head back.
 4:There are four types of mushrooms in all. Each worth more than the last.
