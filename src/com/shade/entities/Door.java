@@ -208,6 +208,9 @@ public class Door extends Body implements LuminousEntity, Repelable {
     }
 
     public void onCollision(Entity obstacle) {
+        if (obstacle.getRole() == Roles.PLAYER.ordinal() && times > 0) {
+            activate();
+        }
         if (obstacle.getRole() == Roles.PLAYER.ordinal()) {
             if (softspot == ActiveSide.TOP
                     && getYCenter() > obstacle.getYCenter()) {
