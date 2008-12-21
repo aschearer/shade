@@ -35,7 +35,7 @@ public class RemoteHighScoreReader implements HighScoreReader {
             }
             return lines.toArray(new String[0]);
         } catch (Exception e) {
-            throw new SlickException("Failed to read high scores.");
+            return new String[] { };
         }
 
     }

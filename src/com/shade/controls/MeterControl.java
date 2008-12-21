@@ -25,7 +25,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
     private float x, y;
     private float value, totalAmountToAdd, rateOfChange;
     private static Image front, back;
-    private float[] damages = { .15f, .2f, .4f };
+    private float[] damages = { .1f, .175f, .3f };
     private int timeInSun;
     
     static {
@@ -118,10 +118,10 @@ public class MeterControl implements ControlSlice, MushroomCounter {
     private void decrement(int delta) {
         timeInSun += delta;
         float damage = damages[0];
-        if (timeInSun > 500) {
+        if (timeInSun > 1000) {
            damage = damages[1];
         }
-        if (timeInSun > 3000) {
+        if (timeInSun > 4000) {
            damage = damages[2];
         }
 

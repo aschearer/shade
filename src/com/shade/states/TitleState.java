@@ -5,7 +5,6 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-import org.newdawn.slick.state.transition.FadeOutTransition;
 
 import com.shade.controls.Button;
 import com.shade.controls.ClickListener;
@@ -90,7 +89,7 @@ public class TitleState extends BasicGameState {
         play.addListener(new ClickListener() {
 
             public void onClick(StateBasedGame game, Button clicked) {
-                game.enterState(InGameState.ID, new FadeOutTransition(), null);
+                game.enterState(InstructionState.ID);
             }
 
         });

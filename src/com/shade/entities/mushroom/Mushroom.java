@@ -18,7 +18,7 @@ import com.shade.lighting.LuminousEntity;
 
 public class Mushroom extends Linkable {
 
-    protected static final float SPEED = 1.8f;
+    protected static final float SPEED = 2.2f;
 
     private static final float THRESHOLD = .6f;
     private static final float RADIUS = 3f;
@@ -68,7 +68,7 @@ public class Mushroom extends Linkable {
     }
 
     private void initShape(float x, float y) {
-        shape = new Circle(x, y, RADIUS);
+        shape = new Circle(x, y, RADIUS * MAX_SCALE);
     }
 
     private void initResources() throws SlickException {
@@ -99,6 +99,10 @@ public class Mushroom extends Linkable {
 
     protected boolean tooSmall() {
         return scale < MIN_SCALE;
+    }
+
+    protected void unsize() {
+        ((Circle) shape).setRadius(RADIUS);
     }
 
     protected void grow() {

@@ -19,7 +19,7 @@ import com.shade.lighting.LuminousEntity;
 
 public class Player extends Linkable {
 
-    private static final float SPEED = 2f;
+    private static final float SPEED = 2.5f;
     private static final int MUSHROOM_LIMIT = 3;
     private static final int PLAYER_HEIGHT = 3;
 

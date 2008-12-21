@@ -10,7 +10,7 @@ import com.shade.lighting.LuminousEntity;
 
 public class Level2 extends Model {
 
-    private static final int SECONDS_PER_DAY = 60000;
+    private static final int SECONDS_PER_DAY = 120000;
     public DayPhaseTimer dayTimer;
     
     private int timer;
@@ -39,11 +39,6 @@ public class Level2 extends Model {
     @Override
     public MushroomFactory getMushroomFactory() {
         return new MushroomFactory(10, .002);
-    }
-
-    @Override
-    public boolean levelClear() {
-        return timer > SECONDS_PER_DAY;
     }
 
 }

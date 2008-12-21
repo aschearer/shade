@@ -74,6 +74,7 @@ public class InGameState extends BasicGameState {
         master.control.load(manager.next());
         timer = 0;
         transitioning = false;
+        master.dimmer.rewind();
     }
 
     // render the gameplay

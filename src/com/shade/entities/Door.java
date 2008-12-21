@@ -16,6 +16,7 @@ import com.crash.Body;
 import com.shade.base.Entity;
 import com.shade.base.Level;
 import com.shade.crash.Repelable;
+import com.shade.levels.Model;
 import com.shade.lighting.LuminousEntity;
 import com.shade.util.Geom;
 
@@ -183,8 +184,23 @@ public class Door extends Body implements LuminousEntity, Repelable {
     }
 
     public void addToLevel(Level<?> l) {
-        // TODO Auto-generated method stub
-
+        Model m = (Model) l;
+        if (softspot == ActiveSide.TOP) {
+//            arrow.drawCentered(x + width / 2, y - 20);
+            m.add(new Dummy(x + width / 2, y - 20, arrow));
+        }
+        if (softspot == ActiveSide.RIGHT) {
+//            arrow.drawCentered(x + width + 20, y + height / 2);
+            m.add(new Dummy(x + width + 20, y + height / 2, arrow));
+        }
+        if (softspot == ActiveSide.BOTTOM) {
+//            arrow.drawCentered(x + width / 2, y + height + 20);
+            m.add(new Dummy(x + width / 2, y + height + 20, arrow));
+        }
+        if (softspot == ActiveSide.LEFT) {
+//            arrow.drawCentered(x - 20, y + height / 2);
+            m.add(new Dummy(x - 20, y + height / 2, arrow));
+        }
     }
 
     public int getRole() {
@@ -192,6 +208,9 @@ public class Door extends Body implements LuminousEntity, Repelable {
     }
 
     public void onCollision(Entity obstacle) {
+        if (obstacle.getRole() == Roles.PLAYER.ordinal() && times > 0) {
+            activate();
+        }
         if (obstacle.getRole() == Roles.PLAYER.ordinal()) {
             if (softspot == ActiveSide.TOP
                     && getYCenter() > obstacle.getYCenter()) {
@@ -229,18 +248,6 @@ public class Door extends Body implements LuminousEntity, Repelable {
         g.rotate(xPivot, yPivot, (float) Math.toDegrees(heading));
         door.draw(x, y, width, height);
         g.resetTransform();
-        if (softspot == ActiveSide.TOP) {
-            arrow.drawCentered(x + width / 2, y - 20);
-        }
-        if (softspot == ActiveSide.RIGHT) {
-            arrow.drawCentered(x + width + 20, y + height / 2);
-        }
-        if (softspot == ActiveSide.BOTTOM) {
-            arrow.drawCentered(x + width / 2, y + height + 20);
-        }
-        if (softspot == ActiveSide.LEFT) {
-            arrow.drawCentered(x - 20, y + height / 2);
-        }
     }
 
     public void update(StateBasedGame game, int delta) {
