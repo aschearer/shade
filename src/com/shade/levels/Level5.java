@@ -40,9 +40,4 @@ public class Level5 extends Model {
         return new MushroomFactory(12, .000);
     }
 
-    @Override
-    public boolean levelClear() {
-        return timer > SECONDS_PER_DAY;
-    }
-
 }
