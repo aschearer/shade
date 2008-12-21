@@ -10,7 +10,6 @@ import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-import org.newdawn.slick.state.transition.FadeInTransition;
 import org.newdawn.slick.state.transition.FadeOutTransition;
 import org.newdawn.slick.util.ResourceLoader;
 
@@ -22,6 +21,10 @@ import com.shade.controls.SlickButton;
 import com.shade.resource.ResourceManager;
 
 public class InstructionState extends BasicGameState {
+
+    private static final int INSTRUCTION_STATE_DELAY = 1000;
+    private static final int INSTRUCTION_LENGTH = 6000;
+    private static final int INSTRUCTION_BUFFER = 7500;
 
     public static final int ID = 7;
 
@@ -104,7 +107,6 @@ public class InstructionState extends BasicGameState {
         
         if (finished) {
             game.enterState(InGameState.ID, new FadeOutTransition(), null);
-            master.dimmer.reset();
         }
         
     }
@@ -120,7 +122,7 @@ public class InstructionState extends BasicGameState {
         play.addListener(new ClickListener() {
 
             public void onClick(StateBasedGame game, Button clicked) {
-                game.enterState(InGameState.ID, new FadeOutTransition(), new FadeInTransition());
+                game.enterState(InGameState.ID, new FadeOutTransition(), null);
             }
 
         });
@@ -149,17 +151,17 @@ public class InstructionState extends BasicGameState {
         int n = 0;
         while (s.hasNextLine()) {
             String[] credit = s.nextLine().split(":");
-            InstructionImage i = new InstructionImage(75, 420, instructionSheet.getSprite(x, y));
-            i.setTimer(1000 + n * 7500);
-            i.setDuration(6000);
-            InstructionText t = new InstructionText(200, 455, credit[1], f);
-            t.setTimer(1000 + n * 7500);
-            t.setDuration(6000);
+            InstructionImage i = new InstructionImage(50, 420, instructionSheet.getSprite(x, y));
+            i.setTimer(INSTRUCTION_STATE_DELAY + n * INSTRUCTION_BUFFER);
+            i.setDuration(INSTRUCTION_LENGTH);
+            InstructionText t = new InstructionText(150, 455, credit[1], f);
+            t.setTimer(INSTRUCTION_STATE_DELAY + n * INSTRUCTION_BUFFER);
+            t.setDuration(INSTRUCTION_LENGTH);
             instructionImages.add(i);
             instructionText.add(t);
             n++;
             x++;
-            if (x > 2) {
+            if (x > 4) {
                 x = 0;
                 y++;
             }

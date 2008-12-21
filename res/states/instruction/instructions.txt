@@ -1,8 +1,10 @@
 1:Move about the stage using the arrow keys.
 2:Run over mushrooms to collect them, they'll follow behind you.
-3:There are four types of mushrooms in all. Each with different properties.
-4:Once you've got some mushrooms return to your picnic to collect them.
-5:Try to avoid running in the sunlight though, you're irish.
-6:When in the sun your meter drains, when it's empty you lose.
-7:You're mushrooms are irish too, it seems. Try to keep them in the shade as well.
-8:Collect as many mushrooms as you can before nightfall. Good luck!
+3:Once you've collected three mushrooms it's time to head back.
+4:There are four types of mushrooms in all. Each worth more than the last.
+5:Once you've got some mushrooms return to your picnic to collect them.
+6:Try to avoid running in the sunlight though, you're irish.
+7:When in the sun your meter drains, when it's empty you lose.
+8:You're mushrooms are irish too, it seems. Try to keep them in the shade as well.
+9:If all the action makes you giddy press P to pause the game.
+10:Collect as many mushrooms as you can before nightfall. Good luck!
