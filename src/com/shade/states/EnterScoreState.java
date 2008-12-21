@@ -62,7 +62,7 @@ public class EnterScoreState extends BasicGameState {
             throws SlickException {
         initButtons();
         timer = 0;
-        master.dimmer.reset();
+        master.dimmer.rewind();
         initTextField(container);
         message = PROMPT_NAME;
     }

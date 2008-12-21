@@ -66,9 +66,7 @@ public class Dimmer implements Animatable {
     }
     
     public void rewind() {
-        if (!reversed) {
-            reversed = true;
-        }
+        reversed = !reversed;
     }
 
     public boolean reversed() {
