@@ -119,9 +119,11 @@ public class EnterScoreState extends BasicGameState {
 
             public void componentActivated(AbstractComponent c) {
                 try {
+                    int numTries = 3;
                     boolean written = false;
-                    while (!written) {
+                    while (!written && numTries > 0) {
                         written = writer.write(input.getText(), master.scorecard.read());
+                        numTries--;
                     }
                     input.setAcceptingInput(false);
                     message = "Way to go " + input.getText() + "!! ... " + randomResponse();
