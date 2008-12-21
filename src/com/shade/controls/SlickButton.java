@@ -4,6 +4,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.Sound;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Animatable;
@@ -18,6 +19,8 @@ import mdes.slick.animation.fx.SizeFx;
 
 public class SlickButton implements SizeEntity, Animatable, Button {
 
+    private static Sound click, hover;
+    
     private Timeline timeline;
     private ImageAlpha up, down;
     private float width, height;
@@ -26,6 +29,15 @@ public class SlickButton implements SizeEntity, Animatable, Button {
     private float x, y;
     private boolean mouseInside, mouseDown;
     private ClickListener listener;
+    
+    static {
+        try {
+            click = new Sound("states/common/click.ogg");
+            hover = new Sound("states/common/hover.ogg");
+        } catch (SlickException e) {
+            e.printStackTrace();
+        }
+    }
 
     public SlickButton(int x, int y, Image u, Image d) throws SlickException {
         this.x = x;
@@ -110,12 +122,14 @@ public class SlickButton implements SizeEntity, Animatable, Button {
     }
 
     public void press() {
+        click.play();
         timeline.setActive(true);
         timeline.setRange(0, 1);
         timeline.restart();
     }
 
     public void onMouseEnter() {
+        hover.play();
         timeline.setActive(true);
         timeline.setRange(0, 1);
         timeline.restart();
