@@ -65,7 +65,9 @@ public class InstructionState extends BasicGameState {
         initButtons();
         initInstructions(master.jekyllSmall);
         timer = 0;
-        master.dimmer.reset();
+        if (!master.dimmer.finished()) {
+            master.dimmer.reset();
+        }
     }
 
     // render the aquarium

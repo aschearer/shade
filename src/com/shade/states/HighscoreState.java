@@ -60,7 +60,9 @@ public class HighscoreState extends BasicGameState {
         initButtons();
         timer = 0;
         scores.clear();
-        master.dimmer.reset();
+        if (!master.dimmer.finished()) {
+            master.dimmer.reset();
+        }
         
         String[] scoress = reader.getScores(10);
         int x = 50;
