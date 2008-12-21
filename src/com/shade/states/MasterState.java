@@ -75,9 +75,10 @@ public class MasterState extends BasicGameState {
         game.addState(new HighscoreState(this));
         game.addState(new CreditState(this));
         game.addState(new EnterScoreState(this));
+        game.addState(new InstructionState(this));
 
         music = new Music("states/common/snake-music-2.mod");
-        music.loop();
+//        music.loop();
     }
 
     private GlobalLight createLight() {

@@ -13,7 +13,7 @@ public class Dimmer implements Animatable {
     private Color color;
     private float targetAlpha;
     private int timer;
-    private boolean reverse;
+    private boolean reversed;
     
     public Dimmer(float target) {
         color = new Color(Color.black);
@@ -30,11 +30,11 @@ public class Dimmer implements Animatable {
 
     public void update(StateBasedGame game, int delta) {
         timer += delta;
-        if (!reverse && color.a < targetAlpha && timer > 100) {
+        if (!reversed && color.a < targetAlpha && timer > 100) {
             color.a += ALPHA_INC;
             timer = 0;
         }
-        if (reverse && color.a >= 0 && timer > 100) {
+        if (reversed && color.a >= 0 && timer > 100) {
             color.a -= ALPHA_INC;
             timer = 0;
         }
@@ -43,10 +43,10 @@ public class Dimmer implements Animatable {
     }
     
     private void clamp() {
-        if (!reverse && color.a > targetAlpha) {
+        if (!reversed && color.a > targetAlpha) {
             color.a = targetAlpha;
         }
-        if (reverse && color.a < 0) {
+        if (reversed && color.a < 0) {
             color. a = 0;
         }
     }
@@ -56,23 +56,29 @@ public class Dimmer implements Animatable {
     }
     
     public void reverse() {
-        reverse = true;
+        reversed = true;
     }
     
     public void reset() {
         timer = 0;
         color.a = 0;
-        reverse = false;
+        reversed = false;
+    }
+    
+    public void rewind() {
+        if (!reversed) {
+            reversed = true;
+        }
     }
 
     public boolean reversed() {
-        return reverse;
+        return reversed;
     }
 
     public void fastforward() {
         timer = 0;
         color.a = targetAlpha;
-        reverse = true;
+        reversed = true;
     }
 
 }

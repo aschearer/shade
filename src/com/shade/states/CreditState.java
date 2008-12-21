@@ -9,7 +9,6 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-import org.newdawn.slick.state.transition.FadeOutTransition;
 import org.newdawn.slick.util.ResourceLoader;
 
 import com.centerkey.utils.BareBonesBrowserLaunch;
@@ -111,8 +110,7 @@ public class CreditState extends BasicGameState {
         play.addListener(new ClickListener() {
 
             public void onClick(StateBasedGame game, Button clicked) {
-                game.enterState(InGameState.ID, new FadeOutTransition(), null);
-                master.dimmer.reset();
+                game.enterState(InstructionState.ID);
             }
 
         });
