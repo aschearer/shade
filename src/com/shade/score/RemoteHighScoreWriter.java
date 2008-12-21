@@ -36,7 +36,7 @@ public class RemoteHighScoreWriter implements HighScoreWriter {
             return response.equals("success");
 
         } catch (Exception e) {
-            throw new SlickException("Failed to write new score.");
+            return false;
         }
     }
 
