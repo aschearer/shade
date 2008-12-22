@@ -34,7 +34,7 @@ public class MasterState extends BasicGameState {
     public Dimmer dimmer;
     public DayPhaseTimer timer;
     
-    public TrueTypeFont jekyllSmall, jekyllLarge;
+    public TrueTypeFont jekyllXSmall, jekyllSmall, jekyllLarge;
     public TrueTypeFont daisySmall, daisyMedium, daisyLarge;
 
     public Music music;
@@ -104,6 +104,7 @@ public class MasterState extends BasicGameState {
             InputStream oi = ResourceLoader
                     .getResourceAsStream("states/common/jekyll.ttf");
             Font f = Font.createFont(Font.TRUETYPE_FONT, oi);
+            jekyllXSmall = new TrueTypeFont(f.deriveFont(12f), true);
             jekyllSmall = new TrueTypeFont(f.deriveFont(16f), true);
             jekyllLarge = new TrueTypeFont(f.deriveFont(36f), true);
         } catch (Exception e) {
