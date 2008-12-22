@@ -23,8 +23,8 @@ import com.shade.resource.ResourceManager;
 public class InstructionState extends BasicGameState {
 
     private static final int INSTRUCTION_STATE_DELAY = 1000;
-    private static final int INSTRUCTION_LENGTH = 6000;
-    private static final int INSTRUCTION_BUFFER = 7500;
+    private static final int INSTRUCTION_LENGTH = 4000;
+    private static final int INSTRUCTION_BUFFER = 5000;
 
     public static final int ID = 7;
 

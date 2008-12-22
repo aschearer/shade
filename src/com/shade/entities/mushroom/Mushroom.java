@@ -20,7 +20,7 @@ public class Mushroom extends Linkable {
 
     protected static final float SPEED = 2.2f;
 
-    private static final float THRESHOLD = .6f;
+    private static final float THRESHOLD = .65f;
     private static final float RADIUS = 3f;
     private static final float SCALE_INCREMENT = .005f;
     private static final float MAX_SCALE = 3.5f;
