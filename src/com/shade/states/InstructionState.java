@@ -92,7 +92,7 @@ public class InstructionState extends BasicGameState {
     }
 
     private void renderInstructionStep() {
-        master.jekyllXSmall.drawString(18, 490, instructions.current() + " of "
+        master.jekyllXSmall.drawString(18, 495, instructions.current() + " of "
                 + instructions.size());
     }
 

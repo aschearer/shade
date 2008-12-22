@@ -29,6 +29,8 @@ public class HighscoreState extends BasicGameState {
     private int timer;
     private HighScoreReader reader;
     private ArrayList<FadeInText> scores;
+
+    private boolean noInternet;
     
 
     public HighscoreState(MasterState m) throws SlickException {
@@ -75,7 +77,7 @@ public class HighscoreState extends BasicGameState {
             n++;
         }
         
-        
+        noInternet = (n == 0);
     }
 
     // render the aquarium
@@ -91,6 +93,15 @@ public class HighscoreState extends BasicGameState {
         for (FadeInText t : scores) {
             t.render(game, g);
         }
+        if (noInternet) {
+            drawCentered(container, "To use this exciting feature", 280);
+            drawCentered(container, "please connect to the internet.", 320);
+        }
+    }
+    
+    private void drawCentered(GameContainer c, String s, int y) {
+        int x = (c.getWidth() - master.jekyllLarge.getWidth(s)) / 2;
+        master.jekyllLarge.drawString(x, y, s);
     }
 
     // render the aquarium
