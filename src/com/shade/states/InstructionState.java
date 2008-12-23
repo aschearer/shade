@@ -6,6 +6,7 @@ import java.util.Scanner;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.TrueTypeFont;
@@ -19,6 +20,7 @@ import com.shade.controls.Button;
 import com.shade.controls.ClickListener;
 import com.shade.controls.InstructionImage;
 import com.shade.controls.InstructionText;
+import com.shade.controls.KeyListener;
 import com.shade.controls.SlickButton;
 import com.shade.controls.TwoToneButton;
 import com.shade.resource.ResourceManager;
@@ -90,7 +92,6 @@ public class InstructionState extends BasicGameState {
         renderInstructionStep();
         resource.get("trim").draw();
     }
-    
 
     // render the aquarium
     public void update(GameContainer container, StateBasedGame game, int delta)
@@ -117,7 +118,7 @@ public class InstructionState extends BasicGameState {
         master.jekyllXSmall.drawString(18, 495, instructions.current() + " of "
                 + instructions.size());
     }
-    
+
     private void initButtons() throws SlickException {
         initPlayButton();
         initBackButton();
@@ -138,6 +139,14 @@ public class InstructionState extends BasicGameState {
             }
 
         });
+        
+        next.register(Input.KEY_RIGHT, new KeyListener() {
+
+            public void onPress(StateBasedGame game, int key) {
+                instructions.next();
+            }
+            
+        });
 
         prev.addListener(new ClickListener() {
 
@@ -145,6 +154,14 @@ public class InstructionState extends BasicGameState {
                 instructions.prev();
             }
 
+        });
+        
+        prev.register(Input.KEY_LEFT, new KeyListener() {
+
+            public void onPress(StateBasedGame game, int key) {
+                instructions.prev();
+            }
+            
         });
     }
 
