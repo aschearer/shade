@@ -25,6 +25,7 @@ public class RemoteHighScoreReader implements HighScoreReader {
 
             URL url = new URL(target);
             URLConnection c = url.openConnection();
+            c.setConnectTimeout(1000);
             BufferedReader i = new BufferedReader(new InputStreamReader(c
                     .getInputStream()));
             // read lines into an array and return

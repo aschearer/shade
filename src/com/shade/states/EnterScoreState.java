@@ -34,6 +34,7 @@ public class EnterScoreState extends BasicGameState {
     private TextField input;
     private String message;
     private HighScoreWriter writer;
+    private boolean completed;
 
     public EnterScoreState(MasterState m) throws SlickException {
         master = m;
@@ -71,7 +72,9 @@ public class EnterScoreState extends BasicGameState {
         master.control.render(game, g, resource.get("background"));
         master.dimmer.render(game, g);
         resource.get("wreath").drawCentered(400, 260);
-        input.render(container, g);
+        if (!completed) {
+            input.render(container, g);
+        }
         drawScore(container, master.scorecard.read() + "", 208);
         drawCentered(container, message, 440);
         resource.get("header").draw(400, 0);
@@ -125,6 +128,7 @@ public class EnterScoreState extends BasicGameState {
                         numTries--;
                     }
                     input.setAcceptingInput(false);
+                    completed = true;
                     // TODO really tell the user this or just silently fail?
                     // if (!written) {
                     // message = "You're not online so we couldn't record this

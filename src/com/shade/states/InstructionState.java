@@ -90,11 +90,7 @@ public class InstructionState extends BasicGameState {
         renderInstructionStep();
         resource.get("trim").draw();
     }
-
-    private void renderInstructionStep() {
-        master.jekyllXSmall.drawString(18, 495, instructions.current() + " of "
-                + instructions.size());
-    }
+    
 
     // render the aquarium
     public void update(GameContainer container, StateBasedGame game, int delta)
@@ -117,6 +113,11 @@ public class InstructionState extends BasicGameState {
 
     }
 
+    private void renderInstructionStep() {
+        master.jekyllXSmall.drawString(18, 495, instructions.current() + " of "
+                + instructions.size());
+    }
+    
     private void initButtons() throws SlickException {
         initPlayButton();
         initBackButton();
@@ -198,6 +199,7 @@ public class InstructionState extends BasicGameState {
 
     private class InstructionSet implements Animatable {
 
+        private boolean finished;
         private int current;
         private ArrayList<InstructionImage> images;
         private ArrayList<InstructionText> text;
@@ -227,10 +229,12 @@ public class InstructionState extends BasicGameState {
         public void next() {
             images.get(current).deactivate();
             text.get(current).deactivate();
-            current++;
-            if (!finished()) {
+            if (current < text.size() - 1) {
+                current++;
                 images.get(current).activate();
                 text.get(current).activate();
+            } else {
+                finished = true;
             }
         }
 
@@ -238,11 +242,8 @@ public class InstructionState extends BasicGameState {
             images.get(current).deactivate();
             text.get(current).deactivate();
             current--;
-            if (!started()) {
-                images.get(current).activate();
-                text.get(current).activate();
-            }
-
+            images.get(current).activate();
+            text.get(current).activate();
         }
 
         public void render(StateBasedGame game, Graphics g) {
@@ -270,7 +271,7 @@ public class InstructionState extends BasicGameState {
         }
 
         public boolean finished() {
-            return current >= text.size();
+            return finished;
         }
     }
 

@@ -51,12 +51,12 @@ public class TwoToneButton implements SizeEntity, Animatable, Button {
         height = u.getHeight();
 
         final Easing fadeIn = Easing.CUBIC_OUT;
-        final int durationIn = 500;
+        final int durationIn = 250;
         AlphaFx upFadeIn = new AlphaFx(durationIn, up, 0f, 1f, fadeIn);
         AlphaFx downFadeIn = new AlphaFx(durationIn, down, 0f, 1f, fadeIn);
 
         final Easing fadeOut = Easing.LINEAR;
-        final int durationOut = 500;
+        final int durationOut = 250;
         AlphaFx upFadeOut = new AlphaFx(durationOut, up, 1f, 0f, fadeOut);
         AlphaFx downFadeOut = new AlphaFx(durationOut, down, 1f, 0f, fadeOut);
 
