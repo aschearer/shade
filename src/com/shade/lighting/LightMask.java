@@ -103,8 +103,9 @@ public class LightMask {
         Arrays.sort(entities);
         int i = 0;
         GL11.glEnable(GL11.GL_ALPHA_TEST);
+        GL11.glEnable(GL11.GL_STENCIL_TEST);
         GL11.glAlphaFunc(GL11.GL_GREATER, 0);
-        GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ZERO);
+        GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         while (i < entities.length && entities[i].getZIndex() < threshold) {
             entities[i].render(game, g);
             entities[i].setLuminosity(getLuminosityFor(entities[i], g));

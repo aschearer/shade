@@ -51,6 +51,7 @@ public class DayPhaseTimer {
     }
     
     public void reset(){
+
         runningTime = 0;
     	startTime = 0;
     }
