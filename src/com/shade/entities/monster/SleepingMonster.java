@@ -23,6 +23,7 @@ public class SleepingMonster implements State {
 
     private Monster monster;
     private Animation idling;
+    private Animation snores;
     private int timer;
 
     public SleepingMonster(Monster mole) throws SlickException {
@@ -31,14 +32,17 @@ public class SleepingMonster implements State {
     }
 
     private void initResources() throws SlickException {
-        SpriteSheet idles = new SpriteSheet("entities/mole/sniff.png", 40, 40);
-        idling = new Animation(idles, 300);
+        SpriteSheet idles = new SpriteSheet("entities/mole/sleep.png", 40, 40);
+        SpriteSheet z = new SpriteSheet("entities/mole/z.png",40,40);
+        snores = new Animation(z,900);
+        idling = new Animation(idles, 600);
         idling.setAutoUpdate(false);
         idling.setPingPong(true);
     }
 
     public void enter() {
         timer = 0;
+        snores.restart();
         idling.restart();
     }
 
@@ -47,7 +51,7 @@ public class SleepingMonster implements State {
     }
 
     public boolean isNamed(Object o) {
-        return o == Monster.States.PROWLING;
+        return o == Monster.States.SLEEPING;
     }
 
     public void onCollision(Entity obstacle) {
@@ -57,19 +61,19 @@ public class SleepingMonster implements State {
     }
 
     public void render(StateBasedGame game, Graphics g) {
+    	snores.draw(monster.getX()+monster.getWidth()/2, monster.getY()+monster.getHeight()/2, monster.getWidth(), monster.getHeight());
         idling.draw(monster.getX(), monster.getY(), monster.getWidth(), monster.getHeight());
     }
 
     public void update(StateBasedGame game, int delta) {
         idling.update(delta);
+        snores.update(delta);
+        monster.wake();
         testTimer(delta);
     }
 
     private void testTimer(int delta) {
-        timer += delta;
-        if (timer > 5000) {
-            monster.manager.enter(Monster.States.PROWLING);
-        }
+    	timer+=delta;
     }
 
 }

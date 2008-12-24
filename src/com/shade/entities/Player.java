@@ -76,6 +76,9 @@ public class Player extends Linkable {
                 l.attach(m);
                 register.play();
             }
+            if(obstacle.getRole() == Roles.MONSTER.ordinal()){
+            	manager.enter(Player.PlayerState.STUNNED);
+            }
         }
 
         public void render(StateBasedGame game, Graphics g) {
@@ -119,6 +122,7 @@ public class Player extends Linkable {
     private class StunnedState implements State {
 
         private int timer;
+        private int failmer;
 
         public boolean isNamed(Object state) {
             return state == PlayerState.STUNNED;
@@ -126,6 +130,7 @@ public class Player extends Linkable {
 
         public void enter() {
             timer = 0;
+            failmer = 0;
         }
 
         public int getRole() {
@@ -138,13 +143,14 @@ public class Player extends Linkable {
         }
 
         public void render(StateBasedGame game, Graphics g) {
-            if (timer % 2 == 0) {
+            if (failmer % 5 > 2) {
                 normal.drawCentered(getXCenter(), getYCenter());
             }
         }
 
         public void update(StateBasedGame game, int delta) {
             timer += delta;
+            failmer++;
             if (timer > 1000) {
                 manager.enter(PlayerState.NORMAL);
             }

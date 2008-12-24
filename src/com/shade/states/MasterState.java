@@ -26,7 +26,7 @@ public class MasterState extends BasicGameState {
     public static final int ID = 1;
 
     public static final int STATE_TRANSITION_DELAY = 600;
-    public static final int SECONDS_PER_DAY = 160000;
+    public static final int SECONDS_PER_DAY = 60000;
 
     public ResourceManager resource;
     public GameSlice control;

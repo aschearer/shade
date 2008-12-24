@@ -4,6 +4,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.controls.DayPhaseTimer;
+import com.shade.entities.monster.Monster;
 import com.shade.entities.mushroom.MushroomFactory;
 import com.shade.lighting.GlobalLight;
 import com.shade.lighting.LuminousEntity;
@@ -24,6 +25,7 @@ public class Level0 extends Model {
         for (LuminousEntity e : l.deserialize("levels/level-0.xml")) {
             add(e);
         }
+        add(new Monster(300,300,50,2));
     }
 
     @Override

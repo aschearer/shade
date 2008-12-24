@@ -49,6 +49,7 @@ public class GameSlice {
 
     public void load(Model m) {
         model = m;
+        model.setTimer(timer);
         factory = m.getMushroomFactory();
         initPlayer();
         initBasket();

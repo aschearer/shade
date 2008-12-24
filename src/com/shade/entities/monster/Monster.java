@@ -10,11 +10,14 @@ import com.crash.Body;
 import com.shade.base.Entity;
 import com.shade.base.Level;
 import com.shade.base.util.StateManager;
+import com.shade.controls.DayPhaseTimer;
 import com.shade.crash.CrashLevel;
 import com.shade.crash.Repelable;
+import com.shade.entities.Basket;
 import com.shade.entities.Player;
 import com.shade.entities.Roles;
 import com.shade.entities.mushroom.Mushroom;
+import com.shade.levels.Model;
 import com.shade.lighting.LuminousEntity;
 
 /**
@@ -102,7 +105,7 @@ public final class Monster extends Body implements LuminousEntity{
     
     public boolean playerInSight(){
     	Player p = (Player)level.getEntitiesByRole(Roles.PLAYER.ordinal())[0];
-    	return level.lineOfSight(this,p, this) && p.getLuminosity()>0.6;
+    	return level.lineOfSight(this,p, this,(Basket)level.getEntitiesByRole(Roles.BASKET.ordinal())[0]) && p.getLuminosity()>0.6;
     }
     
     public boolean playerInRange(){
@@ -117,10 +120,25 @@ public final class Monster extends Body implements LuminousEntity{
         manager.render(game, g);
         g.resetTransform();
     }
+    
+    public void yawn(){
+    	Model mode = (Model)level;
+    	if(mode.getTimer().getDaylightStatus()==DayPhaseTimer.DayLightStatus.NIGHT){
+        	manager.enter(States.SLEEPING);
+        }
+    }
+    
+    public void wake(){
+    	Model mode = (Model)level;
+    	if(mode.getTimer().getDaylightStatus()==DayPhaseTimer.DayLightStatus.DAWN){
+        	manager.enter(States.PROWLING);
+        }
+    }
 
     public void update(StateBasedGame game, int delta) {
         manager.update(game, delta);
         testAndWrap();
+        
     }
     
 

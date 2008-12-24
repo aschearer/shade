@@ -8,7 +8,10 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Entity;
 import com.shade.base.util.State;
+import com.shade.controls.DayPhaseTimer;
 import com.shade.entities.Roles;
+import com.shade.entities.monster.Monster.States;
+import com.shade.levels.Model;
 
 /**
  * A mole who has not yet found any mushrooms but is searching for them.
@@ -64,6 +67,7 @@ public class ProwlingMonster implements State {
     public void update(StateBasedGame game, int delta) {
         idling.update(delta);
         hunt();
+        monster.yawn();
         testTimer(delta);
     }
     private void hunt(){
