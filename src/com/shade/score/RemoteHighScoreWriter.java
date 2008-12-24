@@ -23,6 +23,7 @@ public class RemoteHighScoreWriter implements HighScoreWriter {
             content += "&score=" + score;
             URL url = new URL(base);
             URLConnection c = url.openConnection();
+            c.setConnectTimeout(2000);
             c.setDoOutput(true);
             OutputStreamWriter o = new OutputStreamWriter(c.getOutputStream());
             // write the content

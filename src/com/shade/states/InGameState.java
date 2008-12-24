@@ -139,9 +139,11 @@ public class InGameState extends BasicGameState {
         if (key == Input.KEY_P) {
             if (game.getContainer().isPaused()) {
                 game.getContainer().resume();
+                master.music.resume();
                 master.dimmer.reverse();
             } else {
                 game.getContainer().pause();
+                master.music.pause();
                 master.dimmer.reset();
             }
         }
@@ -211,6 +213,7 @@ public class InGameState extends BasicGameState {
 
             public void onClick(StateBasedGame game, Button clicked) {
                 game.getContainer().resume();
+                master.music.resume();
                 master.dimmer.reverse();
                 manager.rewind();
                 exit(game, TitleState.ID);

@@ -118,6 +118,7 @@ public class LightMask {
             entities[i].setLuminosity(getLuminosityFor(entities[i], g));
             i++;
         }
+        GL11.glDisable(GL11.GL_STENCIL_TEST);
         GL11.glDisable(GL11.GL_ALPHA_TEST);
     }
 

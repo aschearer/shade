@@ -11,12 +11,12 @@ import com.shade.base.Animatable;
 public class InstructionImage implements Animatable {
 
     private enum State {
-        HIDDEN, ACTIVE, FINISHED
+        OFF, FADEIN, FADEOUT
     };
 
     private float x, y;
     private int hideTimer, showTimer, alphaTimer;
-    private int hideTime, showTime;
+    private int hideTime;
     private State state;
     private Image sprite;
     private Color filter;
@@ -25,7 +25,7 @@ public class InstructionImage implements Animatable {
         this.x = x;
         this.y = y;
         this.sprite = sprite;
-        state = State.HIDDEN;
+        state = State.OFF;
         filter = new Color(Color.white);
         filter.a = 0;
     }
@@ -35,9 +35,13 @@ public class InstructionImage implements Animatable {
         hideTime = time;
     }
 
-    /* How long to remain visible for. */
-    public void setDuration(int time) {
-        showTime = time;
+    public void activate() {
+        filter.a = 0;
+        state = State.FADEIN;
+    }
+
+    public void deactivate() {
+        state = State.FADEOUT;
     }
 
     public void render(StateBasedGame game, Graphics g) {
@@ -45,24 +49,19 @@ public class InstructionImage implements Animatable {
     }
 
     public void update(StateBasedGame game, int delta) {
-        if (state == State.HIDDEN) {
+        if (state == State.FADEIN) {
             hideTimer += delta;
-            if (hideTimer > hideTime) {
-                state = State.ACTIVE;
+            if (hideTime < hideTime) {
+                return;
             }
-        }
-        if (state == State.ACTIVE) {
             showTimer += delta;
             alphaTimer += delta;
             if (alphaTimer > 100 && filter.a < 1) {
                 alphaTimer = 0;
                 filter.a += .05f;
             }
-            if (showTimer > showTime) {
-                state = State.FINISHED;
-            }
         }
-        if (state == State.FINISHED && filter.a > 0) {
+        if (state == State.FADEOUT && filter.a > 0) {
             alphaTimer += delta;
             if (alphaTimer > 100) {
                 alphaTimer = 0;

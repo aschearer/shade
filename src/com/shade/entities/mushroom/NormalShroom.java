@@ -36,6 +36,11 @@ public class NormalShroom implements State {
                 Mushroom.picked.play();
             }
         }
+        if (obstacle.getRole() == Roles.BASKET.ordinal()) {
+            ((Linkable) obstacle).attach(shroom);
+            shroom.manager.enter(Mushroom.States.COLLECTED);
+            Mushroom.picked.play();
+        }
     }
 
     private boolean isPicker(Entity obstacle) {

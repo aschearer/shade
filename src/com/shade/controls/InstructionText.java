@@ -11,14 +11,14 @@ import com.shade.base.Animatable;
 public class InstructionText implements Animatable {
 
     private enum State {
-        HIDDEN, ACTIVE, FINISHED
+        OFF, FADEIN, FADEOUT
     };
 
     private float x, y;
     private String message;
     private TrueTypeFont font;
     private int hideTimer, showTimer, alphaTimer;
-    private int hideTime, showTime;
+    private int hideTime;
     private State state;
     private Color color;
 
@@ -27,7 +27,7 @@ public class InstructionText implements Animatable {
         this.y = y;
         this.message = message;
         this.font = font;
-        state = State.HIDDEN;
+        state = State.OFF;
         color = new Color(Color.white);
         color.a = 0;
     }
@@ -36,10 +36,13 @@ public class InstructionText implements Animatable {
     public void setTimer(int time) {
         hideTime = time;
     }
-
-    /* How long to remain visible for. */
-    public void setDuration(int time) {
-        showTime = time;
+    
+    public void activate() {
+        state = State.FADEIN;
+    }
+    
+    public void deactivate() {
+        state = State.FADEOUT;
     }
 
     public void render(StateBasedGame game, Graphics g) {
@@ -47,34 +50,25 @@ public class InstructionText implements Animatable {
     }
 
     public void update(StateBasedGame game, int delta) {
-        if (state == State.HIDDEN) {
+        if (state == State.FADEIN) {
             hideTimer += delta;
-            if (hideTimer > hideTime) {
-                state = State.ACTIVE;
+            if (hideTime < hideTime) {
+                return;
             }
-        }
-        if (state == State.ACTIVE) {
             showTimer += delta;
             alphaTimer += delta;
             if (alphaTimer > 100 && color.a < 1) {
                 alphaTimer = 0;
                 color.a += .05f;
             }
-            if (showTimer > showTime) {
-                state = State.FINISHED;
-            }
         }
-        if (state == State.FINISHED && color.a > 0) {
+        if (state == State.FADEOUT && color.a > 0) {
             alphaTimer += delta;
             if (alphaTimer > 100) {
                 alphaTimer = 0;
                 color.a -= .1f;
             }
         }
-    }
-    
-    public boolean finished() {
-        return state == State.FINISHED;
     }
 
 }

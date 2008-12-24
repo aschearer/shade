@@ -20,13 +20,10 @@ import com.shade.score.RemoteHighScoreWriter;
 public class EnterScoreState extends BasicGameState {
 
     private static final String PROMPT_NAME = "Way to go! Er... what's your name?";
-    private static final String[] RESPONSES = {
-        "(Is that really a name?)",
-        "Never heard of ya.",
-        "Bet you can't beat me!",
-        "Buffer Overflow at line 6.",
-        "Cool guy, huh?"
-    };
+    private static final String[] RESPONSES = { "(Is that really a name?)",
+            "Never heard of ya.", "Bet you can't beat me!",
+            "Buffer Overflow at line 6.", "Cool guy, huh?",
+            "You beat little Johnny!", "Go tell your friends!" };
 
     public static final int ID = 6;
 
@@ -37,6 +34,7 @@ public class EnterScoreState extends BasicGameState {
     private TextField input;
     private String message;
     private HighScoreWriter writer;
+    private boolean completed;
 
     public EnterScoreState(MasterState m) throws SlickException {
         master = m;
@@ -44,7 +42,8 @@ public class EnterScoreState extends BasicGameState {
         resource.register("playagain-up", "states/enter/playagain-up.png");
         resource.register("playagain-down", "states/enter/playagain-down.png");
         resource.register("wreath", "states/enter/wreath.png");
-        writer = new RemoteHighScoreWriter("http://www.anotherearlymorning.com/games/shade/post.php");
+        writer = new RemoteHighScoreWriter(
+                "http://www.anotherearlymorning.com/games/shade/post.php");
     }
 
     @Override
@@ -73,7 +72,9 @@ public class EnterScoreState extends BasicGameState {
         master.control.render(game, g, resource.get("background"));
         master.dimmer.render(game, g);
         resource.get("wreath").drawCentered(400, 260);
-        input.render(container, g);
+        if (!completed) {
+            input.render(container, g);
+        }
         drawScore(container, master.scorecard.read() + "", 208);
         drawCentered(container, message, 440);
         resource.get("header").draw(400, 0);
@@ -95,12 +96,12 @@ public class EnterScoreState extends BasicGameState {
             back.update(game, delta);
         }
     }
-    
+
     private void drawCentered(GameContainer c, String s, int y) {
         int x = (c.getWidth() - master.daisyMedium.getWidth(s)) / 2;
         master.daisyMedium.drawString(x, y, s);
     }
-    
+
     private void drawScore(GameContainer c, String s, int y) {
         int x = (c.getWidth() - master.daisyLarge.getWidth(s)) / 2;
         master.daisyLarge.drawString(x, y, s);
@@ -114,7 +115,7 @@ public class EnterScoreState extends BasicGameState {
         input = new TextField(container, master.jekyllLarge, x, y, w, h);
         input.setMaxLength(12);
         input.setFocus(true);
-        
+
         input.addListener(new ComponentListener() {
 
             public void componentActivated(AbstractComponent c) {
@@ -122,19 +123,28 @@ public class EnterScoreState extends BasicGameState {
                     int numTries = 3;
                     boolean written = false;
                     while (!written && numTries > 0) {
-                        written = writer.write(input.getText(), master.scorecard.read());
+                        written = writer.write(input.getText(),
+                                master.scorecard.read());
                         numTries--;
                     }
                     input.setAcceptingInput(false);
-                    message = "Way to go " + input.getText() + "!! ... " + randomResponse();
+                    completed = true;
+                    // TODO really tell the user this or just silently fail?
+                    // if (!written) {
+                    // message = "You're not online so we couldn't record this
+                    // Ÿber score.";
+                    // } else {
+                    message = "Way to go " + input.getText() + "!! ... "
+                            + randomResponse();
+                    // }
                 } catch (SlickException e) {
                     e.printStackTrace();
                 }
             }
-            
+
         });
     }
-    
+
     private String randomResponse() {
         int r = (int) (Math.floor(Math.random() * RESPONSES.length));
         return RESPONSES[r];
