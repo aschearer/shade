@@ -4,5 +4,5 @@ import org.newdawn.slick.SlickException;
 
 public interface HighScoreWriter {
 
-    public boolean write(String name, int score) throws SlickException;
+    public boolean write(String name, int score, boolean clear) throws SlickException;
 }

@@ -25,6 +25,8 @@ public class InGameState extends BasicGameState {
 
     public static final int ID = 3;
 
+    private static final float GAME_CLEAR_BONUS = 1000;
+
     private LevelManager manager;
     private MasterState master;
     private ResourceManager resource;
@@ -165,6 +167,8 @@ public class InGameState extends BasicGameState {
         if (manager.hasNext()) {
             master.control.load(manager.next());
         } else {
+            master.scorecard.add(GAME_CLEAR_BONUS);
+            master.scorecard.setBeaten();
             exit(game, EnterScoreState.ID);
         }
     }

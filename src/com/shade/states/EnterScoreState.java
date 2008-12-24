@@ -124,7 +124,8 @@ public class EnterScoreState extends BasicGameState {
                     boolean written = false;
                     while (!written && numTries > 0) {
                         written = writer.write(input.getText(),
-                                master.scorecard.read());
+                                master.scorecard.read(), master.scorecard
+                                        .isCleared());
                         numTries--;
                     }
                     input.setAcceptingInput(false);

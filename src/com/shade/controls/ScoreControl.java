@@ -11,6 +11,7 @@ public class ScoreControl implements Animatable {
     private float currentScore, finalScore;
     private float x, y;
     private TrueTypeFont font;
+    private boolean cleared;
     
     public ScoreControl(float x, float y, TrueTypeFont f) {
         this.x = x;
@@ -19,6 +20,7 @@ public class ScoreControl implements Animatable {
     }
 
     public void reset() {
+        cleared = false;
         currentScore = 0;
         finalScore = 0;
     }
@@ -43,5 +45,13 @@ public class ScoreControl implements Animatable {
     
     private int readCurrentScore() {
         return (int) Math.floor(finalScore);
+    }
+    
+    public void setBeaten() {
+        cleared = true;
+    }
+
+    public boolean isCleared() {
+        return cleared;
     }
 }

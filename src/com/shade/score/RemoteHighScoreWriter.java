@@ -17,10 +17,12 @@ public class RemoteHighScoreWriter implements HighScoreWriter {
         base = path;
     }
 
-    public boolean write(String name, int score) throws SlickException {
+    public boolean write(String name, int score, boolean clear) throws SlickException {
         try {
             String content = "name=" + URLEncoder.encode(name, "UTF-8");
             content += "&score=" + score;
+            content += "&clear=";
+            content += (clear) ? 1 : 0;
             URL url = new URL(base);
             URLConnection c = url.openConnection();
             c.setConnectTimeout(2000);

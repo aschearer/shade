@@ -10,5 +10,5 @@ public interface HighScoreReader {
      * @param limit Return this many, set to zero to return all.
      * @return
      */
-    public String[] getScores(int limit) throws SlickException;
+    public String[][] getScores(int limit) throws SlickException;
 }
