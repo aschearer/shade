@@ -26,7 +26,7 @@ public class Level1 extends Model {
         for (LuminousEntity e : l.deserialize("levels/level-1.xml")) {
             add(e);
         }
-        add(new Monster(400, 100, 100, 2));
+        add(new Monster(400, 100, 200, 2));
     }
 
     @Override

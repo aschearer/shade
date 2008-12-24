@@ -47,7 +47,7 @@ public class LostMonster implements State {
     }
 
     public boolean isNamed(Object o) {
-        return o == Monster.States.PROWLING;
+        return o == Monster.States.LOST;
     }
 
     public void onCollision(Entity obstacle) {
@@ -67,7 +67,7 @@ public class LostMonster implements State {
 
     private void testTimer(int delta) {
         timer += delta;
-        if (timer > 5000) {
+        if (timer > 1000) {
             monster.manager.enter(Monster.States.PROWLING);
         }
     }

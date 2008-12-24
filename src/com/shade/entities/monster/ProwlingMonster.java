@@ -8,7 +8,6 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Entity;
 import com.shade.base.util.State;
-import com.shade.entities.Player;
 import com.shade.entities.Roles;
 
 /**
@@ -69,10 +68,7 @@ public class ProwlingMonster implements State {
     }
     private void hunt(){
     	monster.move(0.3);
-    	Player p = (Player)monster.level.getEntitiesByRole(Roles.PLAYER.ordinal())[0];
-    	float distx = p.getXCenter()-monster.getXCenter();
-    	float disty = p.getYCenter()-monster.getYCenter();
-    	if(Math.sqrt(distx*distx+disty*disty)<monster.range){
+    	if(monster.canChase()){
     		monster.manager.enter(Monster.States.CHASING);
     	}
     }

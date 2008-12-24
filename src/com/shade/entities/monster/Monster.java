@@ -12,6 +12,7 @@ import com.shade.base.Level;
 import com.shade.base.util.StateManager;
 import com.shade.crash.CrashLevel;
 import com.shade.crash.Repelable;
+import com.shade.entities.Player;
 import com.shade.entities.Roles;
 import com.shade.entities.mushroom.Mushroom;
 import com.shade.lighting.LuminousEntity;
@@ -93,6 +94,22 @@ public final class Monster extends Body implements LuminousEntity{
             Repelable b = (Repelable) obstacle;
             b.repel(this);
         }
+    }
+    
+    public boolean canChase(){
+    	return playerInSight() && playerInRange();
+    }
+    
+    public boolean playerInSight(){
+    	Player p = (Player)level.getEntitiesByRole(Roles.PLAYER.ordinal())[0];
+    	return level.lineOfSight(this,p, this) && p.getLuminosity()>0.6;
+    }
+    
+    public boolean playerInRange(){
+    	Player p = (Player)level.getEntitiesByRole(Roles.PLAYER.ordinal())[0];
+    	float distx = p.getXCenter()-getXCenter();
+    	float disty = p.getYCenter()-getYCenter();
+    	return Math.sqrt(distx*distx+disty*disty)<range;
     }
 
     public void render(StateBasedGame game, Graphics g) {
