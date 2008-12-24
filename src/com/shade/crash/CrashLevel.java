@@ -113,5 +113,6 @@ public class CrashLevel implements Level<LuminousEntity> {
 
         return neighbors.toArray(new LuminousEntity[0]);
     }
+    
 
 }
