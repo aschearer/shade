@@ -19,7 +19,8 @@ import com.shade.score.RemoteHighScoreWriter;
 
 public class EnterScoreState extends BasicGameState {
 
-    private static final String PROMPT_NAME = "Way to go! Er... what's your name?";
+    private static final String PROMPT_WINNER = "Way to go! Er... what's your name?";
+    private static final String PROMPT_LOSER = "Nice try! Er... what's your name?";
     private static final String[] RESPONSES = { "(Is that really a name?)",
             "Never heard of ya.", "Bet you can't beat me!",
             "Buffer Overflow at line 6.", "Cool guy, huh?",
@@ -62,8 +63,9 @@ public class EnterScoreState extends BasicGameState {
         initButtons();
         timer = 0;
         master.dimmer.rewind();
+        completed = false;
         initTextField(container);
-        message = PROMPT_NAME;
+        message = (master.scorecard.isCleared()) ? PROMPT_WINNER : PROMPT_LOSER;
     }
 
     // render the aquarium
