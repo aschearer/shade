@@ -5,7 +5,6 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.Sound;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.state.transition.FadeOutTransition;
@@ -38,10 +37,6 @@ public class InGameState extends BasicGameState {
     private Transition transition;
     private StateBasedGame game;
     private SlickButton play, back;
-    private Sound rooster;
-
-    private boolean roosted;
-
     private BirdCalls birds;
 
     public InGameState(MasterState m) throws SlickException {
@@ -53,7 +48,6 @@ public class InGameState extends BasicGameState {
         resource.register("resume-down", "states/ingame/resume-down.png");
         resource.register("back-up", "states/common/back-up.png");
         resource.register("back-down", "states/common/back-down.png");
-        rooster = new Sound("states/common/birds/rooster.ogg");
         birds = new BirdCalls();
         transition = new FadeOutTransition();
         initControls();
@@ -126,15 +120,8 @@ public class InGameState extends BasicGameState {
         // manager.rewind();
         // loadNextLevel(game);
         // }
-        if (!birds.playing() && !isNight() && Math.random() > .9982) {
-            birds.play();
-        }
         if (isNight()) {
             transitioning = true;
-            if (!roosted) {
-                roosted = true;
-                rooster.play();
-            }
         }
         if (!transitioning && master.music.getVolume() == 1) {
             master.music.fade(MasterState.SECONDS_OF_DAYLIGHT, .1f, false);
@@ -146,10 +133,8 @@ public class InGameState extends BasicGameState {
                 meter.awardBonus();
                 master.timer.reset();
                 master.dimmer.fastforward();
-                master.music.fade(MasterState.SECONDS_OF_DAYLIGHT / 8, 1f,
-                        false);
+                master.music.fade(1000, 1f, false);
                 loadNextLevel(game);
-                roosted = false;
             }
         }
     }
@@ -187,6 +172,7 @@ public class InGameState extends BasicGameState {
 
     private void loadNextLevel(StateBasedGame game) {
         if (manager.hasNext()) {
+            birds.play();
             master.control.load(manager.next());
         } else {
             master.scorecard.add(GAME_CLEAR_BONUS);

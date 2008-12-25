@@ -9,12 +9,11 @@ public class BirdCalls {
     private Sound[] birds;
     
     public BirdCalls() throws SlickException {
-        birds = new Sound[5];
+        birds = new Sound[4];
         birds[0] = new Sound("states/common/birds/bird1.ogg");
         birds[1] = new Sound("states/common/birds/bird2.ogg");
         birds[2] = new Sound("states/common/birds/bird3.ogg");
         birds[3] = new Sound("states/common/birds/bird4.ogg");
-        birds[4] = new Sound("states/common/birds/bird5.ogg");
     }
 
     public void play() {
