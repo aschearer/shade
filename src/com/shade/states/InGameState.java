@@ -139,10 +139,6 @@ public class InGameState extends BasicGameState {
         }
     }
 
-    private boolean isNight() {
-        return master.timer.getDaylightStatus() == DayLightStatus.NIGHT;
-    }
-
     @Override
     public void keyPressed(int key, char c) {
         if (key == Input.KEY_P) {
@@ -180,6 +176,10 @@ public class InGameState extends BasicGameState {
             exit(game, EnterScoreState.ID);
         }
     }
+    
+    private boolean isNight() {
+        return master.timer.getDaylightStatus() == DayLightStatus.NIGHT;
+    }
 
     private void initControls() throws SlickException {
         meter = new MeterControl(20, 480);
@@ -212,6 +212,7 @@ public class InGameState extends BasicGameState {
 
             public void onClick(StateBasedGame game, Button clicked) {
                 game.getContainer().resume();
+                master.music.resume();
                 master.dimmer.reverse();
             }
 
