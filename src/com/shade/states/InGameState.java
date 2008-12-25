@@ -5,6 +5,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.Sound;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.state.transition.FadeOutTransition;
@@ -20,6 +21,7 @@ import com.shade.controls.SlickButton;
 import com.shade.controls.DayPhaseTimer.DayLightStatus;
 import com.shade.levels.LevelManager;
 import com.shade.resource.ResourceManager;
+import com.shade.states.util.BirdCalls;
 
 public class InGameState extends BasicGameState {
 
@@ -32,11 +34,15 @@ public class InGameState extends BasicGameState {
     private ResourceManager resource;
     private CounterControl counter;
     private MeterControl meter;
-    private int timer;
     private boolean transitioning;
     private Transition transition;
     private StateBasedGame game;
     private SlickButton play, back;
+    private Sound rooster;
+
+    private boolean roosted;
+
+    private BirdCalls birds;
 
     public InGameState(MasterState m) throws SlickException {
         manager = new LevelManager(8, 6, 100);
@@ -47,6 +53,8 @@ public class InGameState extends BasicGameState {
         resource.register("resume-down", "states/ingame/resume-down.png");
         resource.register("back-up", "states/common/back-up.png");
         resource.register("back-down", "states/common/back-down.png");
+        rooster = new Sound("states/common/birds/rooster.ogg");
+        birds = new BirdCalls();
         transition = new FadeOutTransition();
         initControls();
         initButtons();
@@ -74,7 +82,6 @@ public class InGameState extends BasicGameState {
         master.control.add(counter);
         master.control.add(meter);
         master.control.load(manager.next());
-        timer = 0;
         transitioning = false;
         master.dimmer.rewind();
     }
@@ -111,29 +118,44 @@ public class InGameState extends BasicGameState {
         }
         master.control.update(game, delta);
         master.scorecard.update(game, delta);
-        if (container.getInput().isKeyPressed(Input.KEY_ESCAPE)) {
-            manager.rewind();
-            exit(game, TitleState.ID);
-        }
+        // if (container.getInput().isKeyPressed(Input.KEY_ESCAPE)) {
+        // manager.rewind();
+        // exit(game, TitleState.ID);
+        // }
         // if (container.getInput().isKeyPressed(Input.KEY_R)) {
         // manager.rewind();
         // loadNextLevel(game);
         // }
-        timer += delta;
-        if (master.timer.getDaylightStatus() == DayLightStatus.NIGHT) {
+        if (!birds.playing() && !isNight() && Math.random() > .9982) {
+            birds.play();
+        }
+        if (isNight()) {
             transitioning = true;
+            if (!roosted) {
+                roosted = true;
+                rooster.play();
+            }
+        }
+        if (!transitioning && master.music.getVolume() == 1) {
+            master.music.fade(MasterState.SECONDS_OF_DAYLIGHT, .1f, false);
         }
         if (transitioning) {
             transition.update(game, container, delta);
             if (transition.isComplete()) {
                 transitioning = false;
-                timer = 0;
                 meter.awardBonus();
                 master.timer.reset();
                 master.dimmer.fastforward();
+                master.music.fade(MasterState.SECONDS_OF_DAYLIGHT / 8, 1f,
+                        false);
                 loadNextLevel(game);
+                roosted = false;
             }
         }
+    }
+
+    private boolean isNight() {
+        return master.timer.getDaylightStatus() == DayLightStatus.NIGHT;
     }
 
     @Override
