@@ -39,7 +39,7 @@ public final class Monster extends Body implements LuminousEntity{
     
     private float luminosity;
 
-    public Monster(float x, float y, float range, float speed) throws SlickException {
+    public Monster(int x, int y, int range, int speed) throws SlickException {
         heading = (float) (Math.PI);
         this.range = range;
         this.speed = speed;
@@ -48,7 +48,7 @@ public final class Monster extends Body implements LuminousEntity{
     }
 
     private void initShape(float x, float y) {
-        shape = new Circle(x, y, 12f);
+        shape = new Circle(x, y, 18f);
     }
 
     private void initStates() throws SlickException {

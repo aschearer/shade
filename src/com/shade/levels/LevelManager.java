@@ -20,13 +20,13 @@ public class LevelManager implements Iterator<Model> {
     private String[] levels = {
         "com.shade.levels.Level1",
         "com.shade.levels.Level2",
-        "com.shade.levels.Level3",
-        "com.shade.levels.Level4",
+//        "com.shade.levels.Level3",
+//        "com.shade.levels.Level4",
         "com.shade.levels.Level5",
         "com.shade.levels.Level6",
         "com.shade.levels.Level7",
         "com.shade.levels.Level8",
-        "com.shade.levels.Level9",
+//        "com.shade.levels.Level9",
         "com.shade.levels.Level10"
     };
 
