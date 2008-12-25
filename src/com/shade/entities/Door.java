@@ -285,13 +285,13 @@ public class Door extends Body implements LuminousEntity, Repelable {
         float playery = b.getYCenter();
         // determine overlap
         float right = playerx - b.getWidth() / 2
-                - (getXCenter() + getWidth() / 2);
+                - (getXCenter() + width / 2);
         float left = playerx + b.getWidth() / 2
-                - (getXCenter() - getWidth() / 2);
+                - (getXCenter() - width / 2);
         float top = playery - b.getHeight() / 2
-                - (getYCenter() + getHeight() / 2);
+                - (getYCenter() + height / 2);
         float bottom = playery + b.getHeight() / 2
-                - (getYCenter() - getHeight() / 2);
+                - (getYCenter() - height / 2);
         float minx = Math.min(Math.abs(right), Math.abs(left));
         float miny = Math.min(Math.abs(top), Math.abs(bottom));
         if (minx < miny) {
