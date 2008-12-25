@@ -133,7 +133,7 @@ public class InGameState extends BasicGameState {
                 meter.awardBonus();
                 master.timer.reset();
                 master.dimmer.fastforward();
-                master.music.fade(1000, 1f, false);
+                master.music.fade(2000, 1f, false);
                 loadNextLevel(game);
             }
         }

@@ -90,7 +90,7 @@ public class Mushroom extends Linkable {
     }
 
     protected boolean inShadows() {
-        return getLuminosity() <= THRESHOLD;
+        return getLuminosity() < THRESHOLD;
     }
 
     protected boolean tooBig() {

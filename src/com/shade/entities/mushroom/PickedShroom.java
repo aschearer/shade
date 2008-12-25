@@ -39,6 +39,13 @@ public class PickedShroom implements State {
         if (obstacle.getRole() == Roles.OBSTACLE.ordinal()) {
             Repelable b = (Repelable) obstacle;
             b.repel(shroom);
+            
+            // check if way too far away, if so break off
+            if (Util.overThreshold(shroom, shroom.prev, 12000)) {
+                shroom.detach();
+                shroom.manager.enter(Mushroom.States.NORMAL);
+                return;
+            }
         }
     }
 
@@ -65,13 +72,6 @@ public class PickedShroom implements State {
         // sunny shrink
         if (!shroom.inShadows()) {
             shroom.shrink();
-        }
-
-        // way too far away, break off
-        if (Util.overThreshold(shroom, shroom.prev, 12000)) {
-            shroom.detach();
-            shroom.manager.enter(Mushroom.States.NORMAL);
-            return;
         }
 
         // too far away, catch up
