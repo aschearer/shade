@@ -44,13 +44,14 @@ public class Mushroom extends Linkable {
     private CrashLevel level;
 
     private static SpriteSheet sheet;
-    protected static Sound spawning, picked, collected;
+    protected static Sound spawning, picked, poisonPicked, collected;
 
     static {
         try {
             sheet = new SpriteSheet("entities/mushroom/mushrooms.png", 40, 40);
             spawning = new Sound("entities/mushroom/sprout.ogg");
             picked = new Sound("entities/mushroom/picked.ogg");
+            poisonPicked = new Sound("entities/mushroom/poison-picked.ogg");
             collected = new Sound("entities/mushroom/collected.ogg");
         } catch (SlickException e) {
             e.printStackTrace();
@@ -113,6 +114,10 @@ public class Mushroom extends Linkable {
     protected void shrink() {
         scale -= SCALE_INCREMENT / 2;
         resize();
+    }
+    
+    protected boolean isPoison() {
+        return type == Types.POISON;
     }
 
     private void resize() {
