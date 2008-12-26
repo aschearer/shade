@@ -102,10 +102,10 @@ public class InstructionState extends BasicGameState {
         if (timer > MasterState.STATE_TRANSITION_DELAY) {
             play.update(game, delta);
             back.update(game, delta);
+            prev.update(game, delta);
+            next.update(game, delta);
         }
-        prev.update(game, delta);
         prev.active(instructions.started());
-        next.update(game, delta);
         if (instructions.finished()) {
             game.enterState(InGameState.ID, new FadeOutTransition(), null);
             return;
