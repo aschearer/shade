@@ -11,6 +11,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import com.centerkey.utils.BareBonesBrowserLaunch;
 import com.shade.controls.Button;
 import com.shade.controls.ClickListener;
+import com.shade.controls.FadeInImage;
 import com.shade.controls.FadeInText;
 import com.shade.controls.SlickButton;
 import com.shade.resource.ResourceManager;
@@ -29,6 +30,7 @@ public class HighscoreState extends BasicGameState {
     private int timer;
     private HighScoreReader reader;
     private ArrayList<FadeInText> scores;
+    private ArrayList<FadeInImage> crowns;
 
     private boolean noInternet;
     
@@ -41,8 +43,10 @@ public class HighscoreState extends BasicGameState {
         resource.register("more-down", "states/highscore/more-down.png");
         resource.register("back-up", "states/common/back-up.png");
         resource.register("back-down", "states/common/back-down.png");
+        resource.register("crown", "states/highscore/crown.png");
         
         scores = new ArrayList<FadeInText>();
+        crowns = new ArrayList<FadeInImage>();
         reader = new RemoteHighScoreReader("http://anotherearlymorning.com/games/shade/board.php");
     }
 
@@ -66,18 +70,7 @@ public class HighscoreState extends BasicGameState {
             master.dimmer.reset();
         }
         
-        String[] scoress = reader.getScores(10);
-        int x = 50;
-        int y = 100;
-        int n = 0;
-        for (String s : scoress) {
-            String[] score = s.split(",");
-            scores.add(new FadeInText(score[0], master.jekyllLarge, x, y + (40 * n), 1000 + 400 * n));
-            scores.add(new FadeInText(score[1], master.jekyllLarge, x + 300, y + (40 * n), 1000 + 400 * n));
-            n++;
-        }
-        
-        noInternet = (n == 0);
+        initScores();
     }
 
     // render the aquarium
@@ -92,6 +85,9 @@ public class HighscoreState extends BasicGameState {
         resource.get("trim").draw();
         for (FadeInText t : scores) {
             t.render(game, g);
+        }
+        for (FadeInImage i : crowns) {
+            i.render(game, g);
         }
         if (noInternet) {
             drawCentered(container, "To use this exciting feature", 280);
@@ -117,6 +113,9 @@ public class HighscoreState extends BasicGameState {
         master.dimmer.update(game, delta);
         for (FadeInText t : scores) {
             t.update(game, delta);
+        }
+        for (FadeInImage i : crowns) {
+            i.update(game, delta);
         }
     }
 
@@ -161,5 +160,24 @@ public class HighscoreState extends BasicGameState {
             }
 
         });
+    }
+    
+    private void initScores() throws SlickException {
+        String[][] scoress = reader.getScores(10);
+        if (scoress  == null) {
+            noInternet = true;
+            return;
+        }
+        int x = 50;
+        int y = 100;
+        int n = 0;
+        for (String[] s : scoress) {
+            if (s[0].equals("1")) {
+                crowns.add(new FadeInImage(resource.get("crown"), x, y + 3 + (40 * n), 1000 + 400 *n));
+            }
+            scores.add(new FadeInText(s[1], master.jekyllLarge, x + 50, y + (40 * n), 1000 + 400 * n));
+            scores.add(new FadeInText(s[2], master.jekyllLarge, x + 300, y + (40 * n), 1000 + 400 * n));
+            n++;
+        }
     }
 }

@@ -5,6 +5,6 @@
 5:Once you've got some mushrooms return to your picnic to collect them.
 6:Try to avoid running in the sunlight though, you're Irish.
 7:When in the sun your meter drains, when it's empty you lose.
-8:You're mushrooms are Irish too, it seems. Try to keep them in the shade as well.
+8:Your mushrooms are Irish too, it seems. Try to keep them in the shade as well.
 9:If all the action makes you giddy press P to pause the game.
 10:Collect as many mushrooms as you can before nightfall. Good luck!

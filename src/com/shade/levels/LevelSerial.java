@@ -24,6 +24,7 @@ public class LevelSerial {
         mappings.put("MockPlayer", "com.shade.entities.MockPlayer");
         mappings.put("Fence", "com.shade.entities.Fence");
         mappings.put("Door", "com.shade.entities.Door");
+        mappings.put("Monster", "com.shade.entities.monster.Monster");
     }
 
     public LuminousEntity[] deserialize(String level) throws SlickException {
@@ -53,6 +54,12 @@ public class LevelSerial {
         }
         if (!element.getAttribute("r", "NULL").equals("NULL")) {
             args.add(element.getIntAttribute("r"));
+        }
+        if (!element.getAttribute("range", "NULL").equals("NULL")) {
+            args.add(element.getIntAttribute("range"));
+        }
+        if (!element.getAttribute("speed", "NULL").equals("NULL")) {
+            args.add(element.getIntAttribute("speed"));
         }
 
         return (LuminousEntity) Reflection.getInstance(c, args.toArray());

@@ -4,31 +4,26 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.controls.DayPhaseTimer;
-import com.shade.entities.monster.Monster;
 import com.shade.entities.mushroom.MushroomFactory;
 import com.shade.lighting.GlobalLight;
 import com.shade.lighting.LuminousEntity;
 
 public class Level1 extends Model {
 
-    private static final int SECONDS_PER_DAY = 12000000;
+    private static final int SECONDS_PER_DAY = 120000;
     private int timer;
     public DayPhaseTimer dayTimer;
-    
-    private GlobalLight light;
 
     public Level1(int w, int h, int c) throws SlickException {
         super(w, h, c);
         dayTimer = new DayPhaseTimer(SECONDS_PER_DAY);
-        light = new GlobalLight(12, (float) (4 * Math.PI / 3),
-                SECONDS_PER_DAY,dayTimer);
+
         LevelSerial l = new LevelSerial();
-        for (LuminousEntity e : l.deserialize("levels/level-1.xml")) {
+        for (LuminousEntity e : l.deserialize("levels/level-9.xml")) {
             add(e);
         }
-        add(new Monster(400, 100, 200, 2));
     }
-
+    
     @Override
     public void update(StateBasedGame game, int delta) {
         super.update(game, delta);
@@ -37,12 +32,12 @@ public class Level1 extends Model {
 
     @Override
     public GlobalLight getGlobalLight() {
-        return light;
+        return new GlobalLight(12, (float) (4 * Math.PI / 3), SECONDS_PER_DAY, dayTimer);
     }
 
     @Override
     public MushroomFactory getMushroomFactory() {
-        return new MushroomFactory(10, .002);
+        return new MushroomFactory(7, .002);
     }
 
 }

@@ -1,5 +1,7 @@
 package com.shade.controls;
 
+import java.util.HashMap;
+
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
@@ -27,6 +29,7 @@ public class TwoToneButton implements SizeEntity, Animatable, Button {
     private float x, y;
     private boolean mouseInside, mouseDown;
     private ClickListener listener;
+    private HashMap<Integer, KeyListener> keys;
 
     private boolean enabled;
 
@@ -43,6 +46,7 @@ public class TwoToneButton implements SizeEntity, Animatable, Button {
         this.x = x;
         this.y = y;
         enabled = true;
+        keys = new HashMap<Integer, KeyListener>();
         up = new ImageAlpha(u);
         down = new ImageAlpha(d);
         down.setAlpha(0f);
@@ -80,6 +84,10 @@ public class TwoToneButton implements SizeEntity, Animatable, Button {
         this.width = width;
         this.height = height;
     }
+    
+    public void register(int key, KeyListener l) {
+        keys.put(key, l);
+    }
 
     public void render(StateBasedGame game, Graphics g) {
         up.draw(x, y, width, height);
@@ -88,6 +96,18 @@ public class TwoToneButton implements SizeEntity, Animatable, Button {
 
     public void update(StateBasedGame game, int delta) {
         Input input = game.getContainer().getInput();
+        checkMouse(game, input);
+        for (int key : keys.keySet()) {
+            if (input.isKeyPressed(key) && enabled) {
+                keys.get(key).onPress(game, key);
+                mouseDown = true;
+                press();
+            }
+        }
+        timeline.update(delta);
+    }
+
+    private void checkMouse(StateBasedGame game, Input input) {
         int mx = input.getMouseX();
         int my = input.getMouseY();
         boolean pressed = input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON);
@@ -109,7 +129,6 @@ public class TwoToneButton implements SizeEntity, Animatable, Button {
         } else if (!pressed && mouseDown) {
             mouseDown = false;
         }
-        timeline.update(delta);
     }
 
     public void press() {

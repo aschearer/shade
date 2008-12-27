@@ -33,13 +33,21 @@ public class NormalShroom implements State {
             ((Linkable) obstacle).attach(shroom);
             if (shroom.prev != null) {
                 shroom.manager.enter(Mushroom.States.PICKED);
-                Mushroom.picked.play();
+                if (shroom.isPoison()) {
+                    Mushroom.poisonPicked.play();
+                } else {
+                    Mushroom.picked.play();
+                }
             }
         }
         if (obstacle.getRole() == Roles.BASKET.ordinal()) {
             ((Linkable) obstacle).attach(shroom);
             shroom.manager.enter(Mushroom.States.COLLECTED);
-            Mushroom.picked.play();
+            if (shroom.isPoison()) {
+                Mushroom.poisonPicked.play();
+            } else {
+                Mushroom.picked.play();
+            }
         }
     }
 

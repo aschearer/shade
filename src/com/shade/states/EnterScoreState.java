@@ -19,7 +19,8 @@ import com.shade.score.RemoteHighScoreWriter;
 
 public class EnterScoreState extends BasicGameState {
 
-    private static final String PROMPT_NAME = "Way to go! Er... what's your name?";
+    private static final String PROMPT_WINNER = "Way to go! Er... what's your name?";
+    private static final String PROMPT_LOSER = "Nice try! Er... what's your name?";
     private static final String[] RESPONSES = { "(Is that really a name?)",
             "Never heard of ya.", "Bet you can't beat me!",
             "Buffer Overflow at line 6.", "Cool guy, huh?",
@@ -35,15 +36,20 @@ public class EnterScoreState extends BasicGameState {
     private String message;
     private HighScoreWriter writer;
     private boolean completed;
+//    private Music badEnding, goodEnding;
+//    private boolean played;
 
     public EnterScoreState(MasterState m) throws SlickException {
         master = m;
         resource = m.resource;
         resource.register("playagain-up", "states/enter/playagain-up.png");
         resource.register("playagain-down", "states/enter/playagain-down.png");
-        resource.register("wreath", "states/enter/wreath.png");
+        resource.register("losers-wreath", "states/enter/losers-wreath.png");
+        resource.register("winners-wreath", "states/enter/winners-wreath.png");
         writer = new RemoteHighScoreWriter(
                 "http://www.anotherearlymorning.com/games/shade/post.php");
+//        badEnding = new Music("states/enter/loser.ogg", true);
+//        goodEnding = new Music("states/enter/winner.ogg", true);
     }
 
     @Override
@@ -62,8 +68,10 @@ public class EnterScoreState extends BasicGameState {
         initButtons();
         timer = 0;
         master.dimmer.rewind();
+        completed = false;
         initTextField(container);
-        message = PROMPT_NAME;
+        message = (master.scorecard.isCleared()) ? PROMPT_WINNER : PROMPT_LOSER;
+//        master.music.fade(500, 0, true);
     }
 
     // render the aquarium
@@ -71,11 +79,16 @@ public class EnterScoreState extends BasicGameState {
             throws SlickException {
         master.control.render(game, g, resource.get("background"));
         master.dimmer.render(game, g);
-        resource.get("wreath").drawCentered(400, 260);
+        if (master.scorecard.isCleared()) {
+            resource.get("winners-wreath").drawCentered(400, 260);
+            drawScore(container, master.scorecard.read() + "", 218);
+        } else {
+            resource.get("losers-wreath").drawCentered(400, 260);
+            drawScore(container, master.scorecard.read() + "", 208);
+        }
         if (!completed) {
             input.render(container, g);
         }
-        drawScore(container, master.scorecard.read() + "", 208);
         drawCentered(container, message, 440);
         resource.get("header").draw(400, 0);
         play.render(game, g);
@@ -90,6 +103,18 @@ public class EnterScoreState extends BasicGameState {
         master.control.update(game, delta);
         master.dimmer.update(game, delta);
         timer += delta;
+//        if (!played && !master.music.playing()) {
+//            played = true;
+//            if (master.scorecard.isCleared()) {
+//                goodEnding.setVolume(0);
+//                goodEnding.play();
+//                goodEnding.fade(1000, 1, false);
+//            } else {
+//                badEnding.setVolume(.5f);
+//                badEnding.play();
+//                badEnding.fade(1000, 1, false);
+//            }
+//        }
         if (timer > MasterState.STATE_TRANSITION_DELAY) {
             play.update(game, delta);
             highscores.update(game, delta);
@@ -124,7 +149,8 @@ public class EnterScoreState extends BasicGameState {
                     boolean written = false;
                     while (!written && numTries > 0) {
                         written = writer.write(input.getText(),
-                                master.scorecard.read());
+                                master.scorecard.read(), master.scorecard
+                                        .isCleared());
                         numTries--;
                     }
                     input.setAcceptingInput(false);
@@ -163,6 +189,9 @@ public class EnterScoreState extends BasicGameState {
 
             public void onClick(StateBasedGame game, Button clicked) {
                 game.enterState(InGameState.ID, new FadeOutTransition(), null);
+//                master.music.play();
+//                master.music.fade(1000, 1f, false);
+//                played = false;
                 master.dimmer.reset();
             }
 
@@ -176,6 +205,9 @@ public class EnterScoreState extends BasicGameState {
 
             public void onClick(StateBasedGame game, Button clicked) {
                 game.enterState(HighscoreState.ID);
+//                master.music.play();
+//                master.music.fade(1000, 1f, false);
+//                played = false;
             }
 
         });
@@ -188,6 +220,9 @@ public class EnterScoreState extends BasicGameState {
 
             public void onClick(StateBasedGame game, Button clicked) {
                 game.enterState(TitleState.ID);
+//                master.music.play();
+//                master.music.fade(1000, 1f, false);
+//                played = false;
                 master.dimmer.reverse();
             }
 

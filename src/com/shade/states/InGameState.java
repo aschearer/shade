@@ -20,21 +20,24 @@ import com.shade.controls.SlickButton;
 import com.shade.controls.DayPhaseTimer.DayLightStatus;
 import com.shade.levels.LevelManager;
 import com.shade.resource.ResourceManager;
+import com.shade.states.util.BirdCalls;
 
 public class InGameState extends BasicGameState {
 
     public static final int ID = 3;
+
+    private static final float GAME_CLEAR_BONUS = 1000;
 
     private LevelManager manager;
     private MasterState master;
     private ResourceManager resource;
     private CounterControl counter;
     private MeterControl meter;
-    private int timer;
     private boolean transitioning;
     private Transition transition;
     private StateBasedGame game;
     private SlickButton play, back;
+    private BirdCalls birds;
 
     public InGameState(MasterState m) throws SlickException {
         manager = new LevelManager(8, 6, 100);
@@ -45,6 +48,7 @@ public class InGameState extends BasicGameState {
         resource.register("resume-down", "states/ingame/resume-down.png");
         resource.register("back-up", "states/common/back-up.png");
         resource.register("back-down", "states/common/back-down.png");
+        birds = new BirdCalls();
         transition = new FadeOutTransition();
         initControls();
         initButtons();
@@ -72,7 +76,6 @@ public class InGameState extends BasicGameState {
         master.control.add(counter);
         master.control.add(meter);
         master.control.load(manager.next());
-        timer = 0;
         transitioning = false;
         master.dimmer.rewind();
     }
@@ -109,26 +112,28 @@ public class InGameState extends BasicGameState {
         }
         master.control.update(game, delta);
         master.scorecard.update(game, delta);
-        if (container.getInput().isKeyPressed(Input.KEY_ESCAPE)) {
-            manager.rewind();
-            exit(game, TitleState.ID);
-        }
+        // if (container.getInput().isKeyPressed(Input.KEY_ESCAPE)) {
+        // manager.rewind();
+        // exit(game, TitleState.ID);
+        // }
         // if (container.getInput().isKeyPressed(Input.KEY_R)) {
         // manager.rewind();
         // loadNextLevel(game);
         // }
-        timer += delta;
-        if (master.timer.getDaylightStatus() == DayLightStatus.NIGHT) {
+        if (isNight()) {
             transitioning = true;
+        }
+        if (!transitioning && master.music.getVolume() == 1) {
+            master.music.fade(MasterState.SECONDS_OF_DAYLIGHT, .1f, false);
         }
         if (transitioning) {
             transition.update(game, container, delta);
             if (transition.isComplete()) {
                 transitioning = false;
-                timer = 0;
                 meter.awardBonus();
                 master.timer.reset();
                 master.dimmer.fastforward();
+                master.music.fade(2000, 1f, false);
                 loadNextLevel(game);
             }
         }
@@ -163,10 +168,17 @@ public class InGameState extends BasicGameState {
 
     private void loadNextLevel(StateBasedGame game) {
         if (manager.hasNext()) {
+            birds.play();
             master.control.load(manager.next());
         } else {
+            master.scorecard.add(GAME_CLEAR_BONUS);
+            master.scorecard.setBeaten();
             exit(game, EnterScoreState.ID);
         }
+    }
+    
+    private boolean isNight() {
+        return master.timer.getDaylightStatus() == DayLightStatus.NIGHT;
     }
 
     private void initControls() throws SlickException {
@@ -200,6 +212,7 @@ public class InGameState extends BasicGameState {
 
             public void onClick(StateBasedGame game, Button clicked) {
                 game.getContainer().resume();
+                master.music.resume();
                 master.dimmer.reverse();
             }
 
