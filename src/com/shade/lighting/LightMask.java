@@ -12,6 +12,7 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.controls.DayPhaseTimer;
+import com.shade.entities.Roles;
 
 /**
  * A view which renders a set of entities, lights, and background images in such
@@ -28,7 +29,8 @@ import com.shade.controls.DayPhaseTimer;
  */
 public class LightMask {
 
-
+    /* Set to remove white borders from player, mushrooms, etc. */
+    private static final float MAGIC_ALPHA_VALUE = .65f;
     protected final static Color SHADE = new Color(0, 0, 0, .3f);
     public static final float MAX_DARKNESS = 0.4f;
     private DayPhaseTimer timer;
@@ -103,23 +105,30 @@ public class LightMask {
         Arrays.sort(entities);
         int i = 0;
         GL11.glEnable(GL11.GL_ALPHA_TEST);
-        GL11.glEnable(GL11.GL_STENCIL_TEST);
-        GL11.glAlphaFunc(GL11.GL_GREATER, 0);
         GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         while (i < entities.length && entities[i].getZIndex() < threshold) {
+            if (entityException(entities[i])) {
+                GL11.glAlphaFunc(GL11.GL_GREATER, GL11.GL_ZERO);
+            } else {
+                GL11.glAlphaFunc(GL11.GL_GREATER, MAGIC_ALPHA_VALUE);
+            }
             entities[i].render(game, g);
             entities[i].setLuminosity(getLuminosityFor(entities[i], g));
             i++;
         }
 
+        GL11.glAlphaFunc(GL11.GL_GREATER, GL11.GL_ZERO);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         while (i < entities.length) {
             entities[i].render(game, g);
             entities[i].setLuminosity(getLuminosityFor(entities[i], g));
             i++;
         }
-        GL11.glDisable(GL11.GL_STENCIL_TEST);
         GL11.glDisable(GL11.GL_ALPHA_TEST);
+    }
+    
+    private boolean entityException(LuminousEntity e) {
+        return (e.getRole() == Roles.DUMMY.ordinal());
     }
 
     private float getLuminosityFor(LuminousEntity entity, Graphics g) {
