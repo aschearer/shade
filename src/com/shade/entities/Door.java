@@ -186,19 +186,15 @@ public class Door extends Body implements LuminousEntity, Repelable {
     public void addToLevel(Level<?> l) {
         Model m = (Model) l;
         if (softspot == ActiveSide.TOP) {
-//            arrow.drawCentered(x + width / 2, y - 20);
             m.add(new Dummy(x + width / 2, y - 20, arrow));
         }
         if (softspot == ActiveSide.RIGHT) {
-//            arrow.drawCentered(x + width + 20, y + height / 2);
             m.add(new Dummy(x + width + 20, y + height / 2, arrow));
         }
         if (softspot == ActiveSide.BOTTOM) {
-//            arrow.drawCentered(x + width / 2, y + height + 20);
             m.add(new Dummy(x + width / 2, y + height + 20, arrow));
         }
         if (softspot == ActiveSide.LEFT) {
-//            arrow.drawCentered(x - 20, y + height / 2);
             m.add(new Dummy(x - 20, y + height / 2, arrow));
         }
     }

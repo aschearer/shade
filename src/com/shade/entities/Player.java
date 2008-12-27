@@ -78,7 +78,7 @@ public class Player extends Linkable {
                 register.play();
             }
             
-            if (obstacle.getRole() == Roles.TALLGRASS.ordinal()) {
+            if (obstacle.getRole() == Roles.SANDPIT.ordinal()) {
                 impeded = true;
             }
         }

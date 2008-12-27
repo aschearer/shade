@@ -31,6 +31,7 @@ public class LightMask {
 
     /* Set to remove white borders from player, mushrooms, etc. */
     private static final float MAGIC_ALPHA_VALUE = .65f;
+    private static final float MAGIC_ARROW_VALUE = .1f;
     protected final static Color SHADE = new Color(0, 0, 0, .3f);
     public static final float MAX_DARKNESS = 0.4f;
     private DayPhaseTimer timer;
@@ -108,7 +109,7 @@ public class LightMask {
         GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         while (i < entities.length && entities[i].getZIndex() < threshold) {
             if (entityException(entities[i])) {
-                GL11.glAlphaFunc(GL11.GL_GREATER, GL11.GL_ZERO);
+                GL11.glAlphaFunc(GL11.GL_GREATER, MAGIC_ARROW_VALUE);
             } else {
                 GL11.glAlphaFunc(GL11.GL_GREATER, MAGIC_ALPHA_VALUE);
             }
