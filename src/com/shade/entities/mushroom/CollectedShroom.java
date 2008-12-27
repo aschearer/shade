@@ -12,6 +12,7 @@ import com.shade.util.Geom;
 public class CollectedShroom implements State {
 
     private Mushroom shroom;
+    private boolean killed;
 
     public CollectedShroom(Mushroom mushroom) {
         shroom = mushroom;
@@ -33,6 +34,7 @@ public class CollectedShroom implements State {
         if (obstacle.getRole() == Roles.BASKET.ordinal()) {
             Mushroom.collected.play();
             shroom.kill();
+            killed = true;
         }
     }
 
@@ -41,8 +43,8 @@ public class CollectedShroom implements State {
     }
 
     public void update(StateBasedGame game, int delta) {
-        if (shroom.prev == null) {
-            shroom.manager.enter(Mushroom.States.NORMAL);
+        if (killed && shroom.prev == null) {
+            shroom.detach();
             return;
         }
 
