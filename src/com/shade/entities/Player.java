@@ -31,6 +31,7 @@ public class Player extends Linkable {
     private Image normal;
     private float luminosity;
     private Sound register;
+    private boolean impeded;
 
     public Player(int x, int y) throws SlickException {
         initShape(x, y);
@@ -76,6 +77,10 @@ public class Player extends Linkable {
                 l.attach(m);
                 register.play();
             }
+            
+            if (obstacle.getRole() == Roles.TALLGRASS.ordinal()) {
+                impeded = true;
+            }
         }
 
         public void render(StateBasedGame game, Graphics g) {
@@ -85,6 +90,7 @@ public class Player extends Linkable {
         public void update(StateBasedGame game, int delta) {
             testAndMove(game.getContainer().getInput(), delta);
             testAndWrap();
+            impeded = false;
         }
 
         private void testAndMove(Input input, int delta) {
@@ -105,8 +111,9 @@ public class Player extends Linkable {
             double mag = Math.sqrt(xVelocity * xVelocity + yVelocity
                     * yVelocity);
             // make it uniform speed
-            xVelocity = (float) (1.0 * SPEED * xVelocity / mag);
-            yVelocity = (float) (1.0 * SPEED * yVelocity / mag);
+            float speed = (impeded) ? SPEED / 2 : SPEED;
+            xVelocity = (float) (1.0 * speed * xVelocity / mag);
+            yVelocity = (float) (1.0 * speed * yVelocity / mag);
             if (mag != 0) {
                 nudge(xVelocity, yVelocity);
             } else {
