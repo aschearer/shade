@@ -1,5 +1,6 @@
 package com.shade.states;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -7,8 +8,6 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-import org.newdawn.slick.state.transition.FadeOutTransition;
-import org.newdawn.slick.state.transition.Transition;
 
 import com.shade.controls.Button;
 import com.shade.controls.ClickListener;
@@ -21,6 +20,7 @@ import com.shade.controls.DayPhaseTimer.DayLightStatus;
 import com.shade.levels.LevelManager;
 import com.shade.resource.ResourceManager;
 import com.shade.states.util.BirdCalls;
+import com.shade.states.util.Dimmer;
 
 public class InGameState extends BasicGameState {
 
@@ -33,11 +33,14 @@ public class InGameState extends BasicGameState {
     private ResourceManager resource;
     private CounterControl counter;
     private MeterControl meter;
-    private boolean transitioning;
-    private Transition transition;
     private StateBasedGame game;
     private SlickButton play, back;
+    private int nextLevel;
     private BirdCalls birds;
+    private boolean transitioning;
+    private Dimmer transition;
+    private int transitionTimer;
+    private Color levelText;
 
     public InGameState(MasterState m) throws SlickException {
         manager = new LevelManager(8, 6, 100);
@@ -49,7 +52,8 @@ public class InGameState extends BasicGameState {
         resource.register("back-up", "states/common/back-up.png");
         resource.register("back-down", "states/common/back-down.png");
         birds = new BirdCalls();
-        transition = new FadeOutTransition();
+        transition = new Dimmer(1f);
+        levelText = new Color(Color.white);
         initControls();
         initButtons();
     }
@@ -73,11 +77,13 @@ public class InGameState extends BasicGameState {
         master.scorecard.reset();
         master.timer.reset();
         manager.rewind();
+        master.dimmer.rewind();
+        transitioning = false;
         master.control.add(counter);
         master.control.add(meter);
         master.control.load(manager.next());
-        transitioning = false;
-        master.dimmer.rewind();
+        nextLevel = 2;
+        levelText.a = 0;
     }
 
     // render the gameplay
@@ -85,10 +91,11 @@ public class InGameState extends BasicGameState {
             throws SlickException {
         master.control.render(game, g, resource.get("background"));
         master.scorecard.render(game, g);
-        if (transitioning) {
-            transition.postRender(game, container, g);
-        }
         master.dimmer.render(game, g);
+        transition.render(game, g);
+        if (transitionTimer > 0) {
+            fadeCentered(container, "Level " + nextLevel);
+        }
         if (container.isPaused()) {
             resource.get("header").draw(400, 0);
             play.render(game, g);
@@ -120,22 +127,27 @@ public class InGameState extends BasicGameState {
         // manager.rewind();
         // loadNextLevel(game);
         // }
-        if (isNight()) {
+        if (isNight() && !transitioning) {
+            transition.reset();
             transitioning = true;
         }
         if (!transitioning && master.music.getVolume() == 1) {
             master.music.fade(MasterState.SECONDS_OF_DAYLIGHT, .1f, false);
         }
-        if (transitioning) {
-            transition.update(game, container, delta);
-            if (transition.isComplete()) {
-                transitioning = false;
-                meter.awardBonus();
-                master.timer.reset();
-                master.dimmer.fastforward();
-                master.music.fade(2000, 1f, false);
-                loadNextLevel(game);
-            }
+        if (transitioning || transition.reversed()) {
+            transition.update(game, delta);
+        }
+        if (transitioning && transition.finished()) {
+            transitionTimer += delta;
+        }
+        if (transition.finished() && transitionTimer > 2000) {
+            transitioning = false;
+            transitionTimer = 0;
+            transition.reverse();
+            meter.awardBonus();
+            master.timer.reset();
+            master.music.fade(2000, 1f, false);
+            loadNextLevel(game);
         }
     }
 
@@ -160,6 +172,13 @@ public class InGameState extends BasicGameState {
         master.daisyLarge.drawString(x, y, s);
     }
 
+    private void fadeCentered(GameContainer c, String s) {
+        int x = (c.getWidth() - master.daisyLarge.getWidth(s)) / 2;
+        int y = (c.getHeight() - master.daisyLarge.getHeight()) / 2;
+        master.daisyLarge.drawString(x, y, s, levelText);
+        levelText.a += .05f;
+    }
+
     private void exit(StateBasedGame game, int state) {
         master.control.flushControls();
         master.control.killPlayer();
@@ -169,14 +188,16 @@ public class InGameState extends BasicGameState {
     private void loadNextLevel(StateBasedGame game) {
         if (manager.hasNext()) {
             birds.play();
+            levelText.a = 0;
             master.control.load(manager.next());
+            nextLevel++;
         } else {
             master.scorecard.add(GAME_CLEAR_BONUS);
             master.scorecard.setBeaten();
             exit(game, EnterScoreState.ID);
         }
     }
-    
+
     private boolean isNight() {
         return master.timer.getDaylightStatus() == DayLightStatus.NIGHT;
     }
