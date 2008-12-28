@@ -36,6 +36,14 @@ public class CollectedShroom implements State {
             shroom.kill();
             killed = true;
         }
+        if (obstacle.getRole() == Roles.OBSTACLE.ordinal()) {
+            // way too far away, break off
+            if (Util.overThreshold(shroom, shroom.prev, 120000)) {
+                shroom.detach();
+                shroom.manager.enter(Mushroom.States.NORMAL);
+                return;
+            }
+        }
     }
 
     public void render(StateBasedGame game, Graphics g) {
@@ -56,13 +64,6 @@ public class CollectedShroom implements State {
         // sunny shrink
         if (!shroom.inShadows()) {
             shroom.shrink();
-        }
-
-        // way too far away, break off
-        if (Util.overThreshold(shroom, shroom.prev, 120000)) {
-            shroom.detach();
-            shroom.manager.enter(Mushroom.States.NORMAL);
-            return;
         }
 
         followLeader();
