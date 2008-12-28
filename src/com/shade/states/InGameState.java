@@ -159,7 +159,7 @@ public class InGameState extends BasicGameState {
 
     @Override
     public void keyPressed(int key, char c) {
-        if (key == Input.KEY_P) {
+        if (!transitioning && key == Input.KEY_P) {
             if (game.getContainer().isPaused()) {
                 game.getContainer().resume();
                 master.music.resume();
