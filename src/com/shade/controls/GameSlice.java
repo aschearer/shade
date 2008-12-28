@@ -27,8 +27,8 @@ public class GameSlice {
     private LightMask view;
     private LinkedList<MushroomCounter> controls;
     private boolean flushControls;
-    
-    //TIMER!
+
+    // TIMER!
     private DayPhaseTimer timer;
 
     public GameSlice(LightMask v, GlobalLight l, DayPhaseTimer t) {
@@ -38,11 +38,11 @@ public class GameSlice {
         view.add(light);
         controls = new LinkedList<MushroomCounter>();
     }
-    
+
     public void add(MushroomCounter c) {
         controls.add(c);
     }
-    
+
     public void flushControls() {
         flushControls = true;
     }
@@ -51,9 +51,9 @@ public class GameSlice {
         model = m;
         factory = m.getMushroomFactory();
         initPlayer();
-        initBasket();
+        initBaskets();
     }
-    
+
     public void update(StateBasedGame game, int delta) throws SlickException {
         model.update(game, delta);
         light.update(game, delta);
@@ -69,13 +69,13 @@ public class GameSlice {
             Mushroom m = factory.getMushroom(c, randomShadow());
             if (m != null) {
                 model.add(m);
-            }
-            else System.out.println("we got null, shocking");
+            } else
+                System.out.println("we got null, shocking");
         }
         timer.update(delta);
     }
 
-    public void render(StateBasedGame game, Graphics g, Image ... backgrounds) {
+    public void render(StateBasedGame game, Graphics g, Image... backgrounds) {
         view.render(game, g, model.toArray(), backgrounds);
         for (MushroomCounter c : controls) {
             c.render(game, g);
@@ -111,14 +111,16 @@ public class GameSlice {
         }
     }
 
-    private void initBasket() {
+    private void initBaskets() {
         Object[] baskets = model.getEntitiesByRole(Roles.BASKET.ordinal());
         if (baskets.length == 0) {
             return;
         }
-        Basket b = (Basket) baskets[0];
-        for (MushroomCounter counter : controls) {
-            b.add(counter);
+        for (Object o : baskets) {
+            Basket b = (Basket) o;
+            for (MushroomCounter counter : controls) {
+                b.add(counter);
+            }
         }
     }
 
