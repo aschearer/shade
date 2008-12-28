@@ -5,9 +5,10 @@ $username = @$_POST['name'];
 $score = @$_POST['score'];
 $cleared = @$_POST['clear'];
 
-$dsn = 'mysql:dbname=shadow_play;host=mysql.anotherearlymorning.com';
-$user = 'catch22';
-$pass = 'divein';
+/* Replace this w/ real information. */
+$dsn = 'mysql:dbname=[dbname];host=[dbhost]';
+$user = '[dbuser]';
+$pass = '[dbpass]';
 
 try {
     $dbh = new PDO($dsn, $user, $pass);
