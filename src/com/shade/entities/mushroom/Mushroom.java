@@ -15,12 +15,12 @@ import com.shade.base.util.StateManager;
 import com.shade.crash.CrashLevel;
 import com.shade.entities.Linkable;
 import com.shade.lighting.LuminousEntity;
+import com.shade.states.MasterState;
 
 public class Mushroom extends Linkable {
 
     protected static final float SPEED = 2.2f;
 
-    private static final float THRESHOLD = .65f;
     private static final float RADIUS = 3f;
     private static final float SCALE_INCREMENT = .005f;
     private static final float MAX_SCALE = 3.5f;
@@ -91,7 +91,7 @@ public class Mushroom extends Linkable {
     }
 
     protected boolean inShadows() {
-        return getLuminosity() < THRESHOLD;
+        return getLuminosity() < MasterState.SHADOW_THRESHOLD;
     }
 
     protected boolean tooBig() {

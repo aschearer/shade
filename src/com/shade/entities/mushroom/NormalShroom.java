@@ -36,7 +36,9 @@ public class NormalShroom implements State {
                 if (shroom.isPoison()) {
                     Mushroom.poisonPicked.play();
                 } else {
+                	System.out.println("pick");
                     Mushroom.picked.play();
+                    System.out.println("play");
                 }
             }
         }

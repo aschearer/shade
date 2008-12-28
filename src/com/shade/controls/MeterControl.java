@@ -7,6 +7,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.entities.mushroom.Mushroom;
 import com.shade.lighting.LuminousEntity;
+import com.shade.states.MasterState;
 
 /**
  * A meter which can go from zero to a hundred.
@@ -75,7 +76,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
         if (value == 0) {
             listener.fire();
         }
-        if (target != null && target.getLuminosity() > .6) {
+        if (target != null && target.getLuminosity() > MasterState.SHADOW_THRESHOLD) {
             decrement(delta);
         } else {
             timeInSun = 0;
