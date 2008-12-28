@@ -128,8 +128,14 @@ public class InGameState extends BasicGameState {
         // loadNextLevel(game);
         // }
         if (isNight() && !transitioning) {
-            transition.reset();
-            transitioning = true;
+            if (isLastLevel()) {                
+                master.scorecard.add(GAME_CLEAR_BONUS);
+                master.scorecard.setBeaten();
+                exit(game, EnterScoreState.ID);
+            } else {
+                transition.reset();
+                transitioning = true;
+            }
         }
         if (!transitioning && master.music.getVolume() == 1) {
             master.music.fade(MasterState.SECONDS_OF_DAYLIGHT, .1f, false);
@@ -185,16 +191,16 @@ public class InGameState extends BasicGameState {
         game.enterState(state);
     }
 
+    private boolean isLastLevel() {
+        return !manager.hasNext();
+    }
+
     private void loadNextLevel(StateBasedGame game) {
-        if (manager.hasNext()) {
+        if (!isLastLevel()) {
             birds.play();
             levelText.a = 0;
             master.control.load(manager.next());
             nextLevel++;
-        } else {
-            master.scorecard.add(GAME_CLEAR_BONUS);
-            master.scorecard.setBeaten();
-            exit(game, EnterScoreState.ID);
         }
     }
 

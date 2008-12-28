@@ -22,12 +22,14 @@ public class LevelManager implements Iterator<Model> {
         "com.shade.levels.Level2",
 //        "com.shade.levels.Level3",
 //        "com.shade.levels.Level4",
-        "com.shade.levels.Level5",
-        "com.shade.levels.Level6",
-        "com.shade.levels.Level7",
+//        "com.shade.levels.Level5",
+//        "com.shade.levels.Level6",
+//        "com.shade.levels.Level7",
         "com.shade.levels.Level8",
 //        "com.shade.levels.Level9",
-        "com.shade.levels.Level10"
+        "com.shade.levels.Level10",
+        "com.shade.levels.Level11",
+        "com.shade.levels.Level12"
     };
 
     /* Pointer into the list of levels. */
