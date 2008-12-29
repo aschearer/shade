@@ -18,7 +18,7 @@ import com.shade.controls.GameSlice;
 import com.shade.controls.ScoreControl;
 import com.shade.lighting.GlobalLight;
 import com.shade.lighting.LightMask;
-import com.shade.resource.ResourceManager;
+import com.shade.util.ResourceManager;
 import com.shade.states.util.Dimmer;
 
 public class MasterState extends BasicGameState {

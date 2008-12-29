@@ -18,7 +18,7 @@ import com.shade.controls.ScoreControl;
 import com.shade.controls.SlickButton;
 import com.shade.controls.DayPhaseTimer.DayLightStatus;
 import com.shade.levels.LevelManager;
-import com.shade.resource.ResourceManager;
+import com.shade.util.ResourceManager;
 import com.shade.states.util.BirdCalls;
 import com.shade.states.util.Dimmer;
 

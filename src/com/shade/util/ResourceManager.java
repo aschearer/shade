@@ -1,4 +1,4 @@
-package com.shade.resource;
+package com.shade.util;
 
 import java.util.HashMap;
 

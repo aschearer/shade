@@ -13,7 +13,7 @@ import com.shade.controls.ClickListener;
 import com.shade.controls.FadeInImage;
 import com.shade.controls.FadeInText;
 import com.shade.controls.SlickButton;
-import com.shade.resource.ResourceManager;
+import com.shade.util.ResourceManager;
 import com.shade.score.HighScoreReader;
 import com.shade.score.RemoteHighScoreReader;
 

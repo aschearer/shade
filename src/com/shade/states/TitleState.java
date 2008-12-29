@@ -10,7 +10,7 @@ import com.shade.controls.Button;
 import com.shade.controls.ClickListener;
 import com.shade.controls.SlickButton;
 import com.shade.levels.Shell;
-import com.shade.resource.ResourceManager;
+import com.shade.util.ResourceManager;
 import com.shade.states.CreditState;
 
 public class TitleState extends BasicGameState {

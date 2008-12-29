@@ -16,7 +16,7 @@ import com.shade.controls.Button;
 import com.shade.controls.ClickListener;
 import com.shade.controls.ScrollingText;
 import com.shade.controls.SlickButton;
-import com.shade.resource.ResourceManager;
+import com.shade.util.ResourceManager;
 
 public class CreditState extends BasicGameState {
 
