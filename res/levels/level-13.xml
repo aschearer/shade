@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+
+<Level mushrooms="9">
+    <Player x="550" y="360"/>
+    <Basket x="500" y="310" />
+    <Basket x="200" y="220" />
+
+    <Dome x="405" y="90" z="12" d="35" />
+    <Door x="450" y="90" z="5" facing="0" />
+    <Dome x="570" y="110" z="13" d="45" />
+
+    <Fence x="400" y="135" z="5" facing="1" />
+    <Sand x="340" y="260" d="120" facing="1" />
+    <Fence x="340" y="380" z="5" facing="0" />
+
+    <Sand x="680" y="180" d="30" facing="0" />
+    <Sand x="720" y="285" d="35" facing="0" />
+    <Sand x="680" y="380" d="50" facing="0" />
+
+    <Block x="435" y="470" z="8" d="70" />
+    <Door x="515" y="500" z="5" facing="2" />
+    <Block x="585" y="440" z="9" d="80" />
+
+    <Door x="340" y="400" z="5" facing="1" />
+    <Block x="305" y="470" z="8" d="70" />
+    <Fence x="105" y="230" z="5" facing="1" />
+    <Block x="105" y="360" z="14" d="105" />
+
+    <Dome x="250" y="120" z="15" d="55" />
+    <Dome x="100" y="140" z="10" d="35" />
+    <Sand x="120" y="60" d="30" facing="0" />
+</Level>

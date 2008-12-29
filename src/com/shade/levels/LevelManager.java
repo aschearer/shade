@@ -25,7 +25,9 @@ public class LevelManager implements Iterator<Model> {
 //        "com.shade.levels.Level9",
         "levels/Level-10.xml",
         "levels/Level-11.xml",
-        "levels/Level-12.xml"
+        "levels/Level-12.xml",
+        "levels/Level-13.xml",
+        "levels/Level-14.xml"
     };
 
     /* Pointer into the list of levels. */
