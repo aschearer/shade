@@ -7,16 +7,16 @@
 
     <Fence x="715" y="80" z="5" facing="1" />
     <Dome x="675" y="90" z="9" d="36" />
-    <Sand x="450" y="100" d="60" facing="1" />
-    <Sand x="450" y="100" d="60" facing="1" />
+    <Sand x="450" y="100" d="60" type="1" />
+    <Sand x="450" y="100" d="60" type="1" />
 
     <Dome x="100" y="120" z="14" d="55" />
     <Dome x="110" y="300" z="11" d="44" />
     <Fence x="165" y="120" z="5" facing="0" />
-    <Sand x="150" y="480" d="40" facing="0" />
+    <Sand x="150" y="480" d="40" type="0" />
 
     <Dome x="275" y="510" z="10" d="36" />
-    <Sand x="290" y="350" d="80" facing="1" />
+    <Sand x="290" y="350" d="80" type="1" />
     <Dome x="235" y="390" z="12" d="44" />
     <Block x="345" y="90" z="12" d="100" />
     <Door x="415" y="200" z="5" facing="1" />
@@ -25,6 +25,6 @@
     <Block x="435" y="470" z="5" d="70" />
     <Door x="515" y="500" z="5" facing="2" />
     <Block x="585" y="440" z="8" d="80" />
-    <Sand x="640" y="320" d="100" facing="1" />
+    <Sand x="640" y="320" d="100" type="1" />
 
 </Level>

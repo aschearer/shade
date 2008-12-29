@@ -63,6 +63,9 @@ public class LevelSerial {
         if (!element.getAttribute("d", "NULL").equals("NULL")) {
             args.add(element.getIntAttribute("d"));
         }
+        if (!element.getAttribute("type", "NULL").equals("NULL")) {
+            args.add(element.getIntAttribute("type"));
+        }
         if (!element.getAttribute("facing", "NULL").equals("NULL")) {
             args.add(element.getIntAttribute("facing"));
         }
