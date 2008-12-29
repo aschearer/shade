@@ -24,6 +24,11 @@ import com.shade.lighting.LuminousEntity;
  * The real deal; this mole is the sum of different mole states.
  *
  * No I haven't heard of encapsulation.
+ * 
+ * TODO: Make the birds edge-of-level smart - CUT.
+ * TODO: Make the bird flight more realistic by adding some phases
+ * TODO: Make the bird get "mad" as the player approaches
+ * TODO: Make the bird "land" correctly on fences - done.
  *
  * @author Jonathan Jou <j.j@duke.edu>
  */
@@ -39,6 +44,7 @@ public final class Bird extends Body implements LuminousEntity{
     protected float heading;
     protected float range;
     protected float speed;
+    protected boolean home;
     
     private float luminosity;
 
@@ -46,12 +52,13 @@ public final class Bird extends Body implements LuminousEntity{
         heading = (float) (Math.PI);
         this.range = range;
         this.speed = speed;
+        home = false;
         initShape(x, y);
         initStates();
     }
 
     private void initShape(float x, float y) {
-        shape = new Circle(x, y, 18f);
+        shape = new Circle(x, y, 21f);
     }
 
     private void initStates() throws SlickException {

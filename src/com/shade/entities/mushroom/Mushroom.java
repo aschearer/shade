@@ -27,7 +27,7 @@ public class Mushroom extends Linkable {
     private static final float MIN_SCALE = 2f;
 
     protected enum States {
-        SPAWNING, NORMAL, PICKED, COLLECTED
+        SPAWNING, NORMAL, PICKED, COLLECTED, FLYING
     };
 
     protected enum Types {
@@ -41,7 +41,7 @@ public class Mushroom extends Linkable {
     private Image mushroom;
     private float luminosity;
     private MushroomFactory factory;
-    private CrashLevel level;
+    protected CrashLevel level;
 
     private static SpriteSheet sheet;
     protected static Sound spawning, picked, poisonPicked, collected;
@@ -82,6 +82,13 @@ public class Mushroom extends Linkable {
         manager.add(new NormalShroom(this));
         manager.add(new PickedShroom(this));
         manager.add(new CollectedShroom(this));
+        manager.add(new FlyingShroom(this));
+    }
+    
+    
+    //HACK! TODO: KILL HACK!
+    public void scatter(){
+    	manager.enter(Mushroom.States.FLYING);
     }
 
     protected void kill() {

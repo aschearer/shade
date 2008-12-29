@@ -41,6 +41,7 @@ public class ReturningBird implements State {
     }
 
     public void enter() {
+    	bird.home = false;
         timer = 0;
         idling.restart();
         if(bird.level!=null){
@@ -63,6 +64,7 @@ public class ReturningBird implements State {
             //bird.manager.enter(Bird.States.RETURNING);
         }
         if (obstacle == nest) {
+        	bird.home = true;
             //bird.manager.enter(Bird.States.WAITING);
         }
     }
@@ -84,10 +86,14 @@ public class ReturningBird implements State {
         float disty = desty-y;
         float radius = (float)Math.sqrt(distx*distx+disty*disty);
         double curve = Math.PI/3*Math.pow(radius*Math.max(nest.getWidth(), nest.getHeight()),0.02);
-        if(radius>100) curve = Math.PI/8;
+        if(radius>Math.min(nest.getWidth(), nest.getHeight())||
+        		Math.min(nest.getWidth(), nest.getHeight())<30
+        		) curve = Math.PI/8;
         bird.heading = (float)(Math.atan2(disty,distx)+Math.PI/2-curve);
         bird.move(1);
-        if(radius<Math.min(nest.getWidth(), nest.getHeight())/2)bird.manager.enter(Bird.States.WAITING);
+        if(radius<Math.min(nest.getWidth(), nest.getHeight())/2){
+        	bird.manager.enter(Bird.States.WAITING);
+        	}
         }
     }
 

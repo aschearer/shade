@@ -78,6 +78,10 @@ public class WaitingBird implements State {
         float disty = desty-y;
         float radius = (float)Math.sqrt(distx*distx+disty*disty);
         bird.heading = (float)(Math.atan2(disty,distx)+Math.PI/2);
+        if(radius<bird.range*1.8){
+        	idling.setSpeed(Math.min(5,(float)Math.pow(bird.range/radius,4)*10));
+        }
+        else idling.setSpeed(1);
         if(radius<bird.range){
         	//TODO: I think the bird should shriek and turn angry (territorial).
         	// this would give the player some time to back off.
