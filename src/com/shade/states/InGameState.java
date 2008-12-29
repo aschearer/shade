@@ -42,6 +42,8 @@ public class InGameState extends BasicGameState {
     private int transitionTimer;
     private Color levelText;
 
+    private boolean killed;
+
     public InGameState(MasterState m) throws SlickException {
         manager = new LevelManager();
         master = m;
@@ -146,8 +148,13 @@ public class InGameState extends BasicGameState {
         }
         if (transitioning && transition.finished()) {
             transitionTimer += delta;
+            if (!killed) {
+                master.control.killPlayer();
+                killed = true;
+            }
         }
         if (transition.finished() && transitionTimer > 2000) {
+            killed = false;
             transitioning = false;
             transitionTimer = 0;
             transition.reverse();
