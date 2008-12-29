@@ -8,14 +8,17 @@ import org.newdawn.slick.util.xml.XMLElement;
 import org.newdawn.slick.util.xml.XMLElementList;
 import org.newdawn.slick.util.xml.XMLParser;
 
+import com.shade.entities.mushroom.MushroomFactory;
 import com.shade.lighting.LuminousEntity;
 import com.shade.util.Reflection;
 
 public class LevelSerial {
 
     private HashMap<String, String> mappings;
+    private String level;
 
-    public LevelSerial() {
+    public LevelSerial(String path) {
+        level = path;
         mappings = new HashMap<String, String>();
         mappings.put("Block", "com.shade.entities.Block");
         mappings.put("Dome", "com.shade.entities.Dome");
@@ -28,8 +31,14 @@ public class LevelSerial {
         mappings.put("Sand", "com.shade.entities.SandPit");
         mappings.put("Slider", "com.shade.entities.Slider");
     }
+    
+    public MushroomFactory factory() throws SlickException {
+        XMLParser xml = new XMLParser();
+        XMLElement root = xml.parse(level);
+        return new MushroomFactory(root.getIntAttribute("mushrooms"));
+    }
 
-    public LuminousEntity[] deserialize(String level) throws SlickException {
+    public LuminousEntity[] entities() throws SlickException {
         XMLParser xml = new XMLParser();
         XMLElement root = xml.parse(level);
         XMLElementList children = root.getChildren();
@@ -54,8 +63,8 @@ public class LevelSerial {
         if (!element.getAttribute("d", "NULL").equals("NULL")) {
             args.add(element.getIntAttribute("d"));
         }
-        if (!element.getAttribute("r", "NULL").equals("NULL")) {
-            args.add(element.getIntAttribute("r"));
+        if (!element.getAttribute("facing", "NULL").equals("NULL")) {
+            args.add(element.getIntAttribute("facing"));
         }
         if (!element.getAttribute("range", "NULL").equals("NULL")) {
             args.add(element.getIntAttribute("range"));

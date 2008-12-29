@@ -1,26 +1,26 @@
 <?xml version="1.0"?>
 
-<level>
+<Level mushrooms="14">
     <Player x="350" y="250"/>
     <Basket x="320" y="200" />
 
-    <Fence x="80" y="80" z="5" r="1" />
+    <Fence x="80" y="80" z="5" facing="1" />
 
-    <Fence x="200" y="300" z="5" r="0" />
-    <Door x="330" y="300" z="5" r="0" />
+    <Fence x="200" y="300" z="5" facing="0" />
+    <Door x="330" y="300" z="5" facing="0" />
     <Block x="400" y="250" z="15" d="100" />
-    <Fence x="510" y="300" z="5" r="0" />
+    <Fence x="510" y="300" z="5" facing="0" />
 
     <Dome x="288" y="165" z="7" d="32" />
     <Dome x="180" y="95" z="10" d="44" />
     <Dome x="300" y="65" z="6" d="25" />
 
-    <Fence x="450" y="60" z="5" r="1" />
+    <Fence x="450" y="60" z="5" facing="1" />
 
     <Dome x="710" y="80" z="6" d="28" />
     <Dome x="600" y="100" z="9" d="40" />
     <Dome x="680" y="240" z="13" d="60" />
-    <Door x="720" y="120" z="5" r="3" />
+    <Door x="720" y="120" z="5" facing="3" />
 
     <Basket x="520" y="450" />
 
@@ -29,4 +29,4 @@
     <Block x="100" y="380" z="12" d="80" />
     <Block x="645" y="460" z="12" d="80" />
     <Dome x="450" y="500" z="12" d="50" />
-</level>
+</Level>

@@ -9,13 +9,15 @@ import org.newdawn.slick.state.StateBasedGame;
 import com.shade.controls.Button;
 import com.shade.controls.ClickListener;
 import com.shade.controls.SlickButton;
-import com.shade.levels.Level0;
+import com.shade.levels.Shell;
 import com.shade.resource.ResourceManager;
 import com.shade.states.CreditState;
 
 public class TitleState extends BasicGameState {
 
     public static final int ID = 2;
+
+    private static final String LEVEL_ZERO = "levels/level-0.xml";
 
     private MasterState master;
     private ResourceManager resource;
@@ -40,7 +42,7 @@ public class TitleState extends BasicGameState {
     }
 
     private void reset() throws SlickException {
-        master.control.load(new Level0(8, 6, 100));
+        master.control.load(new Shell(LEVEL_ZERO));
     }
 
     @Override

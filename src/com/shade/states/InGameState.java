@@ -43,7 +43,7 @@ public class InGameState extends BasicGameState {
     private Color levelText;
 
     public InGameState(MasterState m) throws SlickException {
-        manager = new LevelManager(8, 6, 100);
+        manager = new LevelManager();
         master = m;
         resource = m.resource;
         resource.register("counter", "states/ingame/counter.png");
@@ -131,6 +131,7 @@ public class InGameState extends BasicGameState {
             if (isLastLevel()) {                
                 master.scorecard.add(GAME_CLEAR_BONUS);
                 master.scorecard.setBeaten();
+                master.music.fade(2000, 1f, false);
                 exit(game, EnterScoreState.ID);
             } else {
                 transition.reset();
