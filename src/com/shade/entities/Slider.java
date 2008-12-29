@@ -14,7 +14,6 @@ import com.crash.Body;
 import com.shade.base.Entity;
 import com.shade.base.Level;
 import com.shade.crash.Repelable;
-import com.shade.levels.Model;
 import com.shade.lighting.LuminousEntity;
 import com.shade.states.MasterState;
 import com.shade.util.Geom;
@@ -27,7 +26,7 @@ public class Slider extends Body implements LuminousEntity, Repelable {
 
     private int height;
     private float velocity;
-    private Image sprite, arrow;
+    private Image sprite;
     private ActiveDirection direction;
     private int timer;
 
@@ -50,16 +49,6 @@ public class Slider extends Body implements LuminousEntity, Repelable {
             sprite = new Image("entities/slider/slider.vertical.png");
         } else {
             sprite = new Image("entities/slider/slider.horizontal.png");
-        }
-        arrow = new Image("entities/slider/arrow.png");
-        if (r == 2) {
-            arrow.rotate(180);
-        }
-        if (r == 3) {
-            arrow.rotate(-90);
-        }
-        if (r == 1) {
-            arrow.rotate(90);
         }
     }
 
@@ -176,21 +165,6 @@ public class Slider extends Body implements LuminousEntity, Repelable {
     }
 
     public void addToLevel(Level<?> l) {
-        Model m = (Model) l;
-        if (direction == ActiveDirection.UP) {
-            m.add(new Dummy(getX() + getWidth() + 20, getY() + getHeight() / 2,
-                    arrow));
-        }
-        if (direction == ActiveDirection.RIGHT) {
-            m.add(new Dummy(getX() + getWidth() / 2, getY() + getHeight() + 20,
-                    arrow));
-        }
-        if (direction == ActiveDirection.DOWN) {
-            m.add(new Dummy(getX() - 20, getY() + getHeight() / 2, arrow));
-        }
-        if (direction == ActiveDirection.LEFT) {
-            m.add(new Dummy(getX() + getWidth() / 2, getY() - 20, arrow));
-        }
 
     }
 
