@@ -79,10 +79,11 @@ public class Player extends Linkable {
             }
             if(obstacle.getRole() == Roles.MONSTER.ordinal()){
             	manager.enter(Player.PlayerState.STUNNED);
-            }     
-           // if (obstacle.getRole() == Roles.TALLGRASS.ordinal()) {
-             //   impeded = true;
-            //}
+            }    
+            
+            if (obstacle.getRole() == Roles.SANDPIT.ordinal()) {
+                impeded = true;
+            }
         }
 
         public void render(StateBasedGame game, Graphics g) {

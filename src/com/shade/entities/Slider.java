@@ -14,32 +14,53 @@ import com.crash.Body;
 import com.shade.base.Entity;
 import com.shade.base.Level;
 import com.shade.crash.Repelable;
+import com.shade.levels.Model;
 import com.shade.lighting.LuminousEntity;
+import com.shade.states.MasterState;
 import com.shade.util.Geom;
 
-public class Fence extends Body implements LuminousEntity, Repelable {
+public class Slider extends Body implements LuminousEntity, Repelable {
+
+    private enum ActiveDirection {
+        UP, RIGHT, DOWN, LEFT
+    };
 
     private int height;
-    private Image sprite;
+    private float velocity;
+    private Image sprite, arrow;
+    private ActiveDirection direction;
+    private int timer;
 
-    public Fence(int x, int y, int z, int r) throws SlickException {
-        int w = (r == 0) ? 120 : 11;
-        int h = (r == 0) ? 11 : 120;
+    public Slider(int x, int y, int z, int r, int range, int speed) throws SlickException {
+        int w = (r == 1 || r == 3) ? 65 : 11;
+        int h = (r == 1 || r == 3) ? 11 : 65;
         initShape(x, y, w, h);
         height = z;
-        initSprite(w, h);
+        initSprite(r);
+        direction = ActiveDirection.values()[r];
+        velocity = (float) ((float) speed * (float) range / MasterState.SECONDS_OF_DAYLIGHT);
     }
 
     private void initShape(float x, float y, float w, float h) {
         shape = new Rectangle(x, y, w, h);
     }
 
-    private void initSprite(float w, float h) throws SlickException {
-        String path = "entities/fence/fence.vertical.png";
-        if (w > h) {
-            path = "entities/fence/fence.horizontal.png";
+    private void initSprite(int r) throws SlickException {
+        if (r == 0 || r == 2) {
+            sprite = new Image("entities/slider/slider.vertical.png");
+        } else {
+            sprite = new Image("entities/slider/slider.horizontal.png");
         }
-        sprite = new Image(path);
+        arrow = new Image("entities/slider/arrow.png");
+        if (r == 2) {
+            arrow.rotate(180);
+        }
+        if (r == 3) {
+            arrow.rotate(-90);
+        }
+        if (r == 1) {
+            arrow.rotate(90);
+        }
     }
 
     public Shape castShadow(float direction, float depth) {
@@ -91,7 +112,22 @@ public class Fence extends Body implements LuminousEntity, Repelable {
     }
 
     public void update(StateBasedGame game, int delta) {
-
+        timer += delta;
+        if (timer > MasterState.SECONDS_OF_DAYLIGHT / 2) {
+            return;
+        }
+        if (direction == ActiveDirection.UP) {
+            nudge(0, -(velocity * delta));
+        }
+        if (direction == ActiveDirection.RIGHT) {
+            nudge(velocity * delta, 0);
+        }
+        if (direction == ActiveDirection.DOWN) {
+            nudge(0, velocity * delta);
+        }
+        if (direction == ActiveDirection.LEFT) {
+            nudge(-(velocity * delta), 0);
+        }
     }
 
     public int getZIndex() {
@@ -140,7 +176,22 @@ public class Fence extends Body implements LuminousEntity, Repelable {
     }
 
     public void addToLevel(Level<?> l) {
-        // not important for a fence
+        Model m = (Model) l;
+        if (direction == ActiveDirection.UP) {
+            m.add(new Dummy(getX() + getWidth() + 20, getY() + getHeight() / 2,
+                    arrow));
+        }
+        if (direction == ActiveDirection.RIGHT) {
+            m.add(new Dummy(getX() + getWidth() / 2, getY() + getHeight() + 20,
+                    arrow));
+        }
+        if (direction == ActiveDirection.DOWN) {
+            m.add(new Dummy(getX() - 20, getY() + getHeight() / 2, arrow));
+        }
+        if (direction == ActiveDirection.LEFT) {
+            m.add(new Dummy(getX() + getWidth() / 2, getY() - 20, arrow));
+        }
+
     }
 
     public int getRole() {
