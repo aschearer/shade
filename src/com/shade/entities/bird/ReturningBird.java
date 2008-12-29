@@ -41,7 +41,6 @@ public class ReturningBird implements State {
     }
 
     public void enter() {
-    	bird.home = false;
         timer = 0;
         idling.restart();
         if(bird.level!=null){
@@ -62,10 +61,6 @@ public class ReturningBird implements State {
     public void onCollision(Entity obstacle) {
         if (obstacle.getRole() == Roles.PLAYER.ordinal()) {
             //bird.manager.enter(Bird.States.RETURNING);
-        }
-        if (obstacle == nest) {
-        	bird.home = true;
-            //bird.manager.enter(Bird.States.WAITING);
         }
     }
 

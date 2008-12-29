@@ -44,7 +44,7 @@ public final class Bird extends Body implements LuminousEntity{
     protected float heading;
     protected float range;
     protected float speed;
-    protected boolean home;
+    protected boolean attacking;
     
     private float luminosity;
 
@@ -52,9 +52,12 @@ public final class Bird extends Body implements LuminousEntity{
         heading = (float) (Math.PI);
         this.range = range;
         this.speed = speed;
-        home = false;
         initShape(x, y);
         initStates();
+    }
+    
+    public boolean isAttacking(){
+    	return attacking;
     }
 
     private void initShape(float x, float y) {
@@ -94,7 +97,7 @@ public final class Bird extends Body implements LuminousEntity{
 
 
     public int getRole() {
-        return Roles.MONSTER.ordinal();
+        return Roles.BIRD.ordinal();
     }
 
     public void onCollision(Entity obstacle) {

@@ -15,6 +15,7 @@ import com.shade.base.util.State;
 import com.shade.base.util.StateManager;
 import com.shade.crash.CrashLevel;
 import com.shade.crash.Repelable;
+import com.shade.entities.bird.Bird;
 import com.shade.entities.mushroom.Mushroom;
 import com.shade.lighting.LuminousEntity;
 
@@ -81,6 +82,11 @@ public class Player extends Linkable {
             if(obstacle.getRole() == Roles.MONSTER.ordinal()){
             	manager.enter(Player.PlayerState.STUNNED);
             }    
+            if(obstacle.getRole() == Roles.BIRD.ordinal()){
+            	Bird b = (Bird)obstacle;
+            	if(b.isAttacking())
+            	manager.enter(Player.PlayerState.STUNNED);
+            }
             
             if (obstacle.getRole() == Roles.SANDPIT.ordinal()) {
                 impeded = true;

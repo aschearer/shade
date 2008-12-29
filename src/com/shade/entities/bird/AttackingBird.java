@@ -32,13 +32,14 @@ public class AttackingBird implements State {
     }
 
     private void initResources() throws SlickException {
-        SpriteSheet idles = new SpriteSheet("entities/bird/wait.png", 40, 40);
+        SpriteSheet idles = new SpriteSheet("entities/bird/attack.png", 40, 40);
         idling = new Animation(idles, 600);
         idling.setAutoUpdate(false);
         idling.setPingPong(true);
     }
 
     public void enter() {
+    	bird.attacking = true;
         timer = 0;
         idling.restart();
     }
@@ -72,8 +73,10 @@ public class AttackingBird implements State {
     	if(timer>ATTACK_TIME){
     		bird.move(0.3);
     		idling.setSpeed(15);
-    		if(timer> ATTACK_TIME+COOLDOWN_TIME)
+    		if(timer> ATTACK_TIME+COOLDOWN_TIME){
     		bird.manager.enter(Bird.States.RETURNING);
+    		bird.attacking = false;
+    		}
     	}
     	else  {
     		bird.move(1.5);
