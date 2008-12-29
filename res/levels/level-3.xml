@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<level>
+<Level>
     <Player x="400" y="375" />
     <Basket x="365" y="325" />
 
@@ -12,13 +12,13 @@
     <Block x="275" y="65" z="12" d="100" />
     <Block x="450" y="65" z="12" d="100" />
 
-    <Fence x="250" y="250" z="5" r="0" />
-    <Fence x="380" y="250" z="5" r="0" />
+    <Fence x="250" y="250" z="5" facing="0" />
+    <Fence x="380" y="250" z="5" facing="0" />
 
     <Dome x="700" y="80" z="10" d="40" />
     <Dome x="740" y="220" z="13" d="55" />
     <Dome x="640" y="320" z="8" d="40" />
 
-    <Fence x="710" y="380" z="5" r="1" />
+    <Fence x="710" y="380" z="5" facing="1" />
     <Block x="500" y="420" z="12" d="125" />
-</level>
+</Level>

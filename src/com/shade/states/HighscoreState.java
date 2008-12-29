@@ -8,25 +8,22 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import com.centerkey.utils.BareBonesBrowserLaunch;
 import com.shade.controls.Button;
 import com.shade.controls.ClickListener;
 import com.shade.controls.FadeInImage;
 import com.shade.controls.FadeInText;
 import com.shade.controls.SlickButton;
-import com.shade.resource.ResourceManager;
+import com.shade.util.ResourceManager;
 import com.shade.score.HighScoreReader;
 import com.shade.score.RemoteHighScoreReader;
 
 public class HighscoreState extends BasicGameState {
     
     public static final int ID = 4;
-    
-    private static final String HIGHSCORE_URL = "http://anotherearlymorning.com/";
 
     private MasterState master;
     private ResourceManager resource;
-    private SlickButton play, morescores, back;
+    private SlickButton play, back;
     private int timer;
     private HighScoreReader reader;
     private ArrayList<FadeInText> scores;
@@ -39,8 +36,6 @@ public class HighscoreState extends BasicGameState {
         master = m;
         resource = m.resource;
         
-        resource.register("more-up", "states/highscore/more-up.png");
-        resource.register("more-down", "states/highscore/more-down.png");
         resource.register("back-up", "states/common/back-up.png");
         resource.register("back-down", "states/common/back-down.png");
         resource.register("crown", "states/highscore/crown.png");
@@ -80,7 +75,6 @@ public class HighscoreState extends BasicGameState {
         master.dimmer.render(game, g);
         resource.get("header").draw(400, 0);
         play.render(game, g);
-        morescores.render(game, g);
         back.render(game, g);
         resource.get("trim").draw();
         for (FadeInText t : scores) {
@@ -107,7 +101,6 @@ public class HighscoreState extends BasicGameState {
         timer += delta;
         if (timer > MasterState.STATE_TRANSITION_DELAY) {
             play.update(game, delta);
-            morescores.update(game, delta);
             back.update(game, delta);
         }
         master.dimmer.update(game, delta);
@@ -121,7 +114,6 @@ public class HighscoreState extends BasicGameState {
 
     private void initButtons() throws SlickException {
         initPlayButton();
-        initMoreScoresButton();
         initBackButton();
     }
 
@@ -137,20 +129,8 @@ public class HighscoreState extends BasicGameState {
         });
     }
 
-    private void initMoreScoresButton() throws SlickException {
-        morescores = new SlickButton(620, 130, resource.get("more-up"),
-                resource.get("more-down"));
-        morescores.addListener(new ClickListener() {
-
-            public void onClick(StateBasedGame game, Button clicked) {
-                BareBonesBrowserLaunch.openURL(HIGHSCORE_URL);
-            }
-
-        });
-    }
-
     private void initBackButton() throws SlickException {
-        back = new SlickButton(620, 150, resource.get("back-up"),
+        back = new SlickButton(620, 130, resource.get("back-up"),
                 resource.get("back-down"));
         back.addListener(new ClickListener() {
 
@@ -163,6 +143,8 @@ public class HighscoreState extends BasicGameState {
     }
     
     private void initScores() throws SlickException {
+        scores.clear();
+        crowns.clear();
         String[][] scoress = reader.getScores(10);
         if (scoress  == null) {
             noInternet = true;

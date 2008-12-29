@@ -3,9 +3,10 @@
 // read variables from GET data
 $num_scores = @$_GET['num_scores'];
 
-$dsn = 'mysql:dbname=shadow_play;host=mysql.anotherearlymorning.com';
-$user = 'catch22';
-$pass = 'divein';
+/* Replace this w/ real information. */
+$dsn = 'mysql:dbname=[dbname];host=[dbhost]';
+$user = '[dbuser]';
+$pass = '[dbpass]';
 
 try {
     $dbh = new PDO($dsn, $user, $pass);
@@ -27,12 +28,9 @@ $stmt->execute();
 
 $scores = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-$out = fopen("php://output", "r");
+$out = fopen("php://output", "w");
 
 foreach ($scores as $score) {
-	//echo implode(",", $score);
-	//echo "\n";
-	//echo "$score\n";
 	fputcsv($out, $score);
 }
 ?>

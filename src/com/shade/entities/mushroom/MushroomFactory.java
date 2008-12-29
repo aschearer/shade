@@ -12,6 +12,7 @@ public class MushroomFactory {
      * Corresponds to the Mushroom.Type enum.
      */
     private static final double[] distribution = { .06, .64, .25, .05 };
+    private static final double PROPENSITY = .002;
 
     /* Minimum number of mushrooms alive at any one time. */
     private int floor;
@@ -28,9 +29,9 @@ public class MushroomFactory {
      * @param propensity
      *            The likelihood to add a mushroom over the baseline.
      */
-    public MushroomFactory(int floor, double propensity) {
+    public MushroomFactory(int floor) {
         this.floor = floor;
-        this.propensity = propensity;
+        this.propensity = PROPENSITY;
         mushrooms = new LinkedList<Mushroom>();
     }
 

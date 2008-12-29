@@ -18,7 +18,7 @@ import com.shade.controls.ScoreControl;
 import com.shade.controls.SlickButton;
 import com.shade.controls.DayPhaseTimer.DayLightStatus;
 import com.shade.levels.LevelManager;
-import com.shade.resource.ResourceManager;
+import com.shade.util.ResourceManager;
 import com.shade.states.util.BirdCalls;
 import com.shade.states.util.Dimmer;
 
@@ -43,7 +43,7 @@ public class InGameState extends BasicGameState {
     private Color levelText;
 
     public InGameState(MasterState m) throws SlickException {
-        manager = new LevelManager(8, 6, 100);
+        manager = new LevelManager();
         master = m;
         resource = m.resource;
         resource.register("counter", "states/ingame/counter.png");
@@ -131,6 +131,7 @@ public class InGameState extends BasicGameState {
             if (isLastLevel()) {                
                 master.scorecard.add(GAME_CLEAR_BONUS);
                 master.scorecard.setBeaten();
+                master.music.fade(2000, 1f, false);
                 exit(game, EnterScoreState.ID);
             } else {
                 transition.reset();
@@ -159,7 +160,7 @@ public class InGameState extends BasicGameState {
 
     @Override
     public void keyPressed(int key, char c) {
-        if (key == Input.KEY_P) {
+        if (!transitioning && key == Input.KEY_P) {
             if (game.getContainer().isPaused()) {
                 game.getContainer().resume();
                 master.music.resume();

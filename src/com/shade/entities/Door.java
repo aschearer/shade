@@ -290,7 +290,7 @@ public class Door extends Body implements LuminousEntity, Repelable {
                 - (getYCenter() - height / 2);
         float minx = Math.min(Math.abs(right), Math.abs(left));
         float miny = Math.min(Math.abs(top), Math.abs(bottom));
-        if (active || minx < miny) {
+        if (specialCase(minx, miny)) {
             // if we move, move AWAY from the block.
             if (Math.abs(playerx - getXCenter() - velx) < Math.abs(playerx
                     - getXCenter()))
@@ -303,6 +303,13 @@ public class Door extends Body implements LuminousEntity, Repelable {
             }
             b.nudge(0, -vely);
         }
+    }
+
+    private boolean specialCase(float minx, float miny) {
+        if (active) {
+            return minx > miny;
+        }
+        return minx < miny;
     }
 
 }

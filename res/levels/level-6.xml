@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 
-<level>
+<Level>
     <Player x="500" y="350" />
     <Basket x="450" y="300" />
 
-    <Fence x="115" y="238" z="5" r="1" />
-    <Fence x="115" y="368" z="5" r="1" />
+    <Fence x="115" y="238" z="5" facing="1" />
+    <Fence x="115" y="368" z="5" facing="1" />
 
     <Dome x="310" y="300" z="14" d="45" />
     <Dome x="230" y="420" z="15" d="55" />
@@ -18,10 +18,10 @@
     <Dome x="600" y="100" z="9" d="40" />
     <Dome x="680" y="220" z="13" d="60" />
 
-    <Fence x="315" y="500" z="5" r="0" />
-    <Fence x="445" y="500" z="5" r="0" />
+    <Fence x="315" y="500" z="5" facing="0" />
+    <Fence x="445" y="500" z="5" facing="0" />
 
     <Block x="550" y="340" z="7" d="60" />
     <Dome x="680" y="480" z="13" d="60" />
 
-</level>
+</Level>

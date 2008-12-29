@@ -23,7 +23,7 @@ import com.shade.controls.InstructionText;
 import com.shade.controls.KeyListener;
 import com.shade.controls.SlickButton;
 import com.shade.controls.TwoToneButton;
-import com.shade.resource.ResourceManager;
+import com.shade.util.ResourceManager;
 
 public class InstructionState extends BasicGameState {
 

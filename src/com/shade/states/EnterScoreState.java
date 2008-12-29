@@ -13,7 +13,7 @@ import org.newdawn.slick.state.transition.FadeOutTransition;
 import com.shade.controls.Button;
 import com.shade.controls.ClickListener;
 import com.shade.controls.SlickButton;
-import com.shade.resource.ResourceManager;
+import com.shade.util.ResourceManager;
 import com.shade.score.HighScoreWriter;
 import com.shade.score.RemoteHighScoreWriter;
 
