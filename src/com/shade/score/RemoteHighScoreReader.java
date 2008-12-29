@@ -6,10 +6,16 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.LinkedList;
 
-import org.newdawn.slick.SlickException;
-
 import com.shade.util.CsvReader;
 
+/**
+ * Read high scores from a remote server.
+ * 
+ * This performs a get request to retrieve a list of high scores from the
+ * server. It expects the high scores to be in CSV format.
+ * 
+ * @author Alexander Schearer <aschearer@gmail.com>
+ */
 public class RemoteHighScoreReader implements HighScoreReader {
 
     private String base;
@@ -18,10 +24,10 @@ public class RemoteHighScoreReader implements HighScoreReader {
         base = path;
     }
 
-    public String[][] getScores(int limit) throws SlickException {
+    public String[][] getScores(int limit) {
         try {
             String target = base + "?num_scores="
-                    + URLEncoder.encode("" + limit, "UTF-8");
+                    + URLEncoder.encode("" + limit, "US-ASCII");
             // open connection to read
 
             URL url = new URL(target);

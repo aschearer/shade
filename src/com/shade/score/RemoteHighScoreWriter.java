@@ -7,22 +7,24 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 
-import org.newdawn.slick.SlickException;
-
 public class RemoteHighScoreWriter implements HighScoreWriter {
 
     private String base;
 
-    public RemoteHighScoreWriter(String path) throws SlickException {
+    public RemoteHighScoreWriter(String path) {
         base = path;
     }
 
-    public boolean write(String name, int score, boolean clear) throws SlickException {
+    public boolean write(String name, int score, boolean clear) {
+        String cleared = (clear) ? "1" : "0";
+        return write(name, score + "", cleared);
+    }
+
+    protected boolean write(String name, String score, String clear) {
         try {
-            String content = "name=" + URLEncoder.encode(name, "UTF-8");
+            String content = "name=" + URLEncoder.encode(name, "US-ASCII");
             content += "&score=" + score;
-            content += "&clear=";
-            content += (clear) ? 1 : 0;
+            content += "&clear=" + clear;
             URL url = new URL(base);
             URLConnection c = url.openConnection();
             c.setConnectTimeout(2000);

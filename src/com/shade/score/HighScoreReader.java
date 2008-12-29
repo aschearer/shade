@@ -1,7 +1,5 @@
 package com.shade.score;
 
-import org.newdawn.slick.SlickException;
-
 public interface HighScoreReader {
 
     /**
@@ -10,5 +8,5 @@ public interface HighScoreReader {
      * @param limit Return this many, set to zero to return all.
      * @return
      */
-    public String[][] getScores(int limit) throws SlickException;
+    public String[][] getScores(int limit);
 }

@@ -14,8 +14,8 @@ import com.shade.controls.FadeInImage;
 import com.shade.controls.FadeInText;
 import com.shade.controls.SlickButton;
 import com.shade.util.ResourceManager;
+import com.shade.score.FailSafeHighScoreReader;
 import com.shade.score.HighScoreReader;
-import com.shade.score.RemoteHighScoreReader;
 
 public class HighscoreState extends BasicGameState {
     
@@ -42,7 +42,7 @@ public class HighscoreState extends BasicGameState {
         
         scores = new ArrayList<FadeInText>();
         crowns = new ArrayList<FadeInImage>();
-        reader = new RemoteHighScoreReader("http://anotherearlymorning.com/games/shade/board.php");
+        reader = new FailSafeHighScoreReader();
     }
 
     @Override

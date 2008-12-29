@@ -14,8 +14,8 @@ import com.shade.controls.Button;
 import com.shade.controls.ClickListener;
 import com.shade.controls.SlickButton;
 import com.shade.util.ResourceManager;
+import com.shade.score.FailSafeHighScoreWriter;
 import com.shade.score.HighScoreWriter;
-import com.shade.score.RemoteHighScoreWriter;
 
 public class EnterScoreState extends BasicGameState {
 
@@ -46,8 +46,7 @@ public class EnterScoreState extends BasicGameState {
         resource.register("playagain-down", "states/enter/playagain-down.png");
         resource.register("losers-wreath", "states/enter/losers-wreath.png");
         resource.register("winners-wreath", "states/enter/winners-wreath.png");
-        writer = new RemoteHighScoreWriter(
-                "http://www.anotherearlymorning.com/games/shade/post.php");
+        writer = new FailSafeHighScoreWriter();
 //        badEnding = new Music("states/enter/loser.ogg", true);
 //        goodEnding = new Music("states/enter/winner.ogg", true);
     }
@@ -144,28 +143,24 @@ public class EnterScoreState extends BasicGameState {
         input.addListener(new ComponentListener() {
 
             public void componentActivated(AbstractComponent c) {
-                try {
-                    int numTries = 3;
-                    boolean written = false;
-                    while (!written && numTries > 0) {
-                        written = writer.write(input.getText(),
-                                master.scorecard.read(), master.scorecard
-                                        .isCleared());
-                        numTries--;
-                    }
-                    input.setAcceptingInput(false);
-                    completed = true;
-                    // TODO really tell the user this or just silently fail?
-                    // if (!written) {
-                    // message = "You're not online so we couldn't record this
-                    // Ÿber score.";
-                    // } else {
-                    message = "Way to go " + input.getText() + "!! ... "
-                            + randomResponse();
-                    // }
-                } catch (SlickException e) {
-                    e.printStackTrace();
+                int numTries = 3;
+                boolean written = false;
+                while (!written && numTries > 0) {
+                    written = writer.write(input.getText(),
+                            master.scorecard.read(), master.scorecard
+                                    .isCleared());
+                    numTries--;
                 }
+                input.setAcceptingInput(false);
+                completed = true;
+                // TODO really tell the user this or just silently fail?
+                // if (!written) {
+                // message = "You're not online so we couldn't record this
+                // Ÿber score.";
+                // } else {
+                message = "Way to go " + input.getText() + "!! ... "
+                        + randomResponse();
+                // }
             }
 
         });

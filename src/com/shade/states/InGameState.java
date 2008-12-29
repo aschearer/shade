@@ -196,6 +196,7 @@ public class InGameState extends BasicGameState {
     private void exit(StateBasedGame game, int state) {
         master.control.flushControls();
         master.control.killPlayer();
+        master.music.fade(2000, 1f, false);
         game.enterState(state);
     }
 
