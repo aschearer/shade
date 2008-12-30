@@ -28,6 +28,7 @@ public class LevelSerial {
         mappings.put("Fence", "com.shade.entities.Fence");
         mappings.put("Door", "com.shade.entities.Door");
         mappings.put("Monster", "com.shade.entities.monster.Monster");
+        mappings.put("Bird", "com.shade.entities.bird.Bird");
         mappings.put("Sand", "com.shade.entities.SandPit");
         mappings.put("Slider", "com.shade.entities.Slider");
     }

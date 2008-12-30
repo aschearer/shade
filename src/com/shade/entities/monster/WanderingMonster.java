@@ -8,6 +8,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Entity;
 import com.shade.base.util.State;
+import com.shade.entities.Player;
 import com.shade.entities.Roles;
 
 /**
@@ -40,7 +41,12 @@ public class WanderingMonster implements State {
     public void enter() {
         timer = 0;
         idling.restart();
-        monster.heading = (float)(Math.random()*Math.PI*2);
+        Player p = (Player) monster.level.getEntitiesByRole(Roles.PLAYER
+				.ordinal())[0];
+		float distx = p.getXCenter() - monster.getXCenter();
+		float disty = p.getYCenter() - monster.getYCenter();
+		monster.heading = (float) (Math.atan2(disty, distx) - Math.PI / 2);
+		
     }
 
     public int getRole() {
@@ -48,7 +54,7 @@ public class WanderingMonster implements State {
     }
 
     public boolean isNamed(Object o) {
-        return o == Monster.States.PROWLING;
+        return o == Monster.States.WANDERING;
     }
 
     public void onCollision(Entity obstacle) {
@@ -64,7 +70,7 @@ public class WanderingMonster implements State {
     public void update(StateBasedGame game, int delta) {
         idling.update(delta);
         testTimer(delta);
-        monster.move(0.25+Math.random()*0.5);
+        monster.move(0.5);
     }
 
     private void testTimer(int delta) {

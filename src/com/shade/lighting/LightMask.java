@@ -77,6 +77,7 @@ public class LightMask {
     	g.setColor(c);
     
     }
+    
 
     private void renderLights(StateBasedGame game, Graphics g,
                               LuminousEntity... entities) {
@@ -106,12 +107,13 @@ public class LightMask {
         Arrays.sort(entities);
         int i = 0;
         GL11.glEnable(GL11.GL_ALPHA_TEST);
+      //  GL11.glAlphaFunc(GL11.GL_GREATER, 0.2f);
         GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         while (i < entities.length && entities[i].getZIndex() < threshold) {
             if (entityException(entities[i])) {
                 GL11.glAlphaFunc(GL11.GL_GREATER, MAGIC_ARROW_VALUE);
             } else {
-                GL11.glAlphaFunc(GL11.GL_GREATER, MAGIC_ALPHA_VALUE);
+                GL11.glAlphaFunc(GL11.GL_GREATER, 0.95f);
             }
             entities[i].render(game, g);
             entities[i].setLuminosity(getLuminosityFor(entities[i], g));

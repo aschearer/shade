@@ -1,4 +1,4 @@
-package com.shade.entities.monster;
+package com.shade.entities.bird;
 
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Graphics;
@@ -8,6 +8,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Entity;
 import com.shade.base.util.State;
+import com.shade.entities.Player;
 import com.shade.entities.Roles;
 
 /**
@@ -19,30 +20,26 @@ import com.shade.entities.Roles;
  *
  * @author Alexander Schearer <aschearer@gmail.com>
  */
-public class SleepingMonster implements State {
+public class WaitingBird implements State {
 
-    private Monster monster;
+    private Bird bird;
     private Animation idling;
-    private Animation snores;
     private int timer;
 
-    public SleepingMonster(Monster mole) throws SlickException {
-        this.monster = mole;
+    public WaitingBird(Bird me) throws SlickException {
+        this.bird = me;
         initResources();
     }
 
     private void initResources() throws SlickException {
-        SpriteSheet idles = new SpriteSheet("entities/mole/sleep.png", 40, 40);
-        SpriteSheet z = new SpriteSheet("entities/mole/z.png",40,40);
-        snores = new Animation(z,900);
-        idling = new Animation(idles, 600);
+        SpriteSheet idles = new SpriteSheet("entities/bird/wait.png", 40, 40);
+        idling = new Animation(idles, 100);
         idling.setAutoUpdate(false);
         idling.setPingPong(true);
     }
 
     public void enter() {
         timer = 0;
-        snores.restart();
         idling.restart();
     }
 
@@ -51,29 +48,51 @@ public class SleepingMonster implements State {
     }
 
     public boolean isNamed(Object o) {
-        return o == Monster.States.SLEEPING;
+        return o == Bird.States.WAITING;
     }
 
     public void onCollision(Entity obstacle) {
         if (obstacle.getRole() == Roles.PLAYER.ordinal()) {
-            monster.manager.enter(Monster.States.WANDERING);
+            bird.manager.enter(Bird.States.WAITING);
         }
     }
 
     public void render(StateBasedGame game, Graphics g) {
-    	snores.draw(monster.getX()+monster.getWidth()/2, monster.getY()+monster.getHeight()/2, monster.getWidth(), monster.getHeight());
-        idling.draw(monster.getX(), monster.getY(), monster.getWidth(), monster.getHeight());
+        idling.draw(bird.getX(), bird.getY(), bird.getWidth(), bird.getHeight());
     }
 
     public void update(StateBasedGame game, int delta) {
         idling.update(delta);
-        snores.update(delta);
-        monster.wake();
+        bird.yawn();
         testTimer(delta);
+        checkPlayer();
+    }
+    
+    private void checkPlayer(){
+    	float x = bird.getXCenter();
+        float y = bird.getYCenter();
+        Player p = (Player)bird.level.getEntitiesByRole(Roles.PLAYER.ordinal())[0];
+        float destx = p.getXCenter();
+        float desty = p.getYCenter();
+        float distx = destx-x;
+        float disty = desty-y;
+        float radius = (float)Math.sqrt(distx*distx+disty*disty);
+        bird.heading = (float)(Math.atan2(disty,distx)+Math.PI/2);
+        if(radius<bird.range){
+        	//TODO: I think the bird should shriek and turn angry (territorial).
+        	// this would give the player some time to back off.
+        	bird.manager.enter(Bird.States.ATTACKING);
+        }
     }
 
     private void testTimer(int delta) {
     	timer+=delta;
+    	if(timer>2000){
+    		if(Math.random()>0.2)
+    		bird.manager.enter(Bird.States.WAITING);
+    		else 
+    		bird.manager.enter(Bird.States.RETURNING);
+    	}
     }
 
 }

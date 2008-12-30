@@ -1,4 +1,4 @@
-package com.shade.entities.monster;
+package com.shade.entities.bird;
 
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Graphics;
@@ -19,15 +19,15 @@ import com.shade.entities.Roles;
  *
  * @author Alexander Schearer <aschearer@gmail.com>
  */
-public class SleepingMonster implements State {
+public class SleepingBird implements State {
 
-    private Monster monster;
+    private Bird bird;
     private Animation idling;
     private Animation snores;
     private int timer;
 
-    public SleepingMonster(Monster mole) throws SlickException {
-        this.monster = mole;
+    public SleepingBird(Bird me) throws SlickException {
+        this.bird = me;
         initResources();
     }
 
@@ -51,24 +51,24 @@ public class SleepingMonster implements State {
     }
 
     public boolean isNamed(Object o) {
-        return o == Monster.States.SLEEPING;
+        return o == Bird.States.SLEEPING;
     }
 
     public void onCollision(Entity obstacle) {
         if (obstacle.getRole() == Roles.PLAYER.ordinal()) {
-            monster.manager.enter(Monster.States.WANDERING);
+            bird.manager.enter(Bird.States.WAITING);
         }
     }
 
     public void render(StateBasedGame game, Graphics g) {
-    	snores.draw(monster.getX()+monster.getWidth()/2, monster.getY()+monster.getHeight()/2, monster.getWidth(), monster.getHeight());
-        idling.draw(monster.getX(), monster.getY(), monster.getWidth(), monster.getHeight());
+    	snores.draw(bird.getX()+bird.getWidth()/2, bird.getY()+bird.getHeight()/2, bird.getWidth(), bird.getHeight());
+        idling.draw(bird.getX(), bird.getY(), bird.getWidth(), bird.getHeight());
     }
 
     public void update(StateBasedGame game, int delta) {
         idling.update(delta);
         snores.update(delta);
-        monster.wake();
+        bird.wake();
         testTimer(delta);
     }
 

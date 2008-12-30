@@ -1,4 +1,4 @@
-package com.shade.entities.monster;
+package com.shade.entities.bird;
 
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Graphics;
@@ -19,22 +19,19 @@ import com.shade.entities.Roles;
  *
  * @author Alexander Schearer <aschearer@gmail.com>
  */
-public class SleepingMonster implements State {
-
-    private Monster monster;
+public class AttackingBird implements State {
+	public static final int ATTACK_TIME = 1500;
+    private Bird bird;
     private Animation idling;
-    private Animation snores;
     private int timer;
 
-    public SleepingMonster(Monster mole) throws SlickException {
-        this.monster = mole;
+    public AttackingBird(Bird me) throws SlickException {
+        this.bird = me;
         initResources();
     }
 
     private void initResources() throws SlickException {
-        SpriteSheet idles = new SpriteSheet("entities/mole/sleep.png", 40, 40);
-        SpriteSheet z = new SpriteSheet("entities/mole/z.png",40,40);
-        snores = new Animation(z,900);
+        SpriteSheet idles = new SpriteSheet("entities/bird/wait.png", 40, 40);
         idling = new Animation(idles, 600);
         idling.setAutoUpdate(false);
         idling.setPingPong(true);
@@ -42,7 +39,6 @@ public class SleepingMonster implements State {
 
     public void enter() {
         timer = 0;
-        snores.restart();
         idling.restart();
     }
 
@@ -51,29 +47,30 @@ public class SleepingMonster implements State {
     }
 
     public boolean isNamed(Object o) {
-        return o == Monster.States.SLEEPING;
+        return o == Bird.States.ATTACKING;
     }
 
     public void onCollision(Entity obstacle) {
         if (obstacle.getRole() == Roles.PLAYER.ordinal()) {
-            monster.manager.enter(Monster.States.WANDERING);
+           // bird.manager.enter(Bird.States.RETURNING);
         }
     }
 
     public void render(StateBasedGame game, Graphics g) {
-    	snores.draw(monster.getX()+monster.getWidth()/2, monster.getY()+monster.getHeight()/2, monster.getWidth(), monster.getHeight());
-        idling.draw(monster.getX(), monster.getY(), monster.getWidth(), monster.getHeight());
+        idling.draw(bird.getX(), bird.getY(), bird.getWidth(), bird.getHeight());
     }
 
     public void update(StateBasedGame game, int delta) {
         idling.update(delta);
-        snores.update(delta);
-        monster.wake();
+        bird.wake();
+        bird.move(1.5);
         testTimer(delta);
     }
 
     private void testTimer(int delta) {
     	timer+=delta;
+    	if(timer>ATTACK_TIME)
+    		bird.manager.enter(Bird.States.RETURNING);
     }
 
 }

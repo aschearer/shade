@@ -1,4 +1,4 @@
-package com.shade.entities.monster;
+package com.shade.entities.bird;
 
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -27,10 +27,10 @@ import com.shade.lighting.LuminousEntity;
  *
  * @author Jonathan Jou <j.j@duke.edu>
  */
-public final class Monster extends Body implements LuminousEntity{
+public final class Bird extends Body implements LuminousEntity{
 
     protected enum States {
-        PROWLING, SLEEPING, LOST, CHASING, WANDERING, SNIFFING
+        WAITING, RETURNING, ATTACKING, SLEEPING, MIGRATING
     }
 
     protected CrashLevel level;
@@ -42,7 +42,7 @@ public final class Monster extends Body implements LuminousEntity{
     
     private float luminosity;
 
-    public Monster(int x, int y, int range, int speed) throws SlickException {
+    public Bird(int x, int y, int range, int speed) throws SlickException {
         heading = (float) (Math.PI);
         this.range = range;
         this.speed = speed;
@@ -56,12 +56,11 @@ public final class Monster extends Body implements LuminousEntity{
 
     private void initStates() throws SlickException {
         manager = new StateManager();
-        manager.add(new ProwlingMonster(this));
-        manager.add(new ChasingMonster(this));
-        manager.add(new SleepingMonster(this));
-        manager.add(new LostMonster(this));
-        manager.add(new SniffingMonster(this));
-        manager.add(new WanderingMonster(this));
+        manager.add(new ReturningBird(this));
+        manager.add(new AttackingBird(this));
+        manager.add(new WaitingBird(this));
+        manager.add(new SleepingBird(this));
+        
     }
 
     protected void kill() {
@@ -93,10 +92,6 @@ public final class Monster extends Body implements LuminousEntity{
 
     public void onCollision(Entity obstacle) {
         manager.onCollision(obstacle);
-        if (obstacle.getRole() == Roles.OBSTACLE.ordinal()) {
-            Repelable b = (Repelable) obstacle;
-            b.repel(this);
-        }
     }
     
     public boolean canChase(){
@@ -131,7 +126,7 @@ public final class Monster extends Body implements LuminousEntity{
     public void wake(){
     	Model mode = (Model)level;
     	if(mode.getTimer().getDaylightStatus()==DayPhaseTimer.DayLightStatus.DAWN){
-        	manager.enter(States.PROWLING);
+        	manager.enter(States.WAITING);
         }
     }
 
@@ -166,7 +161,7 @@ public final class Monster extends Body implements LuminousEntity{
     }
 
     public int getZIndex() {
-        return 2;
+        return 20;
     }
 
     public int compareTo(LuminousEntity l) {

@@ -64,6 +64,7 @@ public class SniffingMonster implements State {
 	public void update(StateBasedGame game, int delta) {
 		idling.update(delta);
 		hunt();
+		monster.yawn();
 		testTimer(delta);
 	}
 
