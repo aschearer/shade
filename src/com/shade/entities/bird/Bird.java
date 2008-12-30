@@ -109,15 +109,23 @@ public final class Bird extends Body implements LuminousEntity{
     }
     
     public boolean playerInSight(){
-    	Player p = (Player)level.getEntitiesByRole(Roles.PLAYER.ordinal())[0];
+    	Object[] o = level.getEntitiesByRole(Roles.PLAYER.ordinal());
+    	if(o.length>0){
+    	Player p = (Player)o[0];
     	return level.lineOfSight(this,p, this,(Basket)level.getEntitiesByRole(Roles.BASKET.ordinal())[0]) && p.getLuminosity()>0.6;
+    	}
+    	return false;
     }
     
     public boolean playerInRange(){
-    	Player p = (Player)level.getEntitiesByRole(Roles.PLAYER.ordinal())[0];
+    	Object[] o = level.getEntitiesByRole(Roles.PLAYER.ordinal());
+    	if(o.length>0){
+    	Player p = (Player)o[0];
     	float distx = p.getXCenter()-getXCenter();
     	float disty = p.getYCenter()-getYCenter();
     	return Math.sqrt(distx*distx+disty*disty)<range;
+    	}
+    	return false;
     }
 
     public void render(StateBasedGame game, Graphics g) {
