@@ -62,9 +62,6 @@ public class ReturningBird implements State {
         if (obstacle.getRole() == Roles.PLAYER.ordinal()) {
             //bird.manager.enter(Bird.States.RETURNING);
         }
-        if (obstacle == nest) {
-            //bird.manager.enter(Bird.States.WAITING);
-        }
     }
 
     public void render(StateBasedGame game, Graphics g) {
@@ -84,10 +81,15 @@ public class ReturningBird implements State {
         float disty = desty-y;
         float radius = (float)Math.sqrt(distx*distx+disty*disty);
         double curve = Math.PI/3*Math.pow(radius*Math.max(nest.getWidth(), nest.getHeight()),0.02);
-        if(radius>100) curve = Math.PI/8;
+        if(radius>Math.min(nest.getWidth(), nest.getHeight())||
+        		Math.min(nest.getWidth(), nest.getHeight())<30||
+        		x<30||y<30||x>game.getContainer().getWidth()-30||y>game.getContainer().getHeight()-30
+        		) curve = Math.PI/8;
         bird.heading = (float)(Math.atan2(disty,distx)+Math.PI/2-curve);
         bird.move(1);
-        if(radius<Math.min(nest.getWidth(), nest.getHeight())/2)bird.manager.enter(Bird.States.WAITING);
+        if(radius<Math.min(nest.getWidth(), nest.getHeight())/2){
+        	bird.manager.enter(Bird.States.WAITING);
+        	}
         }
     }
 

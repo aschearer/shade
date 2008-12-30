@@ -35,6 +35,16 @@ public abstract class Linkable extends Body implements LuminousEntity {
         head.next = l;
         l.prev = head;
     }
+    
+    /**
+     * Destroy the list!
+     */
+    public void detachAll(){
+    	if(prev!= null) prev.next = null;
+    	if(next!=null)next.detachAll();
+    	prev = null;
+    	next = null;
+    }
 
     /**
      * Remove this object from its linked list.

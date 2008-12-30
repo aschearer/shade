@@ -21,6 +21,7 @@ import com.shade.entities.Roles;
  */
 public class AttackingBird implements State {
 	public static final int ATTACK_TIME = 1500;
+	public static final int COOLDOWN_TIME = 500;
     private Bird bird;
     private Animation idling;
     private int timer;
@@ -31,19 +32,20 @@ public class AttackingBird implements State {
     }
 
     private void initResources() throws SlickException {
-        SpriteSheet idles = new SpriteSheet("entities/bird/wait.png", 40, 40);
+        SpriteSheet idles = new SpriteSheet("entities/bird/attack.png", 40, 40);
         idling = new Animation(idles, 600);
         idling.setAutoUpdate(false);
         idling.setPingPong(true);
     }
 
     public void enter() {
+    	bird.attacking = true;
         timer = 0;
         idling.restart();
     }
 
     public int getRole() {
-        return Roles.MOLE.ordinal();
+        return Roles.MONSTER.ordinal();
     }
 
     public boolean isNamed(Object o) {
@@ -63,14 +65,23 @@ public class AttackingBird implements State {
     public void update(StateBasedGame game, int delta) {
         idling.update(delta);
         bird.wake();
-        bird.move(1.5);
-        testTimer(delta);
+       testTimer(delta);
     }
 
     private void testTimer(int delta) {
     	timer+=delta;
-    	if(timer>ATTACK_TIME)
+    	if(timer>ATTACK_TIME){
+    		bird.move(0.3);
+    		idling.setSpeed(15);
+    		if(timer> ATTACK_TIME+COOLDOWN_TIME){
     		bird.manager.enter(Bird.States.RETURNING);
+    		bird.attacking = false;
+    		}
+    	}
+    	else  {
+    		bird.move(1.5);
+    		idling.setSpeed(1);
+    	}
     }
 
 }

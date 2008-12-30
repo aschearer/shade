@@ -15,6 +15,8 @@ import com.shade.base.util.State;
 import com.shade.base.util.StateManager;
 import com.shade.crash.CrashLevel;
 import com.shade.crash.Repelable;
+import com.shade.entities.bird.Bird;
+import com.shade.entities.mushroom.Mushroom;
 import com.shade.lighting.LuminousEntity;
 
 public class Player extends Linkable {
@@ -80,6 +82,11 @@ public class Player extends Linkable {
             if(obstacle.getRole() == Roles.MONSTER.ordinal()){
             	manager.enter(Player.PlayerState.STUNNED);
             }    
+            if(obstacle.getRole() == Roles.BIRD.ordinal()){
+            	Bird b = (Bird)obstacle;
+            	if(b.isAttacking())
+            	manager.enter(Player.PlayerState.STUNNED);
+            }
             
             if (obstacle.getRole() == Roles.SANDPIT.ordinal()) {
                 impeded = true;
@@ -136,8 +143,19 @@ public class Player extends Linkable {
         }
 
         public void enter() {
+        	scatterShrooms();
             timer = 0;
             failmer = 0;
+        }
+        //HACK! TODO: KILL HACK!
+        private void scatterShrooms(){
+        	Linkable la = next;
+        	while(la!=null){
+        		Mushroom m = (Mushroom) la;
+        		la = la.next;
+        		m.scatter();
+        		
+        	}
         }
 
         public int getRole() {
@@ -150,16 +168,49 @@ public class Player extends Linkable {
         }
 
         public void render(StateBasedGame game, Graphics g) {
-            if (failmer % 5 > 2) {
+            if(timer<500||failmer % 5 > 2) {
                 normal.drawCentered(getXCenter(), getYCenter());
             }
+
+            
         }
 
         public void update(StateBasedGame game, int delta) {
             timer += delta;
             failmer++;
+            if(timer>500)
+            testAndMove(game.getContainer().getInput(), delta);
+            testAndWrap();
             if (timer > 1000) {
                 manager.enter(PlayerState.NORMAL);
+            }
+        }
+        private void testAndMove(Input input, int delta) {
+            xVelocity = 0;
+            yVelocity = 0;
+            if (input.isKeyDown(Input.KEY_LEFT)) {
+                xVelocity--;
+            }
+            if (input.isKeyDown(Input.KEY_RIGHT)) {
+                xVelocity++;
+            }
+            if (input.isKeyDown(Input.KEY_UP)) {
+                yVelocity--;
+            }
+            if (input.isKeyDown(Input.KEY_DOWN)) {
+                yVelocity++;
+            }
+            double mag = Math.sqrt(xVelocity * xVelocity + yVelocity
+                    * yVelocity);
+            // make it uniform speed
+            float speed = (impeded) ? SPEED / 2 : SPEED;
+            xVelocity = (float) (1.0 * speed * xVelocity / mag);
+            yVelocity = (float) (1.0 * speed * yVelocity / mag);
+            if (mag != 0) {
+                nudge(xVelocity, yVelocity);
+            } else {
+                xVelocity = 0;
+                yVelocity = 0;
             }
         }
 

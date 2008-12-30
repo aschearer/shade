@@ -4,6 +4,7 @@ public enum Roles {
 
     PLAYER, 
     MONSTER, 
+    BIRD,
     SPAWNLING, 
     MUSHROOM, 
     OBSTACLE, 

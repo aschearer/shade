@@ -65,12 +65,6 @@ public final class Mole extends Linkable {
         level.remove(this);
     }
 
-    private void detachAll() {
-        while (next != null) {
-            next.detach();
-        }
-        detach();
-    }
 
     public float getLuminosity() {
         return luminosity;
