@@ -48,7 +48,7 @@ public class LocalHighScoreReader implements HighScoreReader {
         Collections.sort(rows, new Comparator<String[]>() {
 
             public int compare(String[] s1, String[] s2) {
-                return s2[SCORE].compareTo(s1[SCORE]);
+                return s1[SCORE].compareTo(s2[SCORE]);
             }
             
         });
