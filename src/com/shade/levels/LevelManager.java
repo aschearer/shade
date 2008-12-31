@@ -27,7 +27,9 @@ public class LevelManager implements Iterator<Model> {
         "levels/level-11.xml",
         "levels/level-12.xml",
         "levels/level-13.xml",
-        "levels/level-14.xml"
+        "levels/level-14.xml",
+        "levels/level-15.xml",
+        "levels/level-16.xml"
     };
 
     /* Pointer into the list of levels. */

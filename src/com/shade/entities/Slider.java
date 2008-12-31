@@ -30,7 +30,7 @@ public class Slider extends Body implements LuminousEntity, Repelable {
     private ActiveDirection direction;
     private int timer;
 
-    public Slider(int x, int y, int z, int r, int range, int speed) throws SlickException {
+    public Slider(int x, int y, int z, int r, int range, float speed) throws SlickException {
         int w = (r == 1 || r == 3) ? 65 : 11;
         int h = (r == 1 || r == 3) ? 11 : 65;
         initShape(x, y, w, h);

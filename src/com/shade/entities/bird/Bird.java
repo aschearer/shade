@@ -48,7 +48,7 @@ public final class Bird extends Body implements LuminousEntity{
     
     private float luminosity;
 
-    public Bird(int x, int y, int range, int speed) throws SlickException {
+    public Bird(int x, int y, int range, float speed) throws SlickException {
         heading = (float) (Math.PI);
         this.range = range;
         this.speed = speed;
