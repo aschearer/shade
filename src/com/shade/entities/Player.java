@@ -32,7 +32,7 @@ public class Player extends Linkable {
     private StateManager manager;
     private Image normal;
     private float luminosity;
-    private Sound register;
+    private Sound register, damage;
     private boolean impeded;
 
     public Player(int x, int y) throws SlickException {
@@ -48,6 +48,7 @@ public class Player extends Linkable {
     private void initResources() throws SlickException {
         normal = new Image("entities/player/player.png");
         register = new Sound("entities/player/register.ogg");
+        damage = new Sound("entities/player/hit.ogg");
     }
 
     private void initStates() {
@@ -79,15 +80,18 @@ public class Player extends Linkable {
                 l.attach(m);
                 register.play();
             }
-            if(obstacle.getRole() == Roles.MONSTER.ordinal()){
-            	manager.enter(Player.PlayerState.STUNNED);
-            }    
-            if(obstacle.getRole() == Roles.BIRD.ordinal()){
-            	Bird b = (Bird)obstacle;
-            	if(b.isAttacking())
-            	manager.enter(Player.PlayerState.STUNNED);
+            if (obstacle.getRole() == Roles.MONSTER.ordinal()) {
+                manager.enter(Player.PlayerState.STUNNED);
+                damage.play();
             }
-            
+            if (obstacle.getRole() == Roles.BIRD.ordinal()) {
+                Bird b = (Bird) obstacle;
+                if (b.isAttacking()) {
+                    manager.enter(Player.PlayerState.STUNNED);
+                    damage.play();
+                }
+            }
+
             if (obstacle.getRole() == Roles.SANDPIT.ordinal()) {
                 impeded = true;
             }
@@ -143,19 +147,20 @@ public class Player extends Linkable {
         }
 
         public void enter() {
-        	scatterShrooms();
+            scatterShrooms();
             timer = 0;
             failmer = 0;
         }
-        //HACK! TODO: KILL HACK!
-        private void scatterShrooms(){
-        	Linkable la = next;
-        	while(la!=null){
-        		Mushroom m = (Mushroom) la;
-        		la = la.next;
-        		m.scatter();
-        		
-        	}
+
+        // HACK! TODO: KILL HACK!
+        private void scatterShrooms() {
+            Linkable la = next;
+            while (la != null) {
+                Mushroom m = (Mushroom) la;
+                la = la.next;
+                m.scatter();
+
+            }
         }
 
         public int getRole() {
@@ -168,23 +173,23 @@ public class Player extends Linkable {
         }
 
         public void render(StateBasedGame game, Graphics g) {
-            if(timer<500||failmer % 5 > 2) {
+            if (timer < 500 || failmer % 5 > 2) {
                 normal.drawCentered(getXCenter(), getYCenter());
             }
 
-            
         }
 
         public void update(StateBasedGame game, int delta) {
             timer += delta;
             failmer++;
-            if(timer>500)
-            testAndMove(game.getContainer().getInput(), delta);
+            if (timer > 500)
+                testAndMove(game.getContainer().getInput(), delta);
             testAndWrap();
             if (timer > 1000) {
                 manager.enter(PlayerState.NORMAL);
             }
         }
+
         private void testAndMove(Input input, int delta) {
             xVelocity = 0;
             yVelocity = 0;
