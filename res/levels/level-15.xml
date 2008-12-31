@@ -4,6 +4,8 @@
     <Player x="350" y="400"/>
     <Basket x="300" y="350" />
 
+    <Bird x="600" y = "300" speed="2" range="100"/>
+
     <Fence x="80" y="105" z="5" facing="1" />
     <Door x="80" y="235" z="5" facing="3" />
     <Fence x="80" y="305" z="5" facing="1" />

@@ -22,6 +22,4 @@
     <Fence x="715" y="368" z="5" facing="1" />
     <Fence x="50" y="50" z="5" facing="1" />
     <Fence x="390" y="140" z="5" facing="0" />
-    
-     <Bird x="300" y = "300" speed="2" range="100"/>
 </Level>
