@@ -1,13 +1,11 @@
 package com.shade.score;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
-
-import org.newdawn.slick.util.ResourceLoader;
+import java.util.prefs.Preferences;
 
 import com.shade.util.CsvReader;
 
@@ -20,22 +18,20 @@ import com.shade.util.CsvReader;
  */
 public class LocalHighScoreReader implements HighScoreReader {
 
+    private static final String EMPTY_STRING = "";
+    private static final String SCORE_KEY = "scores";
+    
     private static final int NAME = 0;
     private static final int SCORE = 1;
     private static final int CLEAR = 2;
-    
-    private CsvReader reader;
-
-    public LocalHighScoreReader(String path) {
-        InputStream stream = ResourceLoader.getResourceAsStream(path);
-        InputStreamReader input = new InputStreamReader(stream);
-        reader = new CsvReader(input);
-    }
 
     /**
      * Returns all the scores if zero is passed.
      */
     public String[][] getScores(int limit) {
+        Preferences prefs = Preferences.systemNodeForPackage(this.getClass());
+        StringReader s = new StringReader(prefs.get(SCORE_KEY, EMPTY_STRING));
+        CsvReader reader = new CsvReader(s);
         LinkedList<String[]> rows = new LinkedList<String[]>();
         try {
             while (reader.readRecord()) {
@@ -52,7 +48,7 @@ public class LocalHighScoreReader implements HighScoreReader {
         Collections.sort(rows, new Comparator<String[]>() {
 
             public int compare(String[] s1, String[] s2) {
-                return s1[SCORE].compareTo(s2[SCORE]);
+                return s2[SCORE].compareTo(s1[SCORE]);
             }
             
         });

@@ -1,10 +1,6 @@
 package com.shade.score;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.net.URL;
-
-import org.newdawn.slick.util.ResourceLoader;
+import java.util.prefs.Preferences;
 
 /**
  * Write high scores to a remote server or locally if you cannot connect to the
@@ -20,7 +16,8 @@ import org.newdawn.slick.util.ResourceLoader;
  */
 public class FailSafeHighScoreWriter implements HighScoreWriter {
 
-    private static final String FILE = "states/highscore/scores.csv";
+    private static final String EMPTY_STRING = "";
+    private static final String SCORE_KEY = "scores";
     private static final String SERVER = "http://anotherearlymorning.com/games/shade/post.php";
 
     private LocalHighScoreWriter localWriter;
@@ -28,9 +25,9 @@ public class FailSafeHighScoreWriter implements HighScoreWriter {
     private BatchWriter batchWriter;
 
     public FailSafeHighScoreWriter() {
-        localWriter = new LocalHighScoreWriter(FILE);
+        localWriter = new LocalHighScoreWriter();
         remoteWriter = new RemoteHighScoreWriter(SERVER);
-        batchWriter = new BatchWriter(FILE);
+        batchWriter = new BatchWriter();
     }
 
     public boolean write(String name, int score, boolean clear) {
@@ -39,7 +36,7 @@ public class FailSafeHighScoreWriter implements HighScoreWriter {
             // try to write past local scores to server
             if (batchWriter.write()) {
                 // clear the file
-                clearFile(FILE);
+                Preferences.systemNodeForPackage(this.getClass()).put(SCORE_KEY, EMPTY_STRING);
             }
             // else do nothing, they will get written later
         } else {
@@ -48,16 +45,6 @@ public class FailSafeHighScoreWriter implements HighScoreWriter {
         }
         // wrote current score successfully
         return true;
-    }
-
-    private void clearFile(String f) {
-        try {
-            URL u = ResourceLoader.getResource(f);
-            FileWriter w = new FileWriter(u.getPath());
-            w.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
 }

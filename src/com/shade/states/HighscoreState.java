@@ -154,11 +154,11 @@ public class HighscoreState extends BasicGameState {
         int y = 100;
         int n = 0;
         for (String[] s : scoress) {
-            if (s[0].equals("1")) {
+            if (s[2].equals("1")) {
                 crowns.add(new FadeInImage(resource.get("crown"), x, y + 3 + (40 * n), 1000 + 400 *n));
             }
-            scores.add(new FadeInText(s[1], master.jekyllLarge, x + 50, y + (40 * n), 1000 + 400 * n));
-            scores.add(new FadeInText(s[2], master.jekyllLarge, x + 300, y + (40 * n), 1000 + 400 * n));
+            scores.add(new FadeInText(s[0], master.jekyllLarge, x + 50, y + (40 * n), 1000 + 400 * n));
+            scores.add(new FadeInText(s[1], master.jekyllLarge, x + 300, y + (40 * n), 1000 + 400 * n));
             n++;
         }
     }

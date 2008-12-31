@@ -1,15 +1,12 @@
 package com.shade.score;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.util.Scanner;
-
-import org.newdawn.slick.util.ResourceLoader;
+import java.util.prefs.Preferences;
 
 /**
  * Post all of the scores in a csv file to a server.
@@ -18,14 +15,10 @@ import org.newdawn.slick.util.ResourceLoader;
  */
 public class BatchWriter {
     
-    private static final String NEWLINE = "\n";
+    private static final String EMPTY_STRING = "";
+    private static final String SCORE_KEY = "scores";
     private static final String SERVER = "http://anotherearlymorning.com/games/shade/batch.php";
-    
-    private String path;
-
-    public BatchWriter(String path) {
-        this.path = path;
-    }
+   
     
     public boolean write() {
         try {
@@ -45,24 +38,13 @@ public class BatchWriter {
                     .getInputStream()));
             String response = i.readLine();
             return response.equals("success");
-
         } catch (Exception e) {
             return false;
         }
     }
 
     private String collectScores() {
-        StringBuilder builder = new StringBuilder();
-        Scanner reader = getScanner();
-        while (reader.hasNextLine()) {
-            builder.append(reader.nextLine());
-            builder.append(NEWLINE);
-        }
-        return builder.toString();
-    }
-
-    private Scanner getScanner() {
-        InputStream stream = ResourceLoader.getResourceAsStream(path);
-        return new Scanner(stream);
+        Preferences prefs = Preferences.systemNodeForPackage(this.getClass());
+        return prefs.get(SCORE_KEY, EMPTY_STRING);
     }
 }

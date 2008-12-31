@@ -8,14 +8,13 @@ package com.shade.score;
  */
 public class FailSafeHighScoreReader implements HighScoreReader {
 
-    private static final String FILE = "states/highscore/scores.csv";
     private static final String SERVER = "http://anotherearlymorning.com/games/shade/board.php";
     
     private LocalHighScoreReader localReader;
     private RemoteHighScoreReader remoteReader;
 
     public FailSafeHighScoreReader() {
-        localReader = new LocalHighScoreReader(FILE);
+        localReader = new LocalHighScoreReader();
         remoteReader = new RemoteHighScoreReader(SERVER);
     }
 
