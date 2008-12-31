@@ -1,0 +1,41 @@
+h1 {
+    border-bottom: thin black solid;
+}
+
+p {
+	width: 480px;
+	line-height: 1.5;
+}
+
+#feedback {
+    width: 480px;
+}
+
+#feedback label {
+    font-size: small;
+    font-weight: bold;
+}
+
+#feedback ul {
+    margin-left: -35px;
+    list-style: none;
+}
+
+#feedback ul li {
+    margin: 0 0 4px 0;
+}
+
+#footer {
+    font-size: small;
+    border-top: thin black solid;
+}
+
+#footer ul {
+    margin-left: -35px;
+    list-style: none;
+}
+
+#footer ul li {
+    float: left; 
+    padding-right: 12px;
+}
