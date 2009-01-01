@@ -92,12 +92,10 @@ public class WaitingBird implements State {
 			if (radius < bird.range * 1.8) {
 				idling.setSpeed(Math.min(5, (float) Math.pow(bird.range
 						/ radius, 4) * 10));
-				if(wait.playing()){
-				wait.stop();
+				if (!Bird.alert.playing()) {
+				    Bird.alert.playAt(bird.getXCenter(),bird.getYCenter(),0);
 				}
-				wait.play(1.5f*bird.range/radius,1.5f*bird.range/radius);
-			} else{
-				wait.stop();
+			} else {
 				idling.setSpeed(1);
 			}
 			if (radius < bird.range) {

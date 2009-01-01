@@ -125,11 +125,11 @@ public class InGameState extends BasicGameState {
         // manager.rewind();
         // exit(game, TitleState.ID);
         // }
-         if (container.getInput().isKeyPressed(Input.KEY_R)) {
-         manager.rewind();
-         loadNextLevel(game);
-         }
-        /*if (isNight() && !transitioning) {
+//         if (container.getInput().isKeyPressed(Input.KEY_R)) {
+//         manager.rewind();
+//         loadNextLevel(game);
+//         }
+        if (isNight() && !transitioning) {
             if (isLastLevel()) {                
                 master.scorecard.add(GAME_CLEAR_BONUS);
                 master.scorecard.setBeaten();
@@ -162,7 +162,7 @@ public class InGameState extends BasicGameState {
             master.timer.reset();
             master.music.fade(2000, 1f, false);
             loadNextLevel(game);
-        }*/
+        }
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.shade.entities.bird;
 
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.Sound;
 import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.state.StateBasedGame;
@@ -47,6 +48,17 @@ public final class Bird extends Body implements LuminousEntity{
     protected boolean attacking;
     
     private float luminosity;
+    
+    protected static Sound alert, attack;
+    
+    static {
+        try {
+            alert = new Sound("entities/bird/alert.ogg");
+            attack = new Sound("entities/bird/attack.ogg");
+        } catch (SlickException e) {
+            e.printStackTrace();
+        }
+    }
 
     public Bird(int x, int y, int range, float speed) throws SlickException {
         heading = (float) (Math.PI);
