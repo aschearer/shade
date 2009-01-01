@@ -25,14 +25,16 @@ public class MeterControl implements ControlSlice, MushroomCounter {
 
     private float x, y;
     private float value, totalAmountToAdd, rateOfChange;
-    private static Image front, back;
+    private static Image front, back, danger, current;
     private float[] damages = { .1f, .175f, .3f };
     private int timeInSun;
+    private int dangerTimer;
     
     static {
         try {
             front = new Image("states/ingame/meter-front.png");
             back = new Image("states/ingame/meter-back.png");
+            danger = new Image("states/ingame/meter-danger.png");
         } catch (SlickException e) {
             e.printStackTrace();
         }
@@ -45,6 +47,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
         totalAmountToAdd = 0;
         rateOfChange = 1;
         initResources();
+        current = back;
     }
 
     private void initResources() throws SlickException {
@@ -64,7 +67,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
     }
 
     public void render(StateBasedGame game, Graphics g) {
-        back.draw(x, y);
+        current.draw(x, y);
         
         float w = front.getWidth();
         float h = front.getHeight();
@@ -89,6 +92,14 @@ public class MeterControl implements ControlSlice, MushroomCounter {
             rateOfChange = 1;
         }
         clamp();
+        
+        if (value < 40) {
+            dangerTimer += delta;
+            if (dangerTimer > 100) {
+                dangerTimer = 0;
+                current = (current == danger) ? back : danger;
+            }
+        }
     }
     
     public void awardBonus() {
