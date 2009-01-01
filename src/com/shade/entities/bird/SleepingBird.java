@@ -52,7 +52,7 @@ public class SleepingBird implements State {
 
     public void onCollision(Entity obstacle) {
         if (obstacle.getRole() == Roles.PLAYER.ordinal()) {
-            bird.manager.enter(Bird.States.WAITING);
+           // bird.manager.enter(Bird.States.WAITING);
         }
     }
 

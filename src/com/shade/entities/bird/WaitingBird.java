@@ -2,7 +2,9 @@ package com.shade.entities.bird;
 
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.Sound;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -25,6 +27,8 @@ public class WaitingBird implements State {
 	private Bird bird;
 	private Animation idling;
 	private int timer;
+	private Sound wait;
+	private boolean playing;
 
 	public WaitingBird(Bird me) throws SlickException {
 		this.bird = me;
@@ -36,11 +40,13 @@ public class WaitingBird implements State {
 		idling = new Animation(idles, 100);
 		idling.setAutoUpdate(false);
 		idling.setPingPong(true);
+		wait = new Sound("entities/bird/waiting.ogg");
 	}
 
 	public void enter() {
 		timer = 0;
 		idling.restart();
+		//wait.loop();
 	}
 
 	public int getRole() {
@@ -53,7 +59,7 @@ public class WaitingBird implements State {
 
 	public void onCollision(Entity obstacle) {
 		if (obstacle.getRole() == Roles.PLAYER.ordinal()) {
-			bird.manager.enter(Bird.States.WAITING);
+			bird.manager.enter(Bird.States.RETURNING);
 		}
 	}
 
@@ -86,8 +92,14 @@ public class WaitingBird implements State {
 			if (radius < bird.range * 1.8) {
 				idling.setSpeed(Math.min(5, (float) Math.pow(bird.range
 						/ radius, 4) * 10));
-			} else
+				if(wait.playing()){
+				wait.stop();
+				}
+				wait.play(1.5f*bird.range/radius,1.5f*bird.range/radius);
+			} else{
+				wait.stop();
 				idling.setSpeed(1);
+			}
 			if (radius < bird.range) {
 				// TODO: I think the bird should shriek and turn angry
 				// (territorial).
@@ -102,8 +114,10 @@ public class WaitingBird implements State {
 		if (timer > 2000) {
 			if (Math.random() > 0.2)
 				bird.manager.enter(Bird.States.WAITING);
-			else
+			else{
 				bird.manager.enter(Bird.States.RETURNING);
+				wait.stop();
+			}
 		}
 	}
 

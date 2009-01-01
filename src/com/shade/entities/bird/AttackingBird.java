@@ -3,6 +3,7 @@ package com.shade.entities.bird;
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.Sound;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -23,6 +24,7 @@ public class AttackingBird implements State {
 	public static final int ATTACK_TIME = 1500;
 	public static final int COOLDOWN_TIME = 500;
     private Bird bird;
+    private Sound attack;
     private Animation idling;
     private int timer;
 
@@ -36,9 +38,11 @@ public class AttackingBird implements State {
         idling = new Animation(idles, 600);
         idling.setAutoUpdate(false);
         idling.setPingPong(true);
+        attack = new Sound("entities/bird/attack.ogg");
     }
 
     public void enter() {
+    	attack.loop();
     	bird.attacking = true;
         timer = 0;
         idling.restart();
@@ -73,6 +77,7 @@ public class AttackingBird implements State {
     	if(timer>ATTACK_TIME){
     		bird.move(0.3);
     		idling.setSpeed(15);
+    		attack.stop();
     		if(timer> ATTACK_TIME+COOLDOWN_TIME){
     		bird.manager.enter(Bird.States.RETURNING);
     		bird.attacking = false;
