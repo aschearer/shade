@@ -40,6 +40,9 @@ public class AttackingBird implements State {
 
     public void enter() {
     	bird.attacking = true;
+    	if (!Bird.attack.playing()) {
+    	    Bird.attack.play();
+    	}
         timer = 0;
         idling.restart();
     }
