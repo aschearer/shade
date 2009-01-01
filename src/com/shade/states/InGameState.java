@@ -127,35 +127,35 @@ public class InGameState extends BasicGameState {
          manager.rewind();
          loadNextLevel(game);
          }
-//        if (isNight() && !transitioning) {
-//            if (isLastLevel()) {                
-//                master.scorecard.add(GAME_CLEAR_BONUS);
-//                master.scorecard.setBeaten();
-//                master.music.fade(2000, 1f, false);
-//                exit(game, EnterScoreState.ID);
-//            } else {
-//                transition.reset();
-//                transitioning = true;
-//            }
-//        }
-//        if (!transitioning && master.music.getVolume() == 1) {
-//            master.music.fade(MasterState.SECONDS_OF_DAYLIGHT, .1f, false);
-//        }
-//        if (transitioning || transition.reversed()) {
-//            transition.update(game, delta);
-//        }
-//        if (transitioning && transition.finished()) {
-//            transitionTimer += delta;
-//        }
-//        if (transition.finished() && transitionTimer > 2000) {
-//            transitioning = false;
-//            transitionTimer = 0;
-//            transition.reverse();
-//            meter.awardBonus();
-//            master.timer.reset();
-//            master.music.fade(2000, 1f, false);
-//            loadNextLevel(game);
-//        }
+        /*if (isNight() && !transitioning) {
+            if (isLastLevel()) {                
+                master.scorecard.add(GAME_CLEAR_BONUS);
+                master.scorecard.setBeaten();
+                master.music.fade(2000, 1f, false);
+                exit(game, EnterScoreState.ID);
+            } else {
+                transition.reset();
+                transitioning = true;
+            }
+        }
+        if (!transitioning && master.music.getVolume() == 1) {
+            master.music.fade(MasterState.SECONDS_OF_DAYLIGHT, .1f, false);
+        }
+        if (transitioning || transition.reversed()) {
+            transition.update(game, delta);
+        }
+        if (transitioning && transition.finished()) {
+            transitionTimer += delta;
+        }
+        if (transition.finished() && transitionTimer > 2000) {
+            transitioning = false;
+            transitionTimer = 0;
+            transition.reverse();
+            meter.awardBonus();
+            master.timer.reset();
+            master.music.fade(2000, 1f, false);
+            loadNextLevel(game);
+        }*/
     }
 
     @Override
