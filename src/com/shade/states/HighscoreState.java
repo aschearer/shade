@@ -15,17 +15,18 @@ import com.shade.controls.FadeInText;
 import com.shade.controls.SlickButton;
 import com.shade.util.ResourceManager;
 import com.shade.score.FailSafeHighScoreReader;
-import com.shade.score.HighScoreReader;
 
 public class HighscoreState extends BasicGameState {
     
     public static final int ID = 4;
 
+    private static final String NO_INTERNET_MESSAGE = "Shade supports global high scores. Please connect to the internet to take advantage of this exciting feature.";
+
     private MasterState master;
     private ResourceManager resource;
     private SlickButton play, back;
     private int timer;
-    private HighScoreReader reader;
+    private FailSafeHighScoreReader reader;
     private ArrayList<FadeInText> scores;
     private ArrayList<FadeInImage> crowns;
 
@@ -84,14 +85,13 @@ public class HighscoreState extends BasicGameState {
             i.render(game, g);
         }
         if (noInternet) {
-            drawCentered(container, "To use this exciting feature", 280);
-            drawCentered(container, "please connect to the internet.", 320);
+            drawCentered(container, NO_INTERNET_MESSAGE, 550);
         }
     }
     
     private void drawCentered(GameContainer c, String s, int y) {
-        int x = (c.getWidth() - master.jekyllLarge.getWidth(s)) / 2;
-        master.jekyllLarge.drawString(x, y, s);
+        int x = (c.getWidth() - master.jekyllSmall.getWidth(s)) / 2;
+        master.jekyllSmall.drawString(x, y, s);
     }
 
     // render the aquarium
@@ -146,10 +146,7 @@ public class HighscoreState extends BasicGameState {
         scores.clear();
         crowns.clear();
         String[][] scoress = reader.getScores(10);
-        if (scoress  == null) {
-            noInternet = true;
-            return;
-        }
+        noInternet = reader.isLocal();
         int x = 50;
         int y = 100;
         int n = 0;
