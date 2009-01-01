@@ -95,10 +95,12 @@ public class MeterControl implements ControlSlice, MushroomCounter {
         
         if (value < 40) {
             dangerTimer += delta;
-            if (dangerTimer > 100) {
+            if (dangerTimer > 200) {
                 dangerTimer = 0;
                 current = (current == danger) ? back : danger;
             }
+        } else if (current == danger) {
+            current = back;
         }
     }
     
