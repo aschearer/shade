@@ -22,7 +22,7 @@ public class Mushroom extends Linkable {
     protected static final float SPEED = 2.2f;
 
     private static final float RADIUS = 3f;
-    private static final float SCALE_INCREMENT = .005f;
+    private static final float SCALE_INCREMENT = .008f;
     private static final float MAX_SCALE = 3.5f;
     private static final float MIN_SCALE = 2f;
 
@@ -119,7 +119,7 @@ public class Mushroom extends Linkable {
     }
 
     protected void shrink() {
-        scale -= SCALE_INCREMENT / 2;
+        scale -= SCALE_INCREMENT / 3;
         resize();
     }
     

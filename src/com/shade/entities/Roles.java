@@ -12,5 +12,6 @@ public enum Roles {
     BASKET, 
     PICKED_MUSHROOM, 
     DUMMY, 
-    SANDPIT
+    SANDPIT, 
+    MOCK_PLAYER
 }

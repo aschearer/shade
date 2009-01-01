@@ -16,8 +16,7 @@ public class MockPlayer extends Player {
 
     @Override
     public int getRole() {
-        // TODO return a mock player role
-        return Roles.PLAYER.ordinal();
+        return Roles.MOCK_PLAYER.ordinal();
     }
 
 }

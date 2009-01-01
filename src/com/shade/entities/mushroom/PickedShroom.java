@@ -7,6 +7,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import com.shade.base.Entity;
 import com.shade.base.util.State;
 import com.shade.crash.Repelable;
+import com.shade.entities.Linkable;
 import com.shade.entities.Roles;
 import com.shade.util.Geom;
 
@@ -46,6 +47,11 @@ public class PickedShroom implements State {
                 shroom.manager.enter(Mushroom.States.NORMAL);
                 return;
             }
+        }
+        if (obstacle.getRole() == Roles.BASKET.ordinal()) {
+            Mushroom.collected.play();
+            shroom.detach();
+            shroom.kill();
         }
     }
 

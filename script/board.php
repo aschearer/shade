@@ -15,7 +15,7 @@ try {
     exit;
 }
 
-$q = 'SELECT clear, name, score FROM `scores` ORDER BY `score` DESC';
+$q = 'SELECT name, score, clear FROM `scores` ORDER BY `score` DESC';
 
 if (isset($num_scores)) {
 	$num_scores = intval($num_scores);

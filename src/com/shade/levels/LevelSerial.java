@@ -55,7 +55,7 @@ public class LevelSerial {
     private LuminousEntity getEntityFrom(XMLElement element)
             throws SlickException {
         String c = mappings.get(element.getName());
-        ArrayList<Integer> args = new ArrayList<Integer>();
+        ArrayList<Object> args = new ArrayList<Object>();
         args.add(element.getIntAttribute("x"));
         args.add(element.getIntAttribute("y"));
         if (!element.getAttribute("z", "NULL").equals("NULL")) {
@@ -64,6 +64,9 @@ public class LevelSerial {
         if (!element.getAttribute("d", "NULL").equals("NULL")) {
             args.add(element.getIntAttribute("d"));
         }
+        if (!element.getAttribute("type", "NULL").equals("NULL")) {
+            args.add(element.getIntAttribute("type"));
+        }
         if (!element.getAttribute("facing", "NULL").equals("NULL")) {
             args.add(element.getIntAttribute("facing"));
         }
@@ -71,7 +74,7 @@ public class LevelSerial {
             args.add(element.getIntAttribute("range"));
         }
         if (!element.getAttribute("speed", "NULL").equals("NULL")) {
-            args.add(element.getIntAttribute("speed"));
+            args.add((float) element.getDoubleAttribute("speed"));
         }
 
         return (LuminousEntity) Reflection.getInstance(c, args.toArray());

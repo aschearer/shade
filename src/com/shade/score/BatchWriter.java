@@ -6,26 +6,25 @@ import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.util.prefs.Preferences;
 
-public class RemoteHighScoreWriter implements HighScoreWriter {
-
-    private String base;
-
-    public RemoteHighScoreWriter(String path) {
-        base = path;
-    }
-
-    public boolean write(String name, int score, boolean clear) {
-        String cleared = (clear) ? "1" : "0";
-        return write(name, score + "", cleared);
-    }
-
-    protected boolean write(String name, String score, String clear) {
+/**
+ * Post all of the scores in a csv file to a server.
+ *
+ * @author Alexander Schearer <aschearer@gmail.com>
+ */
+public class BatchWriter {
+    
+    private static final String EMPTY_STRING = "";
+    private static final String SCORE_KEY = "scores";
+    private static final String SERVER = "http://anotherearlymorning.com/games/shade/batch.php";
+   
+    
+    public boolean write() {
         try {
-            String content = "name=" + URLEncoder.encode(name, "US-ASCII");
-            content += "&score=" + score;
-            content += "&clear=" + clear;
-            URL url = new URL(base);
+            String scores = collectScores();
+            String content = "scores=" + URLEncoder.encode(scores, "US-ASCII");
+            URL url = new URL(SERVER);
             URLConnection c = url.openConnection();
             c.setConnectTimeout(2000);
             c.setDoOutput(true);
@@ -39,10 +38,13 @@ public class RemoteHighScoreWriter implements HighScoreWriter {
                     .getInputStream()));
             String response = i.readLine();
             return response.equals("success");
-
         } catch (Exception e) {
             return false;
         }
     }
 
+    private String collectScores() {
+        Preferences prefs = Preferences.systemNodeForPackage(this.getClass());
+        return prefs.get(SCORE_KEY, EMPTY_STRING);
+    }
 }

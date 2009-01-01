@@ -22,6 +22,9 @@
     <Fence x="715" y="368" z="5" facing="1" />
     <Fence x="50" y="50" z="5" facing="1" />
     <Fence x="390" y="140" z="5" facing="0" />
+<<<<<<< HEAD:res/levels/level-1.xml
     
      <Bird x="300" y = "300" speed="2" range="200"/>
+=======
+>>>>>>> feeb62369c3c42ac8d4741f71f9e03404e6bb3ac:res/levels/level-1.xml
 </Level>

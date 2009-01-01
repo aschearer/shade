@@ -3,12 +3,13 @@ Alex Schearer,http://anotherearlymorning.com/
 J^2
 
 With help from...
+Julia Foran
 Adam Finklestein
 Gornova
 
 Music and Sound...
 Snake Music 2 by Hein
-DrPetter's sfxr,http://www.cyd.liu.se/~tompe573/hp/project_sfxr.html
+DrPetter's sfxr
 
 Art and Text...
 Brusheezy,http://brusheezy.com/
@@ -16,7 +17,8 @@ Brusheezy,http://brusheezy.com/
 
 Thanks to...
 Slick,http://slick.cokeandcode.com/
-Danc,http://lostgarden.com/
+LWJGL,http://lwjgl.org/
+Lost Garden,http://lostgarden.com/
 GitHub,http://github.com/
 
 
