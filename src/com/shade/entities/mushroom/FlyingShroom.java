@@ -1,7 +1,6 @@
 package com.shade.entities.mushroom;
 
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Entity;
@@ -9,7 +8,6 @@ import com.shade.base.util.State;
 import com.shade.crash.Repelable;
 import com.shade.entities.Player;
 import com.shade.entities.Roles;
-import com.shade.util.Geom;
 
 public class FlyingShroom implements State {
 	
