@@ -7,7 +7,6 @@ import org.newdawn.slick.state.StateBasedGame;
 import com.shade.base.Entity;
 import com.shade.base.util.State;
 import com.shade.crash.Repelable;
-import com.shade.entities.Linkable;
 import com.shade.entities.Roles;
 import com.shade.util.Geom;
 
