@@ -24,7 +24,7 @@ public class CreditState extends BasicGameState {
 
     public static final int ID = 5;
 
-    private static final String FEEDBACK_URL = "http://anotherearlymorning.com/";
+    private static final String FEEDBACK_URL = "http://anotherearlymorning.com/shade/feedback";
 
     private MasterState master;
     private ResourceManager resource;
