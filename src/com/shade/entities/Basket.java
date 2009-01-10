@@ -53,6 +53,11 @@ public class Basket extends Linkable {
             m.detach();
             notifyCounters(m);
         }
+        if(obstacle.getRole() == Roles.TREASURE.ordinal()){
+            Mushroom m = (Mushroom) obstacle;
+            m.detach();
+            notifyCounters(m);
+        }
     }
 
     private void notifyCounters(Mushroom m) {

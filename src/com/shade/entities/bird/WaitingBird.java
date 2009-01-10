@@ -36,10 +36,10 @@ public class WaitingBird implements State {
 	}
 
 	private void initResources() throws SlickException {
-		SpriteSheet idles = new SpriteSheet("entities/bird/wait.png", 40, 40);
-		idling = new Animation(idles, 100);
+		SpriteSheet idles = new SpriteSheet("entities/bird/fly2.png", 40, 40);
+		idling = new Animation(idles, 125);
 		idling.setAutoUpdate(false);
-		idling.setPingPong(true);
+		//idling.setPingPong(true);
 		wait = new Sound("entities/bird/waiting.ogg");
 	}
 

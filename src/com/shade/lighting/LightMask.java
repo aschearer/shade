@@ -113,7 +113,7 @@ public class LightMask {
             if (entityException(entities[i])) {
                 GL11.glAlphaFunc(GL11.GL_GREATER, MAGIC_ARROW_VALUE);
             } else {
-                //GL11.glAlphaFunc(GL11.GL_GREATER, 0.95f);
+                GL11.glAlphaFunc(GL11.GL_GREATER, 0.95f);
             }
             entities[i].render(game, g);
             entities[i].setLuminosity(getLuminosityFor(entities[i], g));

@@ -6,6 +6,7 @@ import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.base.Animatable;
+import com.shade.entities.Roles;
 import com.shade.entities.mushroom.Mushroom;
 
 public class CounterControl implements MushroomCounter, Animatable {
@@ -13,6 +14,9 @@ public class CounterControl implements MushroomCounter, Animatable {
     private static final int X_OFFSET = 10;
     private static final int Y_OFFSET = 10;
     private static final int MUSHROOM_SCORE = 20;
+    
+    //TODO: multiplier or lotsa points?
+    public static final int TREASURE_SCORE = 10000;
 
     public int value;
 
@@ -33,8 +37,13 @@ public class CounterControl implements MushroomCounter, Animatable {
     }
 
     public void onCollect(Mushroom shroomie) {
-        scorecard.add(MUSHROOM_SCORE);
-        value++;
+		if (shroomie.getRole() == Roles.TREASURE.ordinal()) {
+			//WHEEE HACK! TODO: KILL HACK!
+			scorecard.add(TREASURE_SCORE);
+		} else {
+	        scorecard.add(MUSHROOM_SCORE);
+	        value++;
+		}
     }
 
     public void render(StateBasedGame game, Graphics g) {

@@ -5,7 +5,7 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
-import com.shade.entities.Player;
+import com.shade.entities.Roles;
 import com.shade.entities.mushroom.Mushroom;
 import com.shade.lighting.LuminousEntity;
 import com.shade.states.MasterState;
@@ -85,17 +85,14 @@ public class MeterControl implements ControlSlice, MushroomCounter {
 				&& target.getLuminosity() > MasterState.SHADOW_THRESHOLD) {
 			decrement(delta);
 		} else {
-			Player p = (Player) target;
 			timeInSun = 0;
+		}
 
-			if (p.getXVelocity() ==0&& p.getYVelocity() == 0) {
-				if (totalAmountToAdd > 0) {
-					value += .1f * rateOfChange;
-					totalAmountToAdd -= .1f * rateOfChange;
-				} else {
-					rateOfChange = 1;
-				}
-			}
+		if (totalAmountToAdd > 0) {
+			value += .1f * rateOfChange;
+			totalAmountToAdd -= .1f * rateOfChange;
+		} else {
+			rateOfChange = 1;
 		}
 		clamp();
 
@@ -115,9 +112,14 @@ public class MeterControl implements ControlSlice, MushroomCounter {
 	}
 
 	public void onCollect(Mushroom shroomie) {
-		valueMushroom(shroomie);
-		if (totalAmountToAdd > 0) {
-			rateOfChange++;
+		if (shroomie.getRole() == Roles.TREASURE.ordinal()) {
+			//WHEEE HACK! TODO: KILL HACK!
+			
+		} else {
+			valueMushroom(shroomie);
+			if (totalAmountToAdd > 0) {
+				rateOfChange++;
+			}
 		}
 	}
 

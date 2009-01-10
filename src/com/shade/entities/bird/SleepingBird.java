@@ -31,7 +31,7 @@ public class SleepingBird implements State {
     }
 
     private void initResources() throws SlickException {
-        SpriteSheet idles = new SpriteSheet("entities/bird/wait.png", 40, 40);
+        SpriteSheet idles = new SpriteSheet("entities/bird/fly2.png", 40, 40);
         idling = new Animation(idles, 100);
         idling.setAutoUpdate(false);
         idling.setPingPong(true);
