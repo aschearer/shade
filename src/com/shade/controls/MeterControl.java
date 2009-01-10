@@ -11,8 +11,9 @@ import com.shade.states.MasterState;
 
 /**
  * A meter which can go from zero to a hundred.
- *  + The control should be notified whenever a mushroom is collected. + The
- * control should + When the control reaches zero it will fire an event.
+ *  + The control should be notified whenever a mushroom is collected. 
+ *  + The control should 
+ *  + When the control reaches zero it will fire an event.
  * 
  * @author aas11
  * 
@@ -25,6 +26,8 @@ public class MeterControl implements ControlSlice, MushroomCounter {
 
     private float x, y;
     private float value, totalAmountToAdd, rateOfChange;
+    private float totalDecrement;
+    private int totalTimeInSun;
     private static Image front, back, danger, current;
     private float[] damages = { .1f, .175f, .3f };
     private int timeInSun;
@@ -77,10 +80,11 @@ public class MeterControl implements ControlSlice, MushroomCounter {
 
     public void update(StateBasedGame game, int delta) {
         if (value == 0) {
-            listener.fire();
+            listener.fire(this);
         }
         if (target != null && target.getLuminosity() > MasterState.SHADOW_THRESHOLD) {
             decrement(delta);
+            
         } else {
             timeInSun = 0;
         }
@@ -140,12 +144,24 @@ public class MeterControl implements ControlSlice, MushroomCounter {
         }
 
         value -= damage;
+        totalTimeInSun += delta;
+        totalDecrement += damage;
         clamp();
+    }
+    
+    public float totalAmountLost() {
+        return totalDecrement;
+    }
+    
+    public int totalTimeInSun() {
+        return (totalTimeInSun / 1000);
     }
 
     public void reset() {
         value = 100;
         totalAmountToAdd = 0;
         rateOfChange = 1;
+        totalDecrement = 0;
+        totalTimeInSun = 0;
     }
 }

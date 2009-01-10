@@ -16,6 +16,7 @@ public class Shell extends Model {
     private static final int HEIGHT = 6;
     private static final int CELL = 100;
     private MushroomFactory factory;
+    private int par;
 
     public Shell(String path) throws SlickException {
         super(WIDTH, HEIGHT, CELL);
@@ -24,10 +25,16 @@ public class Shell extends Model {
             add(e);
         }
         factory = l.factory();
+        par = l.par();
     }
 
     @Override
     public MushroomFactory getMushroomFactory() {
         return factory;
+    }
+    
+    @Override
+    public int getPar() {
+        return par;
     }
 }

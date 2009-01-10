@@ -42,7 +42,7 @@ public class CollectedShroom implements State {
             Repelable b = (Repelable) obstacle;
             b.repel(shroom);
             // blocked or way too far away, break off
-            if (blocked || Util.overThreshold(shroom, shroom.prev, 120000)) {
+            if (blocked || WrappingUtils.overThreshold(shroom, shroom.prev, 120000)) {
                 shroom.detach();
                 shroom.manager.enter(Mushroom.States.NORMAL);
                 return;
@@ -75,7 +75,7 @@ public class CollectedShroom implements State {
     }
 
     private void followLeader() {
-        float angle = Util.calculateAngle(shroom, shroom.prev);
+        float angle = WrappingUtils.calculateAngle(shroom, shroom.prev);
         Vector2f v = Geom.calculateVector(Mushroom.SPEED, angle);
         shroom.nudge(v.x, v.y);
     }

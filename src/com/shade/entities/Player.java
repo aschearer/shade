@@ -34,6 +34,7 @@ public class Player extends Linkable {
     private float luminosity;
     private Sound register, damage;
     private boolean impeded;
+    private float mileage;
 
     public Player(int x, int y) throws SlickException {
         initShape(x, y);
@@ -130,6 +131,7 @@ public class Player extends Linkable {
             yVelocity = (float) (1.0 * speed * yVelocity / mag);
             if (mag != 0) {
                 nudge(xVelocity, yVelocity);
+                mileage += speed;
             } else {
                 xVelocity = 0;
                 yVelocity = 0;
@@ -228,12 +230,16 @@ public class Player extends Linkable {
             return;
         }
         int i = 1;
+        boolean locked = next.getRole() == Roles.PICKER.ordinal();
         Linkable head = next;
         while (head.next != null) {
+            if (head.getRole() == Roles.PICKER.ordinal()) {
+                locked = true;
+            }
             i++;
             head = head.next;
         }
-        if (i < MUSHROOM_LIMIT) {
+        if (!locked && i < MUSHROOM_LIMIT) {
             super.attach(l);
         }
     }
@@ -256,6 +262,10 @@ public class Player extends Linkable {
 
     public void addToLevel(Level<?> l) {
 
+    }
+    
+    public float totalMileage() {
+        return mileage;
     }
 
     public int getRole() {

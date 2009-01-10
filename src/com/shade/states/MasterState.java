@@ -13,9 +13,10 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.state.transition.FadeInTransition;
 import org.newdawn.slick.util.ResourceLoader;
 
+import com.shade.controls.LevelLock;
+import com.shade.controls.ScoreControl;
 import com.shade.controls.DayPhaseTimer;
 import com.shade.controls.GameSlice;
-import com.shade.controls.ScoreControl;
 import com.shade.lighting.GlobalLight;
 import com.shade.lighting.LightMask;
 import com.shade.util.ResourceManager;
@@ -25,7 +26,6 @@ public class MasterState extends BasicGameState {
 
     public static final int ID = 1;
 
-
     public static final int STATE_TRANSITION_DELAY = 400;
     public static final int SECONDS_PER_DAY = 90000;
     public static final int SECONDS_OF_DAYLIGHT = SECONDS_PER_DAY / 2;
@@ -34,16 +34,16 @@ public class MasterState extends BasicGameState {
 
     public ResourceManager resource;
     public GameSlice control;
+    public LevelLock levelsLock;
     public ScoreControl scorecard;
     public Dimmer dimmer;
     public DayPhaseTimer timer;
-    
-    public TrueTypeFont jekyllXSmall, jekyllSmall, jekyllLarge;
+
+    public TrueTypeFont jekyllXSmall, jekyllSmall, jekyllMedium, jekyllLarge;
     public TrueTypeFont daisySmall, daisyMedium, daisyLarge;
 
     public Music music;
 
-    
     @Override
     public int getID() {
         return ID;
@@ -63,30 +63,35 @@ public class MasterState extends BasicGameState {
         resource.register("highscore-down", "states/title/highscores-down.png");
         resource.register("credits-up", "states/title/credits-up.png");
         resource.register("credits-down", "states/title/credits-down.png");
-        
+
         loadJekyllFont();
         loadDaisyFont();
 
         // create controller
         timer = new DayPhaseTimer(SECONDS_PER_DAY);
-        //TODO: HOW DO WE MODIFY THE LENGTH OF THE DAY AHHH
+        levelsLock = new LevelLock();
+        // TODO: HOW DO WE MODIFY THE LENGTH OF THE DAY AHHH
         control = new GameSlice(new LightMask(5, timer), createLight(), timer);
         dimmer = new Dimmer(.6f);
 
         // register states
         game.addState(new TitleState(this));
+        // game.addState(new InGameState(this));
         game.addState(new InGameState(this));
         game.addState(new HighscoreState(this));
         game.addState(new CreditState(this));
         game.addState(new EnterScoreState(this));
         game.addState(new InstructionState(this));
+        game.addState(new RecapState(this));
+        game.addState(new SelectState(this));
 
         music = new Music("states/common/snake-music-2.mod");
         music.loop();
     }
 
     private GlobalLight createLight() {
-        return new GlobalLight(12, (float) (4 * Math.PI / 3), SECONDS_PER_DAY, timer);
+        return new GlobalLight(12, (float) (4 * Math.PI / 3), SECONDS_PER_DAY,
+                timer);
     }
 
     // render splash and loading screens
@@ -109,12 +114,13 @@ public class MasterState extends BasicGameState {
             Font f = Font.createFont(Font.TRUETYPE_FONT, oi);
             jekyllXSmall = new TrueTypeFont(f.deriveFont(12f), true);
             jekyllSmall = new TrueTypeFont(f.deriveFont(16f), true);
+            jekyllMedium = new TrueTypeFont(f.deriveFont(24f), true);
             jekyllLarge = new TrueTypeFont(f.deriveFont(36f), true);
         } catch (Exception e) {
             throw new SlickException("Failed to load font.", e);
         }
     }
-    
+
     private void loadDaisyFont() throws SlickException {
         try {
             InputStream oi = ResourceLoader

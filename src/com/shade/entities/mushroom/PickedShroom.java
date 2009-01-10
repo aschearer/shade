@@ -41,7 +41,7 @@ public class PickedShroom implements State {
             b.repel(shroom);
             
             // check if way too far away, if so break off
-            if (Util.overThreshold(shroom, shroom.prev, 12000)) {
+            if (WrappingUtils.overThreshold(shroom, shroom.prev, 12000)) {
                 shroom.detach();
                 shroom.manager.enter(Mushroom.States.NORMAL);
                 return;
@@ -80,14 +80,14 @@ public class PickedShroom implements State {
         }
 
         // too far away, catch up
-        if (Util.overThreshold(shroom, shroom.prev, 1200)) {
+        if (WrappingUtils.overThreshold(shroom, shroom.prev, 1200)) {
             followLeader();
             return;
         }
     }
 
     private void followLeader() {
-        float angle = Util.calculateAngle(shroom, shroom.prev);
+        float angle = WrappingUtils.calculateAngle(shroom, shroom.prev);
         Vector2f v = Geom.calculateVector(Mushroom.SPEED, angle);
         shroom.nudge(v.x, v.y);
     }

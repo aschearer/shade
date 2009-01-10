@@ -69,7 +69,7 @@ public class EnterScoreState extends BasicGameState {
         master.dimmer.rewind();
         completed = false;
         initTextField(container);
-        message = (master.scorecard.isCleared()) ? PROMPT_WINNER : PROMPT_LOSER;
+        message = (master.scorecard.isGameBeaten()) ? PROMPT_WINNER : PROMPT_LOSER;
 //        master.music.fade(500, 0, true);
     }
 
@@ -78,12 +78,12 @@ public class EnterScoreState extends BasicGameState {
             throws SlickException {
         master.control.render(game, g, resource.get("background"));
         master.dimmer.render(game, g);
-        if (master.scorecard.isCleared()) {
+        if (master.scorecard.isGameBeaten()) {
             resource.get("winners-wreath").drawCentered(400, 260);
-            drawScore(container, master.scorecard.read() + "", 218);
+            drawScore(container, master.scorecard.getScore() + "", 218);
         } else {
             resource.get("losers-wreath").drawCentered(400, 260);
-            drawScore(container, master.scorecard.read() + "", 208);
+            drawScore(container, master.scorecard.getScore() + "", 208);
         }
         if (!completed) {
             input.render(container, g);
@@ -147,8 +147,8 @@ public class EnterScoreState extends BasicGameState {
                 boolean written = false;
                 while (!written && numTries > 0) {
                     written = writer.write(input.getText(),
-                            master.scorecard.read(), master.scorecard
-                                    .isCleared());
+                            master.scorecard.getScore(), master.scorecard
+                                    .isGameBeaten());
                     numTries--;
                 }
                 input.setAcceptingInput(false);

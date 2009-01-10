@@ -14,7 +14,7 @@ public class CounterControl implements MushroomCounter, Animatable {
     private static final int Y_OFFSET = 10;
     private static final int MUSHROOM_SCORE = 20;
 
-    public int value;
+    public int countDown, totalCount;
 
     private float x, y;
     private Image sprite;
@@ -34,22 +34,34 @@ public class CounterControl implements MushroomCounter, Animatable {
 
     public void onCollect(Mushroom shroomie) {
         scorecard.add(MUSHROOM_SCORE);
-        value++;
+        totalCount++;
+        if (countDown > 0) {
+            countDown--;
+        }
     }
 
     public void render(StateBasedGame game, Graphics g) {
         sprite.draw(x, y);
         float xBuffer = x + sprite.getWidth() + X_OFFSET;
         float yBuffer = y + Y_OFFSET;
-        font.drawString(xBuffer, yBuffer, "" + value);
+        font.drawString(xBuffer, yBuffer, "" + countDown);
     }
 
     public void update(StateBasedGame game, int delta) {
         // doesn't need to be updated
     }
 
-    public void reset() {
-        value = 0;
+    public void reset(int par) {
+        countDown = par;
+        totalCount = 0;
+    }
+    
+    public int totalCount() {
+        return totalCount;
+    }
+    
+    public boolean parWasMet() {
+        return countDown == 0;
     }
 
 }

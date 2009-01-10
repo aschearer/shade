@@ -91,7 +91,7 @@ public class TitleState extends BasicGameState {
         play.addListener(new ClickListener() {
 
             public void onClick(StateBasedGame game, Button clicked) {
-                game.enterState(InstructionState.ID);
+                game.enterState(SelectState.ID);
             }
 
         });

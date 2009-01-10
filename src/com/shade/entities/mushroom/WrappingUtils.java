@@ -6,7 +6,7 @@ import com.crash.Body;
 import com.shade.crash.CrashGeom;
 import com.shade.entities.Linkable;
 
-public class Util {
+public class WrappingUtils {
 
     /**
      * Return true if this body and the target are further apart than the
@@ -16,7 +16,7 @@ public class Util {
      * @param threshold
      * @return
      */
-    protected static boolean overThreshold(Mushroom shroom, Body target,
+    public static boolean overThreshold(Body shroom, Body target,
                                            float threshold) {
         float[] d = new float[3];
 
@@ -54,7 +54,7 @@ public class Util {
      * @param target
      * @return
      */
-    protected static float calculateAngle(Mushroom shroom, Linkable target) {
+    public static float calculateAngle(Body  shroom, Linkable target) {
         float[] d = new float[3];
         d[0] = CrashGeom.distance2(target, shroom);
         d[1] = d[0];

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.util.xml.SlickXMLException;
 import org.newdawn.slick.util.xml.XMLElement;
 import org.newdawn.slick.util.xml.XMLElementList;
 import org.newdawn.slick.util.xml.XMLParser;
@@ -15,10 +16,12 @@ import com.shade.util.Reflection;
 public class LevelSerial {
 
     private HashMap<String, String> mappings;
-    private String level;
+    private XMLElement root;
 
-    public LevelSerial(String path) {
-        level = path;
+    public LevelSerial(String path) throws SlickException {
+        XMLParser xml = new XMLParser();
+        root = xml.parse(path);
+        
         mappings = new HashMap<String, String>();
         mappings.put("Block", "com.shade.entities.Block");
         mappings.put("Dome", "com.shade.entities.Dome");
@@ -33,15 +36,15 @@ public class LevelSerial {
         mappings.put("Slider", "com.shade.entities.Slider");
     }
     
-    public MushroomFactory factory() throws SlickException {
-        XMLParser xml = new XMLParser();
-        XMLElement root = xml.parse(level);
+    public MushroomFactory factory() throws SlickXMLException {
         return new MushroomFactory(root.getIntAttribute("mushrooms"));
+    }
+    
+    public int par() throws SlickException {
+        return root.getIntAttribute("par");
     }
 
     public LuminousEntity[] entities() throws SlickException {
-        XMLParser xml = new XMLParser();
-        XMLElement root = xml.parse(level);
         XMLElementList children = root.getChildren();
         ArrayList<LuminousEntity> entities = new ArrayList<LuminousEntity>();
 
