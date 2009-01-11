@@ -29,7 +29,7 @@ public class InGameState extends BasicGameState {
     private StateBasedGame game;
     private MasterState master;
     private ResourceManager resource;
-    private int currentLevel;
+    private int currentLevel, totalLevelsPlayed;
     private Model level;
     private LevelManager levels;
     private MeterControl meter;
@@ -61,6 +61,7 @@ public class InGameState extends BasicGameState {
      */
     public void newGame() {
         currentLevel = 0;
+        totalLevelsPlayed = 1;
         initLevel();
         resetControls();
         master.scorecard.reset();
@@ -69,6 +70,7 @@ public class InGameState extends BasicGameState {
 
     public void newGame(int level) {
         currentLevel = level;
+        totalLevelsPlayed = 1;
         initLevel();
         resetControls();
         master.scorecard.reset();
@@ -80,6 +82,7 @@ public class InGameState extends BasicGameState {
      */
     public void nextLevel() {
         currentLevel++;
+        totalLevelsPlayed++;
         initLevel();
         resetControls();
         master.scorecard.startLevel();
@@ -190,9 +193,13 @@ public class InGameState extends BasicGameState {
 
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
-        if (currentLevel >= levels.size()) {
+        if (currentLevel >= levels.size() && totalLevelsPlayed == LevelManager.NUM_LEVELS) {
             master.scorecard.setBeaten();
             safeExit(game, EnterScoreState.ID);
+            return;
+        }
+        if (currentLevel >= levels.size()) {
+            safeExit(game, SelectState.ID);
             return;
         }
         if (container.isPaused()) {
