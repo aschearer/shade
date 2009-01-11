@@ -29,7 +29,7 @@ public class LevelManager {
         "levels/level-13.xml",
         "levels/level-14.xml",
         "levels/level-15.xml",
-        //"levels/level-16.xml"
+        "levels/level-16.xml"
     };
 
   
