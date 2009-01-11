@@ -2,6 +2,7 @@ package com.shade.states;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
@@ -14,8 +15,8 @@ import com.shade.util.ResourceManager;
 
 public class RecapState extends BasicGameState {
     
-    private static final String PASS_TEXT = "Level Clear!!";
-    private static final String FAIL_TEXT = "Level ... failed?!";
+    private static final String PASS_TEXT = "Level Clear";
+    private static final String FAIL_TEXT = "Level Failed";
 
     public static final int ID = 9;
 
@@ -25,6 +26,7 @@ public class RecapState extends BasicGameState {
     private SlickButton next, replay, back;
 
     private boolean par;
+    private StateBasedGame game;
 
     public RecapState(MasterState m) throws SlickException {
         master = m;
@@ -47,6 +49,7 @@ public class RecapState extends BasicGameState {
 
     public void enter(GameContainer container, StateBasedGame game)
             throws SlickException {
+        this.game = game;
         level = (InGameState) game.getState(InGameState.ID);
         par = level.parWasMet();
         initButtons();
@@ -63,14 +66,19 @@ public class RecapState extends BasicGameState {
         }
         replay.render(game, g);
         back.render(game, g);
-        master.jekyllLarge.drawString(120, 100, (par) ? PASS_TEXT : FAIL_TEXT);
+        master.daisyXLarge.drawString(135, 135, (par) ? PASS_TEXT : FAIL_TEXT);
         
-        master.jekyllSmall.drawString(120, 150, "Points earned: " + master.scorecard.getLevelScore());
-        master.jekyllSmall.drawString(120, 175, "Total points: " + master.scorecard.getScore());
-        master.jekyllSmall.drawString(120, 200, "Mushrooms collected: " + (int) level.stats.getStat("level-mushrooms"));
-        master.jekyllSmall.drawString(120, 225, "Distance traveled: " + levelMileage());
-        master.jekyllSmall.drawString(120, 250, "Time in the sun: " + level.stats.getStat("level-suntime"));
-        master.jekyllSmall.drawString(120, 275, "Tan: " + calculateTan());
+        master.jekyllMedium.drawString(150, 200, "Points Earned: " + master.scorecard.getLevelScore());
+        master.jekyllMedium.drawString(150, 225, "Total Points: " + master.scorecard.getScore());
+        master.jekyllMedium.drawString(150, 280, "Distance Traveled: " + levelMileage());
+        master.jekyllMedium.drawString(150, 305, "Total Distance: " + totalMileage());
+        master.jekyllMedium.drawString(150, 360, "Mushrooms Collected: " + (int) level.stats.getStat("level-mushrooms"));
+        master.jekyllMedium.drawString(150, 385, "Total Mushrooms: " + (int) level.stats.getStat("total-mushrooms"));
+//        master.jekyllSmall.drawString(150, 275, "Tan: " + calculateTan());
+        
+        if (par) {
+            master.daisyLarge.drawString(210, 540, "Press enter to continue");
+        }
         resource.get("trim").draw();
     }
     
@@ -81,11 +89,11 @@ public class RecapState extends BasicGameState {
     }
 
     public String totalMileage() {
-        return Math.floor(level.stats.getStat("total-mileage") / 10) + " feet"; 
+        return (int) Math.floor(level.stats.getStat("total-mileage") / 10) + " feet"; 
     }
     
     public String levelMileage() {
-        return Math.floor(level.stats.getStat("level-mileage") / 10) + " feet";
+        return (int) Math.floor(level.stats.getStat("level-mileage") / 10) + " feet";
     }
 
     public void update(GameContainer container, StateBasedGame game, int delta)
@@ -97,6 +105,14 @@ public class RecapState extends BasicGameState {
         }
         replay.update(game, delta);
         back.update(game, delta);
+    }
+    
+    @Override
+    public void keyPressed(int key, char c) {
+        if (key == Input.KEY_ENTER) {
+            level.nextLevel();
+            game.enterState(InGameState.ID, new FadeOutTransition(), null);
+        }
     }
 
     private void initButtons() throws SlickException {
@@ -112,9 +128,8 @@ public class RecapState extends BasicGameState {
         replay.addListener(new ClickListener() {
 
             public void onClick(StateBasedGame game, Button clicked) {
-                ((InGameState) game.getState(InGameState.ID)).currentLevel();
+                level.currentLevel();
                 game.enterState(InGameState.ID, new FadeOutTransition(), null);
-                master.dimmer.reset();
             }
 
         });
@@ -126,9 +141,8 @@ public class RecapState extends BasicGameState {
         next.addListener(new ClickListener() {
 
             public void onClick(StateBasedGame game, Button clicked) {
-                ((InGameState) game.getState(InGameState.ID)).nextLevel();
+                level.nextLevel();
                 game.enterState(InGameState.ID, new FadeOutTransition(), null);
-                master.dimmer.reset();
             }
 
         });
@@ -141,7 +155,7 @@ public class RecapState extends BasicGameState {
         back.addListener(new ClickListener() {
 
             public void onClick(StateBasedGame game, Button clicked) {
-                game.enterState(TitleState.ID);
+                game.enterState(SelectState.ID);
                 master.dimmer.reverse();
             }
 

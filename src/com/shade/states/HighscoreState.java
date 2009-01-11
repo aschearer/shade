@@ -8,6 +8,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import com.centerkey.utils.BareBonesBrowserLaunch;
 import com.shade.controls.Button;
 import com.shade.controls.ClickListener;
 import com.shade.controls.FadeInImage;
@@ -20,11 +21,12 @@ public class HighscoreState extends BasicGameState {
     
     public static final int ID = 4;
 
+    private static final String FEEDBACK_URL = "http://anotherearlymorning.com/shade/feedback";
     private static final String NO_INTERNET_MESSAGE = "Shade supports global high scores. Please connect to the internet to take advantage of this exciting feature.";
 
     private MasterState master;
     private ResourceManager resource;
-    private SlickButton play, back;
+    private SlickButton play, feedback, back;
     private int timer;
     private FailSafeHighScoreReader reader;
     private ArrayList<FadeInText> scores;
@@ -62,8 +64,8 @@ public class HighscoreState extends BasicGameState {
         initButtons();
         timer = 0;
         scores.clear();
-        if (!master.dimmer.finished()) {
-            master.dimmer.reset();
+        if (master.dimmer.reversed()) {
+            master.dimmer.rewind();
         }
         
         initScores();
@@ -76,6 +78,7 @@ public class HighscoreState extends BasicGameState {
         master.dimmer.render(game, g);
         resource.get("header").draw(400, 0);
         play.render(game, g);
+        feedback.render(game, g);
         back.render(game, g);
         resource.get("trim").draw();
         for (FadeInText t : scores) {
@@ -101,6 +104,7 @@ public class HighscoreState extends BasicGameState {
         timer += delta;
         if (timer > MasterState.STATE_TRANSITION_DELAY) {
             play.update(game, delta);
+            feedback.update(game, delta);
             back.update(game, delta);
         }
         master.dimmer.update(game, delta);
@@ -114,6 +118,7 @@ public class HighscoreState extends BasicGameState {
 
     private void initButtons() throws SlickException {
         initPlayButton();
+        initFeedbackButton();
         initBackButton();
     }
 
@@ -123,14 +128,26 @@ public class HighscoreState extends BasicGameState {
         play.addListener(new ClickListener() {
 
             public void onClick(StateBasedGame game, Button clicked) {
-                game.enterState(InstructionState.ID);
+                game.enterState(SelectState.ID);
+            }
+
+        });
+    }
+    
+    private void initFeedbackButton() throws SlickException {
+        feedback = new SlickButton(620, 130, resource.get("feedback-up"),
+                resource.get("feedback-down"));
+        feedback.addListener(new ClickListener() {
+
+            public void onClick(StateBasedGame game, Button clicked) {
+                BareBonesBrowserLaunch.openURL(FEEDBACK_URL);
             }
 
         });
     }
 
     private void initBackButton() throws SlickException {
-        back = new SlickButton(620, 130, resource.get("back-up"),
+        back = new SlickButton(620, 150, resource.get("back-up"),
                 resource.get("back-down"));
         back.addListener(new ClickListener() {
 

@@ -66,7 +66,9 @@ public class EnterScoreState extends BasicGameState {
             throws SlickException {
         initButtons();
         timer = 0;
-        master.dimmer.rewind();
+        if (master.dimmer.reversed()) {
+            master.dimmer.rewind();
+        }
         completed = false;
         initTextField(container);
         message = (master.scorecard.isGameBeaten()) ? PROMPT_WINNER : PROMPT_LOSER;
@@ -78,13 +80,8 @@ public class EnterScoreState extends BasicGameState {
             throws SlickException {
         master.control.render(game, g, resource.get("background"));
         master.dimmer.render(game, g);
-        if (master.scorecard.isGameBeaten()) {
-            resource.get("winners-wreath").drawCentered(400, 260);
-            drawScore(container, master.scorecard.getScore() + "", 218);
-        } else {
-            resource.get("losers-wreath").drawCentered(400, 260);
-            drawScore(container, master.scorecard.getScore() + "", 208);
-        }
+        resource.get("winners-wreath").drawCentered(400, 260);
+        drawScore(container, master.scorecard.getScore() + "", 218);
         if (!completed) {
             input.render(container, g);
         }
@@ -183,11 +180,10 @@ public class EnterScoreState extends BasicGameState {
         play.addListener(new ClickListener() {
 
             public void onClick(StateBasedGame game, Button clicked) {
-                game.enterState(InGameState.ID, new FadeOutTransition(), null);
+                game.enterState(SelectState.ID);
 //                master.music.play();
 //                master.music.fade(1000, 1f, false);
 //                played = false;
-                master.dimmer.reset();
             }
 
         });
@@ -214,7 +210,7 @@ public class EnterScoreState extends BasicGameState {
         back.addListener(new ClickListener() {
 
             public void onClick(StateBasedGame game, Button clicked) {
-                game.enterState(TitleState.ID);
+                game.enterState(SelectState.ID);
 //                master.music.play();
 //                master.music.fade(1000, 1f, false);
 //                played = false;

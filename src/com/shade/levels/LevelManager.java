@@ -41,4 +41,9 @@ public class LevelManager {
         }
         return level;
     }
+
+
+    public int size() {
+        return levels.length;
+    }
 }

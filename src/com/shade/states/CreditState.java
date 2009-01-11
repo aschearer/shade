@@ -20,7 +20,7 @@ import com.shade.util.ResourceManager;
 
 public class CreditState extends BasicGameState {
 
-    private static final int CREDIT_DELAY = 3000;
+    private static final int CREDIT_DELAY = 1000;
 
     public static final int ID = 5;
 
@@ -100,7 +100,7 @@ public class CreditState extends BasicGameState {
 
     private void initButtons() throws SlickException {
         initPlayButton();
-        initMoreScoresButton();
+        initFeedbackButton();
         initBackButton();
     }
 
@@ -110,13 +110,13 @@ public class CreditState extends BasicGameState {
         play.addListener(new ClickListener() {
 
             public void onClick(StateBasedGame game, Button clicked) {
-                game.enterState(InstructionState.ID);
+                game.enterState(SelectState.ID);
             }
 
         });
     }
 
-    private void initMoreScoresButton() throws SlickException {
+    private void initFeedbackButton() throws SlickException {
         feedback = new SlickButton(620, 130, resource.get("feedback-up"),
                 resource.get("feedback-down"));
         feedback.addListener(new ClickListener() {

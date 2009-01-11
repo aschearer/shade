@@ -69,4 +69,23 @@ public class LevelLock {
         }
         return result.toString();
     }
+    
+    public void resetLocks() {
+        unlocked = new boolean[NUM_LEVELS];
+        unlocked[0] = true;
+        save();
+    }
+    
+    public void free(int n) {
+        resetLocks();
+        for (int i = 0; i < n; i++) {
+            unlocked[i] = true;
+        }
+        save();
+    }
+    
+    public static void main(String[] args) {
+        LevelLock lock = new LevelLock();
+        lock.free(10);
+    }
 }

@@ -35,7 +35,7 @@ public class InGameState extends BasicGameState {
     private MeterControl meter;
     private CounterControl counter;
     private SlickButton play, back;
-    
+
     public StatsControl stats;
 
     public InGameState(MasterState m) throws SlickException {
@@ -83,9 +83,6 @@ public class InGameState extends BasicGameState {
         initLevel();
         resetControls();
         master.scorecard.startLevel();
-        if (!master.levelsLock.isUnlocked(currentLevel)) {
-            master.levelsLock.unlock(currentLevel);
-        }
     }
 
     /**
@@ -98,7 +95,9 @@ public class InGameState extends BasicGameState {
     }
 
     private void initLevel() {
-        level = levels.get(currentLevel);
+        if (currentLevel < levels.size()) {
+            level = levels.get(currentLevel);
+        }
     }
 
     /**
@@ -118,23 +117,33 @@ public class InGameState extends BasicGameState {
             throws SlickException {
         throw new RuntimeException("InGameState was init'd!");
     }
-    
+
     @Override
     public void enter(GameContainer container, StateBasedGame game) {
         this.game = game;
         master.timer.reset();
         master.dimmer.rewind();
         master.control.load(level);
+        master.music.fade(MasterState.SECONDS_OF_DAYLIGHT, .1f, false);
         addBackControls();
+        if (currentLevel < levels.size()
+                && !master.levelsLock.isUnlocked(currentLevel)) {
+            master.levelsLock.unlock(currentLevel);
+        }
     }
-    
-    public void exit(StateBasedGame game, int id) {
+
+    private void safeExit(StateBasedGame game, int id) {
         master.control.flushControls();
+        master.control.killPlayer();
+        master.music.fade(2000, 1f, false);
+        game.enterState(id);
+    }
+
+    public void exit(StateBasedGame game, int id) {
         recordMileage();
         recordDamage();
         recordMushroomsCollected();
-        master.control.killPlayer();
-        game.enterState(id);
+        safeExit(game, id);
     }
 
     private void recordDamage() {
@@ -143,6 +152,7 @@ public class InGameState extends BasicGameState {
     }
 
     private void recordMushroomsCollected() {
+        stats.add("total-mushrooms", counter.totalCount);
         stats.replace("level-mushrooms", counter.totalCount);
     }
 
@@ -163,13 +173,13 @@ public class InGameState extends BasicGameState {
             drawCentered(container, "Paused (p)");
         }
         resource.get("trim").draw();
-        
+
         if (container.getInput().isKeyPressed(Input.KEY_N)) {
             nextLevel();
             enter(container, game);
         }
     }
-    
+
     private void drawCentered(GameContainer c, String s) {
         int x = (c.getWidth() - master.daisyLarge.getWidth(s)) / 2;
         int y = (c.getHeight() - master.daisyLarge.getHeight()) / 2;
@@ -178,6 +188,11 @@ public class InGameState extends BasicGameState {
 
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
+        if (currentLevel >= levels.size()) {
+            master.scorecard.setBeaten();
+            safeExit(game, EnterScoreState.ID);
+            return;
+        }
         if (container.isPaused()) {
             master.dimmer.update(game, 25);
             play.update(game, 25);
@@ -195,7 +210,7 @@ public class InGameState extends BasicGameState {
             exit(game, RecapState.ID);
         }
     }
-    
+
     public boolean parWasMet() {
         return counter.parWasMet();
     }
@@ -203,7 +218,7 @@ public class InGameState extends BasicGameState {
     private boolean isNight() {
         return master.timer.getDaylightStatus() == DayLightStatus.NIGHT;
     }
-    
+
     @Override
     public void keyPressed(int key, char c) {
         if (key == Input.KEY_P) {
@@ -226,7 +241,7 @@ public class InGameState extends BasicGameState {
 
             public void fire(ControlSlice c) {
                 // The player lost
-//                exit(game, RecapState.ID);
+                exit(game, RecapState.ID);
             }
 
         });
@@ -238,6 +253,7 @@ public class InGameState extends BasicGameState {
         meter.pass(master.scorecard);
         counter.register(master.scorecard);
     }
+
     private void initButtons() throws SlickException {
         initPlayButton();
         initBackButton();
@@ -266,7 +282,7 @@ public class InGameState extends BasicGameState {
                 game.getContainer().resume();
                 master.music.resume();
                 master.dimmer.reverse();
-                exit(game, TitleState.ID);
+                game.enterState(SelectState.ID);
             }
 
         });

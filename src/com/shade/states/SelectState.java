@@ -48,7 +48,9 @@ public class SelectState extends BasicGameState {
     public void enter(GameContainer container, final StateBasedGame game)
             throws SlickException {
         level = (InGameState) game.getState(InGameState.ID);
-        master.dimmer.reset();
+        if (master.dimmer.reversed()) {
+            master.dimmer.rewind();
+        }
         initOptions();
         initButtons();
         timer = 0;

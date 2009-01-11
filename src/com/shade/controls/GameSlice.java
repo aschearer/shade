@@ -128,11 +128,13 @@ public class GameSlice {
 
     public void killPlayer() {
         Object[] players = model.getEntitiesByRole(Roles.PLAYER.ordinal());
-        model.remove((LuminousEntity) players[0]);
+        if (players.length > 0) {
+            model.remove((LuminousEntity) players[0]);
+        }
     }
     
     public float distanceTraveled() {
         Object[] players = model.getEntitiesByRole(Roles.PLAYER.ordinal());
-        return ((Player) players[0]).totalMileage(); 
+        return ((Player) players[0]).totalMileage();
     }
 }
