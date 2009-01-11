@@ -13,5 +13,6 @@ public enum Roles {
     PICKED_MUSHROOM, 
     DUMMY, 
     SANDPIT, 
-    MOCK_PLAYER
+    MOCK_PLAYER,
+    TREASURE
 }

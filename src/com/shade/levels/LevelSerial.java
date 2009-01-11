@@ -34,6 +34,10 @@ public class LevelSerial {
         mappings.put("Bird", "com.shade.entities.bird.Bird");
         mappings.put("Sand", "com.shade.entities.SandPit");
         mappings.put("Slider", "com.shade.entities.Slider");
+        mappings.put("TransparentDoor", "com.shade.entities.TransparentDoor");
+        mappings.put("TransparentFence", "com.shade.entities.TransparentFence");
+        mappings.put("Treasure", "com.shade.entities.treasure.Treasure");
+        mappings.put("Bush", "com.shade.entities.Bush");
     }
     
     public MushroomFactory factory() throws SlickXMLException {

@@ -34,10 +34,10 @@ public class ReturningBird implements State {
     }
 
     private void initResources() throws SlickException {
-        SpriteSheet idles = new SpriteSheet("entities/bird/wait.png", 40, 40);
-        idling = new Animation(idles, 50);
+        SpriteSheet idles = new SpriteSheet("entities/bird/fly2.png", 40, 40);
+        idling = new Animation(idles, 75);
         idling.setAutoUpdate(false);
-        idling.setPingPong(true);
+        //idling.setPingPong(true);
     }
 
     public void enter() {

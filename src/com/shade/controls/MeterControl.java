@@ -5,6 +5,7 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
+import com.shade.entities.Roles;
 import com.shade.entities.mushroom.Mushroom;
 import com.shade.lighting.LuminousEntity;
 import com.shade.states.MasterState;
@@ -19,6 +20,8 @@ import com.shade.states.MasterState;
  * 
  */
 public class MeterControl implements ControlSlice, MushroomCounter {
+
+	public static final float BASE_DAMAGE = 0.2f;
 
     private LuminousEntity target;
     private ControlListener listener;
@@ -136,21 +139,15 @@ public class MeterControl implements ControlSlice, MushroomCounter {
         }
     }
 
-    private void decrement(int delta) {
-        timeInSun += delta;
-        float damage = damages[0];
-        if (timeInSun > 1000) {
-           damage = damages[1];
-        }
-        if (timeInSun > 4000) {
-           damage = damages[2];
-        }
-
-        value -= damage;
-        totalTimeInSun += delta;
-        totalDecrement += damage;
-        clamp();
-    }
+	private void decrement(int delta) {
+		timeInSun += delta;
+		float damage = (float) Math.min(0.5f,
+				Math.pow(1.0005, timeInSun) * 0.05f);
+		if (timeInSun < 1000)
+			damage = Math.max(damage, 0.05f);
+		value -= damage;
+		clamp();
+	}
     
     public float totalAmountLost() {
         return totalDecrement;

@@ -57,6 +57,11 @@ public class Mushroom extends Linkable {
             e.printStackTrace();
         }
     }
+    
+    //HACK! TODO: KILL HACK!
+    public Mushroom(){
+    	//do nothing omg.
+    }
 
     public Mushroom(float x, float y, Types t, MushroomFactory factory)
             throws SlickException {

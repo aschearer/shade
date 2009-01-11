@@ -2,7 +2,7 @@ package com.shade.controls;
 
 public class DayPhaseTimer {
 
-    public static final float TRANSITION_TIME = 1f / 7;
+    public static final float TRANSITION_TIME = 1f / 4;
     public static final float MAX_SHADOW = 0.4f;
 
     private int secondsPerDay;
