@@ -1,5 +1,7 @@
 package com.shade.states;
 
+import java.util.ArrayList;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -10,7 +12,10 @@ import org.newdawn.slick.state.transition.FadeOutTransition;
 
 import com.shade.controls.Button;
 import com.shade.controls.ClickListener;
+import com.shade.controls.FadeInImage;
+import com.shade.controls.FadeInText;
 import com.shade.controls.SlickButton;
+import com.shade.score.FailSafeHighScoreReader;
 import com.shade.util.ResourceManager;
 
 public class RecapState extends BasicGameState {
@@ -24,9 +29,14 @@ public class RecapState extends BasicGameState {
     private InGameState level;
     private ResourceManager resource;
     private SlickButton next, replay, back;
+    
+    private FailSafeHighScoreReader reader;
+    private ArrayList<FadeInText> scores;
+    private ArrayList<FadeInImage> crowns;
 
     private boolean par;
     private StateBasedGame game;
+    private boolean noInternet;
 
     public RecapState(MasterState m) throws SlickException {
         master = m;
@@ -35,6 +45,10 @@ public class RecapState extends BasicGameState {
         resource.register("nextlevel-down", "states/recap/nextlevel-down.png");
         resource.register("replay-up", "states/recap/replay-up.png");
         resource.register("replay-down", "states/recap/replay-down.png");
+        
+        scores = new ArrayList<FadeInText>();
+        crowns = new ArrayList<FadeInImage>();
+        reader = new FailSafeHighScoreReader();
     }
 
     @Override
@@ -53,6 +67,7 @@ public class RecapState extends BasicGameState {
         level = (InGameState) game.getState(InGameState.ID);
         par = level.parWasMet();
         initButtons();
+        initScores();
         master.dimmer.rewind();
     }
 
@@ -75,6 +90,14 @@ public class RecapState extends BasicGameState {
         master.jekyllMedium.drawString(150, 360, "Mushrooms Collected: " + (int) level.stats.getStat("level-mushrooms"));
         master.jekyllMedium.drawString(150, 385, "Total Mushrooms: " + (int) level.stats.getStat("total-mushrooms"));
 //        master.jekyllSmall.drawString(150, 275, "Tan: " + calculateTan());
+        
+        master.daisyLarge.drawString(500, 300, "Top 5 Scores");
+        for (FadeInText t : scores) {
+            t.render(game, g);
+        }
+        for (FadeInImage i : crowns) {
+            i.render(game, g);
+        }
         
         if (par) {
             master.daisyLarge.drawString(210, 540, "Press enter to continue");
@@ -105,6 +128,12 @@ public class RecapState extends BasicGameState {
         }
         replay.update(game, delta);
         back.update(game, delta);
+        for (FadeInText t : scores) {
+            t.update(game, delta);
+        }
+        for (FadeInImage i : crowns) {
+            i.update(game, delta);
+        }
     }
     
     @Override
@@ -160,5 +189,24 @@ public class RecapState extends BasicGameState {
             }
 
         });
+    }
+    
+
+    private void initScores() {
+        scores.clear();
+        crowns.clear();
+        String[][] scoress = reader.getScores(level.getCurrentLevel(), 5);
+        noInternet = reader.isLocal();
+        int x = 520;
+        int y = 350;
+        int n = 0;
+        for (String[] s : scoress) {
+            if (s[2].equals("1")) {
+                crowns.add(new FadeInImage(resource.get("crown"), x, y + 3 + (25 * n), 32, 20, 1000 + 400 *n));
+            }
+            scores.add(new FadeInText(s[0], master.jekyllMedium, x + 40, y + (25 * n), 1000 + 400 * n));
+            scores.add(new FadeInText(s[1], master.jekyllMedium, x + 150, y + (25 * n), 1000 + 400 * n));
+            n++;
+        }   
     }
 }

@@ -151,14 +151,8 @@ public class EnterScoreState extends BasicGameState {
                 }
                 input.setAcceptingInput(false);
                 completed = true;
-                // TODO really tell the user this or just silently fail?
-                // if (!written) {
-                // message = "You're not online so we couldn't record this
-                // Ÿber score.";
-                // } else {
                 message = "Way to go " + input.getText() + "!! ... "
                         + randomResponse();
-                // }
             }
 
         });
