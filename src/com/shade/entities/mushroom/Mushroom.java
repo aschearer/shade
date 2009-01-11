@@ -174,9 +174,13 @@ public class Mushroom extends Linkable {
             return scale * 2;
         }
         if (type == Types.RARE) {
-            return scale * 10;
+            return scale * 2;
         }
         return 0;
+    }
+    
+    public boolean isGolden() {
+        return type == Types.RARE;
     }
 
     public int getRole() {

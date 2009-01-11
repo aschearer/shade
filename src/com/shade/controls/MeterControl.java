@@ -131,6 +131,9 @@ public class MeterControl implements ControlSlice, MushroomCounter {
 
     private void valueMushroom(Mushroom shroomie) {
         totalAmountToAdd += shroomie.getValue() * 4;
+        if (shroomie.isGolden()) {
+            scorecard.add(shroomie.getValue() * 40);
+        }
     }
 
     private void decrement(int delta) {

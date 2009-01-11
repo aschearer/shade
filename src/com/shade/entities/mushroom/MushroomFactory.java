@@ -11,7 +11,7 @@ public class MushroomFactory {
     /**
      * Corresponds to the Mushroom.Type enum.
      */
-    private static final double[] distribution = { .12, .65, .13, .05 };
+    private static final double[] distribution = { 0, .97, 0, .03 };
     private static final double PROPENSITY = .002;
 
     /* Minimum number of mushrooms alive at any one time. */

@@ -107,7 +107,7 @@ public class SelectState extends BasicGameState {
 
                     public void onClick(StateBasedGame game, Button clicked) {
                         level.newGame((Integer) ((SlickButton)clicked).getUserData());
-                        game.enterState(InGameState.ID);
+                        game.enterState(InGameState.ID, new FadeOutTransition(), null);
                     }
                     
                 });
@@ -135,8 +135,8 @@ public class SelectState extends BasicGameState {
         play.addListener(new ClickListener() {
 
             public void onClick(StateBasedGame game, Button clicked) {
-                ((InGameState) game.getState(InGameState.ID)).newGame();
-                game.enterState(InGameState.ID, new FadeOutTransition(), null);
+                level.newGame();
+                game.enterState(InstructionState.ID);
             }
 
         });
