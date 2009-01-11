@@ -122,7 +122,9 @@ public class InGameState extends BasicGameState {
     public void enter(GameContainer container, StateBasedGame game) {
         this.game = game;
         master.timer.reset();
-        master.dimmer.rewind();
+        if (!master.dimmer.reversed()) {
+            master.dimmer.rewind();
+        }
         master.control.load(level);
         master.music.fade(MasterState.SECONDS_OF_DAYLIGHT, .1f, false);
         addBackControls();
