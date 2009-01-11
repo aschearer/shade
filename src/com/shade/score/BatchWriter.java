@@ -30,7 +30,6 @@ public class BatchWriter {
             }
             String score = builder.toString();
             score = score.trim();
-            System.out.println(score);
             String content = "scores=" + URLEncoder.encode(score, "US-ASCII");
             URL url = new URL(SERVER);
             URLConnection c = url.openConnection();
