@@ -12,6 +12,7 @@ import org.newdawn.slick.state.transition.FadeOutTransition;
 import com.shade.controls.Button;
 import com.shade.controls.ClickListener;
 import com.shade.controls.SlickButton;
+import com.shade.levels.LevelManager;
 import com.shade.util.ResourceManager;
 
 public class SelectState extends BasicGameState {
@@ -84,7 +85,7 @@ public class SelectState extends BasicGameState {
     }
     
     private void initOptions() throws SlickException {
-        options = new SlickButton[12];
+        options = new SlickButton[LevelManager.NUM_LEVELS];
         SpriteSheet thumbnails = new SpriteSheet("states/select/thumbnails.png", 97, 62);
         Image t = thumbnails.getSprite(0, 0);
         options[0] = new SlickButton(70, 90, t, t);
@@ -98,7 +99,7 @@ public class SelectState extends BasicGameState {
         });
         
         Image locked = new Image("states/select/locked.png");
-        for (int i = 1; i < 12; i++) {
+        for (int i = 1; i < options.length; i++) {
             int x = i % 3;
             int y = i / 3;
             if (master.levelsLock.isUnlocked(i)) {
