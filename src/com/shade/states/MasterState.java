@@ -40,7 +40,7 @@ public class MasterState extends BasicGameState {
     public DayPhaseTimer timer;
 
     public TrueTypeFont jekyllXSmall, jekyllSmall, jekyllMedium, jekyllLarge;
-    public TrueTypeFont daisySmall, daisyMedium, daisyLarge;
+    public TrueTypeFont daisySmall, daisyMedium, daisyLarge, daisyXLarge;
 
     public Music music;
 
@@ -129,6 +129,7 @@ public class MasterState extends BasicGameState {
             daisySmall = new TrueTypeFont(f.deriveFont(16f), true);
             daisyMedium = new TrueTypeFont(f.deriveFont(18f), true);
             daisyLarge = new TrueTypeFont(f.deriveFont(24f), true);
+            daisyXLarge = new TrueTypeFont(f.deriveFont(36f), true);
         } catch (Exception e) {
             throw new SlickException("Failed to load font.", e);
         }

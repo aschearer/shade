@@ -185,7 +185,7 @@ public class InstructionState extends BasicGameState {
         back.addListener(new ClickListener() {
 
             public void onClick(StateBasedGame game, Button clicked) {
-                game.enterState(TitleState.ID);
+                game.enterState(SelectState.ID);
                 master.dimmer.reverse();
             }
 

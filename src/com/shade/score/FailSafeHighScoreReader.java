@@ -8,7 +8,7 @@ package com.shade.score;
  */
 public class FailSafeHighScoreReader implements HighScoreReader {
 
-    private static final String SERVER = "http://anotherearlymorning.com/games/shade/board.php";
+    private static final String SERVER = "http://anotherearlymorning.com/games/shade2/board.php";
     
     private LocalHighScoreReader localReader;
     private RemoteHighScoreReader remoteReader;
@@ -23,12 +23,12 @@ public class FailSafeHighScoreReader implements HighScoreReader {
         remoteReader = new RemoteHighScoreReader(SERVER);
     }
 
-    public String[][] getScores(int limit) {
+    public String[][] getScores(int level, int limit) {
         local = false;
-        String[][] scores = remoteReader.getScores(limit);
+        String[][] scores = remoteReader.getScores(level, limit);
         if (scores == null) {
             local = true;
-            scores = localReader.getScores(limit);
+            scores = localReader.getScores(level, limit);
         }
         return scores;
     }

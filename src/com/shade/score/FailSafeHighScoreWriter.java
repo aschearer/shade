@@ -2,6 +2,8 @@ package com.shade.score;
 
 import java.util.prefs.Preferences;
 
+import com.shade.levels.LevelManager;
+
 /**
  * Write high scores to a remote server or locally if you cannot connect to the
  * server.
@@ -18,7 +20,7 @@ public class FailSafeHighScoreWriter implements HighScoreWriter {
 
     private static final String EMPTY_STRING = "";
     private static final String SCORE_KEY = "scores";
-    private static final String SERVER = "http://anotherearlymorning.com/games/shade/post.php";
+    private static final String SERVER = "http://anotherearlymorning.com/games/shade2/post.php";
 
     private LocalHighScoreWriter localWriter;
     private RemoteHighScoreWriter remoteWriter;
@@ -30,18 +32,20 @@ public class FailSafeHighScoreWriter implements HighScoreWriter {
         batchWriter = new BatchWriter();
     }
 
-    public boolean write(String name, int score, boolean clear) {
+    public boolean write(String name, int score, int level, boolean special) {
         // try to write remotely
-        if (remoteWriter.write(name, score, clear)) {
+        if (remoteWriter.write(name, score, level, special)) {
             // try to write past local scores to server
             if (batchWriter.write()) {
-                // clear the file
-                Preferences.systemNodeForPackage(this.getClass()).put(SCORE_KEY, EMPTY_STRING);
+                // clear the files
+                for (int i = 0; i < LevelManager.NUM_LEVELS; i++) {
+                    Preferences.systemNodeForPackage(this.getClass()).put(SCORE_KEY + i, EMPTY_STRING);
+                }
             }
             // else do nothing, they will get written later
         } else {
             // can't connect to server, write locally
-            return localWriter.write(name, score, clear);
+            return localWriter.write(name, score, level, special);
         }
         // wrote current score successfully
         return true;

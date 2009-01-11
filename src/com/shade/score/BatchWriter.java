@@ -8,6 +8,8 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.prefs.Preferences;
 
+import com.shade.levels.LevelManager;
+
 /**
  * Post all of the scores in a csv file to a server.
  *
@@ -17,13 +19,19 @@ public class BatchWriter {
     
     private static final String EMPTY_STRING = "";
     private static final String SCORE_KEY = "scores";
-    private static final String SERVER = "http://anotherearlymorning.com/games/shade/batch.php";
+    private static final String SERVER = "http://anotherearlymorning.com/games/shade2/batch.php";
    
     
     public boolean write() {
         try {
-            String scores = collectScores();
-            String content = "scores=" + URLEncoder.encode(scores, "US-ASCII");
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < LevelManager.NUM_LEVELS; i++) {
+                builder.append(collectScores(i));
+            }
+            String score = builder.toString();
+            score = score.trim();
+            System.out.println(score);
+            String content = "scores=" + URLEncoder.encode(score, "US-ASCII");
             URL url = new URL(SERVER);
             URLConnection c = url.openConnection();
             c.setConnectTimeout(2000);
@@ -43,8 +51,8 @@ public class BatchWriter {
         }
     }
 
-    private String collectScores() {
+    private String collectScores(int level) {
         Preferences prefs = Preferences.systemNodeForPackage(this.getClass());
-        return prefs.get(SCORE_KEY, EMPTY_STRING);
+        return prefs.get(SCORE_KEY + level, EMPTY_STRING);
     }
 }
