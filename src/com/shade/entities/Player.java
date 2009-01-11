@@ -230,16 +230,12 @@ public class Player extends Linkable {
             return;
         }
         int i = 1;
-        boolean locked = next.getRole() == Roles.PICKER.ordinal();
         Linkable head = next;
         while (head.next != null) {
-            if (head.getRole() == Roles.PICKER.ordinal()) {
-                locked = true;
-            }
             i++;
             head = head.next;
         }
-        if (!locked && i < MUSHROOM_LIMIT) {
+        if (i < MUSHROOM_LIMIT) {
             super.attach(l);
         }
     }
