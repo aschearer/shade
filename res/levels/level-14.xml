@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<Level mushrooms="9" par="12">
+<Level mushrooms="9" par="18">
     <Player x="550" y="260"/>
     <Basket x="500" y="210" />
     <Basket x="220" y="390" />
