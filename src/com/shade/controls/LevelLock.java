@@ -2,6 +2,8 @@ package com.shade.controls;
 
 import java.util.prefs.Preferences;
 
+import com.shade.levels.LevelManager;
+
 /**
  * Controls which levels are available to the player.
  * 
@@ -11,7 +13,6 @@ import java.util.prefs.Preferences;
  */
 public class LevelLock {
 
-    private static final int NUM_LEVELS = 12;
     private static final String LEVELS_KEY = "unlocked-levels";
     private static final String LEVEL_LOCKED = "0";
     private static final String LEVEL_UNLOCKED = "1";
@@ -21,7 +22,7 @@ public class LevelLock {
     private boolean[] unlocked;
 
     public LevelLock() {
-        unlocked = new boolean[NUM_LEVELS];
+        unlocked = new boolean[LevelManager.NUM_LEVELS];
         unlocked[0] = true;
         unlocked = deserialize();
     }
@@ -71,7 +72,7 @@ public class LevelLock {
     }
     
     public void resetLocks() {
-        unlocked = new boolean[NUM_LEVELS];
+        unlocked = new boolean[LevelManager.NUM_LEVELS];
         unlocked[0] = true;
         save();
     }
