@@ -26,7 +26,7 @@ public class GameSlice {
     private MushroomFactory factory;
     private LightMask view;
     private LinkedList<MushroomCounter> controls;
-    private boolean flushControls;
+//    private boolean flushControls;
 
     // TIMER!
     private DayPhaseTimer timer;
@@ -41,29 +41,33 @@ public class GameSlice {
 
     public void add(MushroomCounter c) {
         controls.add(c);
+        initPlayer(c);
+        initBaskets(c);
     }
 
     public void flushControls() {
-        flushControls = true;
+        controls.clear();
     }
 
     public void load(Model m) {
         model = m;
         model.setTimer(timer);
         factory = m.getMushroomFactory();
-        initPlayer();
-        initBaskets();
+    }
+    
+    public void addEntity(LuminousEntity e) {
+        model.add(e);
     }
 
     public void update(StateBasedGame game, int delta) throws SlickException {
         model.update(game, delta);
         light.update(game, delta);
-        if (flushControls) {
-            controls.clear();
-            flushControls = false;
-        }
-        for (MushroomCounter c : controls) {
-            c.update(game, delta);
+//        if (flushControls) {
+//            controls.clear();
+//            flushControls = false;
+//        }
+        for (int i = 0; i < controls.size(); i++) {
+            controls.get(i).update(game, delta);
         }
         if (factory.active()) {
             GameContainer c = game.getContainer();
@@ -99,34 +103,36 @@ public class GameSlice {
         return light.castShadow(e);
     }
 
-    private void initPlayer() {
+    private void initPlayer(MushroomCounter counter) {
+        if (!(counter instanceof MeterControl)) {
+            return;
+        }
         Object[] players = model.getEntitiesByRole(Roles.PLAYER.ordinal());
         if (players.length == 0) {
             return;
         }
         Player p = (Player) players[0];
-        for (MushroomCounter counter : controls) {
-            if (counter instanceof MeterControl) {
-                ((MeterControl) counter).track(p);
-            }
-        }
+        ((MeterControl) counter).track(p);
     }
 
-    private void initBaskets() {
+    private void initBaskets(MushroomCounter counter) {
         Object[] baskets = model.getEntitiesByRole(Roles.BASKET.ordinal());
         if (baskets.length == 0) {
             return;
         }
         for (Object o : baskets) {
             Basket b = (Basket) o;
-            for (MushroomCounter counter : controls) {
-                b.add(counter);
-            }
+            b.add(counter);
         }
     }
 
     public void killPlayer() {
         Object[] players = model.getEntitiesByRole(Roles.PLAYER.ordinal());
         model.remove((LuminousEntity) players[0]);
+    }
+    
+    public float distanceTraveled() {
+        Object[] players = model.getEntitiesByRole(Roles.PLAYER.ordinal());
+        return ((Player) players[0]).totalMileage(); 
     }
 }

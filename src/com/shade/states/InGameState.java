@@ -1,6 +1,5 @@
 package com.shade.states;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -12,40 +11,35 @@ import org.newdawn.slick.state.StateBasedGame;
 import com.shade.controls.Button;
 import com.shade.controls.ClickListener;
 import com.shade.controls.ControlListener;
+import com.shade.controls.ControlSlice;
+import com.shade.controls.ScoreControl;
 import com.shade.controls.CounterControl;
 import com.shade.controls.MeterControl;
-import com.shade.controls.ScoreControl;
 import com.shade.controls.SlickButton;
+import com.shade.controls.StatsControl;
 import com.shade.controls.DayPhaseTimer.DayLightStatus;
 import com.shade.levels.LevelManager;
+import com.shade.levels.Model;
 import com.shade.util.ResourceManager;
-import com.shade.states.util.BirdCalls;
-import com.shade.states.util.Dimmer;
 
 public class InGameState extends BasicGameState {
 
     public static final int ID = 3;
 
-    private static final float GAME_CLEAR_BONUS = 1000;
-
-    private LevelManager manager;
+    private StateBasedGame game;
     private MasterState master;
     private ResourceManager resource;
-    private CounterControl counter;
+    private int currentLevel;
+    private Model level;
+    private LevelManager levels;
     private MeterControl meter;
-    private StateBasedGame game;
+    private CounterControl counter;
     private SlickButton play, back;
-    private int nextLevel;
-    private BirdCalls birds;
-    private boolean transitioning;
-    private Dimmer transition;
-    private int transitionTimer;
-    private Color levelText;
-
-    private boolean killed;
+    
+    public StatsControl stats;
 
     public InGameState(MasterState m) throws SlickException {
-        manager = new LevelManager();
+        levels = new LevelManager();
         master = m;
         resource = m.resource;
         resource.register("counter", "states/ingame/counter.png");
@@ -53,9 +47,6 @@ public class InGameState extends BasicGameState {
         resource.register("resume-down", "states/ingame/resume-down.png");
         resource.register("back-up", "states/common/back-up.png");
         resource.register("back-down", "states/common/back-down.png");
-        birds = new BirdCalls();
-        transition = new Dimmer(1f);
-        levelText = new Color(Color.white);
         initControls();
         initButtons();
     }
@@ -65,39 +56,106 @@ public class InGameState extends BasicGameState {
         return ID;
     }
 
+    /**
+     * Play a game starting from the first level.
+     */
+    public void newGame() {
+        currentLevel = 0;
+        initLevel();
+        resetControls();
+        master.scorecard.reset();
+        stats.reset();
+    }
+
+    public void newGame(int level) {
+        currentLevel = level;
+        initLevel();
+        resetControls();
+        master.scorecard.reset();
+        stats.reset();
+    }
+
+    /**
+     * Play a game starting from the level after the current one.
+     */
+    public void nextLevel() {
+        currentLevel++;
+        initLevel();
+        resetControls();
+        master.scorecard.startLevel();
+        if (!master.levelsLock.isUnlocked(currentLevel)) {
+            master.levelsLock.unlock(currentLevel);
+        }
+    }
+
+    /**
+     * Play a game starting from the current level.
+     */
+    public void currentLevel() {
+        initLevel();
+        master.scorecard.rollbackLevel();
+        resetControls();
+    }
+
+    private void initLevel() {
+        level = levels.get(currentLevel);
+    }
+
+    /**
+     * Requires level to be correctly set.
+     */
+    private void resetControls() {
+        meter.reset();
+        counter.reset(level.getPar());
+    }
+
+    private void addBackControls() {
+        master.control.add(counter);
+        master.control.add(meter);
+    }
+
     public void init(GameContainer container, StateBasedGame game)
             throws SlickException {
         throw new RuntimeException("InGameState was init'd!");
     }
-
+    
     @Override
-    public void enter(GameContainer container, StateBasedGame game)
-            throws SlickException {
+    public void enter(GameContainer container, StateBasedGame game) {
         this.game = game;
-        counter.reset();
-        meter.reset();
-        master.scorecard.reset();
         master.timer.reset();
-        manager.rewind();
         master.dimmer.rewind();
-        transitioning = false;
-        master.control.add(counter);
-        master.control.add(meter);
-        master.control.load(manager.next());
-        nextLevel = 2;
-        levelText.a = 0;
+        master.control.load(level);
+        addBackControls();
+    }
+    
+    public void exit(StateBasedGame game, int id) {
+        master.control.flushControls();
+        recordMileage();
+        recordDamage();
+        recordMushroomsCollected();
+        master.control.killPlayer();
+        game.enterState(id);
     }
 
-    // render the gameplay
+    private void recordDamage() {
+        stats.replace("level-damage", meter.totalAmountLost());
+        stats.replace("level-suntime", meter.totalTimeInSun());
+    }
+
+    private void recordMushroomsCollected() {
+        stats.replace("level-mushrooms", counter.totalCount);
+    }
+
+    private void recordMileage() {
+        stats.add("total-mileage", master.control.distanceTraveled());
+        stats.replace("level-mileage", master.control.distanceTraveled());
+    }
+
     public void render(GameContainer container, StateBasedGame game, Graphics g)
             throws SlickException {
         master.control.render(game, g, resource.get("background"));
         master.scorecard.render(game, g);
         master.dimmer.render(game, g);
-        transition.render(game, g);
-        if (transitionTimer > 0) {
-            fadeCentered(container, "Level " + nextLevel);
-        }
         if (container.isPaused()) {
             resource.get("header").draw(400, 0);
             play.render(game, g);
@@ -105,9 +163,19 @@ public class InGameState extends BasicGameState {
             drawCentered(container, "Paused (p)");
         }
         resource.get("trim").draw();
+        
+        if (container.getInput().isKeyPressed(Input.KEY_N)) {
+            nextLevel();
+            enter(container, game);
+        }
+    }
+    
+    private void drawCentered(GameContainer c, String s) {
+        int x = (c.getWidth() - master.daisyLarge.getWidth(s)) / 2;
+        int y = (c.getHeight() - master.daisyLarge.getHeight()) / 2;
+        master.daisyLarge.drawString(x, y, s);
     }
 
-    // render the gameplay
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
         if (container.isPaused()) {
@@ -121,53 +189,24 @@ public class InGameState extends BasicGameState {
         }
         master.control.update(game, delta);
         master.scorecard.update(game, delta);
-        // if (container.getInput().isKeyPressed(Input.KEY_ESCAPE)) {
-        // manager.rewind();
-        // exit(game, TitleState.ID);
-        // }
-//         if (container.getInput().isKeyPressed(Input.KEY_R)) {
-//         manager.rewind();
-//         loadNextLevel(game);
-//         }
-        if (isNight() && !transitioning) {
-            if (isLastLevel()) {                
-                master.scorecard.add(GAME_CLEAR_BONUS);
-                master.scorecard.setBeaten();
-                master.music.fade(2000, 1f, false);
-                exit(game, EnterScoreState.ID);
-            } else {
-                transition.reset();
-                transitioning = true;
-            }
-        }
-        if (!transitioning && master.music.getVolume() == 1) {
-            master.music.fade(MasterState.SECONDS_OF_DAYLIGHT, .1f, false);
-        }
-        if (transitioning || transition.reversed()) {
-            transition.update(game, delta);
-        }
-        if (transitioning && transition.finished()) {
-            transitionTimer += delta;
-            if (!killed) {
-                master.control.killPlayer();
-                killed = true;
-            }
-        }
-        if (transition.finished() && transitionTimer > 2000) {
-            killed = false;
-            transitioning = false;
-            transitionTimer = 0;
-            transition.reverse();
-            meter.awardBonus();
-            master.timer.reset();
-            master.music.fade(2000, 1f, false);
-            loadNextLevel(game);
+
+        if (isNight()) {
+            // fade out
+            exit(game, RecapState.ID);
         }
     }
+    
+    public boolean parWasMet() {
+        return counter.parWasMet();
+    }
 
+    private boolean isNight() {
+        return master.timer.getDaylightStatus() == DayLightStatus.NIGHT;
+    }
+    
     @Override
     public void keyPressed(int key, char c) {
-        if (!transitioning && key == Input.KEY_P) {
+        if (key == Input.KEY_P) {
             if (game.getContainer().isPaused()) {
                 game.getContainer().resume();
                 master.music.resume();
@@ -180,50 +219,14 @@ public class InGameState extends BasicGameState {
         }
     }
 
-    private void drawCentered(GameContainer c, String s) {
-        int x = (c.getWidth() - master.daisyLarge.getWidth(s)) / 2;
-        int y = (c.getHeight() - master.daisyLarge.getHeight()) / 2;
-        master.daisyLarge.drawString(x, y, s);
-    }
-
-    private void fadeCentered(GameContainer c, String s) {
-        int x = (c.getWidth() - master.daisyLarge.getWidth(s)) / 2;
-        int y = (c.getHeight() - master.daisyLarge.getHeight()) / 2;
-        master.daisyLarge.drawString(x, y, s, levelText);
-        levelText.a += .05f;
-    }
-
-    private void exit(StateBasedGame game, int state) {
-        master.control.flushControls();
-        master.control.killPlayer();
-        master.music.fade(2000, 1f, false);
-        game.enterState(state);
-    }
-
-    private boolean isLastLevel() {
-        return !manager.hasNext();
-    }
-
-    private void loadNextLevel(StateBasedGame game) {
-        if (!isLastLevel()) {
-            birds.play();
-            levelText.a = 0;
-            master.control.load(manager.next());
-            nextLevel++;
-        }
-    }
-
-    private boolean isNight() {
-        return master.timer.getDaylightStatus() == DayLightStatus.NIGHT;
-    }
-
     private void initControls() throws SlickException {
+        stats = new StatsControl();
         meter = new MeterControl(20, 480);
         meter.register(new ControlListener() {
 
-            public void fire() {
+            public void fire(ControlSlice c) {
                 // The player lost
-                exit(game, EnterScoreState.ID);
+//                exit(game, RecapState.ID);
             }
 
         });
@@ -235,7 +238,6 @@ public class InGameState extends BasicGameState {
         meter.pass(master.scorecard);
         counter.register(master.scorecard);
     }
-
     private void initButtons() throws SlickException {
         initPlayButton();
         initBackButton();
@@ -264,7 +266,6 @@ public class InGameState extends BasicGameState {
                 game.getContainer().resume();
                 master.music.resume();
                 master.dimmer.reverse();
-                manager.rewind();
                 exit(game, TitleState.ID);
             }
 

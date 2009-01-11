@@ -1,11 +1,11 @@
 Developed by...
 Alex Schearer,http://anotherearlymorning.com/
-J^2
+Jonathan Jou
 
 With help from...
 Julia Foran
 Adam Finklestein
-Gornova
+Alberto Martinelli
 
 Music and Sound...
 Snake Music 2 by Hein

@@ -6,7 +6,7 @@ import com.shade.entities.mushroom.MushroomFactory;
 
 public abstract class Model extends CrashLevel {
 	
-	DayPhaseTimer daytimer;
+	private DayPhaseTimer daytimer;
 
     public Model(int w, int h, int c) {
         super(w, h, c);
@@ -14,9 +14,12 @@ public abstract class Model extends CrashLevel {
     
     public abstract MushroomFactory getMushroomFactory();
     
+    public abstract int getPar();
+    
     public void setTimer(DayPhaseTimer t){
     	daytimer = t;
     }
+    
     
     public DayPhaseTimer getTimer(){
     	return daytimer;

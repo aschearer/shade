@@ -18,7 +18,7 @@ public class CounterControl implements MushroomCounter, Animatable {
     //TODO: multiplier or lotsa points?
     public static final int TREASURE_SCORE = 10000;
 
-    public int value;
+    public int countDown, totalCount;
 
     private float x, y;
     private Image sprite;
@@ -42,7 +42,10 @@ public class CounterControl implements MushroomCounter, Animatable {
 			scorecard.add(TREASURE_SCORE);
 		} else {
 	        scorecard.add(MUSHROOM_SCORE);
-	        value++;
+	        totalCount++;
+	        if (countDown > 0) {
+	            countDown--;
+	        }
 		}
     }
 
@@ -50,15 +53,24 @@ public class CounterControl implements MushroomCounter, Animatable {
         sprite.draw(x, y);
         float xBuffer = x + sprite.getWidth() + X_OFFSET;
         float yBuffer = y + Y_OFFSET;
-        font.drawString(xBuffer, yBuffer, "" + value);
+        font.drawString(xBuffer, yBuffer, "" + countDown);
     }
 
     public void update(StateBasedGame game, int delta) {
         // doesn't need to be updated
     }
 
-    public void reset() {
-        value = 0;
+    public void reset(int par) {
+        countDown = par;
+        totalCount = 0;
+    }
+    
+    public int totalCount() {
+        return totalCount;
+    }
+    
+    public boolean parWasMet() {
+        return countDown == 0;
     }
 
 }

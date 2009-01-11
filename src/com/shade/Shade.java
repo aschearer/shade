@@ -10,6 +10,12 @@ import com.shade.states.MasterState;
 public class Shade extends StateBasedGame {
 
     public static final String TITLE = "Shade";
+    private static final String[] ICONS = {
+        "icons/shade.16.gif",
+        "icons/shade.24.gif",
+        "icons/shade.32.gif",
+        "icons/shade.128.gif"
+    };
 
     public Shade() {
         super(TITLE);
@@ -24,6 +30,7 @@ public class Shade extends StateBasedGame {
         try {
             Shade s = new Shade();
             AppGameContainer c = new AppGameContainer(s, 800, 600, false);
+            c.setIcons(ICONS);
             c.setShowFPS(false);
             c.setTargetFrameRate(60);
             c.start();

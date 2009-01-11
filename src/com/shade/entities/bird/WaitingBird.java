@@ -28,12 +28,12 @@ public class WaitingBird implements State {
 	private Animation idling;
 	private int timer;
 	private Sound wait;
-	private boolean playing;
 
-	public WaitingBird(Bird me) throws SlickException {
-		this.bird = me;
-		initResources();
-	}
+
+    public WaitingBird(Bird me) throws SlickException {
+        this.bird = me;
+        initResources();
+    }
 
 	private void initResources() throws SlickException {
 		SpriteSheet idles = new SpriteSheet("entities/bird/fly2.png", 40, 40);
@@ -49,13 +49,14 @@ public class WaitingBird implements State {
 		//wait.loop();
 	}
 
-	public int getRole() {
-		return Roles.MOLE.ordinal();
-	}
 
-	public boolean isNamed(Object o) {
-		return o == Bird.States.WAITING;
-	}
+    public int getRole() {
+        return Roles.MOLE.ordinal();
+    }
+
+    public boolean isNamed(Object o) {
+        return o == Bird.States.WAITING;
+    }
 
 	public void onCollision(Entity obstacle) {
 		if (obstacle.getRole() == Roles.PLAYER.ordinal()) {
@@ -63,18 +64,18 @@ public class WaitingBird implements State {
 		}
 	}
 
-	public void render(StateBasedGame game, Graphics g) {
-		idling
-				.draw(bird.getX(), bird.getY(), bird.getWidth(), bird
-						.getHeight());
-	}
 
-	public void update(StateBasedGame game, int delta) {
-		idling.update(delta);
-		bird.yawn();
-		testTimer(delta);
-		checkPlayer();
-	}
+    public void render(StateBasedGame game, Graphics g) {
+        idling.draw(bird.getX(), bird.getY(), bird.getWidth(), bird
+                        .getHeight());
+    }
+
+    public void update(StateBasedGame game, int delta) {
+        idling.update(delta);
+        bird.yawn();
+        testTimer(delta);
+        checkPlayer();
+    }
 
 	private void checkPlayer() {
 		float x = bird.getXCenter();
@@ -118,5 +119,6 @@ public class WaitingBird implements State {
 			}
 		}
 	}
+
 
 }

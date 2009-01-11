@@ -7,5 +7,5 @@ package com.shade.controls;
  */
 public interface ControlListener {
 
-    public void fire();
+    public void fire(ControlSlice c);
 }

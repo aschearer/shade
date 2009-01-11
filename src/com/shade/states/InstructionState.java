@@ -72,9 +72,9 @@ public class InstructionState extends BasicGameState {
         initButtons();
         initInstructions(master.jekyllSmall);
         timer = 0;
-        if (!master.dimmer.finished()) {
-            master.dimmer.reset();
-        }
+//        if (!master.dimmer.finished()) {
+//            master.dimmer.reset();
+//        }
     }
 
     // render the aquarium
@@ -107,6 +107,7 @@ public class InstructionState extends BasicGameState {
         }
         prev.active(instructions.started());
         if (instructions.finished()) {
+            ((InGameState) game.getState(InGameState.ID)).newGame();
             game.enterState(InGameState.ID, new FadeOutTransition(), null);
             return;
         }
@@ -171,6 +172,7 @@ public class InstructionState extends BasicGameState {
         play.addListener(new ClickListener() {
 
             public void onClick(StateBasedGame game, Button clicked) {
+                ((InGameState) game.getState(InGameState.ID)).newGame();
                 game.enterState(InGameState.ID, new FadeOutTransition(), null);
             }
 

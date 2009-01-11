@@ -1,7 +1,5 @@
 package com.shade.levels;
 
-import java.util.Iterator;
-
 import org.newdawn.slick.SlickException;
 
 /**
@@ -9,7 +7,7 @@ import org.newdawn.slick.SlickException;
  *
  * @author Alexander Schearer <aschearer@gmail.com>
  */
-public class LevelManager implements Iterator<Model> {
+public class LevelManager {
 
 
     /* List of levels to create using reflection. */
@@ -29,40 +27,18 @@ public class LevelManager implements Iterator<Model> {
         "levels/level-13.xml",
         "levels/level-14.xml",
         "levels/level-15.xml",
-        "levels/level-16.xml"
+        //"levels/level-16.xml"
     };
 
-    /* Pointer into the list of levels. */
-    private int currentLevel;
-
-    public LevelManager() {
-        currentLevel = 0;
-    }
-
-    public boolean hasNext() {
-        return currentLevel < levels.length;
-    }
-
-    @SuppressWarnings("unchecked")
-    public Model next() {
-        String path = levels[currentLevel];
+  
+    public Model get(int i) {
+        String path = levels[i];
         Shell level = null;
         try {
             level = new Shell(path);
         } catch (SlickException e) {
             e.printStackTrace();
         }
-        currentLevel++;
         return level;
     }
-
-    public void remove() {
-        throw new RuntimeException("Method not supported.");
-    }
-
-    public void rewind() {
-        currentLevel = 0;
-    }
-
-
 }

@@ -29,6 +29,8 @@ public class SlickButton implements SizeEntity, Animatable, Button {
     private float x, y;
     private boolean mouseInside, mouseDown;
     private ClickListener listener;
+
+    private Object userData;
     
     static {
         try {
@@ -147,6 +149,14 @@ public class SlickButton implements SizeEntity, Animatable, Button {
 
     public void addListener(ClickListener l) {
         listener = l;
+    }
+
+    public void setUserData(Object o) {
+        userData = o;
+    }
+    
+    public Object getUserData() {
+        return userData;
     }
 
 }
