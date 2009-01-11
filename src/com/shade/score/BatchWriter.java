@@ -45,7 +45,6 @@ public class BatchWriter {
             BufferedReader i = new BufferedReader(new InputStreamReader(c
                     .getInputStream()));
             String response = i.readLine();
-            System.out.println(response);
             return response.equals("success");
         } catch (Exception e) {
             return false;
