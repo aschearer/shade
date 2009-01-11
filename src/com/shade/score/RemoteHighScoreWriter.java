@@ -15,16 +15,17 @@ public class RemoteHighScoreWriter implements HighScoreWriter {
         base = path;
     }
 
-    public boolean write(String name, int score, boolean clear) {
-        String cleared = (clear) ? "1" : "0";
-        return write(name, score + "", cleared);
+    public boolean write(String name, int score, int level, boolean special) {
+        String s = (special) ? "1" : "0";
+        return write(name, score + "", level + "", s);
     }
 
-    protected boolean write(String name, String score, String clear) {
+    protected boolean write(String name, String score, String level, String special) {
         try {
             String content = "name=" + URLEncoder.encode(name, "US-ASCII");
             content += "&score=" + score;
-            content += "&clear=" + clear;
+            content += "&level=" + level;
+            content += "&special=" + special;
             URL url = new URL(base);
             URLConnection c = url.openConnection();
             c.setConnectTimeout(2000);

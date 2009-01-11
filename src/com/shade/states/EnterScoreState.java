@@ -36,8 +36,9 @@ public class EnterScoreState extends BasicGameState {
     private String message;
     private HighScoreWriter writer;
     private boolean completed;
-//    private Music badEnding, goodEnding;
-//    private boolean played;
+
+    // private Music badEnding, goodEnding;
+    // private boolean played;
 
     public EnterScoreState(MasterState m) throws SlickException {
         master = m;
@@ -47,8 +48,8 @@ public class EnterScoreState extends BasicGameState {
         resource.register("losers-wreath", "states/enter/losers-wreath.png");
         resource.register("winners-wreath", "states/enter/winners-wreath.png");
         writer = new FailSafeHighScoreWriter();
-//        badEnding = new Music("states/enter/loser.ogg", true);
-//        goodEnding = new Music("states/enter/winner.ogg", true);
+        // badEnding = new Music("states/enter/loser.ogg", true);
+        // goodEnding = new Music("states/enter/winner.ogg", true);
     }
 
     @Override
@@ -71,8 +72,9 @@ public class EnterScoreState extends BasicGameState {
         }
         completed = false;
         initTextField(container);
-        message = (master.scorecard.isGameBeaten()) ? PROMPT_WINNER : PROMPT_LOSER;
-//        master.music.fade(500, 0, true);
+        message = (master.scorecard.isGameBeaten()) ? PROMPT_WINNER
+                : PROMPT_LOSER;
+        // master.music.fade(500, 0, true);
     }
 
     // render the aquarium
@@ -99,18 +101,18 @@ public class EnterScoreState extends BasicGameState {
         master.control.update(game, delta);
         master.dimmer.update(game, delta);
         timer += delta;
-//        if (!played && !master.music.playing()) {
-//            played = true;
-//            if (master.scorecard.isCleared()) {
-//                goodEnding.setVolume(0);
-//                goodEnding.play();
-//                goodEnding.fade(1000, 1, false);
-//            } else {
-//                badEnding.setVolume(.5f);
-//                badEnding.play();
-//                badEnding.fade(1000, 1, false);
-//            }
-//        }
+        // if (!played && !master.music.playing()) {
+        // played = true;
+        // if (master.scorecard.isCleared()) {
+        // goodEnding.setVolume(0);
+        // goodEnding.play();
+        // goodEnding.fade(1000, 1, false);
+        // } else {
+        // badEnding.setVolume(.5f);
+        // badEnding.play();
+        // badEnding.fade(1000, 1, false);
+        // }
+        // }
         if (timer > MasterState.STATE_TRANSITION_DELAY) {
             play.update(game, delta);
             highscores.update(game, delta);
@@ -143,9 +145,8 @@ public class EnterScoreState extends BasicGameState {
                 int numTries = 3;
                 boolean written = false;
                 while (!written && numTries > 0) {
-                    written = writer.write(input.getText(),
-                            master.scorecard.getScore(), master.scorecard
-                                    .isGameBeaten());
+                    written = writer.write(input.getText(), master.scorecard
+                            .getScore(), 0, false);
                     numTries--;
                 }
                 input.setAcceptingInput(false);
@@ -181,9 +182,9 @@ public class EnterScoreState extends BasicGameState {
 
             public void onClick(StateBasedGame game, Button clicked) {
                 game.enterState(SelectState.ID);
-//                master.music.play();
-//                master.music.fade(1000, 1f, false);
-//                played = false;
+                // master.music.play();
+                // master.music.fade(1000, 1f, false);
+                // played = false;
             }
 
         });
@@ -196,9 +197,9 @@ public class EnterScoreState extends BasicGameState {
 
             public void onClick(StateBasedGame game, Button clicked) {
                 game.enterState(HighscoreState.ID);
-//                master.music.play();
-//                master.music.fade(1000, 1f, false);
-//                played = false;
+                // master.music.play();
+                // master.music.fade(1000, 1f, false);
+                // played = false;
             }
 
         });
@@ -211,9 +212,9 @@ public class EnterScoreState extends BasicGameState {
 
             public void onClick(StateBasedGame game, Button clicked) {
                 game.enterState(SelectState.ID);
-//                master.music.play();
-//                master.music.fade(1000, 1f, false);
-//                played = false;
+                // master.music.play();
+                // master.music.fade(1000, 1f, false);
+                // played = false;
                 master.dimmer.reverse();
             }
 

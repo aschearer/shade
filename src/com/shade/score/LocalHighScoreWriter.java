@@ -13,29 +13,31 @@ public class LocalHighScoreWriter implements HighScoreWriter {
     
     private static final int NAME = 0;
     private static final int SCORE = 1;
-    private static final int CLEAR = 2;
+    private static final int LEVEL = 2;
+    private static final int SPECIAL = 3;
     
     private static final char COMMA = ',';
 
-    public boolean write(String name, int score, boolean clear) {
-        String[] row = new String[3];
+    public boolean write(String name, int score, int level, boolean special) {
+        String[] row = new String[4];
         row[NAME] = name;
         row[SCORE] = score + EMPTY_STRING;
-        row[CLEAR] = (clear) ? "1" : "0";
-        return write(row[NAME], row[SCORE], row[CLEAR]);
+        row[LEVEL] = level + EMPTY_STRING;
+        row[SPECIAL] = (special) ? "1" : "0";
+        return write(row[NAME], row[SCORE], row[LEVEL], row[SPECIAL]);
     }
     
-    protected boolean write(String name, String score, String clear) {
+    protected boolean write(String name, String score, String level, String special) {
         Preferences prefs = Preferences.systemNodeForPackage(this.getClass());
         StringWriter stream = new StringWriter();
         CsvWriter writer = new CsvWriter(stream, COMMA);
-        String[] row = new String[] { name, score, clear };
+        String[] row = new String[] { name, score, level, special };
         try {
             writer.writeRecord(row);
 //            writer.flush();
             
-            stream.append(prefs.get(SCORE_KEY, EMPTY_STRING));
-            prefs.put(SCORE_KEY, stream.toString());
+            stream.append(prefs.get(SCORE_KEY + level, EMPTY_STRING));
+            prefs.put(SCORE_KEY + level, stream.toString());
         } catch (IOException e) {
             return false;
         }

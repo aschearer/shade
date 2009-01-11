@@ -24,10 +24,11 @@ public class RemoteHighScoreReader implements HighScoreReader {
         base = path;
     }
 
-    public String[][] getScores(int limit) {
+    public String[][] getScores(int level, int limit) {
         try {
             String target = base + "?num_scores="
                     + URLEncoder.encode("" + limit, "US-ASCII");
+            target += "&level=" + URLEncoder.encode("" + level, "US-ASCII");
             // open connection to read
 
             URL url = new URL(target);

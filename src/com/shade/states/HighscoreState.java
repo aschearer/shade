@@ -162,7 +162,7 @@ public class HighscoreState extends BasicGameState {
     private void initScores() throws SlickException {
         scores.clear();
         crowns.clear();
-        String[][] scoress = reader.getScores(10);
+        String[][] scoress = reader.getScores(0, 10);
         noInternet = reader.isLocal();
         int x = 50;
         int y = 100;

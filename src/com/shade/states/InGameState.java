@@ -214,6 +214,10 @@ public class InGameState extends BasicGameState {
     public boolean parWasMet() {
         return counter.parWasMet();
     }
+    
+    public int getCurrentLevel() {
+        return currentLevel + 1;
+    }
 
     private boolean isNight() {
         return master.timer.getDaylightStatus() == DayLightStatus.NIGHT;
