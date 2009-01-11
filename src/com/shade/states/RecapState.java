@@ -244,10 +244,14 @@ public class RecapState extends BasicGameState {
         input.addListener(new ComponentListener() {
 
             public void componentActivated(AbstractComponent c) {
+                String name = input.getText().trim();
+                if (name.equals("")) {
+                    name = "Anon";
+                }
                 int numTries = 3;
                 boolean written = false;
                 while (!written && numTries > 0) {
-                    written = writer.write(input.getText(), master.scorecard
+                    written = writer.write(name, master.scorecard
                             .getLevelScore(), level.getCurrentLevel(), false);
                     numTries--;
                 }

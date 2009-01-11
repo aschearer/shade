@@ -286,7 +286,7 @@ public class InGameState extends BasicGameState {
                 game.getContainer().resume();
                 master.music.resume();
                 master.dimmer.reverse();
-                game.enterState(SelectState.ID);
+                safeExit(game, SelectState.ID);
             }
 
         });
