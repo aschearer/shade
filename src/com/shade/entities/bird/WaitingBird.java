@@ -24,31 +24,27 @@ import com.shade.entities.Roles;
  */
 public class WaitingBird implements State {
 
-	private Bird bird;
-	private Animation idling;
-	private int timer;
-	private Sound wait;
-
+    private Bird bird;
+    private Animation idling;
+    private int timer;
 
     public WaitingBird(Bird me) throws SlickException {
         this.bird = me;
         initResources();
     }
 
-	private void initResources() throws SlickException {
-		SpriteSheet idles = new SpriteSheet("entities/bird/fly2.png", 40, 40);
-		idling = new Animation(idles, 125);
-		idling.setAutoUpdate(false);
-		//idling.setPingPong(true);
-		wait = new Sound("entities/bird/waiting.ogg");
-	}
+    private void initResources() throws SlickException {
+        SpriteSheet idles = new SpriteSheet("entities/bird/fly2.png", 40, 40);
+        idling = new Animation(idles, 125);
+        idling.setAutoUpdate(false);
+        // idling.setPingPong(true);
+    }
 
-	public void enter() {
-		timer = 0;
-		idling.restart();
-		//wait.loop();
-	}
-
+    public void enter() {
+        timer = 0;
+        idling.restart();
+        // wait.loop();
+    }
 
     public int getRole() {
         return Roles.MOLE.ordinal();
@@ -58,15 +54,15 @@ public class WaitingBird implements State {
         return o == Bird.States.WAITING;
     }
 
-	public void onCollision(Entity obstacle) {
-		if (obstacle.getRole() == Roles.PLAYER.ordinal()) {
-			bird.manager.enter(Bird.States.RETURNING);
-		}
-	}
-
+    public void onCollision(Entity obstacle) {
+        if (obstacle.getRole() == Roles.PLAYER.ordinal()) {
+            bird.manager.enter(Bird.States.RETURNING);
+        }
+    }
 
     public void render(StateBasedGame game, Graphics g) {
-        idling.draw(bird.getX(), bird.getY(), bird.getWidth(), bird
+        idling
+                .draw(bird.getX(), bird.getY(), bird.getWidth(), bird
                         .getHeight());
     }
 
@@ -77,48 +73,49 @@ public class WaitingBird implements State {
         checkPlayer();
     }
 
-	private void checkPlayer() {
-		float x = bird.getXCenter();
-		float y = bird.getYCenter();
-		Object[] o = bird.level.getEntitiesByRole(Roles.PLAYER.ordinal());
-		if (o.length > 0) {
-			Player p = (Player) bird.level.getEntitiesByRole(Roles.PLAYER
-					.ordinal())[0];
-			float destx = p.getXCenter();
-			float desty = p.getYCenter();
-			float distx = destx - x;
-			float disty = desty - y;
-			float radius = (float) Math.sqrt(distx * distx + disty * disty);
-			bird.heading = (float) (Math.atan2(disty, distx) + Math.PI / 2);
-			if (radius < bird.range * 1.8) {
-				idling.setSpeed(Math.min(5, (float) Math.pow(bird.range
-						/ radius, 4) * 10));
-				if (!Bird.alert.playing()) {
-				    Bird.alert.playAt(bird.getXCenter(),bird.getYCenter(),0);
-				}
-			} else {
-				idling.setSpeed(1);
-			}
-			if (radius < bird.range) {
-				// TODO: I think the bird should shriek and turn angry
-				// (territorial).
-				// this would give the player some time to back off.
-				bird.manager.enter(Bird.States.ATTACKING);
-			}
-		}
-	}
+    private void checkPlayer() {
+        float x = bird.getXCenter();
+        float y = bird.getYCenter();
+        Object[] o = bird.level.getEntitiesByRole(Roles.PLAYER.ordinal());
+        if (o.length > 0) {
+            Player p = (Player) bird.level.getEntitiesByRole(Roles.PLAYER
+                    .ordinal())[0];
+            float destx = p.getXCenter();
+            float desty = p.getYCenter();
+            float distx = destx - x;
+            float disty = desty - y;
+            float radius = (float) Math.sqrt(distx * distx + disty * disty);
+            bird.heading = (float) (Math.atan2(disty, distx) + Math.PI / 2);
+            if (radius < bird.range * 1.8) {
+                idling.setSpeed(Math.min(5, (float) Math.pow(bird.range
+                        / radius, 4) * 10));
+                if (!Bird.alert.playing()) {
+                    Bird.alert.play();
+                }
+            } else {
+                idling.setSpeed(1);
+            }
+            if (radius < bird.range) {
+                // TODO: I think the bird should shriek and turn angry
+                // (territorial).
+                // this would give the player some time to back off.
+                if (!Bird.attack.playing()) {
+                    Bird.attack.play();
+                }
+                bird.manager.enter(Bird.States.ATTACKING);
+            }
+        }
+    }
 
-	private void testTimer(int delta) {
-		timer += delta;
-		if (timer > 2000) {
-			if (Math.random() > 0.2)
-				bird.manager.enter(Bird.States.WAITING);
-			else{
-				bird.manager.enter(Bird.States.RETURNING);
-				wait.stop();
-			}
-		}
-	}
-
+    private void testTimer(int delta) {
+        timer += delta;
+        if (timer > 2000) {
+            if (Math.random() > 0.2)
+                bird.manager.enter(Bird.States.WAITING);
+            else {
+                bird.manager.enter(Bird.States.RETURNING);
+            }
+        }
+    }
 
 }

@@ -35,11 +35,13 @@ public class Player extends Linkable {
     private Sound register, damage;
     private boolean impeded;
     private float mileage;
+    protected int invincibleTimer, flipper;
 
     public Player(int x, int y) throws SlickException {
         initShape(x, y);
         initResources();
         initStates();
+        invincibleTimer = 2000;
     }
 
     private void initShape(int x, int y) {
@@ -99,13 +101,22 @@ public class Player extends Linkable {
         }
 
         public void render(StateBasedGame game, Graphics g) {
-            normal.drawCentered(getXCenter(), getYCenter());
+            if (invincibleTimer > 0 && flipper % 5 > 2) {
+               normal.drawCentered(getXCenter(), getYCenter());
+            }
+            if (invincibleTimer <= 0) {
+                normal.drawCentered(getXCenter(), getYCenter());
+            }
         }
 
         public void update(StateBasedGame game, int delta) {
             testAndMove(game.getContainer().getInput(), delta);
             testAndWrap();
             impeded = false;
+            if (invincibleTimer > 0) {
+               invincibleTimer -= delta;
+               flipper++;
+            }
         }
 
         private void testAndMove(Input input, int delta) {
@@ -245,7 +256,8 @@ public class Player extends Linkable {
     }
 
     public float getLuminosity() {
-        return luminosity;
+        return (invincibleTimer > 0) ? .6f : luminosity;
+        //return luminosity;
     }
 
     public int getZIndex() {

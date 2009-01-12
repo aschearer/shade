@@ -35,6 +35,8 @@ public class RecapState extends BasicGameState {
     private ResourceManager resource;
     private SlickButton next, replay, back;
 
+    private int levelScore, totalScore;
+
     private TextField input;
     private boolean noInternet;
     private FailSafeHighScoreReader reader;
@@ -80,6 +82,8 @@ public class RecapState extends BasicGameState {
         completed = false;
         initTextField(container);
         master.dimmer.rewind();
+        levelScore = master.scorecard.getLevelScore();
+        totalScore = master.scorecard.getScore();
     }
 
     public void render(GameContainer container, StateBasedGame game, Graphics g)
@@ -94,10 +98,8 @@ public class RecapState extends BasicGameState {
         back.render(game, g);
         master.daisyXLarge.drawString(75, 135, (par) ? PASS_TEXT : FAIL_TEXT);
 
-        master.jekyllMedium.drawString(90, 200, "Points Earned: "
-                + master.scorecard.getLevelScore());
-        master.jekyllMedium.drawString(90, 225, "Total Points: "
-                + master.scorecard.getScore());
+        master.jekyllMedium.drawString(90, 200, "Points Earned: " + levelScore);
+        master.jekyllMedium.drawString(90, 225, "Total Points: " + totalScore);
         master.jekyllMedium.drawString(90, 280, "Distance Traveled: "
                 + levelMileage());
         master.jekyllMedium.drawString(90, 305, "Total Distance: "
@@ -261,7 +263,7 @@ public class RecapState extends BasicGameState {
                     crowns.add(new FadeInImage(resource.get("crown"), 470, 428,
                             32, 20, 1000));
                 }
-                scores.add(new FadeInText(input.getText(), master.jekyllMedium,
+                scores.add(new FadeInText(name, master.jekyllMedium,
                         510, 428, 1000));
                 scores.add(new FadeInText(
                         master.scorecard.getLevelScore() + "",

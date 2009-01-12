@@ -7,6 +7,7 @@ public class MockPlayer extends Player {
 
     public MockPlayer(int x, int y) throws SlickException {
         super(x, y);
+        invincibleTimer = 0;
     }
 
     @Override
