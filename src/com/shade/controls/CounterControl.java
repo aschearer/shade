@@ -16,7 +16,7 @@ public class CounterControl implements MushroomCounter, Animatable {
     private static final int MUSHROOM_SCORE = 20;
     
     //TODO: multiplier or lotsa points?
-    public static final int TREASURE_SCORE = 10000;
+    public static final int TREASURE_SCORE = 1000;
 
     public int countDown, totalCount;
 

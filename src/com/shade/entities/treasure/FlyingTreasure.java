@@ -68,7 +68,7 @@ public class FlyingTreasure implements State {
 
         // sunny shrink
         if (!shroom.inShadows()) {
-            shroom.shrink();
+            shroom.shrink(delta);
         }
         testTimer(delta);
         shroom.nudge((float)(speed*Math.cos(angle)), (float)(speed*Math.sin(angle)));

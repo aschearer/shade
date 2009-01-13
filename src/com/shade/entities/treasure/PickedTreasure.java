@@ -78,7 +78,7 @@ public class PickedTreasure implements State {
 
         // sunny shrink
         if (!treasure.inShadows()) {
-            treasure.shrink();
+            treasure.shrink(delta);
         }
 
         // too far away, catch up

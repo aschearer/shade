@@ -28,7 +28,7 @@ public class ReturningTreasure implements State {
         timer = 0;
         clear = true;
         treasure.detach();
-        treasure.scale = treasure.MAX_SCALE;
+        treasure.scale = Treasure.MAX_SCALE;
     }
 
     public int getRole() {

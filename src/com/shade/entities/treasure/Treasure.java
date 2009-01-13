@@ -1,5 +1,8 @@
 package com.shade.entities.treasure;
 
+import java.util.ArrayList;
+
+import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -17,7 +20,6 @@ import com.shade.base.Level;
 import com.shade.base.util.StateManager;
 import com.shade.crash.CrashLevel;
 import com.shade.crash.Repelable;
-import com.shade.entities.Linkable;
 import com.shade.entities.mushroom.Mushroom;
 import com.shade.entities.util.Sparkler;
 import com.shade.lighting.LuminousEntity;
@@ -27,16 +29,19 @@ public class Treasure extends Mushroom implements Repelable {
 
 	protected static final float SPEED = 2.2f;
 
-	private static final float RADIUS = 3f;
-	public static final float MAX_SCALE = 4f;
-	private static final float MIN_SCALE = 0.1f;
-	public static final float SCALE_INCREMENT = (MAX_SCALE - MIN_SCALE) / 200;
+	private static final float RADIUS = 12f;
+	public static final float MAX_SCALE = 1f;
+	private static final float MIN_SCALE = 0.3f;
+	public static final int SECONDS_OF_LIFE = 1500;
+	public static final float SCALE_INCREMENT = (MAX_SCALE - MIN_SCALE)
+			/ SECONDS_OF_LIFE;
 
 	private float spawn_x;
 	private float spawn_y;
 	private boolean open;
 	protected boolean collect;
 	private Sparkler sparky;
+	private float sunAngle;
 
 	protected enum States {
 		RETURNING, NORMAL, PICKED, COLLECTED, FLYING
@@ -50,21 +55,15 @@ public class Treasure extends Mushroom implements Repelable {
 	protected float scale;
 
 	private Types type;
-	private Image mushroom;
 	private float luminosity;
 	protected CrashLevel level;
 
-	// hacky ints! TODO: clean up hacky ints
-	private int timer, failmer;
-
-	private static SpriteSheet sheet;
 	private static SpriteSheet chestOpen;
 	private static SpriteSheet chestClosed;
 	protected static Sound spawning, picked, poisonPicked, collected;
 
 	static {
 		try {
-			sheet = new SpriteSheet("entities/mushroom/mushrooms.png", 40, 40);
 			chestOpen = new SpriteSheet("entities/treasure/TreasureOpened.png",
 					64, 51);
 			chestClosed = new SpriteSheet(
@@ -89,23 +88,33 @@ public class Treasure extends Mushroom implements Repelable {
 		initResources();
 		initStates();
 		sparky = new Sparkler(this);
-		
+
 	}
 
 	private void initShape(float x, float y) {
 		shape = new Rectangle(x, y, chestClosed.getWidth(), chestClosed
 				.getHeight());
+		shape.setCenterX(x);
+		shape.setCenterY(y);
 	}
 
 	public void open() {
 		open = true;
-		shape = new Circle(shape.getX(), shape.getY(), RADIUS * scale);
+		float centx = shape.getCenterX();
+		float centy = shape.getCenterY();
+		shape = new Circle(spawn_x, spawn_y, RADIUS * scale);
+		shape.setCenterX(centx);
+		shape.setCenterY(centy);
 	}
 
 	public void close() {
 		open = false;
+		float centx = shape.getCenterX();
+		float centy = shape.getCenterY();
 		shape = new Rectangle(spawn_x, spawn_y, chestClosed.getWidth(),
 				chestClosed.getHeight());
+		shape.setCenterX(centx);
+		shape.setCenterY(centy);
 		scale = MAX_SCALE;
 	}
 
@@ -128,9 +137,8 @@ public class Treasure extends Mushroom implements Repelable {
 	}
 
 	public void goHome() {
-		this
-				.nudge((spawn_x - getXCenter()) / 40, (spawn_y - getYCenter())
-						/ 40);
+		nudge((spawn_x+chestClosed.getWidth()/4 - getX()) / 25, 
+				(spawn_y+chestClosed.getHeight()/4 - getY()) / 25);
 	}
 
 	protected void finish() {
@@ -159,17 +167,17 @@ public class Treasure extends Mushroom implements Repelable {
 	}
 
 	protected void unsize() {
-		((Circle) shape).setRadius(RADIUS);
+		((Circle) shape).setRadius(RADIUS * scale);
 	}
 
-	protected void grow() {
-		scale += SCALE_INCREMENT;
-		resize();
+	protected void grow(int delta) {
+		scale += SCALE_INCREMENT * delta;
+		//resize();
 	}
 
-	protected void shrink() {
-		scale -= SCALE_INCREMENT / 3;
-		resize();
+	protected void shrink(int delta) {
+		scale -= SCALE_INCREMENT * delta;
+		//resize();
 	}
 
 	public boolean isPoison() {
@@ -177,10 +185,13 @@ public class Treasure extends Mushroom implements Repelable {
 	}
 
 	private void resize() {
-		float x = shape.getCenterX();
-		float y = shape.getCenterY();
-		shape.setCenterX(x);
-		shape.setCenterY(y);
+		if (open) {
+			float x = shape.getCenterX();
+			float y = shape.getCenterY();
+			((Circle) shape).setRadius(RADIUS * scale);
+			shape.setCenterX(x);
+			shape.setCenterY(y);
+		}
 	}
 
 	protected void draw(Graphics g) {
@@ -188,13 +199,29 @@ public class Treasure extends Mushroom implements Repelable {
 		// opens and get rid of the weird unaligned nonsense that incurs these
 		// messy constants.
 		if (open) {
-			chestOpen.draw(spawn_x - chestClosed.getWidth() / 4 + 3, spawn_y
-					- chestClosed.getHeight() / 4 - 2);
+			chestOpen.draw(spawn_x, spawn_y);
 			if (!collect) {
-				g.setColor(new Color(0.7f, 0.7f, 0f));
-				g.fillOval(getX(), getY(), RADIUS * 2 * scale,
-						RADIUS * 2 * scale);
+				float rmin = 0.1f;
+				float gmin = 0.1f;
+				float bmin = 0.1f;
+				GL11.glAlphaFunc(GL11.GL_GREATER,0f);
+				g.setColor(new Color(scale*(0.85f-rmin)+rmin, scale*(0.9f-gmin)+gmin, bmin*(1-scale),scale));
+				g.fillOval(getX(), getY(), RADIUS * 2, RADIUS * 2);
+				if (!inShadows()) {
+					g.setColor(new Color(1f, 1f, 1f));
+					// HACK! TODO: KILL HACK! MAGIC NUMBERS SRSLY?
+					float hack_x = 0.6f * scale;
+					float hack_y = 0.6f * scale;
+					g.fillOval((float) (getX() + RADIUS + Math.cos(sunAngle
+							+ Math.PI / 2)
+							* RADIUS * scale / 2)
+							+ hack_x, (float) (getY() + RADIUS + Math
+							.sin(sunAngle + Math.PI / 2)
+							* RADIUS * scale / 2)
+							+ hack_y, RADIUS * scale, RADIUS * scale);
+				}
 				sparky.animate(g);
+				GL11.glAlphaFunc(GL11.GL_GREATER,0.95f);
 			}
 		} else {
 			// chestOpen.draw(spawn_x-chestClosed.getWidth()/4+3,
@@ -202,8 +229,7 @@ public class Treasure extends Mushroom implements Repelable {
 
 			// TODO: FIND OUT WHY ITS NOT DRAWING ALIGNED WITH THE DAMN PEARL
 			// THING.
-			chestClosed.draw(spawn_x - chestClosed.getWidth() / 4 - 3, spawn_y
-					- chestClosed.getHeight() / 4 - 3);
+			chestClosed.draw(spawn_x, spawn_y);
 			sparky.animate(g);
 			// g.setColor(new Color(0.7f, 0.7f, 0f));
 			// g.fillOval(getXCenter(), getYCenter(), RADIUS * 2 * scale, RADIUS
@@ -214,6 +240,7 @@ public class Treasure extends Mushroom implements Repelable {
 	}
 
 	public Shape castShadow(float direction, float depth) {
+		sunAngle = direction;
 		return null;
 	}
 
