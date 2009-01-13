@@ -12,11 +12,14 @@ public class ScoreControl implements Animatable {
     private TrueTypeFont font;
     private float totalScore, levelScore, currentScore;
     private boolean gameCleared;
+    //score spiker
+    private int base;
 
     public ScoreControl(float x, float y, TrueTypeFont f) {
         this.x = x;
         this.y = y;
         font = f;
+        base = 1;
     }
 
     public void render(StateBasedGame game, Graphics g) {
@@ -24,8 +27,12 @@ public class ScoreControl implements Animatable {
     }
 
     public void update(StateBasedGame game, int delta) {
-        if (currentScore < totalScore) {
-            currentScore++;
+        if (currentScore + base < totalScore) {
+            currentScore+= base;
+            base++;
+        }
+        else if(currentScore<totalScore){
+        	currentScore = totalScore;
         }
     }
 

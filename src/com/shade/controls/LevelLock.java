@@ -79,8 +79,8 @@ public class LevelLock {
     
     public void free(int n) {
         resetLocks();
-        for (int i = 0; i < n; i++) {
-            unlocked[i] = true;
+        for (int i = 1; i < n; i++) {
+            unlocked[i] = false;
         }
         save();
     }

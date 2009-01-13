@@ -55,8 +55,11 @@ public class Basket extends Linkable {
         }
         if(obstacle.getRole() == Roles.TREASURE.ordinal()){
             Mushroom m = (Mushroom) obstacle;
+            //HACK TODO: KILL HACK! ACCESSS TREASURE STATE TO CHECK COLLECTION!
+            if(m.prev!=null){
             m.detach();
             notifyCounters(m);
+            }
         }
     }
 

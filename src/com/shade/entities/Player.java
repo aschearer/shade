@@ -17,6 +17,7 @@ import com.shade.crash.CrashLevel;
 import com.shade.crash.Repelable;
 import com.shade.entities.bird.Bird;
 import com.shade.entities.mushroom.Mushroom;
+import com.shade.entities.treasure.Treasure;
 import com.shade.lighting.LuminousEntity;
 
 public class Player extends Linkable {
@@ -286,6 +287,12 @@ public class Player extends Linkable {
             Repelable b = (Repelable) obstacle;
             b.repel(this);
         }
+        /* TODO: determine if we want the chest to be an obstacle.
+        if (obstacle.getRole() == Roles.TREASURE.ordinal()) {
+            Repelable b = (Repelable) obstacle;
+            b.repel(this);
+        }
+        */
     }
 
     public void removeFromLevel(Level<?> l) {
