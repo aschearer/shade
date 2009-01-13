@@ -14,6 +14,7 @@ import com.shade.base.Level;
 import com.shade.base.util.StateManager;
 import com.shade.crash.CrashLevel;
 import com.shade.entities.Linkable;
+import com.shade.entities.util.Sparkler;
 import com.shade.lighting.LuminousEntity;
 import com.shade.states.MasterState;
 
@@ -25,6 +26,7 @@ public class Mushroom extends Linkable {
     private static final float SCALE_INCREMENT = .008f;
     private static final float MAX_SCALE = 3.5f;
     private static final float MIN_SCALE = 2f;
+    private Sparkler sparky;
 
     protected enum States {
         SPAWNING, NORMAL, PICKED, COLLECTED, FLYING
@@ -71,6 +73,12 @@ public class Mushroom extends Linkable {
         initShape(x, y);
         initResources();
         initStates();
+    	try{
+        	sparky = new Sparkler(this);
+        }
+        catch (Exception e){
+        		
+        }
     }
 
     private void initShape(float x, float y) {
@@ -198,11 +206,15 @@ public class Mushroom extends Linkable {
 
     public void render(StateBasedGame game, Graphics g) {
         manager.render(game, g);
+        if(isGolden())
+        sparky.animate(g);
     }
 
     public void update(StateBasedGame game, int delta) {
         manager.update(game, delta);
         testAndWrap();
+        if(isGolden())
+        sparky.update(delta);
     }
 
     public int compareTo(LuminousEntity l) {

@@ -62,6 +62,9 @@ public class ReturningBird implements State {
         if (obstacle.getRole() == Roles.PLAYER.ordinal()) {
             //bird.manager.enter(Bird.States.RETURNING);
         }
+        if(obstacle.getRole() == Roles.BIRD.ordinal()){
+        	bird.manager.enter(Bird.States.RETURNING);
+        }
     }
 
     public void render(StateBasedGame game, Graphics g) {
