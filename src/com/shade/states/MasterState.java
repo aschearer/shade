@@ -73,6 +73,7 @@ public class MasterState extends BasicGameState {
         // TODO: HOW DO WE MODIFY THE LENGTH OF THE DAY AHHH
         control = new GameSlice(new LightMask(5, timer), createLight(), timer);
         dimmer = new Dimmer(.6f);
+        dimmer.run();
 
         // register states
         game.addState(new TitleState(this));

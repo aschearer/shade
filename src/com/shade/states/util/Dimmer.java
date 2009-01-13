@@ -14,6 +14,7 @@ public class Dimmer implements Animatable {
     private float targetAlpha;
     private int timer;
     private boolean reversed;
+    private boolean running;
     
     public Dimmer(float target) {
         color = new Color(Color.black);
@@ -29,6 +30,9 @@ public class Dimmer implements Animatable {
     }
 
     public void update(StateBasedGame game, int delta) {
+        if (!running) {
+            return;
+        }
         timer += delta;
         if (!reversed && color.a < targetAlpha && timer > 100) {
             color.a += ALPHA_INC;
@@ -77,6 +81,18 @@ public class Dimmer implements Animatable {
         timer = 0;
         color.a = targetAlpha;
         reversed = true;
+    }
+    
+    public void run() {
+        running = true;
+    }
+    
+    public void stop() {
+        running = false;
+    }
+    
+    public boolean isRunning() {
+        return running;
     }
 
 }
