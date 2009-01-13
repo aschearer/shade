@@ -89,7 +89,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
             decrement(delta);
             
         } else {
-            timeInSun = 0;
+            timeInSun -=delta;
         }
         
         if (totalAmountToAdd > 0) {

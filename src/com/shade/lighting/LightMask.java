@@ -115,8 +115,8 @@ public class LightMask {
             } else {
                 GL11.glAlphaFunc(GL11.GL_GREATER, 0.95f);
             }
-            entities[i].render(game, g);
             entities[i].setLuminosity(getLuminosityFor(entities[i], g));
+            entities[i].render(game, g);
             i++;
         }
 
@@ -124,8 +124,8 @@ public class LightMask {
         GL11.glDisable(GL11.GL_ALPHA_TEST);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         while (i < entities.length) {
+        	entities[i].setLuminosity(getLuminosityFor(entities[i], g));
             entities[i].render(game, g);
-            entities[i].setLuminosity(getLuminosityFor(entities[i], g));
             i++;
         }
         //GL11.glDisable(GL11.GL_ALPHA_TEST);

@@ -204,8 +204,11 @@ public class Treasure extends Mushroom implements Repelable {
 				float rmin = 0.1f;
 				float gmin = 0.1f;
 				float bmin = 0.1f;
+				//TODO: 
 				GL11.glAlphaFunc(GL11.GL_GREATER,0f);
-				g.setColor(new Color(scale*(0.85f-rmin)+rmin, scale*(0.9f-gmin)+gmin, bmin*(1-scale),scale));
+				g.setColor(new Color(scale*(0.85f-rmin)+rmin, 
+						scale*(0.9f-gmin)+gmin, 
+						bmin*(1-scale),scale));
 				g.fillOval(getX(), getY(), RADIUS * 2, RADIUS * 2);
 				if (!inShadows()) {
 					g.setColor(new Color(1f, 1f, 1f));
