@@ -6,6 +6,7 @@ import java.util.List;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SpriteSheet;
+import org.newdawn.slick.SlickException;
 
 import com.crash.Body;
 
@@ -21,7 +22,7 @@ public class Sparkler {
 	private SpriteSheet sparkle;
 	private int timer;
 	
-	public Sparkler(Body b) {
+	public Sparkler(Body b) throws SlickException {
 		timer = 0;
 		origin = b;
 		initSparkles();
@@ -29,12 +30,7 @@ public class Sparkler {
 			float[] p = getPoint();
 			sparkles[i] = new Sparkle(p[0],p[1], this);
 		}
-		try {
-			sparkle = new SpriteSheet("res/entities/sparkle/spark.png", 50, 50);
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("whoa damn you're screwed");
-		}
+        sparkle = new SpriteSheet("entities/sparkle/spark.png", 50, 50);
 	}
 
 	private void initSparkles() {
@@ -74,17 +70,11 @@ public class Sparkler {
 		private float scale;
 		private Sparkler daddy;
 
-		public Sparkle(float x, float y, Sparkler s) {
+		public Sparkle(float x, float y, Sparkler s) throws SlickException {
 			daddy = s;
 			this.x = x;
 			this.y = y;
-			try{
-				image = new SpriteSheet("res/entities/sparkle/spark.png",
-						20, 20);
-			}
-			catch (Exception e){
-				
-			}
+            image = new SpriteSheet("entities/sparkle/spark.png", 20, 20);
 		}
 		
 		public void draw(){
