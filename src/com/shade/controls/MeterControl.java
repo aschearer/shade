@@ -5,6 +5,7 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
+import com.shade.entities.Player;
 import com.shade.entities.Roles;
 import com.shade.entities.mushroom.Mushroom;
 import com.shade.lighting.LuminousEntity;
@@ -85,11 +86,23 @@ public class MeterControl implements ControlSlice, MushroomCounter {
         if (value == 0) {
             listener.fire(this);
         }
+        //TODO: move this somwhere
+        int scale = 60;
         if (target != null && target.getLuminosity() > MasterState.SHADOW_THRESHOLD) {
             decrement(delta);
+            //not sure why this isn't player specific right now. It wil be form now on.
+            //TODO: if this shold go somewhere else tell me!
+            Player p = (Player) target;
+            if(p.getSmokeCount()*scale<timeInSun){
+            	p.setSmokeCount((int)Math.pow(1.05,timeInSun/scale)-1);
+            }
             
         } else {
-            timeInSun -=delta;
+            timeInSun = Math.max(timeInSun-delta,0);
+            Player p = (Player) target;
+            if(p.getSmokeCount()*scale>timeInSun){
+            	p.setSmokeCount((int)Math.pow(1.05,timeInSun/scale)-1);
+            }
         }
         
         if (totalAmountToAdd > 0) {

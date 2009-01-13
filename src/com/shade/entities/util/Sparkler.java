@@ -46,10 +46,15 @@ public class Sparkler {
 	}
 	
 	public void animate(Graphics g) {
+		//TODO: YAY OPENGL CALLS
+		GL11.glAlphaFunc(GL11.GL_GREATER, 0.01f);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA,GL11.GL_ONE_MINUS_SRC_ALPHA);
 		for(int i = 0;i<sparkles.length;i++){
 			if(timer>MAX_SCALEUP/increment*i/sparkles.length)
 			sparkles[i].draw();
 		}
+		GL11.glAlphaFunc(GL11.GL_GREATER, 0.95f);
+		GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	}
 	
 	public float[] getPoint(){
@@ -78,9 +83,9 @@ public class Sparkler {
 		}
 		
 		public void draw(){
-			//GL11.glBlendFunc(GL11.GL_SRC_ALPHA,GL11.GL_ONE_MINUS_SRC_ALPHA);
+			GL11.glBlendFunc(GL11.GL_SRC_ALPHA,GL11.GL_ONE_MINUS_SRC_ALPHA);
 			image.draw(x-sparkle.getWidth()/2*scale, y-sparkle.getHeight()/2*scale, scale);
-			//GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+			GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 				
 		}
 		

@@ -18,6 +18,8 @@ import com.shade.crash.Repelable;
 import com.shade.entities.bird.Bird;
 import com.shade.entities.mushroom.Mushroom;
 import com.shade.entities.treasure.Treasure;
+import com.shade.entities.util.PlayerSparkler;
+import com.shade.entities.util.Sparkler;
 import com.shade.lighting.LuminousEntity;
 
 public class Player extends Linkable {
@@ -37,11 +39,13 @@ public class Player extends Linkable {
     private boolean impeded;
     private float mileage;
     protected int invincibleTimer, flipper;
+    private PlayerSparkler smoky;
 
     public Player(int x, int y) throws SlickException {
         initShape(x, y);
         initResources();
         initStates();
+        smoky = new PlayerSparkler(this,0,"entities/sparkle/puff.png");
         invincibleTimer = 2000;
     }
 
@@ -281,6 +285,14 @@ public class Player extends Linkable {
         return Roles.PLAYER.ordinal();
     }
 
+    public void setSmokeCount(int count){
+    	smoky.changeCount(count);
+    }
+    
+    public int getSmokeCount(){
+    	return smoky.getCount();
+    }
+    
     public void onCollision(Entity obstacle) {
         manager.onCollision(obstacle);
         if (obstacle.getRole() == Roles.OBSTACLE.ordinal()) {
@@ -306,10 +318,12 @@ public class Player extends Linkable {
 
     public void render(StateBasedGame game, Graphics g) {
         manager.render(game, g);
+        smoky.animate(g);
     }
 
     public void update(StateBasedGame game, int delta) {
         manager.update(game, delta);
+        smoky.update(delta);
     }
 
     public int compareTo(LuminousEntity e) {
