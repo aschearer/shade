@@ -42,9 +42,16 @@ public class CounterControl implements MushroomCounter, Animatable {
 			scorecard.add(TREASURE_SCORE);
 		} else {
 	        scorecard.add(MUSHROOM_SCORE);
-	        totalCount++;
+	        int increment = 1;
+	        if (shroomie.isGolden()) {
+	            increment += 4;
+	        }
+	        totalCount += increment;
 	        if (countDown > 0) {
-	            countDown--;
+	            countDown -= increment;
+	            if (countDown < 0) {
+	                countDown = 0;
+	            }
 	        }
 		}
     }
