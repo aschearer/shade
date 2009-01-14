@@ -12,7 +12,7 @@ import com.crash.Body;
 
 public class PlayerSparkler {
 	public static final float MAX_SCALEUP = 0.5f;
-	public static final float increment = 0.001f;
+	public static final float increment = 0.0008f;
 
 	private ArrayList<Sparkle> sparkles;
 	// the lovely source of sparkliness
