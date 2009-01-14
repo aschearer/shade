@@ -193,11 +193,6 @@ public class InGameState extends BasicGameState {
 
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
-        if (currentLevel >= levels.size() && totalLevelsPlayed >= LevelManager.NUM_LEVELS) {
-            master.scorecard.setBeaten();
-            safeExit(game, EnterScoreState.ID);
-            return;
-        }
         if (currentLevel >= levels.size()) {
             safeExit(game, SelectState.ID);
             return;
