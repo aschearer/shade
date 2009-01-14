@@ -85,7 +85,7 @@ public class Treasure extends Mushroom implements Repelable {
 		spawn_y = shape.getY();
 		initResources();
 		initStates();
-		sparky = new Sparkler(this);
+		sparky = new Sparkler(this,3);
 
 	}
 

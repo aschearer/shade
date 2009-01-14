@@ -74,7 +74,7 @@ public class Mushroom extends Linkable {
         initResources();
         initStates();
     	try{
-        	sparky = new Sparkler(this);
+        	sparky = new Sparkler(this,3);
         }
         catch (Exception e){
         		

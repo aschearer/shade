@@ -11,7 +11,7 @@ import org.newdawn.slick.SlickException;
 import com.crash.Body;
 
 public class Sparkler {
-	public static final int MAX_SPARKLES = 4;
+	private int sparkleCount;
 	public static final float MAX_SCALEUP = 0.5f;
 	public static final float increment = 0.001f;
 
@@ -22,9 +22,10 @@ public class Sparkler {
 	private SpriteSheet sparkle;
 	private int timer;
 	
-	public Sparkler(Body b) throws SlickException {
+	public Sparkler(Body b, int count) throws SlickException {
 		timer = 0;
 		origin = b;
+		sparkleCount = count;
 		initSparkles();
 		for (int i = 0; i < sparkles.length; i++) {
 			float[] p = getPoint();
@@ -34,7 +35,7 @@ public class Sparkler {
 	}
 
 	private void initSparkles() {
-		sparkles = new Sparkle[MAX_SPARKLES];
+		sparkles = new Sparkle[sparkleCount];
 	}
 
 	public void update(int delta) {
