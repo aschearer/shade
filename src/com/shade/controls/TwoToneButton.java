@@ -159,6 +159,7 @@ public class TwoToneButton implements SizeEntity, Animatable, Button {
         listener = l;
     }
 
+    /* What the fuck kind of drugs was I on when I wrote this... */
     public void active(boolean b) {
         if (b) {
             enabled = false;
