@@ -8,6 +8,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.Sound;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.state.BasicGameState;
@@ -45,6 +46,7 @@ public class SelectState extends BasicGameState {
     private LevelSet levels;
 
     private int timer;
+    private Sound click;
 
     private StateBasedGame game;
 
@@ -59,6 +61,8 @@ public class SelectState extends BasicGameState {
 
         resource.register("newgame-up", "states/select/newgame-up.png");
         resource.register("newgame-down", "states/select/newgame-down.png");
+        
+        click = new Sound("res/states/common/click.ogg");
 
         manager = new LevelManager();
     }
@@ -121,6 +125,7 @@ public class SelectState extends BasicGameState {
     @Override
     public void keyPressed(int key, char c) {
         if (key == Input.KEY_ENTER) {
+            click.play();
             level.newGame(levels.current);
             if (levels.current == 0) {
                 game.enterState(InstructionState.ID);
@@ -217,15 +222,21 @@ public class SelectState extends BasicGameState {
 
     private void initInstructions(TrueTypeFont f) {
         levels = new LevelSet();
-        int n = 0;
-        while (n < 10) {
-            String level = "Level " + (n + 1);
-            float x = 400 - (f.getWidth(level) / 2);
-            InstructionText t = new InstructionText(x, 435, level, f);
+        String stage = "Instructions";
+        float x = 400 - (f.getWidth(stage) / 2);
+        InstructionText t = new InstructionText(x, 435, stage, f);
+        t.setTimer(LEVEL_STATE_DELAY + LEVEL_BUFFER);
+        levels.add(t);
+        int n = 1;
+        while (n < LevelManager.NUM_LEVELS) {
+            stage = "Level " + n;
+            x = 400 - (f.getWidth(stage) / 2);
+            t = new InstructionText(x, 435, stage, f);
             t.setTimer(LEVEL_STATE_DELAY + n * LEVEL_BUFFER);
             levels.add(t);
             n++;
         }
+        levels.moveTo(level.getCurrentLevel());
     }
 
     private class LevelSet implements Animatable {
@@ -236,6 +247,17 @@ public class SelectState extends BasicGameState {
 
         public LevelSet() {
             text = new ArrayList<InstructionText>();
+        }
+
+        public void moveTo(int level) {
+            current = level;
+            for (int i = 0; i < text.size(); i++) {
+                if (i == level) {
+                    text.get(i).activate();
+                } else {
+                    text.get(i).deactivate();
+                }
+            }
         }
 
         public int current() {
