@@ -24,6 +24,8 @@ public class MeterControl implements ControlSlice, MushroomCounter {
 
 	public static final float BASE_DAMAGE = 0.0001f;
 	public static final float BASE_EXPONENT = 1.0075f;
+	public static final float GOLD_SCORE_MULTIPLIER = 40;
+	public static final float HEALTH_MULTIPLIER = 2;
 
     private LuminousEntity target;
     private ControlListener listener;
@@ -149,9 +151,9 @@ public class MeterControl implements ControlSlice, MushroomCounter {
     }
 
     private void valueMushroom(Mushroom shroomie) {
-        totalAmountToAdd += shroomie.getValue() * 4;
+        totalAmountToAdd += shroomie.getValue() * HEALTH_MULTIPLIER;
         if (shroomie.isGolden()) {
-            scorecard.add(shroomie.getValue() * 40);
+            scorecard.add(shroomie.getValue() * GOLD_SCORE_MULTIPLIER);
         }
     }
 
