@@ -206,14 +206,14 @@ public class Mushroom extends Linkable {
 
     public void render(StateBasedGame game, Graphics g) {
         manager.render(game, g);
-        if(isGolden())
+        if(isGolden()&&!manager.currentState().isNamed(States.SPAWNING))
         sparky.animate(g);
     }
 
     public void update(StateBasedGame game, int delta) {
         manager.update(game, delta);
         testAndWrap();
-        if(isGolden())
+        if(isGolden()&&!manager.currentState().isNamed(States.SPAWNING))
         sparky.update(delta);
     }
 

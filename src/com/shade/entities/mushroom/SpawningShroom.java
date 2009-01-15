@@ -1,5 +1,6 @@
 package com.shade.entities.mushroom;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -21,6 +22,7 @@ public class SpawningShroom implements State {
     private Mushroom shroom;
     private int timer;
     private boolean clear;
+    
 
     public SpawningShroom(Mushroom mushroom) {
         shroom = mushroom;
@@ -29,6 +31,7 @@ public class SpawningShroom implements State {
     public void enter() {
         timer = 0;
         clear = true;
+        shroom.setLuminosity(1f);
     }
 
     public int getRole() {
@@ -56,7 +59,7 @@ public class SpawningShroom implements State {
             Mushroom.spawning.play();
         }
         // it was not clear, you waited, so respawn
-        else if (timer > 200) {
+        if (timer > 200) {
             shroom.kill();
         }
     }
