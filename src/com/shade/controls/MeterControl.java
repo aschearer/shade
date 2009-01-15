@@ -22,7 +22,10 @@ import com.shade.states.MasterState;
  */
 public class MeterControl implements ControlSlice, MushroomCounter {
 
-	public static final float BASE_DAMAGE = 0.2f;
+	public static final float BASE_DAMAGE = 0.0001f;
+	public static final float BASE_EXPONENT = 1.0075f;
+	public static final float GOLD_SCORE_MULTIPLIER = 40;
+	public static final float HEALTH_MULTIPLIER = 2;
 
     private LuminousEntity target;
     private ControlListener listener;
@@ -100,6 +103,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
         } else {
             timeInSun = Math.max(timeInSun-delta,0);
             Player p = (Player) target;
+            if(p.getXVelocity()+p.getXVelocity()==0) timeInSun*=0.8;
             if(p.getSmokeCount()*scale>timeInSun){
             	p.setSmokeCount((int)Math.pow(1.05,timeInSun/scale)-1);
             }
@@ -131,7 +135,8 @@ public class MeterControl implements ControlSlice, MushroomCounter {
     public void onCollect(Mushroom shroomie) {
         valueMushroom(shroomie);
         if (totalAmountToAdd > 0) {
-            rateOfChange++;
+            //rateOfChange++;
+        	rateOfChange = 3;
         }
     }
 
@@ -146,16 +151,16 @@ public class MeterControl implements ControlSlice, MushroomCounter {
     }
 
     private void valueMushroom(Mushroom shroomie) {
-        totalAmountToAdd += shroomie.getValue() * 4;
+        totalAmountToAdd += shroomie.getValue() * HEALTH_MULTIPLIER;
         if (shroomie.isGolden()) {
-            scorecard.add(shroomie.getValue() * 40);
+            scorecard.add(shroomie.getValue() * GOLD_SCORE_MULTIPLIER);
         }
     }
 
 	private void decrement(int delta) {
 		timeInSun += delta;
-		float damage = (float) Math.min(0.5f,
-				Math.pow(1.0005, timeInSun) * 0.05f);
+		float damage = (float) Math.min(1f,
+				Math.pow(BASE_EXPONENT, timeInSun) * BASE_DAMAGE);
 		if (timeInSun < 1000)
 			damage = Math.max(damage, 0.05f);
 		value -= damage;
@@ -176,5 +181,14 @@ public class MeterControl implements ControlSlice, MushroomCounter {
         rateOfChange = 1;
         totalDecrement = 0;
         totalTimeInSun = 0;
+        //TODO: why is this so much casting?
+        //TODO: figure out how we SHOULD handle this issue. Mock players are the devil.
+        try{
+        Player p = (Player) target;
+        p.setSmokeCount(0);
+        }
+        catch(Exception e){
+        	
+        }
     }
 }
