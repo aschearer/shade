@@ -157,6 +157,7 @@ public class InGameState extends BasicGameState {
     }
 
     private void recordMushroomsCollected() {
+        stats.add("level-golden", counter.goldMushrooms);
         stats.add("total-mushrooms", counter.totalCount);
         stats.replace("level-mushrooms", counter.totalCount);
     }

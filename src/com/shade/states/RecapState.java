@@ -7,6 +7,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.gui.AbstractComponent;
 import org.newdawn.slick.gui.ComponentListener;
 import org.newdawn.slick.gui.TextField;
@@ -31,9 +32,9 @@ import com.shade.util.ResourceManager;
 public class RecapState extends BasicGameState {
 
     /* Hypothetical top score. */
-    private static final int MAX_LEVEL_SCORE = 25000;
+    private static final int MAX_LEVEL_SCORE = 3000;
     private static final int MAX_LEVEL_COUNT = 60;
-    private static final int MAX_LEVEL_DISTANCE = 1000;
+    private static final int MAX_GOLDEN_COUNT = 4;
     private static final String PASS_TEXT = "Level Clear";
     private static final String FAIL_TEXT = "Level Failed";
 
@@ -58,6 +59,7 @@ public class RecapState extends BasicGameState {
     private StatGizmo stats;
     private ScoreGizmo scores;
     private InputGizmo input;
+    private SpriteSheet statsIcons;
 
     public RecapState(MasterState m) throws SlickException {
         master = m;
@@ -67,6 +69,7 @@ public class RecapState extends BasicGameState {
         resource.register("replay-up", "states/recap/replay-up.png");
         resource.register("replay-down", "states/recap/replay-down.png");
         resource.register("wreath", "states/recap/wreath.png");
+        statsIcons = new SpriteSheet("states/recap/icons.png", 40, 40);
 
         reader = new FailSafeHighScoreReader();
         writer = new FailSafeHighScoreWriter();
@@ -447,24 +450,29 @@ public class RecapState extends BasicGameState {
 
     private class StatGizmo implements Animatable {
 
-        private StatMeter points, mushrooms, distance;
+        private StatMeter points, totalShrooms, blueShrooms, goldShrooms;
         private boolean show;
 
         public StatGizmo() throws SlickException {
             show = true;
-            points = new StatMeter(master.jekyllMedium, 150, 120, master.scorecard.getLevelScore(),
-                    MAX_LEVEL_SCORE);
-            mushrooms = new StatMeter(master.jekyllMedium, 150, 170, (int) level.stats.getStat("level-mushrooms"),
-                    MAX_LEVEL_COUNT);
-            distance = new StatMeter(master.jekyllMedium, 150, 220, levelMileage(),
-                    MAX_LEVEL_DISTANCE);
+            points = new StatMeter(master.jekyllMedium, 150, 120, master.scorecard.getLevelScore(), MAX_LEVEL_SCORE);
+            int mushrooms = (int) level.stats.getStat("level-mushrooms");
+            int golden = (int) level.stats.getStat("level-golden");
+            totalShrooms = new StatMeter(master.jekyllMedium, 150, 170, mushrooms, MAX_LEVEL_COUNT);
+            blueShrooms = new StatMeter(master.jekyllMedium, 150, 220, mushrooms - golden, MAX_LEVEL_COUNT);
+            goldShrooms = new StatMeter(master.jekyllMedium, 150, 270, golden, MAX_GOLDEN_COUNT);
         }
 
         public void render(StateBasedGame game, Graphics g) {
             if (show) {
+                statsIcons.getSprite(0, 0).draw(105, 118);
                 points.render(game, g);
-                mushrooms.render(game, g);
-                distance.render(game, g);
+                statsIcons.getSprite(1, 0).draw(105, 168);
+                totalShrooms.render(game, g);
+                statsIcons.getSprite(2, 0).draw(105, 218);
+                blueShrooms.render(game, g);
+                statsIcons.getSprite(3, 0).draw(105, 268);
+                goldShrooms.render(game, g);
                 drawCentered(message);
             }
         }
@@ -472,8 +480,9 @@ public class RecapState extends BasicGameState {
         public void update(StateBasedGame game, int delta) {
             if (show) {
                 points.update(game, delta);
-                mushrooms.update(game, delta);
-                distance.update(game, delta);
+                totalShrooms.update(game, delta);
+                blueShrooms.update(game, delta);
+                goldShrooms.update(game, delta);
             }
         }
 
