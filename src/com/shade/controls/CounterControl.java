@@ -18,7 +18,7 @@ public class CounterControl implements MushroomCounter, Animatable {
     //TODO: multiplier or lotsa points?
     public static final int TREASURE_SCORE = 1000;
 
-    public int countDown, totalCount;
+    public int countDown, totalCount, goldMushrooms;
 
     private float x, y;
     private Image sprite;
@@ -39,12 +39,20 @@ public class CounterControl implements MushroomCounter, Animatable {
     public void onCollect(Mushroom shroomie) {
 		if (shroomie.getRole() == Roles.TREASURE.ordinal()) {
 			//WHEEE HACK! TODO: KILL HACK!
-			scorecard.add(TREASURE_SCORE);
+			scorecard.add(scorecard.getLevelScore());
 		} else {
 	        scorecard.add(MUSHROOM_SCORE);
-	        totalCount++;
+	        int increment = 1;
+	        if (shroomie.isGolden()) {
+	            goldMushrooms++;
+	            increment += 4;
+	        }
+	        totalCount += increment;
 	        if (countDown > 0) {
-	            countDown--;
+	            countDown -= increment;
+	            if (countDown < 0) {
+	                countDown = 0;
+	            }
 	        }
 		}
     }
@@ -63,10 +71,7 @@ public class CounterControl implements MushroomCounter, Animatable {
     public void reset(int par) {
         countDown = par;
         totalCount = 0;
-    }
-    
-    public int totalCount() {
-        return totalCount;
+        goldMushrooms = 0;
     }
     
     public boolean parWasMet() {

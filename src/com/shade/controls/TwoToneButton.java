@@ -98,7 +98,7 @@ public class TwoToneButton implements SizeEntity, Animatable, Button {
         Input input = game.getContainer().getInput();
         checkMouse(game, input);
         for (int key : keys.keySet()) {
-            if (input.isKeyPressed(key) && enabled) {
+            if (input.isKeyPressed(key) && input.isKeyDown(key) && enabled) {
                 keys.get(key).onPress(game, key);
                 mouseDown = true;
                 press();
@@ -159,6 +159,7 @@ public class TwoToneButton implements SizeEntity, Animatable, Button {
         listener = l;
     }
 
+    /* What the fuck kind of drugs was I on when I wrote this... */
     public void active(boolean b) {
         if (b) {
             enabled = false;

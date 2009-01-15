@@ -60,7 +60,7 @@ public class InGameState extends BasicGameState {
      * Play a game starting from the first level.
      */
     public void newGame() {
-        currentLevel = 0;
+        currentLevel = 1;
         totalLevelsPlayed = 1;
         initLevel();
         resetControls();
@@ -85,7 +85,7 @@ public class InGameState extends BasicGameState {
         totalLevelsPlayed++;
         initLevel();
         resetControls();
-        master.scorecard.startLevel();
+        master.scorecard.reset();
     }
 
     /**
@@ -157,6 +157,7 @@ public class InGameState extends BasicGameState {
     }
 
     private void recordMushroomsCollected() {
+        stats.add("level-golden", counter.goldMushrooms);
         stats.add("total-mushrooms", counter.totalCount);
         stats.replace("level-mushrooms", counter.totalCount);
     }
@@ -179,10 +180,10 @@ public class InGameState extends BasicGameState {
         }
         resource.get("trim").draw();
 
-        if (container.getInput().isKeyPressed(Input.KEY_N)) {
-            nextLevel();
-            enter(container, game);
-        }
+//        if (container.getInput().isKeyPressed(Input.KEY_N)) {
+//            nextLevel();
+//            enter(container, game);
+//        }
     }
 
     private void drawCentered(GameContainer c, String s) {
@@ -193,11 +194,6 @@ public class InGameState extends BasicGameState {
 
     public void update(GameContainer container, StateBasedGame game, int delta)
             throws SlickException {
-        if (currentLevel >= levels.size() && totalLevelsPlayed >= LevelManager.NUM_LEVELS) {
-            master.scorecard.setBeaten();
-            safeExit(game, EnterScoreState.ID);
-            return;
-        }
         if (currentLevel >= levels.size()) {
             safeExit(game, SelectState.ID);
             return;
@@ -225,7 +221,7 @@ public class InGameState extends BasicGameState {
     }
     
     public int getCurrentLevel() {
-        return currentLevel + 1;
+        return currentLevel;
     }
 
     private boolean isNight() {
@@ -234,7 +230,7 @@ public class InGameState extends BasicGameState {
 
     @Override
     public void keyPressed(int key, char c) {
-        if (key == Input.KEY_P) {
+        if (key == Input.KEY_P || key == Input.KEY_ESCAPE) {
             if (game.getContainer().isPaused()) {
                 game.getContainer().resume();
                 master.music.resume();

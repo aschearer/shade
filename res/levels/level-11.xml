@@ -1,8 +1,10 @@
 <?xml version="1.0"?>
 
-<Level mushrooms="7" par="16">
+<Level mushrooms="5" par="25">
     <Player x="450" y="310"/>
     <Basket x="400" y="260" />
+
+    <Treasure x="650" y="540" z="2" />
 
     <Fence x="390" y="150" z="5" facing="0" />
     <Block x="520" y="120" z="10" d="80" />
