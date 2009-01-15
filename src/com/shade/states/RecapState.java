@@ -325,7 +325,7 @@ public class RecapState extends BasicGameState {
 
         public void render(StateBasedGame game, Graphics g) {
             if (show) {
-                drawScore(1024 + "");
+                drawScore(master.scorecard.getLevelScore() + "");
                 input.render(game.getContainer(), g);
             }
         }
@@ -346,9 +346,10 @@ public class RecapState extends BasicGameState {
             int x = 300;
             int y = 440;
             input = new TextField(container, master.jekyllMedium, x, y, w, h);
-            input.setMaxLength(8);
+            input.setMaxLength(12);
             input.setAcceptingInput(par);
             input.setFocus(par);
+            input.setBorderColor(null);
 
             input.addListener(new ComponentListener() {
     
