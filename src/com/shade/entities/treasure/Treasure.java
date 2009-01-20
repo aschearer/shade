@@ -30,7 +30,7 @@ public class Treasure extends Mushroom implements Repelable {
 	private static final float RADIUS = 12f;
 	public static final float MAX_SCALE = 1f;
 	private static final float MIN_SCALE = 0.3f;
-	public static final int SECONDS_OF_LIFE = 1500;
+	public static final int SECONDS_OF_LIFE = 1700;
 	public static final float SCALE_INCREMENT = (MAX_SCALE - MIN_SCALE)
 			/ SECONDS_OF_LIFE;
 

@@ -24,7 +24,9 @@ import com.shade.lighting.LuminousEntity;
 
 public class Player extends Linkable {
 
-    private static final float SPEED = 2.5f;
+    public static final float MIN_SPEED = 2.5f;
+    public static final float MAX_SPEED = 6f;
+    public static final float INITIAL_SPEED = MAX_SPEED/2+MIN_SPEED/2;
     private static final int MUSHROOM_LIMIT = 3;
     private static final int PLAYER_HEIGHT = 3;
 
@@ -40,6 +42,9 @@ public class Player extends Linkable {
     private float mileage;
     protected int invincibleTimer, flipper;
     private PlayerSparkler smoky;
+    private Sparkler sparks;
+    private float speed;
+    private boolean sparkling;
 
     public Player(int x, int y) throws SlickException {
         initShape(x, y);
@@ -47,6 +52,16 @@ public class Player extends Linkable {
         initStates();
         smoky = new PlayerSparkler(this,0,"entities/sparkle/puff.png");
         invincibleTimer = 2000;
+        speed = INITIAL_SPEED;
+        sparks = new Sparkler(this,4);
+        sparkling = false;
+    }
+    
+    public void sparkle(){
+    	sparkling = true;
+    }
+    public void unsparkle(){
+    	sparkling = false;
     }
 
     private void initShape(int x, int y) {
@@ -142,17 +157,21 @@ public class Player extends Linkable {
             double mag = Math.sqrt(xVelocity * xVelocity + yVelocity
                     * yVelocity);
             // make it uniform speed
-            float speed = (impeded) ? SPEED / 2 : SPEED;
-            xVelocity = (float) (1.0 * speed * xVelocity / mag);
-            yVelocity = (float) (1.0 * speed * yVelocity / mag);
+            float sped = (impeded) ? speed / 2 : speed;
+            xVelocity = (float) (1.0 * sped * xVelocity / mag);
+            yVelocity = (float) (1.0 * sped * yVelocity / mag);
             if (mag != 0) {
                 nudge(xVelocity, yVelocity);
-                mileage += speed;
+                mileage += sped;
             } else {
                 xVelocity = 0;
                 yVelocity = 0;
             }
         }
+    }
+    
+    public void setSpeed(float newSpeed){
+    	speed = newSpeed;
     }
 
     private class StunnedState implements State {
@@ -226,9 +245,9 @@ public class Player extends Linkable {
             double mag = Math.sqrt(xVelocity * xVelocity + yVelocity
                     * yVelocity);
             // make it uniform speed
-            float speed = (impeded) ? SPEED / 2 : SPEED;
-            xVelocity = (float) (1.0 * speed * xVelocity / mag);
-            yVelocity = (float) (1.0 * speed * yVelocity / mag);
+            float sped = (impeded) ? speed / 2 : speed;
+            xVelocity = (float) (1.0 * sped * xVelocity / mag);
+            yVelocity = (float) (1.0 * sped * yVelocity / mag);
             if (mag != 0) {
                 nudge(xVelocity, yVelocity);
             } else {
@@ -319,11 +338,13 @@ public class Player extends Linkable {
     public void render(StateBasedGame game, Graphics g) {
         manager.render(game, g);
         smoky.animate(g);
+        if(sparkling)sparks.animate(g);
     }
 
     public void update(StateBasedGame game, int delta) {
         manager.update(game, delta);
         smoky.update(delta);
+        if(sparkling)sparks.update(delta);
     }
 
     public int compareTo(LuminousEntity e) {

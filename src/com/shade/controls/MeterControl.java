@@ -22,10 +22,10 @@ import com.shade.states.MasterState;
  */
 public class MeterControl implements ControlSlice, MushroomCounter {
 
-	public static final float BASE_DAMAGE = 0.0001f;
-	public static final float BASE_EXPONENT = 1.0075f;
+	public static final float BASE_DAMAGE = 0.1f;
+	public static final float BASE_EXPONENT = 1.0005f;
 	public static final float GOLD_SCORE_MULTIPLIER = 40;
-	public static final float HEALTH_MULTIPLIER = 2;
+	public static final float HEALTH_MULTIPLIER = 4;
 
     private LuminousEntity target;
     private ControlListener listener;
@@ -36,7 +36,6 @@ public class MeterControl implements ControlSlice, MushroomCounter {
     private float totalDecrement;
     private int totalTimeInSun;
     private static Image front, back, danger, current;
-    private float[] damages = { .1f, .175f, .3f };
     private int timeInSun;
     private int dangerTimer;
     
@@ -89,6 +88,21 @@ public class MeterControl implements ControlSlice, MushroomCounter {
         if (value == 0) {
             listener.fire(this);
         }
+        if(value >100) {
+            //not sure why this isn't player specific right now. It wil be form now on.
+            //TODO: if this shold go somewhere else tell me!
+            Player p = (Player) target;
+            p.setSpeed(Player.MAX_SPEED*1.2f);
+            p.sparkle();
+        }
+        else {
+        	
+            Player p = (Player) target;
+            p.unsparkle();
+            if(p.getSmokeCount()<timeInSun){
+            	p.setSpeed((float)Math.max(0,value/100)*(Player.MAX_SPEED-Player.MIN_SPEED)+Player.MIN_SPEED);
+            }
+        }
         //TODO: move this somwhere
         int scale = 60;
         if (target != null && target.getLuminosity() > MasterState.SHADOW_THRESHOLD) {
@@ -97,7 +111,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
             //TODO: if this shold go somewhere else tell me!
             Player p = (Player) target;
             if(p.getSmokeCount()*scale<timeInSun){
-            	p.setSmokeCount((int)Math.pow(1.05,timeInSun/scale)-1);
+            	p.setSmokeCount((int)Math.pow(1.12,timeInSun/scale)-1);
             }
             
         } else {
@@ -105,7 +119,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
             Player p = (Player) target;
             if(p.getXVelocity()+p.getXVelocity()==0) timeInSun*=0.8;
             if(p.getSmokeCount()*scale>timeInSun){
-            	p.setSmokeCount((int)Math.pow(1.05,timeInSun/scale)-1);
+            	p.setSmokeCount((int)Math.pow(1.12,timeInSun/scale)-1);
             }
         }
         
@@ -144,9 +158,9 @@ public class MeterControl implements ControlSlice, MushroomCounter {
         if (value < 0) {
             value = 0;
         }
-        if (value > 100) {
-            scorecard.add(value - 100);
-            value = 100;
+        if (value > 105) {
+            scorecard.add(1);
+            value--;
         }
     }
 

@@ -12,6 +12,7 @@ import com.crash.Body;
 
 public class PlayerSparkler {
 	public static final float MAX_SCALEUP = 0.5f;
+	public static final int MAX_SPARKLES = 50;
 	public static final float increment = 0.002f;
 
 	private ArrayList<Sparkle> sparkles;
@@ -36,7 +37,7 @@ public class PlayerSparkler {
 	}
 
 	public void changeCount(int newCount){
-		sparkleCount = newCount;
+		sparkleCount = Math.min(newCount, MAX_SPARKLES);
 		timer = 0;
 		try{
 		while(sparkles.size()<sparkleCount){
