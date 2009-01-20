@@ -26,6 +26,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
 	public static final float BASE_EXPONENT = 1.0005f;
 	public static final float GOLD_SCORE_MULTIPLIER = 40;
 	public static final float HEALTH_MULTIPLIER = 4;
+	public static final float BAR_MAX = 40f;
 
     private LuminousEntity target;
     private ControlListener listener;
@@ -52,7 +53,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
     public MeterControl(float x, float y) throws SlickException {
         this.x = x;
         this.y = y;
-        value = 100;
+        value = 0;
         totalAmountToAdd = 0;
         rateOfChange = 1;
         initResources();
@@ -80,15 +81,15 @@ public class MeterControl implements ControlSlice, MushroomCounter {
         
         float w = front.getWidth();
         float h = front.getHeight();
-        float adjustment = h - (h * (value / 100));
+        float adjustment = h - (h * (value / BAR_MAX));
         front.draw(x, y + adjustment, x + w, y + h, 0, adjustment, w, h);
     }
 
     public void update(StateBasedGame game, int delta) {
         if (value == 0) {
-            listener.fire(this);
+            //listener.fire(this);
         }
-        if(value >100) {
+        if(value >BAR_MAX) {
             //not sure why this isn't player specific right now. It wil be form now on.
             //TODO: if this shold go somewhere else tell me!
             Player p = (Player) target;
@@ -100,7 +101,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
             Player p = (Player) target;
             p.unsparkle();
             if(p.getSmokeCount()<timeInSun){
-            	p.setSpeed((float)Math.max(0,value/100)*(Player.MAX_SPEED-Player.MIN_SPEED)+Player.MIN_SPEED);
+            	p.setSpeed((float)Math.max(0,value/BAR_MAX)*(Player.MAX_SPEED-Player.MIN_SPEED)+Player.MIN_SPEED);
             }
         }
         //TODO: move this somwhere
@@ -158,7 +159,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
         if (value < 0) {
             value = 0;
         }
-        if (value > 105) {
+        if (value > BAR_MAX+5) {
             scorecard.add(1);
             value--;
         }
@@ -190,7 +191,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
     }
 
     public void reset() {
-        value = 100;
+        value = BAR_MAX;
         totalAmountToAdd = 0;
         rateOfChange = 1;
         totalDecrement = 0;
