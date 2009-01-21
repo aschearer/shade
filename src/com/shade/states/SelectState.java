@@ -62,7 +62,7 @@ public class SelectState extends BasicGameState {
         resource.register("newgame-up", "states/select/newgame-up.png");
         resource.register("newgame-down", "states/select/newgame-down.png");
         
-        click = new Sound("res/states/common/click.ogg");
+        click = new Sound("states/common/click.ogg");
 
         manager = new LevelManager();
     }
