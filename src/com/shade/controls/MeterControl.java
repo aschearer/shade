@@ -22,10 +22,12 @@ import com.shade.states.MasterState;
  */
 public class MeterControl implements ControlSlice, MushroomCounter {
 
-	public static final float BASE_DAMAGE = 0.0001f;
-	public static final float BASE_EXPONENT = 1.0075f;
+	public static final float BASE_DAMAGE = 0.1f;
+	public static final float BASE_EXPONENT = 1.0005f;
 	public static final float GOLD_SCORE_MULTIPLIER = 40;
-	public static final float HEALTH_MULTIPLIER = 2;
+	public static final float HEALTH_MULTIPLIER = 4;
+	public static final float BAR_MAX = 40f;
+	public static final float BONUS_SCALE = 1.5f;
 
     private LuminousEntity target;
     private ControlListener listener;
@@ -36,7 +38,6 @@ public class MeterControl implements ControlSlice, MushroomCounter {
     private float totalDecrement;
     private int totalTimeInSun;
     private static Image front, back, danger, current;
-    private float[] damages = { .1f, .175f, .3f };
     private int timeInSun;
     private int dangerTimer;
     
@@ -53,7 +54,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
     public MeterControl(float x, float y) throws SlickException {
         this.x = x;
         this.y = y;
-        value = 100;
+        value = 0;
         totalAmountToAdd = 0;
         rateOfChange = 1;
         initResources();
@@ -81,13 +82,28 @@ public class MeterControl implements ControlSlice, MushroomCounter {
         
         float w = front.getWidth();
         float h = front.getHeight();
-        float adjustment = h - (h * (value / 100));
+        float adjustment = h - (h * (value / BAR_MAX));
         front.draw(x, y + adjustment, x + w, y + h, 0, adjustment, w, h);
     }
 
     public void update(StateBasedGame game, int delta) {
         if (value == 0) {
-            listener.fire(this);
+            //listener.fire(this);
+        }
+        if(value >BAR_MAX) {
+            //not sure why this isn't player specific right now. It wil be form now on.
+            //TODO: if this shold go somewhere else tell me!
+            Player p = (Player) target;
+            p.setSpeed(Player.MAX_SPEED*BONUS_SCALE);
+            p.sparkle();
+        }
+        else {
+        	
+            Player p = (Player) target;
+            p.unsparkle();
+            if(p.getSmokeCount()<timeInSun){
+            	p.setSpeed((float)Math.max(0,value/BAR_MAX)*(Player.MAX_SPEED-Player.MIN_SPEED)+Player.MIN_SPEED);
+            }
         }
         //TODO: move this somwhere
         int scale = 60;
@@ -97,7 +113,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
             //TODO: if this shold go somewhere else tell me!
             Player p = (Player) target;
             if(p.getSmokeCount()*scale<timeInSun){
-            	p.setSmokeCount((int)Math.pow(1.05,timeInSun/scale)-1);
+            	p.setSmokeCount((int)Math.pow(1.12,timeInSun/scale)-1);
             }
             
         } else {
@@ -105,7 +121,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
             Player p = (Player) target;
             if(p.getXVelocity()+p.getXVelocity()==0) timeInSun*=0.8;
             if(p.getSmokeCount()*scale>timeInSun){
-            	p.setSmokeCount((int)Math.pow(1.05,timeInSun/scale)-1);
+            	p.setSmokeCount((int)Math.pow(1.12,timeInSun/scale)-1);
             }
         }
         
@@ -117,7 +133,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
         }
         clamp();
         
-        if (value < 40) {
+        if (value < BAR_MAX*2/5) {
             dangerTimer += delta;
             if (dangerTimer > 200) {
                 dangerTimer = 0;
@@ -144,9 +160,9 @@ public class MeterControl implements ControlSlice, MushroomCounter {
         if (value < 0) {
             value = 0;
         }
-        if (value > 100) {
-            scorecard.add(value - 100);
-            value = 100;
+        if (value > BAR_MAX+5) {
+            scorecard.add(1);
+            value--;
         }
     }
 
@@ -176,7 +192,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
     }
 
     public void reset() {
-        value = 100;
+        value = BAR_MAX/2;
         totalAmountToAdd = 0;
         rateOfChange = 1;
         totalDecrement = 0;

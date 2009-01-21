@@ -32,7 +32,7 @@ public class Door extends Body implements LuminousEntity, Repelable {
     private int zindex;
     private float luminosity;
     private int times, timer;
-    private boolean active;
+    private boolean swingOpen;
     private float x, y, width, height;
     private float heading;
     private float xPivot, yPivot;
@@ -111,7 +111,7 @@ public class Door extends Body implements LuminousEntity, Repelable {
 
         int index = 0;
 
-        if (active) {
+        if (swingOpen) {
             float distance = Float.MAX_VALUE;
             for (int i = 0; i < extent.getPointCount(); i++) {
                 float[] p = closestPoint(extent.getPoint(i), shape.getPoints());
@@ -228,11 +228,11 @@ public class Door extends Body implements LuminousEntity, Repelable {
     }
 
     private void activate() {
-        if (!active) {
+        if (!swingOpen) {
             open.play();
         }
         timer = 0;
-        active = true;
+        swingOpen = true;
     }
 
     public void removeFromLevel(Level<?> l) {
@@ -247,10 +247,10 @@ public class Door extends Body implements LuminousEntity, Repelable {
     }
 
     public void update(StateBasedGame game, int delta) {
-        if (game.getContainer().getInput().isKeyPressed(Input.KEY_F)) {
-            activate();
-        }
-        if (active && times < 20) {
+//        if (game.getContainer().getInput().isKeyPressed(Input.KEY_F)) {
+//            activate();
+//        }
+        if (swingOpen && times < 20) {
             shape = shape.transform(Transform.createRotateTransform(
                     (float) -Math.PI / 40, xPivot, yPivot));
             heading -= Math.PI / 40;
@@ -259,10 +259,10 @@ public class Door extends Body implements LuminousEntity, Repelable {
         if (times == 20) {
             timer += delta;
             if (timer > 1000) {
-                active = false;
+                swingOpen = false;
             }
         }
-        if (!active && times != 0) {
+        if (!swingOpen && times != 0) {
             shape = shape.transform(Transform.createRotateTransform(
                     (float) (Math.PI / 40), xPivot, yPivot));
             heading += Math.PI / 40;
@@ -306,7 +306,7 @@ public class Door extends Body implements LuminousEntity, Repelable {
     }
 
     private boolean specialCase(float minx, float miny) {
-        if (active) {
+        if (swingOpen) {
             return minx > miny;
         }
         return minx < miny;
