@@ -27,6 +27,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
 	public static final float GOLD_SCORE_MULTIPLIER = 40;
 	public static final float HEALTH_MULTIPLIER = 4;
 	public static final float BAR_MAX = 40f;
+	public static final float BONUS_SCALE = 1.5f;
 
     private LuminousEntity target;
     private ControlListener listener;
@@ -93,7 +94,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
             //not sure why this isn't player specific right now. It wil be form now on.
             //TODO: if this shold go somewhere else tell me!
             Player p = (Player) target;
-            p.setSpeed(Player.MAX_SPEED*1.2f);
+            p.setSpeed(Player.MAX_SPEED*BONUS_SCALE);
             p.sparkle();
         }
         else {
@@ -191,7 +192,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
     }
 
     public void reset() {
-        value = BAR_MAX;
+        value = BAR_MAX/2;
         totalAmountToAdd = 0;
         rateOfChange = 1;
         totalDecrement = 0;
