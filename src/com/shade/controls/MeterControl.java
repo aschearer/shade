@@ -132,7 +132,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
         }
         clamp();
         
-        if (value < 40) {
+        if (value < BAR_MAX*2/5) {
             dangerTimer += delta;
             if (dangerTimer > 200) {
                 dangerTimer = 0;
