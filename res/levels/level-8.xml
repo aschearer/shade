@@ -4,8 +4,6 @@
     <Player x="350" y="250"/>
     <Basket x="320" y="200" />
 
-    <Treasure x="520" y="450" z="2" />
-
     <Fence x="80" y="80" z="5" facing="1" />
 
     <Fence x="200" y="300" z="5" facing="0" />

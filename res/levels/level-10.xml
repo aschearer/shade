@@ -6,8 +6,6 @@
 
     <Fence x="90" y="80" z="5" facing="0" />
 
-    <Treasure x="450" y="80" z="2" />
-
     <Dome x="330" y="100" z="13" d="60" />
     <Block x="240" y="163" z="11" d="70" />
     <Door x="300" y="240" z="5" facing="3" />
