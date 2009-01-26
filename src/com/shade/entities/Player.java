@@ -24,8 +24,8 @@ import com.shade.lighting.LuminousEntity;
 
 public class Player extends Linkable {
 
-    public static final float MIN_SPEED = 1f;
-    public static final float MAX_SPEED = 3f;
+    public static final float MIN_SPEED = 2.4f;
+    public static final float MAX_SPEED = 3.4f;
     public static final float INITIAL_SPEED = MAX_SPEED/2+MIN_SPEED/2;
     private static final int MUSHROOM_LIMIT = 3;
     private static final int PLAYER_HEIGHT = 3;
@@ -78,6 +78,11 @@ public class Player extends Linkable {
         manager = new StateManager();
         manager.add(new NormalState());
         manager.add(new StunnedState());
+    }
+    
+    public void stun() {
+        manager.enter(Player.PlayerState.STUNNED);
+        damage.play();
     }
 
     private class NormalState implements State {
@@ -210,7 +215,7 @@ public class Player extends Linkable {
         }
 
         public void render(StateBasedGame game, Graphics g) {
-            if (timer < 500 || failmer % 5 > 2) {
+            if (failmer % 5 > 2) {
                 normal.drawCentered(getXCenter(), getYCenter());
             }
 
@@ -219,10 +224,10 @@ public class Player extends Linkable {
         public void update(StateBasedGame game, int delta) {
             timer += delta;
             failmer++;
-            if (timer > 500)
+            if (timer > 800)
                 testAndMove(game.getContainer().getInput(), delta);
             testAndWrap();
-            if (timer > 1000) {
+            if (timer > 2000) {
                 manager.enter(PlayerState.NORMAL);
             }
         }
@@ -299,17 +304,22 @@ public class Player extends Linkable {
     public float totalMileage() {
         return mileage;
     }
+    
+    public boolean isStunned() {
+        return manager.currentState().isNamed(PlayerState.STUNNED);
+    }
 
     public int getRole() {
         return Roles.PLAYER.ordinal();
     }
 
     public void setSmokeCount(int count){
-    	smoky.changeCount(count);
+//    	smoky.changeCount(count);
     }
     
     public int getSmokeCount(){
-    	return smoky.getCount();
+//    	return smoky.getCount();
+        return 0;
     }
     
     public void onCollision(Entity obstacle) {
@@ -336,14 +346,23 @@ public class Player extends Linkable {
     }
 
     public void render(StateBasedGame game, Graphics g) {
+        if (speed > MAX_SPEED - .4) {            
+            smoky.animate(g);
+        }
         manager.render(game, g);
-        smoky.animate(g);
         if(sparkling)sparks.animate(g);
     }
 
     public void update(StateBasedGame game, int delta) {
         manager.update(game, delta);
-        smoky.update(delta);
+        if (speed > MAX_SPEED - .4) {
+            if (smoky.getCount() == 0) {
+                smoky.changeCount(3);
+            }
+            smoky.update(delta);
+        } else {
+            smoky.changeCount(0);
+        }
         if(sparkling)sparks.update(delta);
     }
 

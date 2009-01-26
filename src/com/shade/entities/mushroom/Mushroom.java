@@ -20,10 +20,10 @@ import com.shade.states.MasterState;
 
 public class Mushroom extends Linkable {
 
-    protected static final float SPEED = 4f;
+    protected static final float SPEED = 3f;
 
     private static final float RADIUS = 3f;
-    private static final float SCALE_INCREMENT = .008f;
+    private static final float SCALE_INCREMENT = .01f;
     private static final float MAX_SCALE = 3.5f;
     private static final float MIN_SCALE = 2f;
     private Sparkler sparky;
