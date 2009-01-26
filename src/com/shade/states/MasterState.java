@@ -70,6 +70,12 @@ public class MasterState extends BasicGameState {
         // create controller
         timer = new DayPhaseTimer(SECONDS_PER_DAY);
         levelsLock = new LevelLock();
+        levelsLock.unlock(1);
+        levelsLock.unlock(2);
+        levelsLock.unlock(3);
+        levelsLock.unlock(4);
+        levelsLock.unlock(5);
+        levelsLock.unlock(6);
         // TODO: HOW DO WE MODIFY THE LENGTH OF THE DAY AHHH
         control = new GameSlice(new LightMask(5, timer), createLight(), timer);
         dimmer = new Dimmer(.6f);

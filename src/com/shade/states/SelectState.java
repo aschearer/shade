@@ -77,6 +77,7 @@ public class SelectState extends BasicGameState {
         this.game = game;
         level = (InGameState) game.getState(InGameState.ID);
         currentLevel = level.getCurrentLevel();
+        testForUnlockedLevels();
         initLevels(master.jekyllMedium);
         if (master.dimmer.reversed()) {
             master.dimmer.rewind();
@@ -84,8 +85,6 @@ public class SelectState extends BasicGameState {
         initFlowButtons();
         initButtons();
         timer = 0;
-
-        testForUnlockedLevels();
     }
 
     private void testForUnlockedLevels() {
