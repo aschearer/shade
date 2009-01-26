@@ -70,5 +70,10 @@ public class InstructionText implements Animatable {
             }
         }
     }
+    
+    public void reset() {
+        state = State.OFF;
+        color.a = 0;
+    }
 
 }

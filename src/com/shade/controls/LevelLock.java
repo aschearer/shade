@@ -44,6 +44,9 @@ public class LevelLock {
     }
     
     public void unlock(int level) {
+        if (unlocked[level]) {
+            return;
+        }
         unlocked[level] = true;
         save();
     }
@@ -73,20 +76,22 @@ public class LevelLock {
     
     public void resetLocks() {
         unlocked = new boolean[LevelManager.NUM_LEVELS];
-        unlocked[0] = true;
+        unlocked[0] = false;
         save();
     }
     
-    public void free(int n) {
+    public void freeFirst(int n) {
         resetLocks();
-        for (int i = 1; i < n; i++) {
-            unlocked[i] = false;
+        for (int i = 1; i < LevelManager.NUM_LEVELS; i++) {
+            if (i < n) {
+                unlocked[i] = true;
+            }
         }
         save();
     }
     
     public static void main(String[] args) {
         LevelLock lock = new LevelLock();
-        lock.free(10);
+        lock.freeFirst(7); // counting 0
     }
 }

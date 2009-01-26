@@ -54,6 +54,7 @@ public class InstructionState extends BasicGameState {
         resource.register("next-down", "states/instruction/next-down.png");
 
         instructionSheet = new SpriteSheet(resource.get("instructions"), 90, 90);
+        initInstructions(master.jekyllSmall);
     }
 
     @Override
@@ -70,8 +71,8 @@ public class InstructionState extends BasicGameState {
     public void enter(GameContainer container, StateBasedGame game)
             throws SlickException {
         initButtons();
-        initInstructions(master.jekyllSmall);
         timer = 0;
+        instructions.reset();
 //        if (!master.dimmer.finished()) {
 //            master.dimmer.reset();
 //        }
@@ -226,6 +227,14 @@ public class InstructionState extends BasicGameState {
         public InstructionSet() {
             images = new ArrayList<InstructionImage>();
             text = new ArrayList<InstructionText>();
+        }
+
+        public void reset() {
+            images.get(current).reset();
+            text.get(current).reset();
+            current = 0;
+            images.get(current).activate();
+            text.get(current).activate();
         }
 
         public int current() {

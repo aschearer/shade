@@ -33,8 +33,8 @@ public class RecapState extends BasicGameState {
 
     /* Hypothetical top score. */
     private static final int MAX_LEVEL_SCORE = 3000;
-    private static final int MAX_LEVEL_COUNT = 60;
-    private static final int MAX_GOLDEN_COUNT = 4;
+    private static final int MAX_LEVEL_COUNT = 80;
+    private static final int MAX_GOLDEN_COUNT = 10;
     private static final String PASS_TEXT = "Level Clear";
     private static final String FAIL_TEXT = "Level Failed";
 

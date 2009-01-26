@@ -69,5 +69,10 @@ public class InstructionImage implements Animatable {
             }
         }
     }
+    
+    public void reset() {
+        state = State.OFF;
+        filter.a = 0;
+    }
 
 }

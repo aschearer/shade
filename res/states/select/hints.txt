@@ -1,0 +1,11 @@
+Instruction level should be unlocked
+Level 1 should be unlocked
+Level 2 should be unlocked
+Level 3 should be unlocked
+Level 4 should be unlocked
+Level 5 should be unlocked
+Level 6 should be unlocked
+Beat levels 1 through 3 
+Beat levels 4 through 6
+Collect 50 or more mushrooms in one day
+Gather over 24 golden mushrooms

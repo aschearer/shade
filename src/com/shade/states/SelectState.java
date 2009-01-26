@@ -3,17 +3,16 @@ package com.shade.states;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.Sound;
-import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-import org.newdawn.slick.state.transition.FadeOutTransition;
 import org.newdawn.slick.util.ResourceLoader;
 
 import com.shade.base.Animatable;
@@ -22,11 +21,10 @@ import com.shade.controls.ClickListener;
 import com.shade.controls.InstructionImage;
 import com.shade.controls.InstructionText;
 import com.shade.controls.KeyListener;
+import com.shade.controls.SerialStats;
 import com.shade.controls.SlickButton;
 import com.shade.controls.TwoToneButton;
 import com.shade.levels.LevelManager;
-import com.shade.levels.Model;
-import com.shade.states.util.Dimmer;
 import com.shade.util.ResourceManager;
 
 public class SelectState extends BasicGameState {
@@ -44,6 +42,7 @@ public class SelectState extends BasicGameState {
     private SlickButton play, back;
     private TwoToneButton next, prev;
     private LevelSet levels;
+    int currentLevel;
 
     private int timer;
     private Sound click;
@@ -61,7 +60,8 @@ public class SelectState extends BasicGameState {
 
         resource.register("newgame-up", "states/select/newgame-up.png");
         resource.register("newgame-down", "states/select/newgame-down.png");
-        
+        resource.register("question-mark", "states/select/question-mark.png");
+
         click = new Sound("states/common/click.ogg");
 
         manager = new LevelManager();
@@ -76,18 +76,49 @@ public class SelectState extends BasicGameState {
             throws SlickException {
         this.game = game;
         level = (InGameState) game.getState(InGameState.ID);
+        currentLevel = level.getCurrentLevel();
+        initLevels(master.jekyllMedium);
         if (master.dimmer.reversed()) {
             master.dimmer.rewind();
         }
         initFlowButtons();
         initButtons();
-        initInstructions(master.daisyXLarge);
         timer = 0;
+
+        testForUnlockedLevels();
+    }
+
+    private void testForUnlockedLevels() {
+        int clear123 = 0;
+        clear123 += SerialStats.read("level-1-clear");
+        clear123 += SerialStats.read("level-2-clear");
+        clear123 += SerialStats.read("level-3-clear");
+        if (clear123 == 3) {
+            master.levelsLock.unlock(7);
+        }
+        int clear456 = 0;
+        clear456 += SerialStats.read("level-4-clear");
+        clear456 += SerialStats.read("level-5-clear");
+        clear456 += SerialStats.read("level-6-clear");
+        if (clear456 == 3) {
+            master.levelsLock.unlock(8);
+        }
+        if (SerialStats.read("level-mushrooms-collected") > 50) {
+            master.levelsLock.unlock(9);
+        }
+        if (SerialStats.read("gold-mushrooms-collected") > 24) {
+            master.levelsLock.unlock(10);
+        }
     }
 
     public void render(GameContainer container, StateBasedGame game, Graphics g)
             throws SlickException {
         master.control.render(game, g, resource.get("background"));
+        g.setColor(Color.black);
+        if (!master.levelsLock.isUnlocked(currentLevel)) {
+            g.fillRect(0, 0, 800, 600);
+        }
+        g.setColor(Color.white);
         master.dimmer.render(game, g);
         resource.get("header").draw(400, 0);
         resource.get("backdrop").draw(0, 400);
@@ -96,12 +127,15 @@ public class SelectState extends BasicGameState {
         prev.render(game, g);
         next.render(game, g);
         renderInstructionStep();
+        if (!master.levelsLock.isUnlocked(currentLevel)) {
+            resource.get("question-mark").draw(310, 160);
+        }
         levels.render(game, g);
         resource.get("trim").draw();
     }
 
     private void renderInstructionStep() {
-        master.jekyllXSmall.drawString(18, 495, levels.current() + " of "
+        master.jekyllXSmall.drawString(18, 495, (1 + currentLevel) + " of "
                 + levels.size());
     }
 
@@ -120,14 +154,18 @@ public class SelectState extends BasicGameState {
         prev.active(levels.started());
         next.active(levels.finished());
         levels.update(game, delta);
+        levels.update(game, delta);
     }
 
     @Override
     public void keyPressed(int key, char c) {
         if (key == Input.KEY_ENTER) {
             click.play();
-            level.newGame(levels.current);
-            if (levels.current == 0) {
+            if (!master.levelsLock.isUnlocked(currentLevel)) {
+                return;
+            }
+            level.newGame(currentLevel);
+            if (currentLevel == 0) {
                 game.enterState(InstructionState.ID);
             } else {
                 game.enterState(InGameState.ID);
@@ -146,8 +184,11 @@ public class SelectState extends BasicGameState {
         play.addListener(new ClickListener() {
 
             public void onClick(StateBasedGame game, Button clicked) {
-                level.newGame(levels.current);
-                if (levels.current == 0) {
+                if (!master.levelsLock.isUnlocked(currentLevel)) {
+                    return;
+                }
+                level.newGame(currentLevel);
+                if (currentLevel == 0) {
                     game.enterState(InstructionState.ID);
                 } else {
                     game.enterState(InGameState.ID);
@@ -180,8 +221,10 @@ public class SelectState extends BasicGameState {
         next.addListener(new ClickListener() {
 
             public void onClick(StateBasedGame game, Button clicked) {
+                currentLevel++;
                 levels.next();
-                master.control.load(manager.get(levels.current));
+                levels.next();
+                master.control.load(manager.get(currentLevel));
                 master.control.killPlayer();
             }
 
@@ -190,8 +233,10 @@ public class SelectState extends BasicGameState {
         next.register(Input.KEY_RIGHT, new KeyListener() {
 
             public void onPress(StateBasedGame game, int key) {
+                currentLevel++;
                 levels.next();
-                master.control.load(manager.get(levels.current));
+                levels.next();
+                master.control.load(manager.get(currentLevel));
                 master.control.killPlayer();
             }
 
@@ -200,8 +245,10 @@ public class SelectState extends BasicGameState {
         prev.addListener(new ClickListener() {
 
             public void onClick(StateBasedGame game, Button clicked) {
+                currentLevel--;
                 levels.prev();
-                master.control.load(manager.get(levels.current));
+                levels.prev();
+                master.control.load(manager.get(currentLevel));
                 master.control.killPlayer();
 
             }
@@ -211,8 +258,10 @@ public class SelectState extends BasicGameState {
         prev.register(Input.KEY_LEFT, new KeyListener() {
 
             public void onPress(StateBasedGame game, int key) {
+                currentLevel--;
                 levels.prev();
-                master.control.load(manager.get(levels.current));
+                levels.prev();
+                master.control.load(manager.get(currentLevel));
                 master.control.killPlayer();
             }
 
@@ -220,84 +269,119 @@ public class SelectState extends BasicGameState {
 
     }
 
-    private void initInstructions(TrueTypeFont f) {
+    private void initLevels(TrueTypeFont f) throws SlickException {
+        Scanner hints = new Scanner(ResourceLoader
+                .getResourceAsStream("states/select/hints.txt"));
+        Image locked = new Image("states/select/locked.png");
+        Scanner names = new Scanner(ResourceLoader
+                .getResourceAsStream("states/select/levels.txt"));
+        Image unlocked = new Image("states/select/unlocked.png");
+        
         levels = new LevelSet();
-        String stage = "Instructions";
-        float x = 400 - (f.getWidth(stage) / 2);
-        InstructionText t = new InstructionText(x, 435, stage, f);
-        t.setTimer(LEVEL_STATE_DELAY + LEVEL_BUFFER);
-        levels.add(t);
-        int n = 1;
-        while (n < LevelManager.NUM_LEVELS) {
-            stage = "Level " + n;
-            x = 400 - (f.getWidth(stage) / 2);
-            t = new InstructionText(x, 435, stage, f);
-            t.setTimer(LEVEL_STATE_DELAY + n * LEVEL_BUFFER);
-            levels.add(t);
+        float x = 90;
+        int n = 0;
+        while (hints.hasNextLine()) {
+            InstructionImage i = null;
+            InstructionText t = null;
+            if (master.levelsLock.isUnlocked(n)) {
+                i = new InstructionImage(x, 425, unlocked);
+                i.setTimer(LEVEL_STATE_DELAY + n * LEVEL_BUFFER);
+                t = new InstructionText(x + 100, 445, names.nextLine(), f);
+                t.setTimer(LEVEL_STATE_DELAY + n * LEVEL_BUFFER);
+                hints.nextLine();
+            } else {
+                i = new InstructionImage(x - 6, 425 + 11, locked);
+                i.setTimer(LEVEL_STATE_DELAY + n * LEVEL_BUFFER);
+                t = new InstructionText(x + 100, 445, hints.nextLine(), f);
+                t.setTimer(LEVEL_STATE_DELAY + n * LEVEL_BUFFER);
+                names.nextLine();
+            }
+            levels.add(i, t);
             n++;
         }
-        levels.moveTo(level.getCurrentLevel());
+        
+        
+
     }
 
     private class LevelSet implements Animatable {
 
         private boolean finished;
-        private int current;
+        private ArrayList<InstructionImage> images;
         private ArrayList<InstructionText> text;
 
         public LevelSet() {
+            images = new ArrayList<InstructionImage>();
             text = new ArrayList<InstructionText>();
         }
 
         public void moveTo(int level) {
-            current = level;
+            currentLevel = level;
             for (int i = 0; i < text.size(); i++) {
                 if (i == level) {
+                    images.get(i).activate();
                     text.get(i).activate();
                 } else {
+                    images.get(i).deactivate();
                     text.get(i).deactivate();
                 }
             }
         }
 
         public int current() {
-            return current + 1;
+            return currentLevel + 1;
         }
 
         public int size() {
             return text.size();
         }
 
-        public void add(InstructionText t) {
+        public void add(InstructionImage i, InstructionText t) {
             if (text.size() == 0) {
                 t.activate();
+                i.activate();
             }
+            images.add(i);
             text.add(t);
         }
 
         public void next() {
-            text.get(current).deactivate();
-            if (current < text.size()) {
-                current++;
-                text.get(current).activate();
-                if (current == text.size() - 1) {
+            int last = currentLevel - 1;
+            text.get(last).deactivate();
+            images.get(last).deactivate();
+            if (currentLevel < text.size()) {
+                text.get(currentLevel).activate();
+                images.get(currentLevel).activate();
+                if (currentLevel == text.size() - 1) {
                     finished = true;
                 }
             }
         }
 
         public void prev() {
-            text.get(current).deactivate();
-            current--;
-            text.get(current).activate();
+            int last = currentLevel + 1;
+            text.get(last).deactivate();
+            images.get(last).deactivate();
+            text.get(currentLevel).activate();
+            images.get(currentLevel).activate();
             if (finished) {
                 finished = false;
             }
         }
 
+        public void reset(int last) {
+            images.get(last).reset();
+            text.get(last).reset();
+            images.get(currentLevel).activate();
+            text.get(currentLevel).activate();
+        }
+
         public void render(StateBasedGame game, Graphics g) {
             for (InstructionText s : text) {
                 s.render(game, g);
+            }
+            for (InstructionImage i : images) {
+                i.render(game, g);
             }
         }
 
@@ -305,10 +389,13 @@ public class SelectState extends BasicGameState {
             for (InstructionText s : text) {
                 s.update(game, delta);
             }
+            for (InstructionImage i : images) {
+                i.update(game, delta);
+            }
         }
 
         public boolean started() {
-            return current == 0;
+            return currentLevel == 0;
         }
 
         public boolean finished() {

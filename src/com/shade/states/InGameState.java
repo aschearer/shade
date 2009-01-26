@@ -15,6 +15,7 @@ import com.shade.controls.ControlSlice;
 import com.shade.controls.ScoreControl;
 import com.shade.controls.CounterControl;
 import com.shade.controls.MeterControl;
+import com.shade.controls.SerialStats;
 import com.shade.controls.SlickButton;
 import com.shade.controls.StatsControl;
 import com.shade.controls.DayPhaseTimer.DayLightStatus;
@@ -149,6 +150,10 @@ public class InGameState extends BasicGameState {
         recordDamage();
         recordMushroomsCollected();
         safeExit(game, id);
+        if (parWasMet()) {
+            String stat = "level-" + currentLevel + "-clear";
+            SerialStats.write(stat, 1);
+        }
     }
 
     private void recordDamage() {
@@ -160,6 +165,12 @@ public class InGameState extends BasicGameState {
         stats.add("level-golden", counter.goldMushrooms);
         stats.add("total-mushrooms", counter.totalCount);
         stats.replace("level-mushrooms", counter.totalCount);
+        
+        SerialStats.add("golden-mushrooms-collected", counter.goldMushrooms);
+        SerialStats.add("mushrooms-collected", counter.totalCount);
+        if (SerialStats.read("level-mushrooms-collected") < counter.totalCount) {
+            SerialStats.write("level-mushrooms-collected", counter.totalCount);
+        }
     }
 
     private void recordMileage() {
