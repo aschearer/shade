@@ -336,7 +336,7 @@ public class SelectState extends BasicGameState {
         }
 
         public void add(InstructionImage i, InstructionText t) {
-            if (text.size() == 0) {
+            if (text.size() == currentLevel) {
                 t.activate();
                 i.activate();
             }
