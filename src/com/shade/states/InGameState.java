@@ -132,10 +132,6 @@ public class InGameState extends BasicGameState {
         master.control.load(level);
         master.music.fade(MasterState.SECONDS_OF_DAYLIGHT, .1f, false);
         addBackControls();
-        if (currentLevel < levels.size()
-                && !master.levelsLock.isUnlocked(currentLevel)) {
-            master.levelsLock.unlock(currentLevel);
-        }
     }
 
     private void safeExit(StateBasedGame game, int id) {
