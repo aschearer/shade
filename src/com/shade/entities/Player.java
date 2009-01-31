@@ -17,6 +17,7 @@ import com.shade.crash.CrashLevel;
 import com.shade.crash.Repelable;
 import com.shade.entities.bird.Bird;
 import com.shade.entities.mushroom.Mushroom;
+import com.shade.entities.util.GhostTrail;
 import com.shade.entities.util.PlayerSparkler;
 import com.shade.entities.util.Sizzle;
 import com.shade.entities.util.Sparkler;
@@ -47,6 +48,7 @@ public class Player extends Linkable {
     private Sizzle[] sizzles;
     private float speed;
     private boolean sparkling;
+    private GhostTrail ghost;
     
     
 
@@ -55,6 +57,7 @@ public class Player extends Linkable {
         initShape(x, y);
         initResources();
         initStates();
+        ghost = new GhostTrail(this, "entities/player/player.png");
         smoky = new PlayerSparkler(this,0,"entities/sparkle/puff.png");
         invincibleTimer = INVINCIBLE_START;
         flipthreshold = 1;
@@ -364,16 +367,21 @@ public class Player extends Linkable {
 
     public void render(StateBasedGame game, Graphics g) {
         manager.render(game, g);
-        smoky.animate(g);
-        if(sparkling)sparks.animate(g);
         sizzle(g);
+        smoky.animate(g);
+        if(sparkling){
+        	ghost.animate(g);
+        }
     }
 
     public void update(StateBasedGame game, int delta) {
         manager.update(game, delta);
         smoky.update(delta);
-        if(sparkling)sparks.update(delta);
         for(int i =0;i<sizzles.length;i++)sizzles[i].update(delta);
+        
+        if(sparkling){
+        	ghost.update(delta);
+        }
     }
 
     public int compareTo(LuminousEntity e) {
