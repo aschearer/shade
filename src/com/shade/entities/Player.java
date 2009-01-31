@@ -96,6 +96,7 @@ public class Player extends Linkable {
         register = new Sound("entities/player/register.ogg");
         damage = new Sound("entities/player/hit.ogg");
     }
+    
 
     private void initStates() {
         manager = new StateManager();
@@ -303,8 +304,11 @@ public class Player extends Linkable {
     }
 
     public float getLuminosity() {
-        return (invincibleTimer > 0) ? .6f : luminosity;
-        //return luminosity;
+    	float max = 0;
+    	for(int i =0;i<sizzles.length;i++){
+    		max = (float)Math.max(sizzles[i].getIntensity(), max);
+    	}
+    	return invincibleTimer>0?0: max;
     }
 
     public int getZIndex() {

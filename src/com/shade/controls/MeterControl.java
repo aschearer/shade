@@ -113,7 +113,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
             //TODO: if this shold go somewhere else tell me!
             Player p = (Player) target;
             if(p.getSmokeCount()*scale<timeInSun){
-            	p.setSmokeCount((int)Math.pow(1.12,timeInSun/scale)-1);
+            	//p.setSmokeCount((int)Math.pow(1.12,timeInSun/scale)-1);
             }
             
         } else {
@@ -121,7 +121,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
             Player p = (Player) target;
             if(p.getXVelocity()+p.getXVelocity()==0) timeInSun*=0.8;
             if(p.getSmokeCount()*scale>timeInSun){
-            	p.setSmokeCount((int)Math.pow(1.12,timeInSun/scale)-1);
+            	//p.setSmokeCount((int)Math.pow(1.12,timeInSun/scale)-1);
             }
         }
         
