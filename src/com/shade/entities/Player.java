@@ -309,9 +309,9 @@ public class Player extends Linkable {
     public float getLuminosity() {
     	float max = 0;
     	for(int i =0;i<sizzles.length;i++){
-    		max = (float)Math.max(sizzles[i].getIntensity(), max);
+    		max += sizzles[i].getIntensity();
     	}
-    	return invincibleTimer>0?0: max;
+    	return invincibleTimer>0?0: max/sizzles.length;
     }
 
     public int getZIndex() {
