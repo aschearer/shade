@@ -227,7 +227,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
     	float totalTime = totalTimeInSun + totalTimeInShade;
     	float totalruntime = totalTimeRunning+totalTimeStanding;
     	return "Time in Sun: "+totalTimeInSun/totalTime+"\n Time in Shadow: "+totalTimeInShade/totalTime+"\n"
-    		+"Total time running "+totalTimeRunning/totalruntime+"\n Total time standing: "+totalTimeStanding;
+    		+"Total time running "+totalTimeRunning/totalruntime+"\n Total time standing: "+totalTimeStanding/totalruntime;
     }
 
     public void reset() {
