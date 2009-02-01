@@ -6,13 +6,18 @@ import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 
+import com.crash.Body;
+import com.shade.entities.Basket;
+import com.shade.util.Geom;
+
 public class MushroomFactory {
 
     /**
      * Corresponds to the Mushroom.Type enum.
      */
-    private static final double[] distribution = { 0, .9, 0, 1 };
+    private static final double[] distribution = { 0, .97, 0, .03 };
     private static final double PROPENSITY = .002;
+    private static final float BASKET_THRESHOLD = 10000;
 
     /* Minimum number of mushrooms alive at any one time. */
     private int floor;
@@ -24,10 +29,8 @@ public class MushroomFactory {
     private LinkedList<Mushroom> mushrooms;
 
     /**
-     * @param floor
-     *            The baseline number of mushrooms on the field.
-     * @param propensity
-     *            The likelihood to add a mushroom over the baseline.
+     * @param floor The baseline number of mushrooms on the field.
+     * @param propensity The likelihood to add a mushroom over the baseline.
      */
     public MushroomFactory(int floor) {
         this.floor = floor;
@@ -47,17 +50,21 @@ public class MushroomFactory {
         return (Math.random() <= propensity);
     }
 
-    public Mushroom getMushroom(GameContainer c, Shape shadow)
+    public Mushroom getMushroom(GameContainer c, Shape shadow, Body b)
             throws SlickException {
         try {
             float x = randomX(c, shadow);
             float y = randomY(c, shadow);
+            if (x == -1 || y == -1
+                    || Geom.distance2(x, y, b.getXCenter(), b.getYCenter()) < BASKET_THRESHOLD) {
+                return null;
+            }
             int t = randomType();
             Mushroom m = new Mushroom(x, y, getType(t), this);
             mushrooms.add(m);
             return m;
         } catch (MushroomFactoryException e) {
-            return null;
+            throw new SlickException(e.getMessage());
         }
     }
 
@@ -65,30 +72,30 @@ public class MushroomFactory {
             throws MushroomFactoryException {
         float x = -1;
         int numTries = 0;
-        while (x < 0 || x >= c.getWidth()) {
-            x = (float) (s.getMaxX() - s.getMinX() * Math.random()*0.5);
+        while ((x < 0 || x >= c.getWidth()) && numTries < 6) {
+            x = (float) (s.getMaxX() - s.getMinX() * Math.random() * 0.5);
             x += s.getX();
             numTries++;
             if (numTries > 6) {
                 throw new MushroomFactoryException("Can't find valid point.");
             }
         }
-        return x;
+        return (numTries < 6) ? x : -1;
     }
 
     private float randomY(GameContainer c, Shape s)
             throws MushroomFactoryException {
         float y = -1;
         int numTries = 0;
-        while (y < 0 || y >= c.getHeight()) {
-            y = (float) (s.getMaxY() - s.getMinY() * Math.random()*0.5);
+        while ((y < 0 || y >= c.getHeight()) && numTries < 6) {
+            y = (float) (s.getMaxY() - s.getMinY() * Math.random() * 0.5);
             y += s.getY();
             numTries++;
             if (numTries > 6) {
                 throw new MushroomFactoryException("Can't find valid point.");
             }
         }
-        return y;
+        return (numTries < 6) ? y : -1;
     }
 
     public void remove(Mushroom m) {

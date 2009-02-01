@@ -9,6 +9,8 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.state.StateBasedGame;
 
+import com.crash.Body;
+import com.crash.util.CrashGeom;
 import com.shade.entities.Basket;
 import com.shade.entities.Player;
 import com.shade.entities.Roles;
@@ -26,10 +28,11 @@ public class GameSlice {
     private MushroomFactory factory;
     private LightMask view;
     private LinkedList<MushroomCounter> controls;
-//    private boolean flushControls;
+    // private boolean flushControls;
 
     // TIMER!
     private DayPhaseTimer timer;
+    private Body basket;
 
     public GameSlice(LightMask v, GlobalLight l, DayPhaseTimer t) {
         view = v;
@@ -53,8 +56,9 @@ public class GameSlice {
         model = m;
         model.setTimer(timer);
         factory = m.getMushroomFactory();
+        basket = (Body) model.getEntitiesByRole(Roles.BASKET.ordinal())[0];
     }
-    
+
     public void addEntity(LuminousEntity e) {
         model.add(e);
     }
@@ -62,20 +66,19 @@ public class GameSlice {
     public void update(StateBasedGame game, int delta) throws SlickException {
         model.update(game, delta);
         light.update(game, delta);
-//        if (flushControls) {
-//            controls.clear();
-//            flushControls = false;
-//        }
+        // if (flushControls) {
+        // controls.clear();
+        // flushControls = false;
+        // }
         for (int i = 0; i < controls.size(); i++) {
             controls.get(i).update(game, delta);
         }
         if (factory.active()) {
             GameContainer c = game.getContainer();
-            Mushroom m = factory.getMushroom(c, randomShadow());
+            Mushroom m = factory.getMushroom(c, randomShadow(), basket);
             if (m != null) {
                 model.add(m);
-            } else
-                System.out.println("we got null, shocking");
+            }
         }
         timer.update(delta);
     }
@@ -95,12 +98,14 @@ public class GameSlice {
 
     private Shape randomShadow() {
         LuminousEntity e = randomEntity();
+        Shape shadow = light.castShadow(e);
 
-        while (light.castShadow(e) == null) {
+        while (shadow == null) {
             e = randomEntity();
+            shadow = light.castShadow(e);
         }
 
-        return light.castShadow(e);
+        return shadow;
     }
 
     private void initPlayer(MushroomCounter counter) {
@@ -132,7 +137,7 @@ public class GameSlice {
             model.remove((LuminousEntity) players[0]);
         }
     }
-    
+
     public float distanceTraveled() {
         Object[] players = model.getEntitiesByRole(Roles.PLAYER.ordinal());
         return ((Player) players[0]).totalMileage();

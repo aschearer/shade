@@ -45,7 +45,7 @@ public class CounterControl implements MushroomCounter, Animatable {
 	        int increment = 1;
 	        if (shroomie.isGolden()) {
 	            goldMushrooms++;
-	            increment += 4;
+	            increment += 3;
 	        }
 	        totalCount += increment;
 	        if (countDown > 0) {

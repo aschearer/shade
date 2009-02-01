@@ -22,10 +22,10 @@ import com.sun.tools.jdi.TargetVM;
  */
 public class MeterControl implements ControlSlice, MushroomCounter {
 
-    public static final float BASE_DAMAGE = 0.05f;
+    public static final float BASE_DAMAGE = 0.02f;
     public static final float BASE_EXPONENT = 1.0005f;
     public static final float GOLD_SCORE_MULTIPLIER = 40;
-    public static final float HEALTH_MULTIPLIER = 4f;
+    public static final float HEALTH_MULTIPLIER = 1f;
     public static final float BAR_MAX = 40f;
     public static final float BONUS_SCALE = 1.5f;
 
@@ -88,54 +88,55 @@ public class MeterControl implements ControlSlice, MushroomCounter {
 
     public void update(StateBasedGame game, int delta) {
         if (value == 0) {
-            //listener.fire(this);
+            // listener.fire(this);
         }
-        if(value >BAR_MAX) {
-            //not sure why this isn't player specific right now. It wil be form now on.
-            //TODO: if this shold go somewhere else tell me!
+        if (value > BAR_MAX) {
+            // not sure why this isn't player specific right now. It wil be form
+            // now on.
+            // TODO: if this shold go somewhere else tell me!
             Player p = (Player) target;
-            p.setSpeed(Player.MAX_SPEED*BONUS_SCALE);
+            p.setSpeed(Player.MAX_SPEED * BONUS_SCALE);
             p.sparkle();
-        }
-        else {
-        	
+        } else {
+
             Player p = (Player) target;
             p.unsparkle();
-            if(p.getSmokeCount()<timeInSun){
-            	p.setSpeed((float)Math.max(0,value/BAR_MAX)*(Player.MAX_SPEED-Player.MIN_SPEED)+Player.MIN_SPEED);
+            if (p.getSmokeCount() < timeInSun) {
+                p.setSpeed((float) Math.max(0, value / BAR_MAX)
+                        * (Player.MAX_SPEED - Player.MIN_SPEED)
+                        + Player.MIN_SPEED);
             }
         }
-        //TODO: move this somwhere
-        int scale = 60;
-        if (target != null && target.getLuminosity() > MasterState.SHADOW_THRESHOLD) {
+        // TODO: move this somwhere
+        // int scale = 60;
+        if (target != null
+                && target.getLuminosity() > MasterState.SHADOW_THRESHOLD) {
             decrement(delta);
-            //not sure why this isn't player specific right now. It wil be form now on.
-            //TODO: if this shold go somewhere else tell me!
-            Player p = (Player) target;
-            if(p.getSmokeCount()*scale<timeInSun){
-            	//p.setSmokeCount((int)Math.pow(1.12,timeInSun/scale)-1);
-            }
-            
-        } else {
-            timeInSun = Math.max(timeInSun-delta,0);
-            Player p = (Player) target;
-            if(p.getXVelocity()+p.getXVelocity()==0) timeInSun*=0.8;
-            if(p.getSmokeCount()*scale>timeInSun){
-            	//p.setSmokeCount((int)Math.pow(1.12,timeInSun/scale)-1);
-            }
+            // not sure why this isn't player specific right now. It wil be form
+            // now on.
+            // TODO: if this shold go somewhere else tell me!
+            // if(target.getSmokeCount()*scale<timeInSun){
+            // //p.setSmokeCount((int)Math.pow(1.12,timeInSun/scale)-1);
+            // }
+
+        } else if (value < BAR_MAX / 2 && !isMoving(target)) {
+            timeInSun = 0;
+            value += BASE_DAMAGE;
+            // timeInSun = Math.max(timeInSun - delta, 0);
+            // if (target.getXVelocity() + target.getXVelocity() == 0)
+            // timeInSun *= 0.8;
         }
-        
+
         if (totalAmountToAdd > 0) {
             value += .1f * rateOfChange;
             totalAmountToAdd -= .1f * rateOfChange;
         } else {
             rateOfChange = 1;
         }
-        
+
         if (target.isStunned()) {
             return;
         }
-        
 
         if (target != null
                 && target.getLuminosity() > MasterState.SHADOW_THRESHOLD) {
@@ -144,8 +145,13 @@ public class MeterControl implements ControlSlice, MushroomCounter {
             timeInSun = 0;
         }
         clamp();
-        
-        target.setSpeed(Player.MIN_SPEED + (value / BAR_MAX) * (Player.MAX_SPEED - Player.MIN_SPEED));
+
+        target.setSpeed(Player.MIN_SPEED + (value / BAR_MAX)
+                * (Player.MAX_SPEED - Player.MIN_SPEED));
+    }
+
+    private boolean isMoving(Player p) {
+        return !(p.getXVelocity() == 0 && p.getYVelocity() == 0);
     }
 
     public void awardBonus() {
@@ -183,10 +189,9 @@ public class MeterControl implements ControlSlice, MushroomCounter {
     private void decrement(int delta) {
         float damage = BASE_DAMAGE;
         timeInSun += delta;
-        
-        if (timeInSun > 1500) {
+        if (timeInSun > 3000) {
             damage *= 7;
-        } else if (timeInSun > 1000) {
+        } else if (timeInSun > 1800) {
             damage *= 2;
         }
         value -= damage;
@@ -214,7 +219,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
             Player p = (Player) target;
             p.setSmokeCount(0);
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 }
