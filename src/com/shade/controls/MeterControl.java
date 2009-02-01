@@ -6,11 +6,9 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.shade.entities.Player;
-import com.shade.entities.Roles;
 import com.shade.entities.mushroom.Mushroom;
 import com.shade.lighting.LuminousEntity;
 import com.shade.states.MasterState;
-import com.sun.tools.jdi.TargetVM;
 
 /**
  * A meter which can go from zero to a hundred. + The control should be notified
@@ -92,6 +90,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
             if (value < BAR_MAX / 2) {
                 value += BASE_RECHARGE * delta;
             }
+            totalAmountToAdd = 0;
             timeInSun = 0;
             return;
         }
@@ -105,7 +104,6 @@ public class MeterControl implements ControlSlice, MushroomCounter {
             // TODO: if this shold go somewhere else tell me!
             target.setSpeed(Player.MAX_SPEED * BONUS_SCALE);
             target.sparkle();
-            scorecard.add(value - BAR_MAX);
         } else {
             target.unsparkle();
             if (target.getSmokeCount() < timeInSun) {
@@ -139,10 +137,6 @@ public class MeterControl implements ControlSlice, MushroomCounter {
             totalAmountToAdd -= .1f * rateOfChange;
         } else {
             rateOfChange = 1;
-        }
-
-        if (target.isStunned()) {
-            return;
         }
 
         if (target != null
@@ -180,7 +174,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
         if (value < 0) {
             value = 0;
         }
-        if (value > BAR_MAX + 5) {
+        if (value > BAR_MAX) {
             scorecard.add(1);
             value--;
         }
