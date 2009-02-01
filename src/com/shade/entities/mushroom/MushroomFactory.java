@@ -15,7 +15,7 @@ public class MushroomFactory {
     /**
      * Corresponds to the Mushroom.Type enum.
      */
-    private static final double[] distribution = { 0, .97, 0, .03 };
+    private static final double[] distribution = { 0, .965, 0, .35 };
     private static final double PROPENSITY = .002;
     private static final float BASKET_THRESHOLD = 10000;
 

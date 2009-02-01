@@ -27,6 +27,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
     public static final float GOLD_SCORE_MULTIPLIER = 40;
     public static final float HEALTH_MULTIPLIER = 1f;
     public static final float BAR_MAX = 40f;
+    public static final float BASE_RECHARGE = BAR_MAX / 4000f; // max / 2 * sec
     public static final float BONUS_SCALE = 1.5f;
 
     private Player target;
@@ -87,8 +88,16 @@ public class MeterControl implements ControlSlice, MushroomCounter {
     }
 
     public void update(StateBasedGame game, int delta) {
+        if (target.isStunned()) {
+            if (value < BAR_MAX / 2) {
+                value += BASE_RECHARGE * delta;
+            }
+            timeInSun = 0;
+            return;
+        }
         if (value == 0) {
             // listener.fire(this);
+            target.stun();
         }
         if (value > BAR_MAX) {
             // not sure why this isn't player specific right now. It wil be form
@@ -98,11 +107,9 @@ public class MeterControl implements ControlSlice, MushroomCounter {
             p.setSpeed(Player.MAX_SPEED * BONUS_SCALE);
             p.sparkle();
         } else {
-
-            Player p = (Player) target;
-            p.unsparkle();
-            if (p.getSmokeCount() < timeInSun) {
-                p.setSpeed((float) Math.max(0, value / BAR_MAX)
+            target.unsparkle();
+            if (target.getSmokeCount() < timeInSun) {
+                target.setSpeed((float) Math.max(0, value / BAR_MAX)
                         * (Player.MAX_SPEED - Player.MIN_SPEED)
                         + Player.MIN_SPEED);
             }
