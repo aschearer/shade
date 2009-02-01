@@ -25,7 +25,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
     public static final float BASE_DAMAGE = 0.05f;
     public static final float BASE_EXPONENT = 1.0005f;
     public static final float GOLD_SCORE_MULTIPLIER = 40;
-    public static final float HEALTH_MULTIPLIER = 1f;
+    public static final float HEALTH_MULTIPLIER = 4f;
     public static final float BAR_MAX = 40f;
     public static final float BONUS_SCALE = 1.5f;
 
@@ -88,11 +88,41 @@ public class MeterControl implements ControlSlice, MushroomCounter {
 
     public void update(StateBasedGame game, int delta) {
         if (value == 0) {
-            // listener.fire(this);
-            target.stun();
-            totalAmountToAdd = BAR_MAX / 3;
-            rateOfChange = 3;
-            timeInSun = 0;
+            //listener.fire(this);
+        }
+        if(value >BAR_MAX) {
+            //not sure why this isn't player specific right now. It wil be form now on.
+            //TODO: if this shold go somewhere else tell me!
+            Player p = (Player) target;
+            p.setSpeed(Player.MAX_SPEED*BONUS_SCALE);
+            p.sparkle();
+        }
+        else {
+        	
+            Player p = (Player) target;
+            p.unsparkle();
+            if(p.getSmokeCount()<timeInSun){
+            	p.setSpeed((float)Math.max(0,value/BAR_MAX)*(Player.MAX_SPEED-Player.MIN_SPEED)+Player.MIN_SPEED);
+            }
+        }
+        //TODO: move this somwhere
+        int scale = 60;
+        if (target != null && target.getLuminosity() > MasterState.SHADOW_THRESHOLD) {
+            decrement(delta);
+            //not sure why this isn't player specific right now. It wil be form now on.
+            //TODO: if this shold go somewhere else tell me!
+            Player p = (Player) target;
+            if(p.getSmokeCount()*scale<timeInSun){
+            	//p.setSmokeCount((int)Math.pow(1.12,timeInSun/scale)-1);
+            }
+            
+        } else {
+            timeInSun = Math.max(timeInSun-delta,0);
+            Player p = (Player) target;
+            if(p.getXVelocity()+p.getXVelocity()==0) timeInSun*=0.8;
+            if(p.getSmokeCount()*scale>timeInSun){
+            	//p.setSmokeCount((int)Math.pow(1.12,timeInSun/scale)-1);
+            }
         }
         
         if (totalAmountToAdd > 0) {
