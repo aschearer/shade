@@ -3,6 +3,7 @@
 <Level mushrooms="5" par="15">
     <MockPlayer x="450" y="300"/>
     <Basket x="400" y="250" />
+    <Umbrella x="400" y="300" />
 
     <Block x="55" y="355" z="16" d="125" />
     <Block x="224" y="424" z="6" d="56" />
