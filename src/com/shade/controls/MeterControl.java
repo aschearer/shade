@@ -103,9 +103,9 @@ public class MeterControl implements ControlSlice, MushroomCounter {
             // not sure why this isn't player specific right now. It wil be form
             // now on.
             // TODO: if this shold go somewhere else tell me!
-            Player p = (Player) target;
-            p.setSpeed(Player.MAX_SPEED * BONUS_SCALE);
-            p.sparkle();
+            target.setSpeed(Player.MAX_SPEED * BONUS_SCALE);
+            target.sparkle();
+            scorecard.add(value - BAR_MAX);
         } else {
             target.unsparkle();
             if (target.getSmokeCount() < timeInSun) {
