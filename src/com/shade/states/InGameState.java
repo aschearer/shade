@@ -108,7 +108,7 @@ public class InGameState extends BasicGameState {
      * Requires level to be correctly set.
      */
     private void resetControls() {
-        meter.reset();
+    	meter.reset();
         counter.reset(level.getPar());
     }
 
@@ -142,6 +142,7 @@ public class InGameState extends BasicGameState {
     }
 
     public void exit(StateBasedGame game, int id) {
+    	System.out.println(meter.playerMetrics());
         recordMileage();
         recordDamage();
         recordMushroomsCollected();

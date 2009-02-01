@@ -35,10 +35,15 @@ public class MeterControl implements ControlSlice, MushroomCounter {
     private float x, y;
     private float value, totalAmountToAdd, rateOfChange;
     private float totalDecrement;
-    private int totalTimeInSun;
+    private float totalTimeInSun;
     private static Image front, back, danger, current;
     private int timeInSun;
+    //bonus life
+    private float bonusMeter;
     private int dangerTimer;
+    
+    //metrics - we should get rid of these later
+    private float totalTimeInShade, totalTimeStanding, totalTimeRunning;
 
     static {
         try {
@@ -86,6 +91,12 @@ public class MeterControl implements ControlSlice, MushroomCounter {
     }
 
     public void update(StateBasedGame game, int delta) {
+    	/**
+    	 * TODO: DELETE THIS LATER.
+    	 * 
+    	 */
+    	if(!isMoving(target))totalTimeStanding +=delta;
+    	else totalTimeRunning+=delta;
         if (target.isStunned()) {
             if (value < BAR_MAX / 2) {
                 value += BASE_RECHARGE * delta;
@@ -98,13 +109,16 @@ public class MeterControl implements ControlSlice, MushroomCounter {
             // listener.fire(this);
             target.stun();
         }
-        if (value > BAR_MAX) {
+       // System.out.println(value);
+        if (value >= BAR_MAX&&bonusMeter<1) {
+        //	System.out.println("wowza");
             // not sure why this isn't player specific right now. It wil be form
             // now on.
             // TODO: if this shold go somewhere else tell me!
             target.setSpeed(Player.MAX_SPEED * BONUS_SCALE);
             target.sparkle();
-        } else {
+            bonusMeter = BAR_MAX/35;
+        } if(bonusMeter<1) {
             target.unsparkle();
             if (target.getSmokeCount() < timeInSun) {
                 target.setSpeed((float) Math.max(0, value / BAR_MAX)
@@ -116,6 +130,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
         // int scale = 60;
         if (target != null
                 && target.getLuminosity() > MasterState.SHADOW_THRESHOLD) {
+        	
             decrement(delta);
             // not sure why this isn't player specific right now. It wil be form
             // now on.
@@ -126,6 +141,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
 
         } else if (value < BAR_MAX / 2 && !isMoving(target)) {
             timeInSun = 0;
+            totalTimeInShade +=delta;
             value += BASE_DAMAGE;
             // timeInSun = Math.max(timeInSun - delta, 0);
             // if (target.getXVelocity() + target.getXVelocity() == 0)
@@ -139,12 +155,6 @@ public class MeterControl implements ControlSlice, MushroomCounter {
             rateOfChange = 1;
         }
 
-        if (target != null
-                && target.getLuminosity() > MasterState.SHADOW_THRESHOLD) {
-            decrement(delta);
-        } else {
-            timeInSun = 0;
-        }
         clamp();
 
         target.setSpeed(Player.MIN_SPEED + (value / BAR_MAX)
@@ -174,7 +184,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
         if (value < 0) {
             value = 0;
         }
-        if (value > BAR_MAX) {
+        if ((int)value > BAR_MAX) {
             scorecard.add(1);
             value--;
         }
@@ -188,6 +198,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
     }
 
     private void decrement(int delta) {
+    	totalTimeInSun+=delta;
         float damage = BASE_DAMAGE;
         timeInSun += delta;
         if (timeInSun > 3000) {
@@ -195,6 +206,8 @@ public class MeterControl implements ControlSlice, MushroomCounter {
         } else if (timeInSun > 1400) {
             damage *= 2;
         }
+        bonusMeter -= damage;
+        if(bonusMeter<1)
         value -= damage;
         clamp();
     }
@@ -204,7 +217,17 @@ public class MeterControl implements ControlSlice, MushroomCounter {
     }
 
     public int totalTimeInSun() {
-        return (totalTimeInSun / 1000);
+        return ((int)totalTimeInSun / 1000);
+    }
+    
+    /**
+     * test method TODO: DELETE
+     */
+    public String playerMetrics(){
+    	float totalTime = totalTimeInSun + totalTimeInShade;
+    	float totalruntime = totalTimeRunning+totalTimeStanding;
+    	return "Time in Sun: "+totalTimeInSun/totalTime+"\n Time in Shadow: "+totalTimeInShade/totalTime+"\n"
+    		+"Total time running "+totalTimeRunning/totalruntime+"\n Total time standing: "+totalTimeStanding/totalruntime;
     }
 
     public void reset() {
