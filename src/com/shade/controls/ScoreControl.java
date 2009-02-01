@@ -29,7 +29,7 @@ public class ScoreControl implements Animatable {
     public void update(StateBasedGame game, int delta) {
         if (currentScore + base < totalScore) {
             currentScore+= base;
-            base++;
+//            base++;
         }
         else if(currentScore<totalScore){
         	currentScore = totalScore;

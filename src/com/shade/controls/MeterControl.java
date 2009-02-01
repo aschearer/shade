@@ -192,7 +192,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
         timeInSun += delta;
         if (timeInSun > 3000) {
             damage *= 7;
-        } else if (timeInSun > 1800) {
+        } else if (timeInSun > 1400) {
             damage *= 2;
         }
         value -= damage;

@@ -53,14 +53,12 @@ public class Player extends Linkable {
     public Player(int x, int y) throws SlickException {
         initShape(x, y);
         initResources();
+        initSizzles();
         initStates();
-        ghost = new GhostTrail(this, "entities/player/player.png");
-        smoky = new PlayerSparkler(this, 0, "entities/sparkle/puff.png");
         invincibleTimer = INVINCIBLE_START;
         flipthreshold = 1;
         speed = INITIAL_SPEED;
         sparks = new Sparkler(this, 4);
-        initSizzles();
         sparkling = false;
     }
 
@@ -99,6 +97,8 @@ public class Player extends Linkable {
         normal = new Image("entities/player/player.png");
         register = new Sound("entities/player/register.ogg");
         damage = new Sound("entities/player/hit.ogg");
+        ghost = new GhostTrail(this, "entities/player/player.png");
+        smoky = new PlayerSparkler(this, 0, "entities/sparkle/puff.png");
     }
 
     private void initStates() {
@@ -119,7 +119,9 @@ public class Player extends Linkable {
         }
 
         public void enter() {
-
+            for (Sizzle s : sizzles) {
+                s.setIntensity(0);
+            }
         }
 
         public int getRole() {
@@ -167,6 +169,8 @@ public class Player extends Linkable {
         public void update(StateBasedGame game, int delta) {
             testAndMove(game.getContainer().getInput(), delta);
             testAndWrap();
+            for (int i = 0; i < sizzles.length; i++)
+                sizzles[i].update(delta);
             impeded = false;
             if (invincibleTimer > 0) {
                 invincibleTimer -= delta;
@@ -390,8 +394,6 @@ public class Player extends Linkable {
     public void update(StateBasedGame game, int delta) {
         manager.update(game, delta);
         smoky.update(delta);
-        for (int i = 0; i < sizzles.length; i++)
-            sizzles[i].update(delta);
 
         if (sparkling) {
             ghost.update(delta);
