@@ -38,11 +38,19 @@ public class Sizzle {
 	public void update(int delta) {
 		timer += delta;
 		sizz.update(delta);
+		if (intensity > 0.6f) {
+			timeInSun+=delta;
+		}
+		else timeInSun = 0;
 		//System.out.println("mrr?");
 	}
 
 	public float getIntensity() {
 		return intensity;
+	}
+	
+	public void resetTimer(){
+		timeInSun = 0;
 	}
 
 	public void animate(Graphics g) {
@@ -50,14 +58,13 @@ public class Sizzle {
 		float posy = origin.getYCenter() + y;// -origin.getHeight()/2+y;
 		intensity = g.getPixel((int) posx-x/5, (int) posy-2-y/5).a;
 		// TODO: YAY OPENGL CALLS
-		if (intensity > 0.6f) {
-			timeInSun++;
+		if (timeInSun>0) {
 			float twitch = 5;
 			if(timeInSun%50<5){
 				twitchx = twitch*((float)Math.random()*0.5f-1);
 				twitchy = twitch*((float)Math.random()*0.5f-1);
 			}
-			int scale = Math.min(timeInSun,100)/4;
+			int scale = Math.min(timeInSun,1000)/40;
 			GL11.glAlphaFunc(GL11.GL_GREATER, 0.01f);
 			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 			sizz.draw(twitchx+posx+2, twitchy+2+posy+5f-scale,10,scale);
