@@ -25,10 +25,10 @@ import com.shade.lighting.LuminousEntity;
 
 public class Player extends Linkable {
 
-	public static final int INVINCIBLE_START = 3000;
+    public static final int INVINCIBLE_START = 3000;
     public static final float MIN_SPEED = 2.2f;
     public static final float MAX_SPEED = 3.6f;
-    public static final float INITIAL_SPEED = MAX_SPEED/2+MIN_SPEED/2;
+    public static final float INITIAL_SPEED = MAX_SPEED / 2 + MIN_SPEED / 2;
     private static final int MUSHROOM_LIMIT = 3;
     private static final int PLAYER_HEIGHT = 3;
 
@@ -37,7 +37,7 @@ public class Player extends Linkable {
     };
 
     private StateManager manager;
-    private Image normal;
+    protected Image normal;
     private float luminosity;
     private Sound register, damage;
     private boolean impeded;
@@ -49,45 +49,46 @@ public class Player extends Linkable {
     private float speed;
     private boolean sparkling;
     private GhostTrail ghost;
-    
-    
-
 
     public Player(int x, int y) throws SlickException {
         initShape(x, y);
         initResources();
         initStates();
         ghost = new GhostTrail(this, "entities/player/player.png");
-        smoky = new PlayerSparkler(this,0,"entities/sparkle/puff.png");
+        smoky = new PlayerSparkler(this, 0, "entities/sparkle/puff.png");
         invincibleTimer = INVINCIBLE_START;
         flipthreshold = 1;
         speed = INITIAL_SPEED;
-        sparks = new Sparkler(this,4);
+        sparks = new Sparkler(this, 4);
         initSizzles();
         sparkling = false;
     }
-    public void initSizzles(){
-    	sizzles = new Sizzle[8];
-    	for(int i=0;i<sizzles.length;i++){
-    		int x = (int)(Math.cos(Math.PI*2*i/8)*getWidth()/3);
-       		int y = (int)(Math.sin(Math.PI*2*i/8)*getHeight()/3);
-       		try{
-    		sizzles[i] = new Sizzle(this, x,y);
-       		}catch (Exception e){
-       			e.printStackTrace();
-       		}
-    	}
+
+    public void initSizzles() {
+        sizzles = new Sizzle[8];
+        for (int i = 0; i < sizzles.length; i++) {
+            int x = (int) (Math.cos(Math.PI * 2 * i / 8) * getWidth() / 3);
+            int y = (int) (Math.sin(Math.PI * 2 * i / 8) * getHeight() / 3);
+            try {
+                sizzles[i] = new Sizzle(this, x, y);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
-    private void sizzle(Graphics g){
-    	for(int i=0;i<sizzles.length;i++){
-    		sizzles[i].animate(g);
-    	}
+
+    private void sizzle(Graphics g) {
+        for (int i = 0; i < sizzles.length; i++) {
+            sizzles[i].animate(g);
+        }
     }
-    public void sparkle(){
-    	sparkling = true;
+
+    public void sparkle() {
+        sparkling = true;
     }
-    public void unsparkle(){
-    	sparkling = false;
+
+    public void unsparkle() {
+        sparkling = false;
     }
 
     private void initShape(int x, int y) {
@@ -99,14 +100,13 @@ public class Player extends Linkable {
         register = new Sound("entities/player/register.ogg");
         damage = new Sound("entities/player/hit.ogg");
     }
-    
 
     private void initStates() {
         manager = new StateManager();
         manager.add(new NormalState());
         manager.add(new StunnedState());
     }
-    
+
     public void stun() {
         manager.enter(Player.PlayerState.STUNNED);
         damage.play();
@@ -151,14 +151,16 @@ public class Player extends Linkable {
                 impeded = true;
             }
         }
+
         public void render(StateBasedGame game, Graphics g) {
-        	double inverse = INVINCIBLE_START*7/6-invincibleTimer;
-            if (Math.sin(inverse*inverse/(40000.0*Math.PI)) > 0){
-               normal.drawCentered(getXCenter(), getYCenter());
+            double inverse = INVINCIBLE_START * 7 / 6 - invincibleTimer;
+            if (Math.sin(inverse * inverse / (40000.0 * Math.PI)) > 0) {
+                normal.drawCentered(getXCenter(), getYCenter());
             }
-        	
+
             if (invincibleTimer <= 0) {
                 normal.drawCentered(getXCenter(), getYCenter());
+                sizzle(g);
             }
         }
 
@@ -167,7 +169,7 @@ public class Player extends Linkable {
             testAndWrap();
             impeded = false;
             if (invincibleTimer > 0) {
-               invincibleTimer -= delta;
+                invincibleTimer -= delta;
             }
         }
 
@@ -201,9 +203,9 @@ public class Player extends Linkable {
             }
         }
     }
-    
-    public void setSpeed(float newSpeed){
-    	speed = newSpeed;
+
+    public void setSpeed(float newSpeed) {
+        speed = newSpeed;
     }
 
     private class StunnedState implements State {
@@ -312,11 +314,11 @@ public class Player extends Linkable {
     }
 
     public float getLuminosity() {
-    	float max = 0;
-    	for(int i =0;i<sizzles.length;i++){
-    		max += sizzles[i].getIntensity();
-    	}
-    	return invincibleTimer>0?0: max/sizzles.length;
+        float max = 0;
+        for (int i = 0; i < sizzles.length; i++) {
+            max += sizzles[i].getIntensity();
+        }
+        return invincibleTimer > 0 ? 0 : max / sizzles.length;
     }
 
     public int getZIndex() {
@@ -330,11 +332,11 @@ public class Player extends Linkable {
     public void addToLevel(Level<?> l) {
 
     }
-    
+
     public float totalMileage() {
         return mileage;
     }
-    
+
     public boolean isStunned() {
         return manager.currentState().isNamed(PlayerState.STUNNED);
     }
@@ -343,27 +345,26 @@ public class Player extends Linkable {
         return Roles.PLAYER.ordinal();
     }
 
-    public void setSmokeCount(int count){
-//    	smoky.changeCount(count);
+    public void setSmokeCount(int count) {
+        // smoky.changeCount(count);
     }
-    
-    public int getSmokeCount(){
-//    	return smoky.getCount();
+
+    public int getSmokeCount() {
+        // return smoky.getCount();
         return 0;
     }
-    
+
     public void onCollision(Entity obstacle) {
         manager.onCollision(obstacle);
         if (obstacle.getRole() == Roles.OBSTACLE.ordinal()) {
             Repelable b = (Repelable) obstacle;
             b.repel(this);
         }
-        /* TODO: determine if we want the chest to be an obstacle.
-        if (obstacle.getRole() == Roles.TREASURE.ordinal()) {
-            Repelable b = (Repelable) obstacle;
-            b.repel(this);
-        }
-        */
+        /*
+         * TODO: determine if we want the chest to be an obstacle. if
+         * (obstacle.getRole() == Roles.TREASURE.ordinal()) { Repelable b =
+         * (Repelable) obstacle; b.repel(this); }
+         */
     }
 
     public void removeFromLevel(Level<?> l) {
@@ -376,24 +377,24 @@ public class Player extends Linkable {
     }
 
     public void render(StateBasedGame game, Graphics g) {
-        if (speed > MAX_SPEED - .4) {            
+        if (speed > MAX_SPEED - .4) {
             smoky.animate(g);
         }
         manager.render(game, g);
-        sizzle(g);
         smoky.animate(g);
-        if(sparkling){
-        	ghost.animate(g);
+        if (sparkling) {
+            ghost.animate(g);
         }
     }
 
     public void update(StateBasedGame game, int delta) {
         manager.update(game, delta);
         smoky.update(delta);
-        for(int i =0;i<sizzles.length;i++)sizzles[i].update(delta);
-        
-        if(sparkling){
-        	ghost.update(delta);
+        for (int i = 0; i < sizzles.length; i++)
+            sizzles[i].update(delta);
+
+        if (sparkling) {
+            ghost.update(delta);
         }
     }
 
