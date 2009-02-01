@@ -23,7 +23,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
     public static final float BASE_DAMAGE = 0.02f;
     public static final float BASE_EXPONENT = 1.0005f;
     public static final float GOLD_SCORE_MULTIPLIER = 40;
-    public static final float HEALTH_MULTIPLIER = 1f;
+    public static final float HEALTH_MULTIPLIER = 2f;
     public static final float BAR_MAX = 40f;
     public static final float BASE_RECHARGE = BAR_MAX / 4000f; // max / 2 * sec
     public static final float BONUS_SCALE = 1.5f;
@@ -38,6 +38,8 @@ public class MeterControl implements ControlSlice, MushroomCounter {
     private int totalTimeInSun;
     private static Image front, back, danger, current;
     private int timeInSun;
+    //bonus life
+    private float bonusMeter;
     private int dangerTimer;
 
     static {
@@ -98,13 +100,16 @@ public class MeterControl implements ControlSlice, MushroomCounter {
             // listener.fire(this);
             target.stun();
         }
-        if (value > BAR_MAX) {
+        System.out.println(value);
+        if (value >= BAR_MAX&&bonusMeter<1) {
+        	System.out.println("wowza");
             // not sure why this isn't player specific right now. It wil be form
             // now on.
             // TODO: if this shold go somewhere else tell me!
             target.setSpeed(Player.MAX_SPEED * BONUS_SCALE);
             target.sparkle();
-        } else {
+            bonusMeter = BAR_MAX/35;
+        } if(bonusMeter<1) {
             target.unsparkle();
             if (target.getSmokeCount() < timeInSun) {
                 target.setSpeed((float) Math.max(0, value / BAR_MAX)
@@ -116,6 +121,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
         // int scale = 60;
         if (target != null
                 && target.getLuminosity() > MasterState.SHADOW_THRESHOLD) {
+        	
             decrement(delta);
             // not sure why this isn't player specific right now. It wil be form
             // now on.
@@ -174,7 +180,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
         if (value < 0) {
             value = 0;
         }
-        if (value > BAR_MAX) {
+        if ((int)value > BAR_MAX) {
             scorecard.add(1);
             value--;
         }
@@ -195,6 +201,8 @@ public class MeterControl implements ControlSlice, MushroomCounter {
         } else if (timeInSun > 1800) {
             damage *= 2;
         }
+        bonusMeter -= damage;
+        if(bonusMeter<1)
         value -= damage;
         clamp();
     }
