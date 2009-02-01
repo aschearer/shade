@@ -50,8 +50,8 @@ public class Basket extends Linkable {
     public void onCollision(Entity obstacle) {
         if (obstacle.getRole() == Roles.PICKED_MUSHROOM.ordinal()) {
             Mushroom m = (Mushroom) obstacle;
-            m.detach();
             notifyCounters(m);
+            m.detach();
         }
         if(obstacle.getRole() == Roles.TREASURE.ordinal()){
             Mushroom m = (Mushroom) obstacle;

@@ -35,7 +35,6 @@ public class CollectedShroom implements State {
     public void onCollision(Entity obstacle) {
         if (obstacle.getRole() == Roles.BASKET.ordinal()) {
             Mushroom.collected.play();
-            shroom.kill();
             killed = true;
         }
         if (obstacle.getRole() == Roles.OBSTACLE.ordinal()) {
@@ -57,6 +56,7 @@ public class CollectedShroom implements State {
 
     public void update(StateBasedGame game, int delta) {
         if (killed && shroom.prev == null) {
+            shroom.kill();
             shroom.detach();
             return;
         }

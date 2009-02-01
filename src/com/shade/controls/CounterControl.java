@@ -24,11 +24,13 @@ public class CounterControl implements MushroomCounter, Animatable {
     private Image sprite;
     private TrueTypeFont font;
     private ScoreControl scorecard;
+    private int multiplier; // more points for chains
 
     public CounterControl(float x, float y, Image s, TrueTypeFont f) {
         this.x = x;
         this.y = y;
         sprite = s;
+        multiplier = 1;
         font = f;
     }
 
@@ -41,7 +43,7 @@ public class CounterControl implements MushroomCounter, Animatable {
 			//WHEEE HACK! TODO: KILL HACK!
 			scorecard.add(scorecard.getLevelScore());
 		} else {
-	        scorecard.add(MUSHROOM_SCORE);
+	        scorecard.add(MUSHROOM_SCORE * multiplier);
 	        int increment = 1;
 	        if (shroomie.isGolden()) {
 	            goldMushrooms++;
@@ -54,6 +56,7 @@ public class CounterControl implements MushroomCounter, Animatable {
 	                countDown = 0;
 	            }
 	        }
+	        multiplier = (shroomie.next == null) ? 1 : multiplier + 1;
 		}
     }
 
@@ -72,6 +75,7 @@ public class CounterControl implements MushroomCounter, Animatable {
         countDown = par;
         totalCount = 0;
         goldMushrooms = 0;
+        multiplier = 1;
     }
     
     public boolean parWasMet() {

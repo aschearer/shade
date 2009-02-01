@@ -215,11 +215,11 @@ public class MeterControl implements ControlSlice, MushroomCounter {
         // TODO: why is this so much casting?
         // TODO: figure out how we SHOULD handle this issue. Mock players are
         // the devil.
-        try {
-            Player p = (Player) target;
-            p.setSmokeCount(0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // try {
+        // Player p = (Player) target;
+        // p.setSmokeCount(0);
+        // } catch (Exception e) {
+        // e.printStackTrace();
+        //        }
     }
 }

@@ -186,6 +186,12 @@ public class InGameState extends BasicGameState {
             drawCentered(container, "Paused (p)");
         }
         resource.get("trim").draw();
+        
+//        for (int i = 0; i < 8; i++) {
+//            for (int j = 0; j < 6; j++) {
+//                g.drawRect(i * 100, j * 100, 100, 100);
+//            }
+//        }
 
 //        if (container.getInput().isKeyPressed(Input.KEY_N)) {
 //            nextLevel();
