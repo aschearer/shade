@@ -19,6 +19,7 @@ public class CounterControl implements MushroomCounter, Animatable {
     private static final int X_OFFSET = 10;
     private static final int Y_OFFSET = 10;
     private static final int MUSHROOM_SCORE = 20;
+    private static final int GOLD_MUSHROOM_SCORE = 3 * MUSHROOM_SCORE;
 
     // TODO: multiplier or lotsa points?
     public static final int TREASURE_SCORE = 1000;
@@ -57,12 +58,15 @@ public class CounterControl implements MushroomCounter, Animatable {
             // WHEEE HACK! TODO: KILL HACK!
             scorecard.add(scorecard.getLevelScore());
         } else {
-            scorecard.add(MUSHROOM_SCORE * multiplier);
-            createBubble(MUSHROOM_SCORE * multiplier);
             int increment = 1;
             if (shroomie.isGolden()) {
                 goldMushrooms++;
                 increment += 3;
+                scorecard.add(GOLD_MUSHROOM_SCORE * multiplier);
+                createBubble(shroomie, GOLD_MUSHROOM_SCORE * multiplier);
+            } else {
+                scorecard.add(MUSHROOM_SCORE * multiplier);
+                createBubble(shroomie, MUSHROOM_SCORE * multiplier);
             }
             totalCount += increment;
             if (countDown > 0) {
@@ -75,9 +79,15 @@ public class CounterControl implements MushroomCounter, Animatable {
         }
     }
 
-    private void createBubble(int score) {
+    private void createBubble(Mushroom shroomie, int score) {
         float x = basket.getX() + basket.getWidth() - 5;
         float y = basket.getY();
+        
+        if (shroomie.isGolden()) {
+            score += shroomie.getValue() * MeterControl.GOLD_SCORE_MULTIPLIER;
+        } else {
+            score += shroomie.getValue() * MeterControl.SCORE_MULTIPLIER;
+        }
         
         x += bubbles.size() * 5;
         bubbles.add(new ScoreBubble(x, y, score));

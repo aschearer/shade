@@ -23,6 +23,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
     public static final float BASE_DAMAGE = 0.02f;
     public static final float BASE_EXPONENT = 1.0005f;
     public static final float GOLD_SCORE_MULTIPLIER = 40;
+    public static final float SCORE_MULTIPLIER = 10;
     public static final float HEALTH_MULTIPLIER = 1f;
     public static final float BAR_MAX = 40f;
     public static final float BASE_RECHARGE = BAR_MAX / 4000f; // max / 2 * sec
@@ -38,12 +39,13 @@ public class MeterControl implements ControlSlice, MushroomCounter {
     private float totalTimeInSun;
     private static Image front, back, danger, current;
     private int timeInSun;
-    //bonus life
+    // bonus life
     private float bonusMeter;
     private int dangerTimer;
-    
-    //metrics - we should get rid of these later
+
+    // metrics - we should get rid of these later
     private float totalTimeInShade, totalTimeStanding, totalTimeRunning;
+    private int multiplier;
 
     static {
         try {
@@ -61,6 +63,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
         value = 0;
         totalAmountToAdd = 0;
         rateOfChange = 1;
+        multiplier = 1;
         initResources();
         current = back;
     }
@@ -91,12 +94,19 @@ public class MeterControl implements ControlSlice, MushroomCounter {
     }
 
     public void update(StateBasedGame game, int delta) {
-    	/**
-    	 * TODO: DELETE THIS LATER.
-    	 * 
-    	 */
-    	if(!isMoving(target))totalTimeStanding +=delta;
-    	else totalTimeRunning+=delta;
+        if (bonusMeter > 0) {
+            scorecard.add(1);
+            bonusMeter--;
+        }
+        
+        /**
+         * TODO: DELETE THIS LATER.
+         * 
+         */
+        if (!isMoving(target))
+            totalTimeStanding += delta;
+        else
+            totalTimeRunning += delta;
         if (target.isStunned()) {
             if (value < BAR_MAX / 2) {
                 value += BASE_RECHARGE * delta;
@@ -109,28 +119,28 @@ public class MeterControl implements ControlSlice, MushroomCounter {
             // listener.fire(this);
             target.stun();
         }
-       // System.out.println(value);
-        if (value >= BAR_MAX&&bonusMeter<1) {
-        //	System.out.println("wowza");
-            // not sure why this isn't player specific right now. It wil be form
-            // now on.
-            // TODO: if this shold go somewhere else tell me!
-            target.setSpeed(Player.MAX_SPEED * BONUS_SCALE);
-            target.sparkle();
-            bonusMeter = BAR_MAX/35;
-        } if(bonusMeter<1) {
-            target.unsparkle();
-            if (target.getSmokeCount() < timeInSun) {
-                target.setSpeed((float) Math.max(0, value / BAR_MAX)
-                        * (Player.MAX_SPEED - Player.MIN_SPEED)
-                        + Player.MIN_SPEED);
-            }
-        }
+        // System.out.println(value);
+        // if (value >= BAR_MAX&&bonusMeter<1) {
+        // // System.out.println("wowza");
+        // // not sure why this isn't player specific right now. It wil be form
+        // // now on.
+        // // TODO: if this shold go somewhere else tell me!
+        // target.setSpeed(Player.MAX_SPEED * BONUS_SCALE);
+        // target.sparkle();
+        // bonusMeter = BAR_MAX/35;
+        // } if(bonusMeter<1) {
+        // target.unsparkle();
+        // if (target.getSmokeCount() < timeInSun) {
+        // target.setSpeed((float) Math.max(0, value / BAR_MAX)
+        // * (Player.MAX_SPEED - Player.MIN_SPEED)
+        // + Player.MIN_SPEED);
+        // }
+        // }
         // TODO: move this somwhere
         // int scale = 60;
         if (target != null
                 && target.getLuminosity() > MasterState.SHADOW_THRESHOLD) {
-        	
+
             decrement(delta);
             // not sure why this isn't player specific right now. It wil be form
             // now on.
@@ -141,7 +151,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
 
         } else if (value < BAR_MAX / 2 && !isMoving(target)) {
             timeInSun = 0;
-            totalTimeInShade +=delta;
+            totalTimeInShade += delta;
             value += BASE_DAMAGE;
             // timeInSun = Math.max(timeInSun - delta, 0);
             // if (target.getXVelocity() + target.getXVelocity() == 0)
@@ -184,21 +194,25 @@ public class MeterControl implements ControlSlice, MushroomCounter {
         if (value < 0) {
             value = 0;
         }
-        if ((int)value > BAR_MAX) {
-            scorecard.add(1);
-            value--;
+        if ((int) value > BAR_MAX) {
+            bonusMeter += value - BAR_MAX;
+            value = BAR_MAX;
         }
     }
 
     private void valueMushroom(Mushroom shroomie) {
-        totalAmountToAdd += shroomie.getValue() * HEALTH_MULTIPLIER;
+        totalAmountToAdd += shroomie.getValue() * HEALTH_MULTIPLIER
+                * multiplier;
         if (shroomie.isGolden()) {
-            scorecard.add(shroomie.getValue() * GOLD_SCORE_MULTIPLIER);
+            scorecard.add(shroomie.getValue() * GOLD_SCORE_MULTIPLIER * multiplier);
+        } else {
+            scorecard.add(shroomie.getValue() * SCORE_MULTIPLIER * multiplier);
         }
+        multiplier = (shroomie.next == null) ? 1 : multiplier + 1;
     }
 
     private void decrement(int delta) {
-    	totalTimeInSun+=delta;
+        totalTimeInSun += delta;
         float damage = BASE_DAMAGE;
         timeInSun += delta;
         if (timeInSun > 3000) {
@@ -207,8 +221,8 @@ public class MeterControl implements ControlSlice, MushroomCounter {
             damage *= 2;
         }
         bonusMeter -= damage;
-        if(bonusMeter<1)
-        value -= damage;
+        if (bonusMeter < 1)
+            value -= damage;
         clamp();
     }
 
@@ -217,17 +231,19 @@ public class MeterControl implements ControlSlice, MushroomCounter {
     }
 
     public int totalTimeInSun() {
-        return ((int)totalTimeInSun / 1000);
+        return ((int) totalTimeInSun / 1000);
     }
-    
+
     /**
      * test method TODO: DELETE
      */
-    public String playerMetrics(){
-    	float totalTime = totalTimeInSun + totalTimeInShade;
-    	float totalruntime = totalTimeRunning+totalTimeStanding;
-    	return "Time in Sun: "+totalTimeInSun/totalTime+"\n Time in Shadow: "+totalTimeInShade/totalTime+"\n"
-    		+"Total time running "+totalTimeRunning/totalruntime+"\n Total time standing: "+totalTimeStanding/totalruntime;
+    public String playerMetrics() {
+        float totalTime = totalTimeInSun + totalTimeInShade;
+        float totalruntime = totalTimeRunning + totalTimeStanding;
+        return "Time in Sun: " + totalTimeInSun / totalTime
+                + "\n Time in Shadow: " + totalTimeInShade / totalTime + "\n"
+                + "Total time running " + totalTimeRunning / totalruntime
+                + "\n Total time standing: " + totalTimeStanding / totalruntime;
     }
 
     public void reset() {
@@ -236,6 +252,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
         rateOfChange = 1;
         totalDecrement = 0;
         totalTimeInSun = 0;
+        multiplier = 1;
         // TODO: why is this so much casting?
         // TODO: figure out how we SHOULD handle this issue. Mock players are
         // the devil.
@@ -244,6 +261,6 @@ public class MeterControl implements ControlSlice, MushroomCounter {
         // p.setSmokeCount(0);
         // } catch (Exception e) {
         // e.printStackTrace();
-        //        }
+        // }
     }
 }

@@ -119,9 +119,7 @@ public class Player extends Linkable {
         }
 
         public void enter() {
-            for (Sizzle s : sizzles) {
-                s.setIntensity(0);
-            }
+            
         }
 
         public int getRole() {
