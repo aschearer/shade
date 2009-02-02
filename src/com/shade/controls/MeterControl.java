@@ -128,16 +128,11 @@ public class MeterControl implements ControlSlice, MushroomCounter {
         }
         // TODO: move this somwhere
         // int scale = 60;
+        //System.out.println(target.getLuminosity());
         if (target != null
-                && target.getLuminosity() > MasterState.SHADOW_THRESHOLD) {
+                && target.getLuminosity() > MasterState.SHADOW_THRESHOLD*8) {
         	
             decrement(delta);
-            // not sure why this isn't player specific right now. It wil be form
-            // now on.
-            // TODO: if this shold go somewhere else tell me!
-            // if(target.getSmokeCount()*scale<timeInSun){
-            // //p.setSmokeCount((int)Math.pow(1.12,timeInSun/scale)-1);
-            // }
 
         } else if (value < BAR_MAX / 2 && !isMoving(target)) {
             timeInSun = 0;
@@ -206,6 +201,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
         } else if (timeInSun > 1800) {
             damage *= 2;
         }
+        damage = damage*target.getLuminosity()/8;
         bonusMeter -= damage;
         if(bonusMeter<1)
         value -= damage;

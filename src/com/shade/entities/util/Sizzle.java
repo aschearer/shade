@@ -56,11 +56,11 @@ public class Sizzle {
 	public void animate(Graphics g) {
 		float posx = origin.getXCenter()-1.5f + x;// +origin.getWidth()/2;//-origin.getWidth()/2+x;
 		float posy = origin.getYCenter() + y;// -origin.getHeight()/2+y;
-		intensity = g.getPixel((int) posx-x/5, (int) posy-2-y/5).a;
+		intensity = g.getPixel((int) posx-x/5, (int) posy+1-y/5).a;
 		// TODO: YAY OPENGL CALLS
 		if (timeInSun>0) {
 			float twitch = 5;
-			if(timeInSun%50<5){
+			if(timeInSun%50<10){
 				twitchx = twitch*((float)Math.random()*0.5f-1);
 				twitchy = twitch*((float)Math.random()*0.5f-1);
 			}
@@ -71,10 +71,12 @@ public class Sizzle {
 			GL11.glAlphaFunc(GL11.GL_GREATER, 0.95f);
 			GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 			g.setColor(Color.red);
-			//g.fillOval((int) posx-x/5, (int) posy-2-y/5,5,5);
+			g.fillOval((int) posx-x/5, (int) posy-2-y/5,5,5);
 		}
 		else {
-			timeInSun = 0;
+			timeInSun = 0;g.setColor(Color.red);
+			g.setColor(Color.blue);
+			g.fillOval((int) posx-x/5, (int) posy-2-y/5,5,5);
 		}
 	}
 

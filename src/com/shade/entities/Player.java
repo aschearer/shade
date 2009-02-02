@@ -67,8 +67,8 @@ public class Player extends Linkable {
     public void initSizzles() {
         sizzles = new Sizzle[8];
         for (int i = 0; i < sizzles.length; i++) {
-            int x = (int) (Math.cos(Math.PI * 2 * i / 8) * getWidth() / 3);
-            int y = (int) (Math.sin(Math.PI * 2 * i / 8) * getHeight() / 3);
+            int x = (int) (Math.cos(Math.PI * 2 * i / 8) * getWidth() *2/5);
+            int y = (int) (Math.sin(Math.PI * 2 * i / 8) * getHeight() *2/5);
             try {
                 sizzles[i] = new Sizzle(this, x, y);
             } catch (Exception e) {
@@ -318,7 +318,7 @@ public class Player extends Linkable {
         for (int i = 0; i < sizzles.length; i++) {
             max += sizzles[i].getIntensity();
         }
-        return invincibleTimer > 0 ? 0 : max / sizzles.length;
+        return invincibleTimer > 0 ? 0 : max;
     }
 
     public int getZIndex() {
