@@ -23,6 +23,7 @@ public class Sizzle {
 	private Animation sizz;
 	private int timer, timeInSun;
 	private float intensity;
+	private final float twitch = 5;
 
 	public Sizzle(Body b, int x, int y) throws SlickException {
 		timer = 0;
@@ -33,6 +34,8 @@ public class Sizzle {
 		sizz = new Animation(sparkle, 100);
 		sizz.setPingPong(true);
 		intensity = 0;
+		twitchx = twitch*((float)Math.random()*0.5f-1);
+		twitchy = twitch*((float)Math.random()*0.5f-1);
 	}
 
 	public void update(int delta) {
@@ -59,7 +62,6 @@ public class Sizzle {
 		intensity = g.getPixel((int) posx-x/5, (int) posy+1-y/5).a;
 		// TODO: YAY OPENGL CALLS
 		if (timeInSun>0) {
-			float twitch = 5;
 			if(timeInSun%50<10){
 				twitchx = twitch*((float)Math.random()*0.5f-1);
 				twitchy = twitch*((float)Math.random()*0.5f-1);
@@ -71,12 +73,12 @@ public class Sizzle {
 			GL11.glAlphaFunc(GL11.GL_GREATER, 0.95f);
 			GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 			g.setColor(Color.red);
-			g.fillOval((int) posx-x/5, (int) posy-2-y/5,5,5);
+			//g.fillOval((int) posx-x/5, (int) posy-2-y/5,5,5);
 		}
 		else {
 			timeInSun = 0;g.setColor(Color.red);
 			g.setColor(Color.blue);
-			g.fillOval((int) posx-x/5, (int) posy-2-y/5,5,5);
+			//g.fillOval((int) posx-x/5, (int) posy-2-y/5,5,5);
 		}
 	}
 

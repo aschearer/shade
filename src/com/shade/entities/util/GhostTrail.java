@@ -25,7 +25,7 @@ public class GhostTrail {
 	public GhostTrail(Body b, String source) throws SlickException {
 		timer = 0;
 		origin = b;
-		ghosties = new Ghost[10];
+		ghosties = new Ghost[4];
 		for (int i = 0; i < ghosties.length; i++) {
 			ghosties[i] = new Ghost(this, source);
 		}
@@ -33,13 +33,11 @@ public class GhostTrail {
 
 	public void update(int delta) {
 		timer += delta;
-		for (int i = 0; i < ghosties.length; i++) {
-			if (timer > Ghost.GHOST_LIFESPAN * i / ghosties.length) {
+		ghosties[0].refresh(getOriginX(), getOriginY());
+		for (int i = ghosties.length-1; i>0; i--) {
 				ghosties[i].update(delta);
-
-				if (ghosties[i].timer > Ghost.GHOST_LIFESPAN)
-					ghosties[i].refresh(getOriginX(), getOriginY());
-			}
+				if(ghosties[i].timer>Ghost.GHOST_LIFESPAN)
+				ghosties[i].refresh(ghosties[i-1].x, ghosties[i-1].y);
 		}
 
 		// System.out.println("mrr?");
@@ -55,8 +53,9 @@ public class GhostTrail {
 
 	public void animate(Graphics g) {
 		// TODO: YAY OPENGL CALLS
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_DST_ALPHA);
-		for (int i = 0; i < ghosties.length; i++) {
+		GL11.glAlphaFunc(GL11.GL_GREATER, 0.01f);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		for (int i = ghosties.length-1; i > 0; i--) {
 			ghosties[i].draw();
 		}
 		GL11.glAlphaFunc(GL11.GL_GREATER, 0.95f);
@@ -65,7 +64,7 @@ public class GhostTrail {
 	}
 
 	private class Ghost {
-		public static final int GHOST_LIFESPAN = 300;
+		public static final int GHOST_LIFESPAN = 50;
 		public static final float MAX_SIZE = 1.1f;
 		float x;
 		float y;
@@ -84,7 +83,7 @@ public class GhostTrail {
 		}
 
 		public void draw() {
-			image.draw(x-image.getWidth()/2*alpha, y-image.getHeight()/2*alpha,alpha);
+			image.draw(x-image.getWidth()/2, y-image.getHeight()/2, new Color(0.3f,0.3f,0.3f,alpha));
 		}
 
 		public void update(int delta) {

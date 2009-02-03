@@ -270,7 +270,7 @@ public class InGameState extends BasicGameState {
         });
 
         Image c = resource.get("counter");
-        counter = new CounterControl(140, 520, c, master.jekyllLarge);
+        counter = new CounterControl(140, 520, c, master.jekyllLarge, master.jekyllMedium);
 
         master.scorecard = new ScoreControl(10, 10, master.jekyllLarge);
         meter.pass(master.scorecard);

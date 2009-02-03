@@ -33,7 +33,7 @@ public class Sparkle {
 	
 	public void draw(){
 		if(x*y!=1&&time>startTime){
-		image.draw(x-image.getWidth()/2*scale, y-image.getHeight()/2*scale, scale);
+		image.draw(x-image.getWidth()/2*scale, y-image.getHeight()/2*scale);
 		}
 			
 	}

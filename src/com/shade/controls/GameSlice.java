@@ -129,6 +129,9 @@ public class GameSlice {
             Basket b = (Basket) o;
             b.add(counter);
         }
+        if (counter instanceof CounterControl) {
+            ((CounterControl) counter).track(baskets[0]);
+        }
     }
 
     public void killPlayer() {
