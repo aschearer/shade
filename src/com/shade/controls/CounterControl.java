@@ -83,11 +83,11 @@ public class CounterControl implements MushroomCounter, Animatable {
         float x = basket.getX() + basket.getWidth() - 5;
         float y = basket.getY();
         
-        if (shroomie.isGolden()) {
-            score += shroomie.getValue() * MeterControl.GOLD_SCORE_MULTIPLIER;
-        } else {
-            score += shroomie.getValue() * MeterControl.SCORE_MULTIPLIER;
-        }
+//        if (shroomie.isGolden()) {
+//            score += shroomie.getValue() * MeterControl.GOLD_SCORE_MULTIPLIER;
+//        } else {
+//            score += shroomie.getValue() * MeterControl.SCORE_MULTIPLIER;
+//        }
         
         x += bubbles.size() * 5;
         bubbles.add(new ScoreBubble(x, y, score));
