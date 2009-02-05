@@ -27,7 +27,7 @@ import com.shade.lighting.LuminousEntity;
 public class Player extends Linkable {
 
 	public static final int INVINCIBLE_START = 3000;
-	public static final float MIN_SPEED = 2.2f;
+	public static final float MIN_SPEED = 2.4f;
 	public static final float MAX_SPEED = 3.6f;
 	public static final float INITIAL_SPEED = MAX_SPEED / 2 + MIN_SPEED / 2;
 	private static final int MUSHROOM_LIMIT = 3;
