@@ -32,9 +32,9 @@ import com.shade.util.ResourceManager;
 public class RecapState extends BasicGameState {
 
     /* Hypothetical top score. */
-    private static final int MAX_LEVEL_SCORE = 3000;
-    private static final int MAX_LEVEL_COUNT = 80;
-    private static final int MAX_GOLDEN_COUNT = 10;
+    private static final int MAX_LEVEL_SCORE = 8000;
+    private static final int MAX_LEVEL_COUNT = 50;
+    private static final int MAX_GOLDEN_COUNT = 6;
     private static final String PASS_TEXT = "Level Clear";
     private static final String FAIL_TEXT = "Level Failed";
 
@@ -154,7 +154,8 @@ public class RecapState extends BasicGameState {
     }
 
     private void renderInstructionStep() {
-        master.jekyllXSmall.drawString(18, 495, (1 + index) + " of 2");
+        int num = (par) ? 2 : 1;
+        master.jekyllXSmall.drawString(18, 495, (1 + index) + " of " + num);
     }
 
     private String calculateTan() {
