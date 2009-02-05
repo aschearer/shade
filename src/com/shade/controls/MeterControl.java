@@ -107,6 +107,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
             totalTimeStanding += delta;
         else
             totalTimeRunning += delta;
+        /*
         if (target.isStunned()) {
             if (value < BAR_MAX / 2) {
                 value += BASE_RECHARGE * delta;
@@ -114,10 +115,11 @@ public class MeterControl implements ControlSlice, MushroomCounter {
             totalAmountToAdd = 0;
             timeInSun = 0;
             return;
-        }
+        }*/
         if (value == 0) {
             // listener.fire(this);
             target.stun();
+            totalAmountToAdd = BAR_MAX/2;
         }
         // System.out.println(value);
         // if (value >= BAR_MAX&&bonusMeter<1) {

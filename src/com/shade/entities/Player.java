@@ -170,6 +170,9 @@ public class Player extends Linkable {
 			for (int i = 0; i < sizzles.length; i++)
 				sizzles[i].update(delta);
 			impeded = false;
+			if(invincibleTimer-delta<0&&invincibleTimer>0)
+				for (int i = 0; i < sizzles.length; i++)
+				sizzles[i].resetTimer();
 			if (invincibleTimer > 0) {
 				invincibleTimer -= delta;
 			}
@@ -241,7 +244,7 @@ public class Player extends Linkable {
 
 		public int getRole() {
 			// TODO Auto-generated method stub
-			return 0;
+			return PlayerState.STUNNED.ordinal();
 		}
 
 		public void onCollision(Entity obstacle) {
@@ -258,11 +261,9 @@ public class Player extends Linkable {
 		public void update(StateBasedGame game, int delta) {
 			timer += delta;
 			failmer++;
-			if (timer > 800)
-				testAndMove(game.getContainer().getInput(), delta);
-			testAndWrap();
-			if (timer > 2000) {
+			if (timer > 800){
 				manager.enter(PlayerState.NORMAL);
+				invincibleTimer = 2000;
 			}
 		}
 
@@ -323,7 +324,7 @@ public class Player extends Linkable {
 		for (int i = 0; i < sizzles.length; i++) {
 			max += sizzles[i].getLuminosity();
 		}
-		return invincibleTimer > 0 ? 0 : max;
+		return invincibleTimer > 0 || manager.currentState().getRole()==PlayerState.STUNNED.ordinal() ? 0 : max;
 	}
 
 	public int getZIndex() {

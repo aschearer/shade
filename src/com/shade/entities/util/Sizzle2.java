@@ -98,6 +98,7 @@ public class Sizzle2 {
 	
 	public void resetTimer(){
 		timeInSun = 0;
+		sparkles.clear();
 	}
 	
 	public float[] getPoint(){

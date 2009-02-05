@@ -48,7 +48,7 @@ public class Sizzle {
 		//System.out.println("mrr?");
 	}
 
-	public float getIntensity() {
+	public float getLuminosity() {
 		return intensity;
 	}
 	

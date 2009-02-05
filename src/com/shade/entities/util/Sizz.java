@@ -1,6 +1,7 @@
 package com.shade.entities.util;
 
 import org.lwjgl.opengl.GL11;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 
@@ -33,7 +34,7 @@ public class Sizz {
 	
 	public void draw(){
 		if(x*y!=1&&time>startTime){
-		image.draw(x-image.getWidth()/2*scale, y-image.getHeight()/2*scale+scale, scale);
+		image.draw(x-image.getWidth()/2*scale, y-image.getHeight()/2*scale, scale, new Color(1f,1f,1f,(0.5f-scale)/0.75f+0.25f));
 		}
 			
 	}
