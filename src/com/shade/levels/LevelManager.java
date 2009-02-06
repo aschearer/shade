@@ -10,7 +10,7 @@ import org.newdawn.slick.SlickException;
 public class LevelManager {
 
 
-    public static final int NUM_LEVELS = 11;
+    public static final int NUM_LEVELS = 12;
     
     /* List of levels to create using reflection. */
     private String[] levels = {
@@ -23,7 +23,7 @@ public class LevelManager {
 //        "com.shade.levels.Level6",
 //        "com.shade.levels.Level7",
         "levels/level-8.xml",
-//        "com.shade.levels.Level9",
+        "levels/level-18.xml",
         "levels/level-10.xml",
         "levels/level-11.xml",
         "levels/level-12.xml",
@@ -31,6 +31,8 @@ public class LevelManager {
         "levels/level-14.xml",
         "levels/level-15.xml",
         "levels/level-16.xml"
+
+        
     };
 
   

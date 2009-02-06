@@ -35,9 +35,9 @@ public class TransparentFence extends Body implements LuminousEntity, Repelable 
     }
 
     private void initSprite(float w, float h) throws SlickException {
-        String path = "entities/fence/fence.vertical.png";
+        String path = "entities/fence/fence.transparent.vertical.png";
         if (w > h) {
-            path = "entities/fence/fence.horizontal.png";
+            path = "entities/fence/fence.transparent.horizontal.png";
         }
         sprite = new Image(path);
     }
