@@ -23,15 +23,16 @@ public class LevelManager {
 //        "com.shade.levels.Level6",
 //        "com.shade.levels.Level7",
         "levels/level-8.xml",
-//        "com.shade.levels.Level9",
+        "levels/level-18.xml",
         "levels/level-10.xml",
         "levels/level-11.xml",
         "levels/level-12.xml",
         "levels/level-13.xml",
         "levels/level-14.xml",
         "levels/level-15.xml",
-        "levels/level-16.xml",
-         "levels/level-18.xml"
+        "levels/level-16.xml"
+
+        
     };
 
   
