@@ -48,6 +48,7 @@ public class SpawningShroom implements State {
 
     public void render(StateBasedGame game, Graphics g) {
         // don't render at this stage
+//        shroom.debug(g);
     }
 
     public void update(StateBasedGame game, int delta) {

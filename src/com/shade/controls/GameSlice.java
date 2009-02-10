@@ -9,9 +9,12 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.state.StateBasedGame;
 
+import sun.security.action.GetBooleanAction;
+
 import com.crash.Body;
 import com.crash.util.CrashGeom;
 import com.shade.entities.Basket;
+import com.shade.entities.Obstacle;
 import com.shade.entities.Player;
 import com.shade.entities.Roles;
 import com.shade.entities.mushroom.Mushroom;
@@ -91,9 +94,14 @@ public class GameSlice {
     }
 
     private LuminousEntity randomEntity() {
-        LuminousEntity[] entities = model.toArray(new LuminousEntity[0]);
+        Object[] entities = model.getEntitiesByRole(Roles.OBSTACLE.ordinal());
+        int rank = (int) (Math.random() * Obstacle.maxRank);
         int i = (int) (Math.random() * entities.length);
-        return entities[i];
+        while (((Obstacle) entities[i]).rank() < rank) {
+            i = (int) (Math.random() * entities.length);
+        }
+//        System.out.println(entities[i]);
+        return (LuminousEntity) entities[i];
     }
 
     private Shape randomShadow() {

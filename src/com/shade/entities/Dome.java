@@ -15,10 +15,7 @@ import com.shade.base.Level;
 import com.shade.crash.Repelable;
 import com.shade.lighting.LuminousEntity;
 
-public class Dome extends Body implements LuminousEntity, Repelable {
-
-    private Image sprite;
-    private int height;
+public class Dome extends Obstacle {
 
     public Dome(int x, int y, int z, int d) throws SlickException {
         initShape(x, y, d);
@@ -32,10 +29,6 @@ public class Dome extends Body implements LuminousEntity, Repelable {
 
     private void initShape(int x, int y, int r) {
         shape = new Circle(x, y, r);
-    }
-
-    public void onCollision(Entity obstacle) {
-
     }
 
     public void render(StateBasedGame game, Graphics g) {
@@ -65,11 +58,7 @@ public class Dome extends Body implements LuminousEntity, Repelable {
         RoundedRectangle rr = new RoundedRectangle(getX(), getY(), r * 2, h, r);
         return rr.transform(t);
     }
-
-    public int getZIndex() {
-        return height;
-    }
-
+    
     public void repel(Body b) {
         float playerx = b.getXCenter();
         float playery = b.getYCenter();
@@ -83,30 +72,6 @@ public class Dome extends Body implements LuminousEntity, Repelable {
         float x_move = (float) (Math.cos(angle) * move);
         float y_move = (float) (Math.sin(angle) * move);
         b.nudge(x_move, y_move);
-    }
-
-    public float getLuminosity() {
-        return 0; // not important for domes
-    }
-
-    public void setLuminosity(float l) {
-        // not important for domes
-    }
-
-    public void addToLevel(Level<?> l) {
-        // not important for domes
-    }
-
-    public int getRole() {
-        return Roles.OBSTACLE.ordinal();
-    }
-
-    public void removeFromLevel(Level<?> l) {
-        // not important for domes
-    }
-
-    public int compareTo(LuminousEntity l) {
-        return getZIndex() - l.getZIndex();
     }
 
 }

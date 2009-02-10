@@ -1,6 +1,5 @@
 package com.shade.entities;
 
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Polygon;
@@ -11,22 +10,16 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.crash.Body;
-import com.shade.base.Entity;
-import com.shade.base.Level;
-import com.shade.crash.Repelable;
-import com.shade.lighting.LuminousEntity;
 import com.shade.states.MasterState;
 import com.shade.util.Geom;
 
-public class Slider extends Body implements LuminousEntity, Repelable {
+public class Slider extends Obstacle {
 
     private enum ActiveDirection {
         UP, RIGHT, DOWN, LEFT
     };
 
-    private int height;
     private float velocity;
-    private Image sprite;
     private ActiveDirection direction;
     private int timer;
 
@@ -91,15 +84,6 @@ public class Slider extends Body implements LuminousEntity, Repelable {
         return shade;
     }
 
-    public void onCollision(Entity obstacle) {
-
-    }
-
-    public void render(StateBasedGame game, Graphics g) {
-        sprite.draw(getX(), getY(), getWidth(), getHeight());
-        // g.draw(shape);
-    }
-
     public void update(StateBasedGame game, int delta) {
         timer += delta;
         if (timer > MasterState.SECONDS_OF_DAYLIGHT / 2) {
@@ -117,10 +101,6 @@ public class Slider extends Body implements LuminousEntity, Repelable {
         if (direction == ActiveDirection.LEFT) {
             nudge(-(velocity * delta), 0);
         }
-    }
-
-    public int getZIndex() {
-        return height;
     }
 
     public void repel(Body b) {
@@ -154,30 +134,4 @@ public class Slider extends Body implements LuminousEntity, Repelable {
         }
 
     }
-
-    public float getLuminosity() {
-        // not important for a fence
-        return 0;
-    }
-
-    public void setLuminosity(float l) {
-        // not important for a fence
-    }
-
-    public void addToLevel(Level<?> l) {
-
-    }
-
-    public int getRole() {
-        return Roles.OBSTACLE.ordinal();
-    }
-
-    public void removeFromLevel(Level<?> l) {
-        // not important for a fence
-    }
-
-    public int compareTo(LuminousEntity l) {
-        return getZIndex() - l.getZIndex();
-    }
-
 }

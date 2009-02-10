@@ -1,5 +1,6 @@
 package com.shade.entities.mushroom;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
@@ -23,7 +24,7 @@ public class Mushroom extends Linkable {
     protected static final float SPEED = 3f;
 
     private static final float RADIUS = 3f;
-    private static final float SCALE_INCREMENT = .01f;
+    private static final float SCALE_INCREMENT = .02f;
     private static final float MAX_SCALE = 3.5f;
     private static final float MIN_SCALE = 2f;
     private Sparkler sparky;
@@ -219,5 +220,15 @@ public class Mushroom extends Linkable {
 
     public int compareTo(LuminousEntity l) {
         return getZIndex() - l.getZIndex();
+    }
+
+    public void debug(Graphics g) {
+        if (type == Types.RARE) {
+            g.setColor(Color.yellow);
+            g.fill(shape);
+            g.setColor(Color.white);
+        } else {
+            g.draw(shape);
+        }
     }
 }

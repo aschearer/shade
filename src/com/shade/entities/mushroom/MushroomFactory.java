@@ -15,13 +15,15 @@ public class MushroomFactory {
     /**
      * Corresponds to the Mushroom.Type enum.
      */
-    private static final double[] distribution = { 0, .965, 0, .35 };
+    private static final double[] distribution = { 0, .95, 0, .5 };
     private static final double PROPENSITY = .002;
     private static final float BASKET_THRESHOLD = 10000;
+    private static final float GOLD_BASKET_THRESHOLD = 80000;
 
     /* Minimum number of mushrooms alive at any one time. */
     private int floor;
     private double propensity;
+    
     /*
      * List of existing mushrooms. Mushrooms should remove themselves when
      * removed from the level.
@@ -55,11 +57,21 @@ public class MushroomFactory {
         try {
             float x = randomX(c, shadow);
             float y = randomY(c, shadow);
-            if (x == -1 || y == -1
-                    || Geom.distance2(x, y, b.getXCenter(), b.getYCenter()) < BASKET_THRESHOLD) {
-                return null;
-            }
             int t = randomType();
+            switch (t) {
+                case 3:
+                    if ( x == -1 || y == -1
+                            || Geom.distance2(x, y, b.getXCenter(), b.getYCenter()) < GOLD_BASKET_THRESHOLD) {
+                        return null;
+                    }
+                    break;
+                default:
+                    if (x == -1 || y == -1
+                            || Geom.distance2(x, y, b.getXCenter(), b.getYCenter()) < BASKET_THRESHOLD) {
+                        return null;
+                    }
+                    
+            }
             Mushroom m = new Mushroom(x, y, getType(t), this);
             mushrooms.add(m);
             return m;
@@ -73,7 +85,7 @@ public class MushroomFactory {
         float x = -1;
         int numTries = 0;
         while ((x < 0 || x >= c.getWidth()) && numTries < 6) {
-            x = (float) (s.getMaxX() - s.getMinX() * Math.random() * 0.5);
+            x = (float) (s.getMaxX() - s.getMinX() * Math.random() * 0.66);
             x += s.getX();
             numTries++;
             if (numTries > 6) {
@@ -88,7 +100,7 @@ public class MushroomFactory {
         float y = -1;
         int numTries = 0;
         while ((y < 0 || y >= c.getHeight()) && numTries < 6) {
-            y = (float) (s.getMaxY() - s.getMinY() * Math.random() * 0.5);
+            y = (float) (s.getMaxY() - s.getMinY() * Math.random() * 0.66);
             y += s.getY();
             numTries++;
             if (numTries > 6) {

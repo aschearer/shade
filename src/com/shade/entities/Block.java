@@ -1,6 +1,5 @@
 package com.shade.entities;
 
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Polygon;
@@ -11,16 +10,9 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.crash.Body;
-import com.shade.base.Entity;
-import com.shade.base.Level;
-import com.shade.crash.Repelable;
-import com.shade.lighting.LuminousEntity;
 import com.shade.util.Geom;
 
-public class Block extends Body implements LuminousEntity, Repelable {
-
-    private Image sprite;
-    private int height;
+public class Block extends Obstacle {
 
     public Block(int x, int y, int z, int d) throws SlickException {
         initShape(x, y, d, d);
@@ -92,30 +84,6 @@ public class Block extends Body implements LuminousEntity, Repelable {
         return index;
     }
 
-    public float getLuminosity() {
-        return 0; // not really important for blocks...
-    }
-
-    public int getZIndex() {
-        return height;
-    }
-
-    public void setLuminosity(float l) {
-        // not really important for blocks...
-    }
-
-    public void addToLevel(Level<?> l) {
-
-    }
-
-    public int getRole() {
-        return Roles.OBSTACLE.ordinal();
-    }
-
-    public void onCollision(Entity obstacle) {
-
-    }
-
     public void repel(Body b) {
         float velx = b.getXVelocity();
         float vely = b.getYVelocity();
@@ -147,20 +115,7 @@ public class Block extends Body implements LuminousEntity, Repelable {
         }
     }
 
-    public void removeFromLevel(Level<?> l) {
-
-    }
-
-    public void render(StateBasedGame game, Graphics g) {
-        sprite.draw(getX(), getY(), getWidth(), getHeight());
-    }
-
     public void update(StateBasedGame game, int delta) {
 
     }
-
-    public int compareTo(LuminousEntity l) {
-        return getZIndex() - l.getZIndex();
-    }
-
 }

@@ -1,6 +1,5 @@
 package com.shade.entities;
 
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Polygon;
@@ -11,16 +10,9 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.crash.Body;
-import com.shade.base.Entity;
-import com.shade.base.Level;
-import com.shade.crash.Repelable;
-import com.shade.lighting.LuminousEntity;
 import com.shade.util.Geom;
 
-public class Fence extends Body implements LuminousEntity, Repelable {
-
-    private int height;
-    private Image sprite;
+public class Fence extends Obstacle {
 
     public Fence(int x, int y, int z, int r) throws SlickException {
         int w = (r == 0) ? 120 : 11;
@@ -80,22 +72,9 @@ public class Fence extends Body implements LuminousEntity, Repelable {
 
         return shade;
     }
-
-    public void onCollision(Entity obstacle) {
-
-    }
-
-    public void render(StateBasedGame game, Graphics g) {
-        sprite.draw(getX(), getY(), getWidth(), getHeight());
-        // g.draw(shape);
-    }
-
+    
     public void update(StateBasedGame game, int delta) {
 
-    }
-
-    public int getZIndex() {
-        return height;
     }
 
     public void repel(Body b) {
@@ -128,31 +107,6 @@ public class Fence extends Body implements LuminousEntity, Repelable {
             b.nudge(0, -vely);
         }
 
-    }
-
-    public float getLuminosity() {
-        // not important for a fence
-        return 0;
-    }
-
-    public void setLuminosity(float l) {
-        // not important for a fence
-    }
-
-    public void addToLevel(Level<?> l) {
-        // not important for a fence
-    }
-
-    public int getRole() {
-        return Roles.OBSTACLE.ordinal();
-    }
-
-    public void removeFromLevel(Level<?> l) {
-        // not important for a fence
-    }
-
-    public int compareTo(LuminousEntity l) {
-        return getZIndex() - l.getZIndex();
     }
 
 }

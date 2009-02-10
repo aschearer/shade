@@ -24,4 +24,5 @@ public interface Repelable {
      * @param b
      */
     public void repel(Body b);
+    
 }

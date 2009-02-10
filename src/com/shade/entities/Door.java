@@ -2,7 +2,6 @@ package com.shade.entities;
 
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.Sound;
 import org.newdawn.slick.geom.Polygon;
@@ -15,12 +14,10 @@ import org.newdawn.slick.state.StateBasedGame;
 import com.crash.Body;
 import com.shade.base.Entity;
 import com.shade.base.Level;
-import com.shade.crash.Repelable;
 import com.shade.levels.Model;
-import com.shade.lighting.LuminousEntity;
 import com.shade.util.Geom;
 
-public class Door extends Body implements LuminousEntity, Repelable {
+public class Door extends Obstacle {
 
     private enum ActiveSide {
         TOP, RIGHT, BOTTOM, LEFT
@@ -29,8 +26,6 @@ public class Door extends Body implements LuminousEntity, Repelable {
     private static Sound open;
 
     private ActiveSide softspot;
-    private int zindex;
-    private float luminosity;
     private int times, timer;
     private boolean swingOpen;
     private float x, y, width, height;
@@ -57,7 +52,7 @@ public class Door extends Body implements LuminousEntity, Repelable {
         height = h;
         initPivot(r);
         initResources(r);
-        zindex = z;
+        height = z;
     }
 
     private void initResources(int r) throws SlickException {
@@ -171,18 +166,7 @@ public class Door extends Body implements LuminousEntity, Repelable {
         return closest;
     }
 
-    public float getLuminosity() {
-        return luminosity;
-    }
-
-    public int getZIndex() {
-        return zindex;
-    }
-
-    public void setLuminosity(float l) {
-        luminosity = l;
-    }
-
+    @Override
     public void addToLevel(Level<?> l) {
         Model m = (Model) l;
         if (softspot == ActiveSide.TOP) {
@@ -199,10 +183,7 @@ public class Door extends Body implements LuminousEntity, Repelable {
         }
     }
 
-    public int getRole() {
-        return Roles.OBSTACLE.ordinal();
-    }
-
+    @Override
     public void onCollision(Entity obstacle) {
         if (obstacle.getRole() == Roles.PLAYER.ordinal() && times > 0) {
             activate();
@@ -234,12 +215,8 @@ public class Door extends Body implements LuminousEntity, Repelable {
         timer = 0;
         swingOpen = true;
     }
-
-    public void removeFromLevel(Level<?> l) {
-        // TODO Auto-generated method stub
-
-    }
-
+    
+    @Override
     public void render(StateBasedGame game, Graphics g) {
         g.rotate(xPivot, yPivot, (float) Math.toDegrees(heading));
         door.draw(x, y, width, height);
@@ -247,9 +224,6 @@ public class Door extends Body implements LuminousEntity, Repelable {
     }
 
     public void update(StateBasedGame game, int delta) {
-//        if (game.getContainer().getInput().isKeyPressed(Input.KEY_F)) {
-//            activate();
-//        }
         if (swingOpen && times < 20) {
             shape = shape.transform(Transform.createRotateTransform(
                     (float) -Math.PI / 40, xPivot, yPivot));
@@ -269,11 +243,7 @@ public class Door extends Body implements LuminousEntity, Repelable {
             times--;
         }
     }
-
-    public int compareTo(LuminousEntity o) {
-        return getZIndex() - o.getZIndex();
-    }
-
+    
     public void repel(Body b) {
         float velx = b.getXVelocity();
         float vely = b.getYVelocity();
