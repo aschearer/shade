@@ -3,7 +3,7 @@
 <Level mushrooms="5" par="20">
     <Player x="550" y="360"/>
     <Basket x="500" y="310" />
-    <Basket x="200" y="220" />
+    <Umbrella x="540" y="370" />
 
     <Dome x="405" y="90" z="12" d="35" />
     <Door x="450" y="90" z="5" facing="0" />
