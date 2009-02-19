@@ -15,10 +15,10 @@ public class MushroomFactory {
     /**
      * Corresponds to the Mushroom.Type enum.
      */
-    private static final double[] distribution = { 0, .95, 0, .5 };
+    private static final double[] distribution = { 0, .94, 0, .06 };
     private static final double PROPENSITY = .002;
     private static final float BASKET_THRESHOLD = 10000;
-    private static final float GOLD_BASKET_THRESHOLD = 80000;
+    private static final float GOLD_BASKET_THRESHOLD = 20000;
 
     /* Minimum number of mushrooms alive at any one time. */
     private int floor;

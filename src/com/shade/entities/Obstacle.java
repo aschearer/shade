@@ -17,7 +17,7 @@ abstract public class Obstacle extends Body implements LuminousEntity, Repelable
     public static int maxRank;
     
     protected Model model;
-    protected int height;
+    protected int zindex;
     protected Image sprite;
     
     private int rank = -1;
@@ -26,7 +26,8 @@ abstract public class Obstacle extends Body implements LuminousEntity, Repelable
         if (rank < 0) {
             calculateRank();
         }
-        return rank;
+        return 1;
+//        return rank;
     }
     
     private void calculateRank() {
@@ -53,7 +54,7 @@ abstract public class Obstacle extends Body implements LuminousEntity, Repelable
     }
     
     public int getZIndex() {
-        return height;
+        return zindex;
     }
     
     public float getLuminosity() {

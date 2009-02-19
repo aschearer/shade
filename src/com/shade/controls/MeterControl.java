@@ -234,14 +234,14 @@ public class MeterControl implements ControlSlice, MushroomCounter {
     /**
      * test method TODO: DELETE
      */
-    public String playerMetrics() {
-        float totalTime = totalTimeInSun + totalTimeInShade;
-        float totalruntime = totalTimeRunning + totalTimeStanding;
-        return "Time in Sun: " + totalTimeInSun / totalTime
-                + "\n Time in Shadow: " + totalTimeInShade / totalTime + "\n"
-                + "Total time running " + totalTimeRunning / totalruntime
-                + "\n Total time standing: " + totalTimeStanding / totalruntime;
-    }
+//    public String playerMetrics() {
+//        float totalTime = totalTimeInSun + totalTimeInShade;
+//        float totalruntime = totalTimeRunning + totalTimeStanding;
+//        return "Time in Sun: " + totalTimeInSun / totalTime
+//                + "\n Time in Shadow: " + totalTimeInShade / totalTime + "\n"
+//                + "Total time running " + totalTimeRunning / totalruntime
+//                + "\n Total time standing: " + totalTimeStanding / totalruntime;
+//    }
 
     public void reset() {
         value = BAR_MAX / 2;

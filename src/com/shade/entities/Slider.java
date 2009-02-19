@@ -27,7 +27,7 @@ public class Slider extends Obstacle {
         int w = (r == 1 || r == 3) ? 65 : 11;
         int h = (r == 1 || r == 3) ? 11 : 65;
         initShape(x, y, w, h);
-        height = z;
+        zindex = z;
         initSprite(r);
         direction = ActiveDirection.values()[r];
         velocity = (float) ((float) speed * (float) range / MasterState.SECONDS_OF_DAYLIGHT);
@@ -46,7 +46,7 @@ public class Slider extends Obstacle {
     }
 
     public Shape castShadow(float direction, float depth) {
-        Vector2f v = Geom.calculateVector(height * depth, direction);
+        Vector2f v = Geom.calculateVector(zindex * depth, direction);
 
         Transform t = Transform.createTranslateTransform(v.x, v.y);
         Polygon extent = (Polygon) shape.transform(t);

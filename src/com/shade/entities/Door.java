@@ -52,7 +52,7 @@ public class Door extends Obstacle {
         height = h;
         initPivot(r);
         initResources(r);
-        height = z;
+        zindex = z;
     }
 
     private void initResources(int r) throws SlickException {
@@ -168,6 +168,7 @@ public class Door extends Obstacle {
 
     @Override
     public void addToLevel(Level<?> l) {
+        super.addToLevel(l);
         Model m = (Model) l;
         if (softspot == ActiveSide.TOP) {
             m.add(new Dummy(x + width / 2, y - 20, arrow));

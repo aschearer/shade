@@ -19,7 +19,7 @@ public class Dome extends Obstacle {
 
     public Dome(int x, int y, int z, int d) throws SlickException {
         initShape(x, y, d);
-        height = z;
+        zindex = z;
         initSprite();
     }
 
@@ -49,7 +49,7 @@ public class Dome extends Obstacle {
      */
     public Shape castShadow(float direction, float depth) {
         float r = ((Circle) shape).radius;
-        float h = height * depth * 1.6f;
+        float h = zindex * depth * 1.6f;
         float x = getXCenter();
         float y = getYCenter();
         Transform t = Transform.createRotateTransform(direction + 3.14f, x, y);

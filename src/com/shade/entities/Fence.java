@@ -18,7 +18,7 @@ public class Fence extends Obstacle {
         int w = (r == 0) ? 120 : 11;
         int h = (r == 0) ? 11 : 120;
         initShape(x, y, w, h);
-        height = z;
+        zindex = z;
         initSprite(w, h);
     }
 
@@ -35,7 +35,7 @@ public class Fence extends Obstacle {
     }
 
     public Shape castShadow(float direction, float depth) {
-        Vector2f v = Geom.calculateVector(height * depth, direction);
+        Vector2f v = Geom.calculateVector(zindex * depth, direction);
 
         Transform t = Transform.createTranslateTransform(v.x, v.y);
         Polygon extent = (Polygon) shape.transform(t);

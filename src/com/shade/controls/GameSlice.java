@@ -97,8 +97,13 @@ public class GameSlice {
         Object[] entities = model.getEntitiesByRole(Roles.OBSTACLE.ordinal());
         int rank = (int) (Math.random() * Obstacle.maxRank);
         int i = (int) (Math.random() * entities.length);
+        int counter = 0;
         while (((Obstacle) entities[i]).rank() < rank) {
             i = (int) (Math.random() * entities.length);
+            counter++;
+            if (counter % 2 == 0) {
+                rank--;
+            }
         }
 //        System.out.println(entities[i]);
         return (LuminousEntity) entities[i];

@@ -16,7 +16,7 @@ public class Block extends Obstacle {
 
     public Block(int x, int y, int z, int d) throws SlickException {
         initShape(x, y, d, d);
-        height = z;
+        zindex = z;
         initSprite();
     }
 
@@ -33,7 +33,7 @@ public class Block extends Obstacle {
      * closest and then build a new polygon from the resulting points.
      */
     public Shape castShadow(float direction, float depth) {
-        Vector2f v = Geom.calculateVector(height * depth, direction);
+        Vector2f v = Geom.calculateVector(zindex * depth, direction);
 
         Transform t = Transform.createTranslateTransform(v.x, v.y);
         Polygon extent = (Polygon) shape.transform(t);
