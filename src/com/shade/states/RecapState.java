@@ -337,7 +337,6 @@ public class RecapState extends BasicGameState {
         }
 
         public void update(StateBasedGame game, int delta) {
-            // TODO Auto-generated method stub
             
         }
         
@@ -348,7 +347,7 @@ public class RecapState extends BasicGameState {
             int y = 440;
             input = new TextField(container, master.jekyllMedium, x, y, w, h);
             input.setMaxLength(12);
-            input.setAcceptingInput(par);
+            input.setAcceptingInput(false);
             input.setFocus(par);
             input.setBorderColor(null);
 
@@ -377,6 +376,7 @@ public class RecapState extends BasicGameState {
 
         public void show(boolean b) {
             show = b;
+            input.setAcceptingInput(b && par);
         }
         
     }
