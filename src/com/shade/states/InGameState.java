@@ -142,7 +142,7 @@ public class InGameState extends BasicGameState {
     }
 
     public void exit(StateBasedGame game, int id) {
-    	System.out.println(meter.playerMetrics());
+//    	System.out.println(meter.playerMetrics());
         recordMileage();
         recordDamage();
         recordMushroomsCollected();
@@ -193,11 +193,6 @@ public class InGameState extends BasicGameState {
 //                g.drawRect(i * 100, j * 100, 100, 100);
 //            }
 //        }
-
-//        if (container.getInput().isKeyPressed(Input.KEY_N)) {
-//            nextLevel();
-//            enter(container, game);
-//        }
     }
 
     private void drawCentered(GameContainer c, String s) {
@@ -228,6 +223,12 @@ public class InGameState extends BasicGameState {
             // fade out
             exit(game, RecapState.ID);
         }
+        
+//        if (container.getInput().isKeyPressed(Input.KEY_R)) {
+//            master.control.flushControls();
+//            newGame(currentLevel);
+//            enter(container, game);
+//        }
     }
 
     public boolean parWasMet() {

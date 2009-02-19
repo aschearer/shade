@@ -4,6 +4,7 @@ import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.util.Log;
 
 import com.shade.states.MasterState;
 
@@ -31,8 +32,9 @@ public class Shade extends StateBasedGame {
             Shade s = new Shade();
             AppGameContainer c = new AppGameContainer(s, 800, 600, false);
             c.setIcons(ICONS);
-            c.setShowFPS(false);
+//            c.setShowFPS(false);
             c.setTargetFrameRate(60);
+            Log.setVerbose(true);
             c.start();
         } catch (SlickException e) {
             e.printStackTrace();

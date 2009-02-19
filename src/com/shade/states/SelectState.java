@@ -153,7 +153,6 @@ public class SelectState extends BasicGameState {
         prev.active(levels.started());
         next.active(levels.finished());
         levels.update(game, delta);
-        levels.update(game, delta);
     }
 
     @Override
@@ -222,7 +221,6 @@ public class SelectState extends BasicGameState {
             public void onClick(StateBasedGame game, Button clicked) {
                 currentLevel++;
                 levels.next();
-                levels.next();
                 master.control.load(manager.get(currentLevel));
                 master.control.killPlayer();
             }
@@ -233,7 +231,6 @@ public class SelectState extends BasicGameState {
 
             public void onPress(StateBasedGame game, int key) {
                 currentLevel++;
-                levels.next();
                 levels.next();
                 master.control.load(manager.get(currentLevel));
                 master.control.killPlayer();
@@ -246,7 +243,6 @@ public class SelectState extends BasicGameState {
             public void onClick(StateBasedGame game, Button clicked) {
                 currentLevel--;
                 levels.prev();
-                levels.prev();
                 master.control.load(manager.get(currentLevel));
                 master.control.killPlayer();
 
@@ -258,7 +254,6 @@ public class SelectState extends BasicGameState {
 
             public void onPress(StateBasedGame game, int key) {
                 currentLevel--;
-                levels.prev();
                 levels.prev();
                 master.control.load(manager.get(currentLevel));
                 master.control.killPlayer();
