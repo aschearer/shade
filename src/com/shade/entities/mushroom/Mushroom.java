@@ -133,7 +133,7 @@ public class Mushroom extends Linkable {
     }
 
     protected void shrink() {
-        scale -= SCALE_INCREMENT / 3;
+        scale -= SCALE_INCREMENT / 4;
         resize();
     }
     
