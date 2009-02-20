@@ -148,7 +148,7 @@ public class MeterControl implements ControlSlice, MushroomCounter {
         } else if (value < BAR_MAX / 2 && !isMoving(target)) {
             timeInSun = 0;
             totalTimeInShade += delta;
-            value += BASE_DAMAGE;
+            value += BASE_DAMAGE * 2;
             // timeInSun = Math.max(timeInSun - delta, 0);
             // if (target.getXVelocity() + target.getXVelocity() == 0)
             // timeInSun *= 0.8;
