@@ -31,9 +31,11 @@ public class SleepingBird implements State {
     }
 
     private void initResources() throws SlickException {
-        SpriteSheet idles = new SpriteSheet("entities/bird/fly2.png", 40, 40);
-        idling = new Animation(idles, 100);
-        idling.setAutoUpdate(false);
+        SpriteSheet idles = new SpriteSheet("entities/bird/fly.png", 40, 40);
+        idling = new Animation(false);
+        idling.addFrame(idles.getSprite(0, 0), 300);
+        idling.addFrame(idles.getSprite(1, 0), 300);
+        idling.addFrame(idles.getSprite(2, 0), 300);
         idling.setPingPong(true);
     }
 
@@ -61,8 +63,8 @@ public class SleepingBird implements State {
     }
 
     public void update(StateBasedGame game, int delta) {
-        idling.update(delta);
         bird.wake();
+        idling.update(delta);
         testTimer(delta);
     }
 
