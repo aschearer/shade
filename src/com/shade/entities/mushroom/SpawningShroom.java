@@ -22,10 +22,12 @@ public class SpawningShroom implements State {
     private Mushroom shroom;
     private int timer;
     private boolean clear;
+    private MushroomFactory factory;
     
 
-    public SpawningShroom(Mushroom mushroom) {
+    public SpawningShroom(Mushroom mushroom, MushroomFactory Factory) {
         shroom = mushroom;
+        factory = Factory;
     }
 
     public void enter() {
@@ -56,6 +58,7 @@ public class SpawningShroom implements State {
         // it was clear so spawn
         if (clear && shroom.inShadows() && timer > 100) {
             shroom.unsize();
+            factory.noteSpawn();
             shroom.manager.enter(Mushroom.States.NORMAL);
             Mushroom.spawning.play();
         }

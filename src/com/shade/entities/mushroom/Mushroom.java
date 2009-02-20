@@ -92,7 +92,7 @@ public class Mushroom extends Linkable {
 
     private void initStates() {
         manager = new StateManager();
-        manager.add(new SpawningShroom(this));
+        manager.add(new SpawningShroom(this,factory));
         manager.add(new NormalShroom(this));
         manager.add(new PickedShroom(this));
         manager.add(new CollectedShroom(this));
@@ -170,7 +170,7 @@ public class Mushroom extends Linkable {
     }
 
     public void addToLevel(Level<?> l) {
-        level = (CrashLevel) l;
+    	 level = (CrashLevel) l;
     }
 
     public void removeFromLevel(Level<?> l) {

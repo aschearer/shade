@@ -383,9 +383,9 @@ public class Player extends Linkable {
 	}
 
 	public void render(StateBasedGame game, Graphics g) {
-
+		//ghost.animate(g);
 		if (speed > MAX_SPEED - .4) {
-			smoky.animate(g);
+			//smoky.animate(g);
 		}
 		manager.render(game, g);
 		smoky.animate(g);

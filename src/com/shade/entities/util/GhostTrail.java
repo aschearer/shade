@@ -25,7 +25,7 @@ public class GhostTrail {
 	public GhostTrail(Body b, String source) throws SlickException {
 		timer = 0;
 		origin = b;
-		ghosties = new Ghost[4];
+		ghosties = new Ghost[10];
 		for (int i = 0; i < ghosties.length; i++) {
 			ghosties[i] = new Ghost(this, source);
 		}
@@ -64,8 +64,8 @@ public class GhostTrail {
 	}
 
 	private class Ghost {
-		public static final int GHOST_LIFESPAN = 50;
-		public static final float MAX_SIZE = 1.1f;
+		public static final int GHOST_LIFESPAN = 10;
+		public static final float MAX_SIZE = 1f;
 		float x;
 		float y;
 		float alpha;
@@ -83,7 +83,7 @@ public class GhostTrail {
 		}
 
 		public void draw() {
-			image.draw(x-image.getWidth()/2, y-image.getHeight()/2, new Color(0.3f,0.3f,0.3f,alpha));
+			image.draw(x-image.getWidth()/2, y-image.getHeight()/2, new Color(1f,1f,1f,alpha));
 		}
 
 		public void update(int delta) {
