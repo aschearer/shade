@@ -1,8 +1,9 @@
 <?xml version="1.0"?>
 
-<Level mushrooms="5" par="25">
+<Level mushrooms="6" par="25">
     <Player x="400" y="350"/>
     <Basket x="350" y="300" />
+    <Umbrella x="400" y="300" />
 
     <Bird x="100" y="100" speed="2" range="100" />
     <Bird x="700" y="500" speed="2" range="100" />
@@ -23,7 +24,6 @@
     <Dome x="720" y="320" z="12" d="48" />
 
     <Block x="455" y="135" z="16" d="105" />
-    <Fence x="350" y="245" z="5" facing="0" />
     <Door x="550" y="250" z="5" facing="3" />
     <Dome x="555" y="365" z="10" d="40" />
     <Door x="550" y="410" z="5" facing="1" />
