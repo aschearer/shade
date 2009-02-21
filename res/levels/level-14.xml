@@ -5,6 +5,8 @@
     <Basket x="500" y="250" />
     <Umbrella x="500" y="300" />
 
+    <Bird x="600" y="400" speed="2" range="100" />
+
     <Fence x="360" y="200" z="5" facing="0" />
     <Dome x="405" y="360" z="10" d="35" />
     <Fence x="500" y="360" z="5" facing="0" />
