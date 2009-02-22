@@ -24,6 +24,7 @@ import com.shade.controls.KeyListener;
 import com.shade.controls.SlickButton;
 import com.shade.controls.StatMeter;
 import com.shade.controls.TwoToneButton;
+import com.shade.levels.LevelManager;
 import com.shade.score.FailSafeHighScoreReader;
 import com.shade.score.FailSafeHighScoreWriter;
 import com.shade.score.HighScoreWriter;
@@ -120,7 +121,7 @@ public class RecapState extends BasicGameState {
             e.printStackTrace();
         }
     }
-    
+
     private void initScores() {
         scores = new ScoreGizmo();
     }
@@ -228,8 +229,13 @@ public class RecapState extends BasicGameState {
         nextLevel.addListener(new ClickListener() {
 
             public void onClick(StateBasedGame game, Button clicked) {
-                level.nextLevel();
-                game.enterState(InGameState.ID, new FadeOutTransition(), null);
+                if (level.getCurrentLevel() == LevelManager.NUM_LEVELS - 1) {
+                    game.enterState(EnterScoreState.ID);
+                } else {
+                    level.nextLevel();
+                    game.enterState(InGameState.ID, new FadeOutTransition(),
+                            null);
+                }
             }
 
         });
@@ -311,12 +317,12 @@ public class RecapState extends BasicGameState {
                 break;
         }
     }
-    
+
     private class InputGizmo implements Animatable {
-        
+
         private boolean show;
         private TextField input;
-        
+
         public InputGizmo(GameContainer container) {
             show = false;
             completed = false;
@@ -337,9 +343,9 @@ public class RecapState extends BasicGameState {
         }
 
         public void update(StateBasedGame game, int delta) {
-            
+
         }
-        
+
         private void initTextField(GameContainer container) {
             int w = 200;
             int h = 32;
@@ -352,7 +358,7 @@ public class RecapState extends BasicGameState {
             input.setBorderColor(null);
 
             input.addListener(new ComponentListener() {
-    
+
                 public void componentActivated(AbstractComponent c) {
                     name = input.getText().trim();
                     if (name.equals("")) {
@@ -362,7 +368,8 @@ public class RecapState extends BasicGameState {
                     boolean written = false;
                     while (!written && numTries > 0) {
                         written = writer.write(name, master.scorecard
-                                .getLevelScore(), level.getCurrentLevel(), false);
+                                .getLevelScore(), level.getCurrentLevel(),
+                                false);
                         numTries--;
                     }
                     input.setAcceptingInput(false);
@@ -370,7 +377,7 @@ public class RecapState extends BasicGameState {
                     show(false);
                     scores.show(true);
                 }
-    
+
             });
         }
 
@@ -378,15 +385,15 @@ public class RecapState extends BasicGameState {
             show = b;
             input.setAcceptingInput(b && par);
         }
-        
+
     }
-    
+
     private class ScoreGizmo implements Animatable {
-        
+
         private boolean show;
         private ArrayList<FadeInText> scores;
         private ArrayList<FadeInImage> crowns;
-        
+
         public ScoreGizmo() {
             scores = new ArrayList<FadeInText>();
             crowns = new ArrayList<FadeInImage>();
@@ -421,14 +428,14 @@ public class RecapState extends BasicGameState {
                 }
             }
         }
-        
+
         public void show(boolean b) {
             show = b;
             if (show) {
                 readScores();
             }
         }
-        
+
         public void readScores() {
             scores.clear();
             crowns.clear();
@@ -457,12 +464,16 @@ public class RecapState extends BasicGameState {
 
         public StatGizmo() throws SlickException {
             show = true;
-            points = new StatMeter(master.jekyllMedium, 150, 120, master.scorecard.getLevelScore(), MAX_LEVEL_SCORE);
+            points = new StatMeter(master.jekyllMedium, 150, 120,
+                    master.scorecard.getLevelScore(), MAX_LEVEL_SCORE);
             int mushrooms = (int) level.stats.getStat("level-mushrooms");
             int golden = (int) level.stats.getStat("level-golden");
-            totalShrooms = new StatMeter(master.jekyllMedium, 150, 170, mushrooms, MAX_LEVEL_COUNT);
-            blueShrooms = new StatMeter(master.jekyllMedium, 150, 220, mushrooms - golden, MAX_LEVEL_COUNT);
-            goldShrooms = new StatMeter(master.jekyllMedium, 150, 270, golden, MAX_GOLDEN_COUNT);
+            totalShrooms = new StatMeter(master.jekyllMedium, 150, 170,
+                    mushrooms, MAX_LEVEL_COUNT);
+            blueShrooms = new StatMeter(master.jekyllMedium, 150, 220,
+                    mushrooms - golden, MAX_LEVEL_COUNT);
+            goldShrooms = new StatMeter(master.jekyllMedium, 150, 270, golden,
+                    MAX_GOLDEN_COUNT);
         }
 
         public void render(StateBasedGame game, Graphics g) {

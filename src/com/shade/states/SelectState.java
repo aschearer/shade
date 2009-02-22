@@ -307,6 +307,7 @@ public class SelectState extends BasicGameState {
         public LevelSet() {
             images = new ArrayList<InstructionImage>();
             text = new ArrayList<InstructionText>();
+            finished = (currentLevel == LevelManager.NUM_LEVELS - 1);
         }
 
         public void moveTo(int level) {

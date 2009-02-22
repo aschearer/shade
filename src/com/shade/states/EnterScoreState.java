@@ -150,7 +150,7 @@ public class EnterScoreState extends BasicGameState {
                 boolean written = false;
                 while (!written && numTries > 0) {
                     written = writer.write(name, master.scorecard
-                            .getScore(), 0, false);
+                            .getScore(), 0, true);
                     numTries--;
                 }
                 input.setAcceptingInput(false);
