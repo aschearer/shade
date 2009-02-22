@@ -1,36 +1,34 @@
 <?xml version="1.0"?>
 
-<Level mushrooms="5" par="25">
-    <Player x="350" y="400"/>
+<Level mushrooms="6" par="25">
+    <Player x="300" y="400"/>
     <Basket x="300" y="350" />
+    <Umbrella x="350" y="400" />
 
     <Bird x="600" y = "300" speed="2" range="100"/>
 
-    <Fence x="80" y="105" z="5" facing="1" />
-    <Door x="80" y="235" z="5" facing="3" />
-    <Fence x="80" y="305" z="5" facing="1" />
-
-    <Dome x="240" y="240" z="11" d="35" />
-    <Sand x="180" y="330" d="40" type="0" />
+    <Fence x="450" y="50" z="5" facing="0" />
 
     <Dome x="140" y="120" z="15" d="45" />
     <Fence x="195" y="105" z="5" facing="0" />
 
     <Sand x="370" y="24" d="40" type="0" />
     <Block x="455" y="135" z="16" d="105" />
-    <Slider x="280" y="230" z="5" facing="1" range="60" speed="2" />
-    <Fence x="350" y="245" z="5" facing="0" />
-    <Slider x="565" y="260" z="5" facing="0" range="100" speed=".75" />
-    <Dome x="585" y="370" z="10" d="40" />
+    <Door x="180" y="245" z="5" facing="2" />
+    <Fence x="250" y="245" z="5" facing="0" />
+    <Slider x="380" y="245" z="5" facing="1" range="60" speed="2" />
+    <Fence x="160" y="210" z="5" facing="1" />
+    <Door x="550" y="250" z="5" facing="3" />
+    <Dome x="538" y="360" z="10" d="40" />
+    <Block x="50" y="255" z="6" d="55" />
 
     <Sand x="400" y="424" d="120" type="1" />
-
-    <Sand x="290" y="594" d="40" type="0" />
-    <Block x="55" y="435" z="16" d="105" />
-    <Block x="324" y="424" z="6" d="56" />
+    <Fence x="260" y="495" z="5" facing="0" />
+    <Dome x="165" y="380" z="12" d="42" />
+    <Dome x="205" y="500" z="9" d="36" />
 
     <Dome x="665" y="100" z="12" d="42" />
     <Dome x="725" y="220" z="8" d="32" />
     <Dome x="624" y="500" z="13" d="55" />
-    <Sand x="700" y="324" d="100" type="1" />
+    <Block x="680" y="324" z="6" d="60" />
 </Level>

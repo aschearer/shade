@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <Level mushrooms="6" par="20">
-    <Player x="550" y="360"/>
+    <Player x="550" y="300"/>
     <Basket x="500" y="310" />
     <Umbrella x="540" y="370" />
 

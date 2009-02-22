@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 
 <Level mushrooms="6" par="20">
-    <Player x="550" y="300"/>
+    <Player x="540" y="300"/>
     <Basket x="500" y="310" />
-    <Umbrella x="540" y="370" />
+    <Umbrella x="580" y="300" />
 
     <Bird x="200" y="200" speed="2" range="100" />
 
