@@ -32,7 +32,7 @@ public class Shade extends StateBasedGame {
             Shade s = new Shade();
             AppGameContainer c = new AppGameContainer(s, 800, 600, false);
             c.setIcons(ICONS);
-//            c.setShowFPS(false);
+            c.setShowFPS(false);
             c.setTargetFrameRate(60);
             Log.setVerbose(true);
             c.start();

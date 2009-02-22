@@ -2,6 +2,8 @@ package com.shade.controls;
 
 import java.util.prefs.Preferences;
 
+import com.shade.levels.LevelManager;
+
 public class SerialStats {
     
     public static int read(String stat) {
@@ -21,5 +23,16 @@ public class SerialStats {
     
     public static void reset(String stat) {
         write(stat, 0);
+    }
+    
+    public static void main(String[] args) {
+        for (int i = 0; i < LevelManager.NUM_LEVELS; i++) {
+            String stat = "level-" + i + "-clear";
+            SerialStats.reset(stat);
+        }
+        
+        SerialStats.reset("golden-mushrooms-collected");
+        SerialStats.reset("mushrooms-collected");
+        SerialStats.reset("level-mushrooms-collected");
     }
 }

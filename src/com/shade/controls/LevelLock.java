@@ -8,7 +8,7 @@ import com.shade.levels.LevelManager;
  * Controls which levels are available to the player.
  * 
  * This object persists through the user preferences.
- *
+ * 
  * @author Alexander Schearer <aschearer@gmail.com>
  */
 public class LevelLock {
@@ -76,7 +76,7 @@ public class LevelLock {
     
     public void resetLocks() {
         unlocked = new boolean[LevelManager.NUM_LEVELS];
-        unlocked[0] = false;
+        unlocked[0] = true;
         save();
     }
     
@@ -90,8 +90,98 @@ public class LevelLock {
         save();
     }
     
+    public void testAndUnlockLevels() {
+            int clear123 = 0;
+            clear123 += SerialStats.read("level-1-clear");
+            clear123 += SerialStats.read("level-2-clear");
+            clear123 += SerialStats.read("level-3-clear");
+            
+            if (clear123 >= 1) {
+                unlock(5); // beat one of the first 3 levels
+            }
+            
+            if (SerialStats.read("gold-mushrooms-collected") >= 6) {
+                unlock(6); // collect 6 gold mushrooms 
+            }
+            
+            if (SerialStats.read("mushrooms-collected") >= 50) {
+                unlock(7); // collect 25 mushrooms
+            }
+            
+            int clear456 = 0;
+            clear456 += SerialStats.read("level-4-clear");
+            clear456 += SerialStats.read("level-5-clear");
+            clear456 += SerialStats.read("level-6-clear");
+            
+            if (clear456 >= 1) {
+                unlock(8); // beat one of the second 3 levels.
+            }
+                
+            if (SerialStats.read("level-mushrooms-collected") >= 30) {
+                unlock(9); // collect 30 mushrooms in a single level
+            }
+
+            int clear789 = 0;
+            clear789 += SerialStats.read("level-7-clear");
+            clear789 += SerialStats.read("level-8-clear");
+            clear789 += SerialStats.read("level-9-clear");
+            if (clear123 == 3 && clear456 == 3 && clear789 == 3) {
+                unlock(10); // beat levels 1-9
+            }
+        }
+    
+    public boolean newLevelUnlocked() {
+        int clear123 = 0;
+        clear123 += SerialStats.read("level-1-clear");
+        clear123 += SerialStats.read("level-2-clear");
+        clear123 += SerialStats.read("level-3-clear");
+        
+        if (!isUnlocked(5) && clear123 >= 1) {
+            return true; // beat one of the first 3 levels
+        }
+        
+        if (!isUnlocked(6) && SerialStats.read("gold-mushrooms-collected") >= 6) {
+            return true; // collect 6 gold mushrooms 
+        }
+        
+        if (!isUnlocked(7) && SerialStats.read("mushrooms-collected") >= 50) {
+            return true; // collect 25 mushrooms
+        }
+        
+        int clear456 = 0;
+        clear456 += SerialStats.read("level-4-clear");
+        clear456 += SerialStats.read("level-5-clear");
+        clear456 += SerialStats.read("level-6-clear");
+        
+        if (!isUnlocked(8) && clear456 >= 1) {
+            return true; // beat one of the second 3 levels.
+        }
+            
+        if (!isUnlocked(9) && SerialStats.read("level-mushrooms-collected") >= 30) {
+            return true; // collect 30 mushrooms in a single level
+        }
+
+        int clear789 = 0;
+        clear789 += SerialStats.read("level-7-clear");
+        clear789 += SerialStats.read("level-8-clear");
+        clear789 += SerialStats.read("level-9-clear");
+        if (!isUnlocked(10) && clear123 == 3 && clear456 == 3 && clear789 == 3) {
+            return true; // beat levels 1-9
+        }
+        
+        return false;
+    }
+    
     public static void main(String[] args) {
         LevelLock lock = new LevelLock();
-        lock.freeFirst(7); // counting 0
+        lock.freeFirst(0); // counting 0
+        
+        LevelLock l = new LevelLock();
+        
+        for (int i = 0; i < l.unlocked.length; i++) {
+            if (l.unlocked[i]) {
+                System.out.println("level " + i + " unlocked");
+            }
+        }
     }
 }

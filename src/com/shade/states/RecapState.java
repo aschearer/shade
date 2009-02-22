@@ -33,9 +33,9 @@ import com.shade.util.ResourceManager;
 public class RecapState extends BasicGameState {
 
     /* Hypothetical top score. */
-    private static final int MAX_LEVEL_SCORE = 8000;
-    private static final int MAX_LEVEL_COUNT = 50;
-    private static final int MAX_GOLDEN_COUNT = 8;
+    private static final int MAX_LEVEL_SCORE = 16000;
+    private static final int MAX_LEVEL_COUNT = 80;
+    private static final int MAX_GOLDEN_COUNT = 10;
     private static final String PASS_TEXT = "Level Clear";
     private static final String FAIL_TEXT = "Level Failed";
 
@@ -55,7 +55,7 @@ public class RecapState extends BasicGameState {
     private boolean par;
     private StateBasedGame game;
     private int index;
-    private int timer;
+    private int timer, lockFlipper;
     private String message;
     private StatGizmo stats;
     private ScoreGizmo scores;
@@ -70,6 +70,7 @@ public class RecapState extends BasicGameState {
         resource.register("replay-up", "states/recap/replay-up.png");
         resource.register("replay-down", "states/recap/replay-down.png");
         resource.register("wreath", "states/recap/wreath.png");
+        resource.register("unlocked", "states/recap/unlocked.png");
         statsIcons = new SpriteSheet("states/recap/icons.png", 40, 40);
 
         reader = new FailSafeHighScoreReader();
@@ -90,6 +91,7 @@ public class RecapState extends BasicGameState {
             throws SlickException {
         this.game = game;
         timer = 0;
+        lockFlipper = 0;
         index = 0;
         level = (InGameState) game.getState(InGameState.ID);
         par = level.parWasMet();
@@ -141,6 +143,16 @@ public class RecapState extends BasicGameState {
         if (par) {
             nextLevel.render(game, g);
         }
+
+        if (master.levelsLock.newLevelUnlocked()) {
+            resource.get("unlocked").draw(15, 412, 32, 32);
+            if (lockFlipper > 300) {
+                master.jekyllXSmall.drawString(50, 420, "New level unlocked!");
+                if (lockFlipper > 700) {
+                    lockFlipper = 0;
+                }
+            }
+        }
         replay.render(game, g);
         back.render(game, g);
         prev.render(game, g);
@@ -181,6 +193,7 @@ public class RecapState extends BasicGameState {
         stats.update(game, delta);
         scores.update(game, delta);
         input.update(game, delta);
+        lockFlipper += delta;
         timer += delta;
         if (timer > MasterState.STATE_TRANSITION_DELAY) {
             if (par) {
@@ -193,6 +206,10 @@ public class RecapState extends BasicGameState {
         }
         prev.active(index == 0);
         next.active(index == 1 || !par);
+
+        if (container.getInput().isKeyPressed(Input.KEY_R)) {
+            enter(container, game);
+        }
     }
 
     // @Override
