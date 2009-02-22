@@ -100,12 +100,12 @@ public class LevelLock {
                 unlock(5); // beat one of the first 3 levels
             }
             
-            if (SerialStats.read("gold-mushrooms-collected") >= 6) {
-                unlock(6); // collect 6 gold mushrooms 
+            if (SerialStats.read("golden-mushrooms-collected") >= 25) {
+                unlock(6); // collect 25 gold mushrooms 
             }
             
-            if (SerialStats.read("mushrooms-collected") >= 50) {
-                unlock(7); // collect 25 mushrooms
+            if (SerialStats.read("mushrooms-collected") >= 100) {
+                unlock(7); // collect 100 mushrooms
             }
             
             int clear456 = 0;
@@ -113,12 +113,12 @@ public class LevelLock {
             clear456 += SerialStats.read("level-5-clear");
             clear456 += SerialStats.read("level-6-clear");
             
-            if (clear456 >= 1) {
+            if (clear456 == 3) {
                 unlock(8); // beat one of the second 3 levels.
             }
                 
-            if (SerialStats.read("level-mushrooms-collected") >= 30) {
-                unlock(9); // collect 30 mushrooms in a single level
+            if (SerialStats.read("level-mushrooms-collected") >= 40) {
+                unlock(9); // collect 40 mushrooms in a single level
             }
 
             int clear789 = 0;
@@ -140,12 +140,12 @@ public class LevelLock {
             return true; // beat one of the first 3 levels
         }
         
-        if (!isUnlocked(6) && SerialStats.read("gold-mushrooms-collected") >= 6) {
-            return true; // collect 6 gold mushrooms 
+        if (!isUnlocked(6) && SerialStats.read("gold-mushrooms-collected") >= 25) {
+            return true; // collect 25 gold mushrooms 
         }
         
-        if (!isUnlocked(7) && SerialStats.read("mushrooms-collected") >= 50) {
-            return true; // collect 25 mushrooms
+        if (!isUnlocked(7) && SerialStats.read("mushrooms-collected") >= 100) {
+            return true; // collect 100 mushrooms
         }
         
         int clear456 = 0;
@@ -153,12 +153,12 @@ public class LevelLock {
         clear456 += SerialStats.read("level-5-clear");
         clear456 += SerialStats.read("level-6-clear");
         
-        if (!isUnlocked(8) && clear456 >= 1) {
+        if (!isUnlocked(8) && clear456 == 3) {
             return true; // beat one of the second 3 levels.
         }
             
-        if (!isUnlocked(9) && SerialStats.read("level-mushrooms-collected") >= 30) {
-            return true; // collect 30 mushrooms in a single level
+        if (!isUnlocked(9) && SerialStats.read("level-mushrooms-collected") >= 40) {
+            return true; // collect 40 mushrooms in a single level
         }
 
         int clear789 = 0;

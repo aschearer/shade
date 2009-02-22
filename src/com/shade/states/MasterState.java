@@ -17,6 +17,7 @@ import com.shade.controls.LevelLock;
 import com.shade.controls.ScoreControl;
 import com.shade.controls.DayPhaseTimer;
 import com.shade.controls.GameSlice;
+import com.shade.controls.SerialStats;
 import com.shade.lighting.GlobalLight;
 import com.shade.lighting.LightMask;
 import com.shade.util.ResourceManager;
@@ -69,11 +70,13 @@ public class MasterState extends BasicGameState {
 
         // create controller
         timer = new DayPhaseTimer(SECONDS_PER_DAY);
+        
         levelsLock = new LevelLock();
-        levelsLock.unlock(1);
-        levelsLock.unlock(2);
-        levelsLock.unlock(3);
-        levelsLock.unlock(4);
+        if (SerialStats.read("first-play-1") == 0) {
+            levelsLock.freeFirst(5);
+            SerialStats.resetAll();
+            SerialStats.write("first-play-1", 1);
+        }
         // TODO: HOW DO WE MODIFY THE LENGTH OF THE DAY AHHH
         control = new GameSlice(new LightMask(5, timer), createLight(), timer);
         dimmer = new Dimmer(.6f);

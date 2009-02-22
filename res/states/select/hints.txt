@@ -3,9 +3,9 @@ Level 1 should be unlocked
 Level 2 should be unlocked
 Level 3 should be unlocked
 Level 4 should be unlocked
-Beat one of the first three levels
-Collect 6 or more gold mushrooms
-Collect 25 mushrooms
-Beat one of the second three levels
-Collect 30 or more mushrooms in one day
+Beat level 1, 2, or 3
+Collect 25 or more gold mushrooms
+Collect 100 or more mushrooms
+Beat level 4, 5, and 6
+Collect 40 or more mushrooms in one day
 Beat levels 1 through 9

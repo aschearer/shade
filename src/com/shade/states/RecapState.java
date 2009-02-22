@@ -65,10 +65,14 @@ public class RecapState extends BasicGameState {
     public RecapState(MasterState m) throws SlickException {
         master = m;
         resource = m.resource;
+        resource.register("gameover-up", "states/recap/gameover-up.png");
+        resource.register("gameover-down", "states/recap/gameover-down.png");
         resource.register("nextlevel-up", "states/recap/nextlevel-up.png");
         resource.register("nextlevel-down", "states/recap/nextlevel-down.png");
         resource.register("replay-up", "states/recap/replay-up.png");
         resource.register("replay-down", "states/recap/replay-down.png");
+        resource.register("levels-up", "states/recap/levels-up.png");
+        resource.register("levels-down", "states/recap/levels-down.png");
         resource.register("wreath", "states/recap/wreath.png");
         resource.register("unlocked", "states/recap/unlocked.png");
         statsIcons = new SpriteSheet("states/recap/icons.png", 40, 40);
@@ -132,7 +136,7 @@ public class RecapState extends BasicGameState {
             throws SlickException {
         master.control.render(game, g, resource.get("background"));
         master.dimmer.render(game, g);
-        if (!completed && index == 1) {
+        if (par && !completed && index == 1) {
             resource.get("wreath").draw(205, 110);
         }
         resource.get("header").draw(400, 0);
@@ -140,7 +144,7 @@ public class RecapState extends BasicGameState {
         input.render(game, g);
         stats.render(game, g);
         scores.render(game, g);
-        if (par) {
+        if (validNext()) {
             nextLevel.render(game, g);
         }
 
@@ -196,7 +200,7 @@ public class RecapState extends BasicGameState {
         lockFlipper += delta;
         timer += delta;
         if (timer > MasterState.STATE_TRANSITION_DELAY) {
-            if (par) {
+            if (validNext()) {
                 nextLevel.update(game, delta);
             }
             replay.update(game, delta);
@@ -205,11 +209,7 @@ public class RecapState extends BasicGameState {
             next.update(game, delta);
         }
         prev.active(index == 0);
-        next.active(index == 1 || !par);
-
-        if (container.getInput().isKeyPressed(Input.KEY_R)) {
-            enter(container, game);
-        }
+        next.active(index == 1);
     }
 
     // @Override
@@ -227,7 +227,7 @@ public class RecapState extends BasicGameState {
     }
 
     private void initReplayButton() throws SlickException {
-        int y = (par) ? 130 : 110;
+        int y = (validNext()) ? 130 : 110;
         replay = new SlickButton(620, y, resource.get("replay-up"), resource
                 .get("replay-down"));
         replay.addListener(new ClickListener() {
@@ -240,9 +240,19 @@ public class RecapState extends BasicGameState {
         });
     }
 
+    private boolean validNext() {
+        return par && (level.getCurrentLevel() == LevelManager.NUM_LEVELS - 1 ||
+                master.levelsLock.isUnlocked(level.getCurrentLevel() + 1));
+    }
+
     private void initNextButton() throws SlickException {
-        nextLevel = new SlickButton(620, 110, resource.get("nextlevel-up"),
-                resource.get("nextlevel-down"));
+        if (par && level.getCurrentLevel() < LevelManager.NUM_LEVELS - 1) {
+            nextLevel = new SlickButton(620, 110, resource.get("nextlevel-up"),
+                    resource.get("nextlevel-down"));
+        } else {
+            nextLevel = new SlickButton(620, 110, resource.get("gameover-up"),
+                    resource.get("gameover-down"));
+        }
         nextLevel.addListener(new ClickListener() {
 
             public void onClick(StateBasedGame game, Button clicked) {
@@ -259,9 +269,9 @@ public class RecapState extends BasicGameState {
     }
 
     private void initBackButton() throws SlickException {
-        int y = (par) ? 150 : 130;
-        back = new SlickButton(620, y, resource.get("back-up"), resource
-                .get("back-down"));
+        int y = (validNext()) ? 150 : 130;
+        back = new SlickButton(620, y, resource.get("levels-up"), resource
+                .get("levels-down"));
         back.addListener(new ClickListener() {
 
             public void onClick(StateBasedGame game, Button clicked) {
@@ -325,9 +335,9 @@ public class RecapState extends BasicGameState {
                 input.show(false);
                 break;
             case 1:
-                scores.show(completed);
+                scores.show(completed || !par);
                 stats.show(false);
-                input.show(!completed);
+                input.show(!completed && par);
                 break;
             default:
                 stats.show(false);
@@ -387,6 +397,9 @@ public class RecapState extends BasicGameState {
                         written = writer.write(name, master.scorecard
                                 .getLevelScore(), level.getCurrentLevel(),
                                 false);
+                        writer.write(name, master.scorecard
+                                .getScore(), 0,
+                                true);
                         numTries--;
                     }
                     input.setAcceptingInput(false);
@@ -426,7 +439,11 @@ public class RecapState extends BasicGameState {
                 for (FadeInText score : scores) {
                     score.render(game, g);
                 }
-                drawCongrat("Way to go " + name);
+                if (par) {
+                    drawCongrat("Way to go " + name);
+                } else {
+                    drawCongrat("Better luck next time");
+                }
             }
         }
 

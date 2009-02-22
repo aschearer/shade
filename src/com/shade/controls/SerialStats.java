@@ -25,6 +25,17 @@ public class SerialStats {
         write(stat, 0);
     }
     
+    public static void resetAll() {
+        for (int i = 0; i < LevelManager.NUM_LEVELS; i++) {
+            String stat = "level-" + i + "-clear";
+            SerialStats.reset(stat);
+        }
+        
+        SerialStats.reset("golden-mushrooms-collected");
+        SerialStats.reset("mushrooms-collected");
+        SerialStats.reset("level-mushrooms-collected");
+    }
+    
     public static void main(String[] args) {
         for (int i = 0; i < LevelManager.NUM_LEVELS; i++) {
             String stat = "level-" + i + "-clear";
