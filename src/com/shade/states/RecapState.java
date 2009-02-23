@@ -149,6 +149,7 @@ public class RecapState extends BasicGameState {
         }
 
         if (par && master.levelsLock.newLevelUnlocked()) {
+            master.levelsLock.testAndUnlockLevels();
             resource.get("unlocked").draw(15, 412, 32, 32);
             if (lockFlipper > 300) {
                 master.jekyllXSmall.drawString(50, 420, "New level unlocked!");
@@ -413,7 +414,7 @@ public class RecapState extends BasicGameState {
 
         public void show(boolean b) {
             show = b;
-            input.setAcceptingInput(b && par);
+            input.setAcceptingInput(b );
         }
 
     }

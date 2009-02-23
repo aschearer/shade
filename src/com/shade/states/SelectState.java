@@ -77,9 +77,6 @@ public class SelectState extends BasicGameState {
         this.game = game;
         level = (InGameState) game.getState(InGameState.ID);
         currentLevel = level.getCurrentLevel();
-        if (level.parWasMet()) {
-            master.levelsLock.testAndUnlockLevels();
-        }
         initLevels(master.jekyllMedium);
         if (master.dimmer.reversed()) {
             master.dimmer.rewind();
