@@ -17,9 +17,6 @@ import com.shade.crash.CrashLevel;
 import com.shade.crash.Repelable;
 import com.shade.entities.bird.Bird;
 import com.shade.entities.mushroom.Mushroom;
-import com.shade.entities.util.GhostTrail;
-import com.shade.entities.util.PlayerSparkler;
-import com.shade.entities.util.Sizzle;
 import com.shade.entities.util.Sizzle2;
 import com.shade.entities.util.Sparkler;
 import com.shade.lighting.LuminousEntity;
@@ -44,12 +41,8 @@ public class Player extends Linkable {
 	private boolean impeded;
 	private float mileage;
 	protected int invincibleTimer, flipper, flipthreshold;
-	private PlayerSparkler smoky;
-	private Sparkler sparks;
 	private Sizzle2[] sizzles;
 	private float speed;
-	private boolean sparkling;
-	private GhostTrail ghost;
 
 	public Player(int x, int y) throws SlickException {
 		initShape(x, y);
@@ -59,8 +52,6 @@ public class Player extends Linkable {
 		invincibleTimer = INVINCIBLE_START;
 		flipthreshold = 1;
 		speed = INITIAL_SPEED;
-		sparks = new Sparkler(this, 4);
-		sparkling = false;
 	}
 
 	public void initSizzles() {
@@ -82,13 +73,6 @@ public class Player extends Linkable {
 		}
 	}
 
-	public void sparkle() {
-		sparkling = true;
-	}
-
-	public void unsparkle() {
-		sparkling = false;
-	}
 
 	private void initShape(int x, int y) {
 		shape = new Circle(x, y, 18);
@@ -98,8 +82,6 @@ public class Player extends Linkable {
 		normal = new Image("entities/player/player.png");
 		register = new Sound("entities/player/register.ogg");
 		damage = new Sound("entities/player/hit.ogg");
-		ghost = new GhostTrail(this, "entities/player/player.png");
-		smoky = new PlayerSparkler(this, 0, "entities/sparkle/puff.png");
 	}
 
 	private void initStates() {
@@ -388,16 +370,11 @@ public class Player extends Linkable {
 			//smoky.animate(g);
 		}
 		manager.render(game, g);
-		smoky.animate(g);
 
 	}
 
 	public void update(StateBasedGame game, int delta) {
-		// if (sparkling) {
-		ghost.update(delta);
-		// }
 		manager.update(game, delta);
-		smoky.update(delta);
 
 
 	}
