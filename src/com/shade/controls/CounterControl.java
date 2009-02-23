@@ -110,6 +110,7 @@ public class CounterControl implements MushroomCounter, Animatable {
     }
 
     public void reset(int par) {
+        bubbles.clear();
         countDown = par;
         totalCount = 0;
         goldMushrooms = 0;
