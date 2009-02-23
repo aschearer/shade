@@ -28,7 +28,7 @@ public class LocalHighScoreWriter implements HighScoreWriter {
     }
     
     protected boolean write(String name, String score, String level, String special) {
-        Preferences prefs = Preferences.systemNodeForPackage(this.getClass());
+        Preferences prefs = Preferences.userNodeForPackage(this.getClass());
         StringWriter stream = new StringWriter();
         CsvWriter writer = new CsvWriter(stream, COMMA);
         String[] row = new String[] { name, score, level, special };

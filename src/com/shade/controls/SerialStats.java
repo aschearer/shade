@@ -7,7 +7,7 @@ import com.shade.levels.LevelManager;
 public class SerialStats {
     
     public static int read(String stat) {
-        Preferences stats = Preferences.systemNodeForPackage(SerialStats.class);
+        Preferences stats = Preferences.userNodeForPackage(SerialStats.class);
         return stats.getInt(stat, 0);
     }
     
@@ -17,7 +17,7 @@ public class SerialStats {
     }
 
     public static void write(String stat, int value) {
-        Preferences stats = Preferences.systemNodeForPackage(SerialStats.class);
+        Preferences stats = Preferences.userNodeForPackage(SerialStats.class);
         stats.putInt(stat, value);
     }
     

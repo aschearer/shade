@@ -39,7 +39,7 @@ public class FailSafeHighScoreWriter implements HighScoreWriter {
             if (batchWriter.write()) {
                 // clear the files
                 for (int i = 0; i < LevelManager.NUM_LEVELS; i++) {
-                    Preferences.systemNodeForPackage(this.getClass()).put(SCORE_KEY + i, EMPTY_STRING);
+                    Preferences.userNodeForPackage(this.getClass()).put(SCORE_KEY + i, EMPTY_STRING);
                 }
             }
             // else do nothing, they will get written later

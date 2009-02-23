@@ -28,7 +28,7 @@ public class LevelLock {
     }
 
     private boolean[] deserialize() {
-        Preferences prefs = Preferences.systemNodeForPackage(this.getClass());
+        Preferences prefs = Preferences.userNodeForPackage(this.getClass());
         String serial = prefs.get(LEVELS_KEY, STRING_EMPTY);
         String[] levels = serial.split(DELIMITER);
         for (int i = 0; i < levels.length; i++) {
@@ -70,7 +70,7 @@ public class LevelLock {
             }
         }
         String serial = implode(levels, DELIMITER);
-        Preferences prefs = Preferences.systemNodeForPackage(this.getClass());
+        Preferences prefs = Preferences.userNodeForPackage(this.getClass());
         prefs.put(LEVELS_KEY, serial);
     }
 

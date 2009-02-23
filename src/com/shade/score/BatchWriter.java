@@ -51,7 +51,7 @@ public class BatchWriter {
     }
 
     private String collectScores(int level) {
-        Preferences prefs = Preferences.systemNodeForPackage(this.getClass());
+        Preferences prefs = Preferences.userNodeForPackage(this.getClass());
         return prefs.get(SCORE_KEY + level, EMPTY_STRING);
     }
 }

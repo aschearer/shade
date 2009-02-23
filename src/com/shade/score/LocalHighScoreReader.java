@@ -29,7 +29,7 @@ public class LocalHighScoreReader implements HighScoreReader {
      * Returns all the scores if zero is passed.
      */
     public String[][] getScores(int level, int limit) {
-        Preferences prefs = Preferences.systemNodeForPackage(this.getClass());
+        Preferences prefs = Preferences.userNodeForPackage(this.getClass());
         StringReader s = new StringReader(prefs.get(SCORE_KEY + level, EMPTY_STRING));
         CsvReader reader = new CsvReader(s);
         LinkedList<String[]> rows = new LinkedList<String[]>();
