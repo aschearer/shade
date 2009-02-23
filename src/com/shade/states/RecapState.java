@@ -396,10 +396,10 @@ public class RecapState extends BasicGameState {
                     while (!written && numTries > 0) {
                         written = writer.write(name, master.scorecard
                                 .getLevelScore(), level.getCurrentLevel(),
-                                false);
+                                master.levelsLock.allUnlocked());
                         writer.write(name, master.scorecard
                                 .getScore(), 0,
-                                true);
+                                master.levelsLock.allUnlocked());
                         numTries--;
                     }
                     input.setAcceptingInput(false);

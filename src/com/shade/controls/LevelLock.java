@@ -43,6 +43,15 @@ public class LevelLock {
         return unlocked[level];
     }
     
+    public boolean allUnlocked() {
+        for (int i = 0; i < unlocked.length; i++) {
+            if (!unlocked[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
     public void unlock(int level) {
         if (unlocked[level]) {
             return;
