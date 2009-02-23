@@ -12,10 +12,10 @@ public class Shade extends StateBasedGame {
 
     public static final String TITLE = "Shade";
     private static final String[] ICONS = {
-        "icons/shade.16.gif",
-        "icons/shade.24.gif",
-        "icons/shade.32.gif",
-        "icons/shade.128.gif"
+        "icons/icon.16.gif",
+        "icons/icon.32.gif",
+        "icons/icon.64.gif",
+        "icons/icon.128.gif"
     };
 
     public Shade() {
