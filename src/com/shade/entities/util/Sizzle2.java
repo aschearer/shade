@@ -9,6 +9,7 @@ import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.SlickException;
 
 import com.crash.Body;
+import com.shade.states.MasterState;
 
 public class Sizzle2 {
 	public static final float MAX_SCALEUP = 0.5f;
@@ -71,7 +72,7 @@ public class Sizzle2 {
 		for(int i = 0;i<sparkles.size();i++){
 			sparkles.get(i).update(delta);
 		}
-		if (intensity > 0.6f) {
+		if (intensity > MasterState.SHADOW_THRESHOLD) {
 			timeInSun+=delta;
 		}
 		else timeInSun = 0;
