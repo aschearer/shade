@@ -149,7 +149,7 @@ public class LevelLock {
             return true; // beat one of the first 3 levels
         }
         
-        if (!isUnlocked(6) && SerialStats.read("gold-mushrooms-collected") >= 25) {
+        if (!isUnlocked(6) && SerialStats.read("golden-mushrooms-collected") >= 25) {
             return true; // collect 25 gold mushrooms 
         }
         
