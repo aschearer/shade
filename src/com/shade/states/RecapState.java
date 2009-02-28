@@ -100,8 +100,7 @@ public class RecapState extends BasicGameState {
         lockFlipper = 0;
         index = 0;
         level = (InGameState) game.getState(InGameState.ID);
-//        par = level.parWasMet();
-        par = true;
+        par = level.parWasMet();
         unlocked = master.levelsLock.newLevelUnlocked();
         master.levelsLock.testAndUnlockLevels();
         if (master.dimmer.reversed()) {
