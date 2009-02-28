@@ -259,20 +259,20 @@ public class RecapState extends BasicGameState {
                 nextLevel = new SlickButton(620, 110, resource.get("nextlevel-up"),
                     resource.get("nextlevel-down"));
             }
-        }
-        nextLevel.addListener(new ClickListener() {
-
-            public void onClick(StateBasedGame game, Button clicked) {
-                if (level.getCurrentLevel() == LevelManager.NUM_LEVELS - 1) {
-                    game.enterState(EnterScoreState.ID);
-                } else {
-                    level.nextLevel();
-                    game.enterState(InGameState.ID, new FadeOutTransition(),
-                            null);
+            nextLevel.addListener(new ClickListener() {
+    
+                public void onClick(StateBasedGame game, Button clicked) {
+                    if (level.getCurrentLevel() == LevelManager.NUM_LEVELS - 1) {
+                        game.enterState(EnterScoreState.ID);
+                    } else {
+                        level.nextLevel();
+                        game.enterState(InGameState.ID, new FadeOutTransition(),
+                                null);
+                    }
                 }
-            }
-
-        });
+    
+            });
+        }
     }
 
     private void initBackButton() throws SlickException {
