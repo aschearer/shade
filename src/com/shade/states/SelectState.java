@@ -61,6 +61,7 @@ public class SelectState extends BasicGameState {
         resource.register("newgame-up", "states/select/newgame-up.png");
         resource.register("newgame-down", "states/select/newgame-down.png");
         resource.register("question-mark", "states/select/question-mark.png");
+        resource.register("crown", "states/highscore/crown.png");
 
         click = new Sound("states/common/click.ogg");
 
@@ -86,29 +87,6 @@ public class SelectState extends BasicGameState {
         timer = 0;
     }
 
-//    private void testForUnlockedLevels() {
-//        int clear123 = 0;
-//        clear123 += SerialStats.read("level-1-clear");
-//        clear123 += SerialStats.read("level-2-clear");
-//        clear123 += SerialStats.read("level-3-clear");
-//        if (clear123 == 3) {
-//            master.levelsLock.unlock(7);
-//        }
-//        int clear456 = 0;
-//        clear456 += SerialStats.read("level-4-clear");
-//        clear456 += SerialStats.read("level-5-clear");
-//        clear456 += SerialStats.read("level-6-clear");
-//        if (clear456 == 3) {
-//            master.levelsLock.unlock(8);
-//        }
-//        if (SerialStats.read("level-mushrooms-collected") > 50) {
-//            master.levelsLock.unlock(9);
-//        }
-//        if (SerialStats.read("gold-mushrooms-collected") > 24) {
-//            master.levelsLock.unlock(10);
-//        }
-//    }
-
     public void render(GameContainer container, StateBasedGame game, Graphics g)
             throws SlickException {
         master.control.render(game, g, resource.get("background"));
@@ -127,6 +105,9 @@ public class SelectState extends BasicGameState {
         renderInstructionStep();
         if (!master.levelsLock.isUnlocked(currentLevel)) {
             resource.get("question-mark").draw(310, 160);
+        }
+        if (currentLevel > 0 && SerialStats.read("level-" + currentLevel + "-clear") == 1) {
+            resource.get("crown").draw(15, 412);
         }
         levels.render(game, g);
         resource.get("trim").draw();

@@ -28,7 +28,7 @@ public class MasterState extends BasicGameState {
     public static final int ID = 1;
 
     public static final int STATE_TRANSITION_DELAY = 400;
-    public static final int SECONDS_PER_DAY = 120000;
+    public static final int SECONDS_PER_DAY = 60000;
     public static final int SECONDS_OF_DAYLIGHT = SECONDS_PER_DAY / 2;
 
     public static final float SHADOW_THRESHOLD = .7f;

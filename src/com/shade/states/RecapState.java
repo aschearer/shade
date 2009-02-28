@@ -21,6 +21,7 @@ import com.shade.controls.ClickListener;
 import com.shade.controls.FadeInImage;
 import com.shade.controls.FadeInText;
 import com.shade.controls.KeyListener;
+import com.shade.controls.SerialStats;
 import com.shade.controls.SlickButton;
 import com.shade.controls.StatMeter;
 import com.shade.controls.TwoToneButton;
@@ -61,6 +62,7 @@ public class RecapState extends BasicGameState {
     private ScoreGizmo scores;
     private InputGizmo input;
     private SpriteSheet statsIcons;
+    private boolean unlocked;
 
     public RecapState(MasterState m) throws SlickException {
         master = m;
@@ -98,7 +100,10 @@ public class RecapState extends BasicGameState {
         lockFlipper = 0;
         index = 0;
         level = (InGameState) game.getState(InGameState.ID);
-        par = level.parWasMet();
+//        par = level.parWasMet();
+        par = true;
+        unlocked = master.levelsLock.newLevelUnlocked();
+        master.levelsLock.testAndUnlockLevels();
         if (master.dimmer.reversed()) {
             master.dimmer.rewind();
         }
@@ -148,8 +153,7 @@ public class RecapState extends BasicGameState {
             nextLevel.render(game, g);
         }
 
-        if (par && master.levelsLock.newLevelUnlocked()) {
-            master.levelsLock.testAndUnlockLevels();
+        if (par && unlocked) {
             resource.get("unlocked").draw(15, 412, 32, 32);
             if (lockFlipper > 300) {
                 master.jekyllXSmall.drawString(50, 420, "New level unlocked!");
@@ -242,17 +246,20 @@ public class RecapState extends BasicGameState {
     }
 
     private boolean validNext() {
-        return par && (level.getCurrentLevel() == LevelManager.NUM_LEVELS - 1 ||
-                master.levelsLock.isUnlocked(level.getCurrentLevel() + 1));
+        return par && (level.getCurrentLevel() < LevelManager.NUM_LEVELS - 1 &&
+                master.levelsLock.isUnlocked(level.getCurrentLevel() + 1) ||
+                (level.getCurrentLevel() == LevelManager.NUM_LEVELS - 1));
     }
 
     private void initNextButton() throws SlickException {
-        if (par && level.getCurrentLevel() < LevelManager.NUM_LEVELS - 1) {
-            nextLevel = new SlickButton(620, 110, resource.get("nextlevel-up"),
+        if (validNext()) {
+            if (level.getCurrentLevel() == LevelManager.NUM_LEVELS - 1) {
+                nextLevel = new SlickButton(620, 110, resource.get("gameover-up"),
+                        resource.get("gameover-down"));
+            } else {
+                nextLevel = new SlickButton(620, 110, resource.get("nextlevel-up"),
                     resource.get("nextlevel-down"));
-        } else {
-            nextLevel = new SlickButton(620, 110, resource.get("gameover-up"),
-                    resource.get("gameover-down"));
+            }
         }
         nextLevel.addListener(new ClickListener() {
 
@@ -397,7 +404,7 @@ public class RecapState extends BasicGameState {
                     while (!written && numTries > 0) {
                         written = writer.write(name, master.scorecard
                                 .getLevelScore(), level.getCurrentLevel(),
-                                master.levelsLock.allUnlocked());
+                                SerialStats.allClear());
                         writer.write(name, master.scorecard
                                 .getScore(), 0,
                                 master.levelsLock.allUnlocked());

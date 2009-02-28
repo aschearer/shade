@@ -8,10 +8,10 @@ import org.newdawn.slick.gui.ComponentListener;
 import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-import org.newdawn.slick.state.transition.FadeOutTransition;
 
 import com.shade.controls.Button;
 import com.shade.controls.ClickListener;
+import com.shade.controls.SerialStats;
 import com.shade.controls.SlickButton;
 import com.shade.util.ResourceManager;
 import com.shade.score.FailSafeHighScoreWriter;
@@ -150,7 +150,7 @@ public class EnterScoreState extends BasicGameState {
                 boolean written = false;
                 while (!written && numTries > 0) {
                     written = writer.write(name, master.scorecard
-                            .getScore(), 0, master.levelsLock.allUnlocked());
+                            .getScore(), 0, SerialStats.allClear());
                     numTries--;
                 }
                 input.setAcceptingInput(false);

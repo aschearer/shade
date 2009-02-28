@@ -46,4 +46,12 @@ public class SerialStats {
         SerialStats.reset("mushrooms-collected");
         SerialStats.reset("level-mushrooms-collected");
     }
+
+    public static boolean allClear() {
+        int beaten = 0;
+        for (int i = 1; i < 11; i++) {
+            beaten += SerialStats.read("level-" + i + "-clear");
+        }
+        return (beaten == 10);
+    }
 }

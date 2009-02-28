@@ -123,7 +123,7 @@ public class LevelLock {
             clear456 += SerialStats.read("level-6-clear");
             
             if (clear456 == 3) {
-                unlock(8); // beat one of the second 3 levels.
+                unlock(8); // beat each of the second three
             }
                 
             if (SerialStats.read("level-mushrooms-collected") >= 40) {
@@ -163,7 +163,7 @@ public class LevelLock {
         clear456 += SerialStats.read("level-6-clear");
         
         if (!isUnlocked(8) && clear456 == 3) {
-            return true; // beat one of the second 3 levels.
+            return true; // clear the second three levels
         }
             
         if (!isUnlocked(9) && SerialStats.read("level-mushrooms-collected") >= 40) {
@@ -183,7 +183,7 @@ public class LevelLock {
     
     public static void main(String[] args) {
         LevelLock lock = new LevelLock();
-        lock.freeFirst(0); // counting 0
+        lock.freeFirst(9); // counting 0
         
         LevelLock l = new LevelLock();
         
